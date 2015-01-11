@@ -3,7 +3,7 @@ var PIXI = require('pixi.js'),
 
 common.setup(function (app) {
         // starting number based on renderer type
-    var startingNum = 50,
+    var startingNum = 100,
         // create a texture from an image path
         texture = PIXI.core.Texture.fromImage('bunny2.png'),
         // create a sprite batch to contain our sprites

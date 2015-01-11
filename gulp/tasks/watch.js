@@ -5,7 +5,13 @@ var gulp    = require('gulp'),
     bundle  = require('../util/bundle');
 
 gulp.task('watch', function () {
+    gulp.watch(paths.assets, ['assets'])
+        .on('change', logChanges);
+
     gulp.watch(paths.styles, ['styles'])
+        .on('change', logChanges);
+
+    gulp.watch(paths.hbs, ['html'])
         .on('change', logChanges);
 
     gulp.watch(paths.scripts, ['jshint'])

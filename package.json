@@ -25,7 +25,9 @@
     "build": "gulp build"
   },
   "dependencies": {
-    "pixi.js": "^3.0.0"
+    "domready": "^1.0.7",
+    "pixi.js": "^3.0.0",
+    "stats-js": "^1.0.0-alpha1"
   },
   "devDependencies": {
     "browserify": "^8.0.2",

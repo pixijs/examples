@@ -19,8 +19,7 @@ common.setup(function (app) {
     PIXI.CONST.scaleModes.DEFAULT = PIXI.CONST.scaleModes.NEAREST;
 
     // add our container to the root
-    // app.root.addChild(container);
-    container = app.root;
+    app.root.addChild(container);
 
     // add the first bunnies!
     createBunnies();

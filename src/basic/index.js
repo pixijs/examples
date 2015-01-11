@@ -5,9 +5,9 @@ common.setup(function (app) {
         // starting number based on renderer type
     var startingNum = 100,
         // create a texture from an image path
-        texture = PIXI.core.Texture.fromImage('bunny2.png'),
+        texture = PIXI.Texture.fromImage('bunny2.png'),
         // create a sprite batch to contain our sprites
-        container = new PIXI.core.SpriteBatch(),
+        container = new PIXI.SpriteBatch(),
         // get the counter element so we can update the text
         counter = document.getElementById('counter'),
         // tracker for mouse/touch down state
@@ -16,7 +16,7 @@ common.setup(function (app) {
         gravity = 0.75;
 
     // use nearest scaling so sprites are crisp and pixely
-    PIXI.core.CONST.scaleModes.DEFAULT = PIXI.core.CONST.scaleModes.NEAREST;
+    PIXI.CONST.scaleModes.DEFAULT = PIXI.CONST.scaleModes.NEAREST;
 
     // add our container to the root
     // app.root.addChild(container);
@@ -80,7 +80,7 @@ common.setup(function (app) {
         num = num || startingNum;
 
         for (var i = 0; i < num; ++i) {
-            var bunny = new PIXI.core.Sprite(texture);
+            var bunny = new PIXI.Sprite(texture);
 
             bunny.speedX = Math.random() * 5;
             bunny.speedY = (Math.random() * 5) - 5;

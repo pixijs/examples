@@ -15,8 +15,8 @@ var common = module.exports = {
     setup: function (cb) {
         domready(function () {
             var app = {
-                renderer: new PIXI.core.autoDetectRenderer(window.innerWidth, window.innerHeight, options),
-                root: new PIXI.core.DisplayObjectContainer(),
+                renderer: new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, options),
+                root: new PIXI.DisplayObjectContainer(),
                 tick: null,
                 animate: null,
                 stats: new Stats()

@@ -1,12 +1,17 @@
 var PIXI    = require('pixi.js'),
     domready = require('domready'),
     Stats   = require('stats-js'),
+    DatGui  = require('dat-gui').GUI,
     apps    = [],
     options = {
         backgroundColor: 0xFFFFFF,
         view: null
     };
 
+// expose apps so we can use it easily in console
+window.apps = apps;
+
+// when dom is ready select the view
 domready(function () {
     options.view = document.getElementById('view');
 });
@@ -14,28 +19,32 @@ domready(function () {
 var common = module.exports = {
     setup: function (cb) {
         domready(function () {
+            // create app object
             var app = {
                 renderer: new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, options),
                 root: new PIXI.DisplayObjectContainer(),
                 tick: null,
                 animate: null,
-                stats: new Stats()
+                stats: new Stats(),
+                gui: new DatGui()
             };
 
+            // style stats and add to document
             app.stats.domElement.style.position = 'absolute';
-            app.stats.domElement.style.top = '0';
+            app.stats.domElement.style.bottom = '0';
             app.stats.domElement.style.right = '0';
 
             document.body.appendChild(app.stats.domElement);
 
+            // bind animate for this app
             app.animate = common.animate.bind(this, app);
 
-            // TODO - Add stats, add datgui
+            // TODO - add datgui
 
+            // track app for resizing
             apps.push(app);
 
-            window.app = app;
-
+            // ready to go!
             cb(app);
         });
     },

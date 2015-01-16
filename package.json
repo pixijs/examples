@@ -25,7 +25,9 @@
     "build": "gulp build"
   },
   "dependencies": {
+    "dat-gui": "^0.5.0",
     "domready": "^1.0.7",
+    "gulp-cached": "^1.0.1",
     "pixi.js": "^3.0.0",
     "stats-js": "^1.0.0-alpha1"
   },

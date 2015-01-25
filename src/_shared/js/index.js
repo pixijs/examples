@@ -26,7 +26,8 @@ var common = module.exports = {
                 tick: null,
                 animate: null,
                 stats: new Stats(),
-                gui: new DatGui()
+                gui: new DatGui(),
+                onResize: null
             };
 
             // style stats and add to document
@@ -71,5 +72,9 @@ window.addEventListener('orientationchange', onResize, false);
 function onResize() {
     for (var i = 0; i < apps.length; ++i) {
         apps[i].renderer.resize(window.innerWidth, window.innerHeight);
+
+        if (apps[i].onResize) {
+            apps[i].onResize();
+        }
     }
 }

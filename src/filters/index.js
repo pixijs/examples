@@ -1,6 +1,13 @@
 var PIXI = require('pixi.js'),
     common = require('../_shared/js');
 
+// TODO (cengler):
+// - Ascii filter flips on Y
+// - Convolution filter looks weird
+// - Displacement filter scrolls offscreen when increasing offset
+// - Noise filter should move like TV noise
+// - SmartBlur and Bloom are too strong...
+
 // register each filter
 var setup = {
     AsciiFilter: function (folder) {
@@ -40,6 +47,31 @@ var setup = {
         var filter = new PIXI.filters.ColorStepFilter();
 
         folder.add(filter, 'step', 1, 100).name('Color Step');
+
+        return filter;
+    },
+    ConvolutionFilter: function (folder) {
+        var kernel = [
+                1, 2, 1,
+                2, 0, 2,
+                1, 2, 1
+            ],
+            filter = new PIXI.filters.ConvolutionFilter(kernel, 256, 256);
+
+        return filter;
+    },
+    CrossHatchFilter: function () {
+        var filter = new PIXI.filters.CrossHatchFilter();
+
+        return filter;
+    },
+    DisplacementFilter: function (folder) {
+        var filter = new PIXI.filters.DisplacementFilter(PIXI.Texture.fromImage('img/displacement_map.jpg'));
+
+        filter.scale.x = filter.scale.y = 75;
+
+        folder.add(filter.scale, 'x', 1, 200).name('Scale Factor (x)');
+        folder.add(filter.scale, 'y', 1, 200).name('Scale Factor (y)');
 
         return filter;
     },
@@ -94,9 +126,10 @@ var setup = {
         folder.add(filter.params, 'y', 0, 10).name('Strength (y)').onChange(resetTime);
         folder.add(filter.params, 'z', 0, 2).name('Strength (z)').onChange(resetTime);
 
-
-
         return filter;
+    },
+    SmartBlurFilter: function () {
+        return new PIXI.filters.SmartBlurFilter();
     }
 };
 
@@ -214,8 +247,8 @@ common.setup(function (app) {
 
         count += 0.1;
 
-        //filterMap.displacementFilter.offset.x = count * 10;
-        //filterMap.displacementFilter.offset.y = count * 10;
+        // filterMap.DisplacementFilter.offset.x = count * 10;
+        // filterMap.DisplacementFilter.offset.y = count * 10;
 
         if (filterMap.ShockwaveFilter.time > 1) {
             filterMap.ShockwaveFilter.time = 0;

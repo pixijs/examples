@@ -1,6 +1,7 @@
 var PIXI    = require('pixi.js'),
     domready = require('domready'),
     Stats   = require('stats-js'),
+    lz      = require('lz-string'),
     DatGui  = require('dat-gui').GUI,
     apps    = [],
     options = {
@@ -26,7 +27,7 @@ var common = module.exports = {
                 tick: null,
                 animate: null,
                 stats: new Stats(),
-                gui: new DatGui(),
+                gui: new DatGui({ load: decodeGuiFromHash() }),
                 onResize: null,
                 deltaTime: 0,
                 lastTime: Date.now()
@@ -38,6 +39,10 @@ var common = module.exports = {
             app.stats.domElement.style.right = '0';
 
             document.body.appendChild(app.stats.domElement);
+
+            // serialize gui when it changes
+            app.gui.domElement.addEventListener('click', saveGuiToHash.bind(null, app.gui));
+            app.gui.domElement.addEventListener('tap', saveGuiToHash.bind(null, app.gui));
 
             // bind animate for this app
             app.animate = common.animate.bind(this, app);
@@ -84,4 +89,19 @@ function onResize() {
             apps[i].onResize();
         }
     }
+}
+
+
+function decodeGuiFromHash() {
+    if (location.hash) {
+        return JSON.parse(lz.decompressFromBase64(location.hash.substr(1)));
+    }
+}
+
+function encodeGuiToHash(gui) {
+    return lz.compressToBase64(JSON.stringify(gui.getSaveObject()));
+}
+
+function saveGuiToHash(gui) {
+    window.location.hash = '#' + encodeGuiToHash(gui);
 }

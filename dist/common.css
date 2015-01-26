@@ -7,3 +7,10 @@
   left: 0;
   z-index: -1;
 }
+.dg.main.a.has-save,
+.dg.main.a.has-save ul {
+  margin: 0;
+}
+.dg.main .save-row {
+  display: none;
+}

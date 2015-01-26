@@ -130,16 +130,12 @@ var setup = {
     ShockwaveFilter: function (folder) {
         var filter = new PIXI.filters.ShockwaveFilter();
 
-        var resetTime = function () {
-            filter.time = 0;
-        };
+        folder.add(filter.center, 'x', 0, 1).name('Center Point (x)');
+        folder.add(filter.center, 'y', 0, 1).name('Center Point (y)');
 
-        folder.add(filter.center, 'x', 0, 1).name('Center Point (x)').onChange(resetTime);
-        folder.add(filter.center, 'y', 0, 1).name('Center Point (y)').onChange(resetTime);
-
-        folder.add(filter.params, 'x', 0, 25).name('Strength (x)').onChange(resetTime);
-        folder.add(filter.params, 'y', 0, 10).name('Strength (y)').onChange(resetTime);
-        folder.add(filter.params, 'z', 0, 2).name('Strength (z)').onChange(resetTime);
+        folder.add(filter.params, 'x', 0, 25).name('Strength (x)');
+        folder.add(filter.params, 'y', 0, 10).name('Strength (y)');
+        folder.add(filter.params, 'z', 0, 2).name('Strength (z)');
 
         return filter;
     },
@@ -196,11 +192,10 @@ common.setup(function (app) {
 
             folder.add(switches, switches.length - 1).name('enable');
 
-            filters.push(
-                setup[filterName](folder)
-            );
+            var filter = setup[filterName](folder);
 
-            filterMap[filterName] = filters[filters.length - 1];
+            filters.push(filter);
+            filterMap[filterName] = filter;
         }
     });
 

@@ -64,6 +64,24 @@ var setup = {
         folder.add(filter, 'noise', 0, 2).name('Amount of Noise');
 
         return filter;
+    },
+    ShockwaveFilter: function (folder) {
+        var filter = new PIXI.filters.ShockwaveFilter();
+
+        var resetTime = function () {
+            filter.time = 0;
+        };
+
+        folder.add(filter.center, 'x', 0, 1).name('Center Point (x)').onChange(resetTime);
+        folder.add(filter.center, 'y', 0, 1).name('Center Point (y)').onChange(resetTime);
+
+        folder.add(filter.params, 'x', 0, 25).name('Strength (x)').onChange(resetTime);
+        folder.add(filter.params, 'y', 0, 10).name('Strength (y)').onChange(resetTime);
+        folder.add(filter.params, 'z', 0, 2).name('Strength (z)').onChange(resetTime);
+
+
+
+        return filter;
     }
 };
 
@@ -71,6 +89,7 @@ var setup = {
 common.setup(function (app) {
     var filterNames = Object.keys(PIXI.filters),
         filters = [],
+        filterMap = {},
         switches = [];
 
     // initialize all the filters!
@@ -85,6 +104,8 @@ common.setup(function (app) {
             filters.push(
                 setup[filterName](folder)
             );
+
+            filterMap[filterName] = filters[filters.length - 1];
         }
     });
 
@@ -144,7 +165,7 @@ common.setup(function (app) {
     var count = 0.0;
 
     // setup the tick method.
-    app.tick = function () {
+    app.tick = function (dt) {
         var filtersToApply = filters.filter(checkFilter);
 
         app.root.filters = filtersToApply.length > 0 ? filtersToApply : null;
@@ -178,8 +199,14 @@ common.setup(function (app) {
 
         count += 0.1;
 
-        // displacementFilter.offset.x = count * 10;
-        // displacementFilter.offset.y = count * 10;
+        //filterMap.displacementFilter.offset.x = count * 10;
+        //filterMap.displacementFilter.offset.y = count * 10;
+
+        if (filterMap.ShockwaveFilter.time > 1) {
+            filterMap.ShockwaveFilter.time = 0;
+        } else {
+            filterMap.ShockwaveFilter.time += dt;
+        }
 
         overlay.tilePosition.x = count * -10;
         overlay.tilePosition.y = count * -10;
@@ -189,6 +216,8 @@ common.setup(function (app) {
         bg.width = app.renderer.width;
         bg.height = app.renderer.height;
     };
+
+    window.filterMap = filterMap;
 
     // kickoff the animation
     app.animate();

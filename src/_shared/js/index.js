@@ -27,7 +27,9 @@ var common = module.exports = {
                 animate: null,
                 stats: new Stats(),
                 gui: new DatGui(),
-                onResize: null
+                onResize: null,
+                deltaTime: 0,
+                lastTime: Date.now()
             };
 
             // style stats and add to document
@@ -52,11 +54,16 @@ var common = module.exports = {
     animate: function (app) {
         app.stats.begin();
 
+        var now = Date.now();
+
         // start timer for next loop
         requestAnimationFrame(app.animate);
 
         if (app.tick) {
-            app.tick();
+            app.tick(app.deltaTime / 1000);
+
+            app.deltaTime = now - app.lastTime;
+            app.lastTime = now;
         }
 
         app.renderer.render(app.root);

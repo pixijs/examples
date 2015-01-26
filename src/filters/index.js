@@ -104,6 +104,18 @@ var setup = {
 
         return filter;
     },
+    /*
+    TODO (cengler) - Need a normal map for the fishies, and setup lighting code for this one.
+
+    NormalMapFilter: function (folder) {
+        var filter = new PIXI.filters.NormalMapFilter(PIXI.Texture.fromImage('...'));
+
+        folder.add(filter.scale, 'x', 0, 64).name('Scale (x)');
+        folder.add(filter.scale, 'y', 0, 64).name('Scale (y)');
+
+        return filter;
+    },
+    */
     PixelateFilter: function (folder) {
         var filter = new PIXI.filters.PixelateFilter();
 

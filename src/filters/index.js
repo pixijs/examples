@@ -10,23 +10,26 @@ var PIXI = require('pixi.js'),
 
 // register each filter
 var setup = {
-    AsciiFilter: function (folder) {
+    AsciiFilter: function (folder, gui) {
         var filter = new PIXI.filters.AsciiFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'size', 1, 25).step(1).name('Letter Size');
 
         return filter;
     },
-    BloomFilter: function (folder) {
+    BloomFilter: function (folder, gui) {
         var filter = new PIXI.filters.BloomFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'blur', 0, 32).name('Blur Factor');
 
         return filter;
     },
-    BlurFilter: function (folder) {
+    BlurFilter: function (folder, gui) {
         var filter = new PIXI.filters.BlurFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'blurX', 0, 32).name('Blur Factor X');
         folder.add(filter, 'blurY', 0, 32).name('Blur Factor Y');
 
@@ -35,71 +38,73 @@ var setup = {
     /*
     TODO (cengler) - How to model the matrix in dat.gui?
 
-    ColorMatrixFilter: function (folder) {
+    ColorMatrixFilter: function (folder, gui) {
         var filter = new PIXI.filters.ColorMatrixFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'step', 1, 100);
 
         return filter;
     },
     */
-    ColorStepFilter: function (folder) {
+    ColorStepFilter: function (folder, gui) {
         var filter = new PIXI.filters.ColorStepFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'step', 1, 100).name('Color Step');
 
         return filter;
     },
     ConvolutionFilter: function () {
-        var kernel = [
+        return new PIXI.filters.ConvolutionFilter([
                 1, 2, 1,
                 2, 0, 2,
                 1, 2, 1
-            ],
-            filter = new PIXI.filters.ConvolutionFilter(kernel, 256, 256);
-
-        return filter;
+            ], 256, 256);
     },
     CrossHatchFilter: function () {
-        var filter = new PIXI.filters.CrossHatchFilter();
-
-        return filter;
+        return new PIXI.filters.CrossHatchFilter();
     },
-    DisplacementFilter: function (folder) {
+    DisplacementFilter: function (folder, gui) {
         var filter = new PIXI.filters.DisplacementFilter(PIXI.Texture.fromImage('img/displacement_map.jpg'));
 
         filter.scale.x = filter.scale.y = 75;
 
+        gui.remember(filter.scale);
         folder.add(filter.scale, 'x', 1, 200).name('Scale Factor (x)');
         folder.add(filter.scale, 'y', 1, 200).name('Scale Factor (y)');
 
         return filter;
     },
-    DotScreenFilter: function (folder) {
+    DotScreenFilter: function (folder, gui) {
         var filter = new PIXI.filters.DotScreenFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'angle', 0, PIXI.math.PI_2).name('Dot Angle');
         folder.add(filter, 'scale', 0, 1).name('Dot Scale');
 
         return filter;
     },
-    GrayFilter: function (folder) {
+    GrayFilter: function (folder, gui) {
         var filter = new PIXI.filters.GrayFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'gray', 0, 1).name('Grayscale');
 
         return filter;
     },
-    InvertFilter: function (folder) {
+    InvertFilter: function (folder, gui) {
         var filter = new PIXI.filters.InvertFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'invert', 0, 1).name('Invert Strength');
 
         return filter;
     },
-    NoiseFilter: function (folder) {
+    NoiseFilter: function (folder, gui) {
         var filter = new PIXI.filters.NoiseFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'noise', 0, 2).name('Amount of Noise');
 
         return filter;
@@ -107,18 +112,20 @@ var setup = {
     /*
     TODO (cengler) - Need a normal map for the fishies, and setup lighting code for this one.
 
-    NormalMapFilter: function (folder) {
+    NormalMapFilter: function (folder, gui) {
         var filter = new PIXI.filters.NormalMapFilter(PIXI.Texture.fromImage('...'));
 
+        gui.remember(filter.scale);
         folder.add(filter.scale, 'x', 0, 64).name('Scale (x)');
         folder.add(filter.scale, 'y', 0, 64).name('Scale (y)');
 
         return filter;
     },
     */
-    PixelateFilter: function (folder) {
+    PixelateFilter: function (folder, gui) {
         var filter = new PIXI.filters.PixelateFilter();
 
+        gui.remember(filter.size);
         folder.add(filter.size, 'x', 0, 32).name('Block Size (x)');
         folder.add(filter.size, 'y', 0, 32).name('Block Size (y)');
 
@@ -127,21 +134,24 @@ var setup = {
     RGBSplitFilter: function () {
         return new PIXI.filters.RGBSplitFilter();
     },
-    ShockwaveFilter: function (folder) {
+    ShockwaveFilter: function (folder, gui) {
         var filter = new PIXI.filters.ShockwaveFilter();
 
+        gui.remember(filter.center);
         folder.add(filter.center, 'x', 0, 1).name('Center Point (x)');
         folder.add(filter.center, 'y', 0, 1).name('Center Point (y)');
 
+        gui.remember(filter.params);
         folder.add(filter.params, 'x', 0, 25).name('Strength (x)');
         folder.add(filter.params, 'y', 0, 10).name('Strength (y)');
         folder.add(filter.params, 'z', 0, 2).name('Strength (z)');
 
         return filter;
     },
-    SepiaFilter: function (folder) {
+    SepiaFilter: function (folder, gui) {
         var filter = new PIXI.filters.SepiaFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'sepia', 0, 1).name('Sepia Factor');
 
         return filter;
@@ -149,9 +159,10 @@ var setup = {
     SmartBlurFilter: function () {
         return new PIXI.filters.SmartBlurFilter();
     },
-    TiltShiftFilter: function (folder) {
+    TiltShiftFilter: function (folder, gui) {
         var filter = new PIXI.filters.TiltShiftFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'blur', 0, 200).name('Blur Factor');
         folder.add(filter, 'gradientBlur', 0, 2000).name('Blur Gradient');
 
@@ -163,12 +174,14 @@ var setup = {
 
         return filter;
     },
-    TwistFilter: function (folder) {
+    TwistFilter: function (folder, gui) {
         var filter = new PIXI.filters.TwistFilter();
 
+        gui.remember(filter);
         folder.add(filter, 'angle', 0, 15).name('Angle');
         folder.add(filter, 'radius', 0, 1).name('Radius');
 
+        gui.remember(filter.offset);
         folder.add(filter.offset, 'x', 0, 1).name('Position (x)');
         folder.add(filter.offset, 'y', 0, 1).name('Position (y)');
 
@@ -183,6 +196,8 @@ common.setup(function (app) {
         filterMap = {},
         switches = [];
 
+    app.gui.remember(switches);
+
     // initialize all the filters!
     filterNames.forEach(function (filterName) {
         if (setup[filterName]) {
@@ -192,7 +207,7 @@ common.setup(function (app) {
 
             folder.add(switches, switches.length - 1).name('enable');
 
-            var filter = setup[filterName](folder);
+            var filter = setup[filterName](folder, app.gui);
 
             filters.push(filter);
             filterMap[filterName] = filter;

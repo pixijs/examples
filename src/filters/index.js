@@ -129,10 +129,32 @@ common.setup(function (app) {
 });
 
 var setup = {
+    AsciiFilter: function (folder) {
+        var filter = new PIXI.filters.AsciiFilter();
+
+        folder.add(filter, 'size', 1, 32).name('size');
+
+        return filter;
+    },
     BloomFilter: function (folder) {
         var filter = new PIXI.filters.BloomFilter();
 
         folder.add(filter, 'blur', 0, 32).name('blur');
+
+        return filter;
+    },
+    BlurFilter: function (folder) {
+        var filter = new PIXI.filters.BlurFilter();
+
+        folder.add(filter, 'blurX', 0, 32).name('blurX');
+        folder.add(filter, 'blurY', 0, 32).name('blurY');
+
+        return filter;
+    },
+    GrayFilter: function (folder) {
+        var filter = new PIXI.filters.GrayFilter();
+
+        folder.add(filter, 'gray', 0, 1).name('gray');
 
         return filter;
     }

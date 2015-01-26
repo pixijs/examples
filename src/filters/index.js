@@ -58,10 +58,25 @@ var setup = {
 
         return filter;
     },
+    InvertFilter: function (folder) {
+        var filter = new PIXI.filters.InvertFilter();
+
+        folder.add(filter, 'invert', 0, 1).name('Invert Strength');
+
+        return filter;
+    },
     NoiseFilter: function (folder) {
         var filter = new PIXI.filters.NoiseFilter();
 
         folder.add(filter, 'noise', 0, 2).name('Amount of Noise');
+
+        return filter;
+    },
+    PixelateFilter: function (folder) {
+        var filter = new PIXI.filters.PixelateFilter();
+
+        folder.add(filter.size, 'x', 0, 32).name('Block Size (x)');
+        folder.add(filter.size, 'y', 0, 32).name('Block Size (y)');
 
         return filter;
     },

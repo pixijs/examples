@@ -50,7 +50,7 @@ var setup = {
 
         return filter;
     },
-    ConvolutionFilter: function (folder) {
+    ConvolutionFilter: function () {
         var kernel = [
                 1, 2, 1,
                 2, 0, 2,
@@ -112,6 +112,9 @@ var setup = {
 
         return filter;
     },
+    RGBSplitFilter: function () {
+        return new PIXI.filters.RGBSplitFilter();
+    },
     ShockwaveFilter: function (folder) {
         var filter = new PIXI.filters.ShockwaveFilter();
 
@@ -128,8 +131,40 @@ var setup = {
 
         return filter;
     },
+    SepiaFilter: function (folder) {
+        var filter = new PIXI.filters.SepiaFilter();
+
+        folder.add(filter, 'sepia', 0, 1).name('Sepia Factor');
+
+        return filter;
+    },
     SmartBlurFilter: function () {
         return new PIXI.filters.SmartBlurFilter();
+    },
+    TiltShiftFilter: function (folder) {
+        var filter = new PIXI.filters.TiltShiftFilter();
+
+        folder.add(filter, 'blur', 0, 200).name('Blur Factor');
+        folder.add(filter, 'gradientBlur', 0, 2000).name('Blur Gradient');
+
+        // folder.add(filter.start, 'x', 0, 32).name('Start (x)');
+        // folder.add(filter.start, 'y', 0, 32).name('Start (y)');
+
+        // folder.add(filter.end, 'x', 0, 32).name('End (x)');
+        // folder.add(filter.end, 'y', 0, 32).name('End (y)');
+
+        return filter;
+    },
+    TwistFilter: function (folder) {
+        var filter = new PIXI.filters.TwistFilter();
+
+        folder.add(filter, 'angle', 0, 15).name('Angle');
+        folder.add(filter, 'radius', 0, 1).name('Radius');
+
+        folder.add(filter.offset, 'x', 0, 1).name('Position (x)');
+        folder.add(filter.offset, 'y', 0, 1).name('Position (y)');
+
+        return filter;
     }
 };
 

@@ -7,6 +7,10 @@ var PIXI = require('pixi.js'),
 // - Displacement filter scrolls offscreen when increasing offset
 // - Noise filter should move like TV noise
 // - SmartBlur and Bloom are too strong...
+//
+// Bugs:
+// - resizing seems broken for some filters
+// - some filter combos produce broken output (dimensions broken?)
 
 // register each filter
 var setup = {

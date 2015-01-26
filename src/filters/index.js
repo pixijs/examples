@@ -1,6 +1,73 @@
 var PIXI = require('pixi.js'),
     common = require('../_shared/js');
 
+// register each filter
+var setup = {
+    AsciiFilter: function (folder) {
+        var filter = new PIXI.filters.AsciiFilter();
+
+        folder.add(filter, 'size', 1, 25).step(1).name('Letter Size');
+
+        return filter;
+    },
+    BloomFilter: function (folder) {
+        var filter = new PIXI.filters.BloomFilter();
+
+        folder.add(filter, 'blur', 0, 32).name('Blur Factor');
+
+        return filter;
+    },
+    BlurFilter: function (folder) {
+        var filter = new PIXI.filters.BlurFilter();
+
+        folder.add(filter, 'blurX', 0, 32).name('Blur Factor X');
+        folder.add(filter, 'blurY', 0, 32).name('Blur Factor Y');
+
+        return filter;
+    },
+    /*
+    TODO (cengler) - How to model the matrix in dat.gui?
+
+    ColorMatrixFilter: function (folder) {
+        var filter = new PIXI.filters.ColorMatrixFilter();
+
+        folder.add(filter, 'step', 1, 100);
+
+        return filter;
+    },
+    */
+    ColorStepFilter: function (folder) {
+        var filter = new PIXI.filters.ColorStepFilter();
+
+        folder.add(filter, 'step', 1, 100).name('Color Step');
+
+        return filter;
+    },
+    DotScreenFilter: function (folder) {
+        var filter = new PIXI.filters.DotScreenFilter();
+
+        folder.add(filter, 'angle', 0, PIXI.math.PI_2).name('Dot Angle');
+        folder.add(filter, 'scale', 0, 1).name('Dot Scale');
+
+        return filter;
+    },
+    GrayFilter: function (folder) {
+        var filter = new PIXI.filters.GrayFilter();
+
+        folder.add(filter, 'gray', 0, 1).name('Grayscale');
+
+        return filter;
+    },
+    NoiseFilter: function (folder) {
+        var filter = new PIXI.filters.NoiseFilter();
+
+        folder.add(filter, 'noise', 0, 2).name('Amount of Noise');
+
+        return filter;
+    }
+};
+
+// Setup and run the example app
 common.setup(function (app) {
     var filterNames = Object.keys(PIXI.filters),
         filters = [],
@@ -67,8 +134,11 @@ common.setup(function (app) {
     }
 
     // create the overlay
-    var overlay = new PIXI.extras.TilingSprite(PIXI.Texture.fromImage('img/zeldaWaves.png'), app.renderer.width, app.renderer.height);
+    var waveTexture = PIXI.Texture.fromImage('img/zeldaWaves.png');
+    var overlay = new PIXI.extras.TilingSprite(waveTexture, app.renderer.width, app.renderer.height);
+
     overlay.alpha = 0.1;
+
     app.root.addChild(overlay);
 
     var count = 0.0;
@@ -127,35 +197,3 @@ common.setup(function (app) {
         return switches[i];
     }
 });
-
-var setup = {
-    AsciiFilter: function (folder) {
-        var filter = new PIXI.filters.AsciiFilter();
-
-        folder.add(filter, 'size', 1, 32).name('size');
-
-        return filter;
-    },
-    BloomFilter: function (folder) {
-        var filter = new PIXI.filters.BloomFilter();
-
-        folder.add(filter, 'blur', 0, 32).name('blur');
-
-        return filter;
-    },
-    BlurFilter: function (folder) {
-        var filter = new PIXI.filters.BlurFilter();
-
-        folder.add(filter, 'blurX', 0, 32).name('blurX');
-        folder.add(filter, 'blurY', 0, 32).name('blurY');
-
-        return filter;
-    },
-    GrayFilter: function (folder) {
-        var filter = new PIXI.filters.GrayFilter();
-
-        folder.add(filter, 'gray', 0, 1).name('gray');
-
-        return filter;
-    }
-};

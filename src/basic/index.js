@@ -3,11 +3,11 @@ var PIXI = require('pixi.js'),
 
 common.setup(function (app) {
         // starting number based on renderer type
-    var startingNum = 100,
+    var startingNum = 10,
         // create a texture from an image path
         texture = PIXI.Texture.fromImage('bunny2.png'),
         // create a sprite batch to contain our sprites
-        container = new PIXI.SpriteBatch(),
+        container = app.root, //new PIXI.ParticleContainer(),
         // get the counter element so we can update the text
         counter = document.getElementById('counter'),
         // tracker for mouse/touch down state
@@ -19,8 +19,7 @@ common.setup(function (app) {
     PIXI.CONST.scaleModes.DEFAULT = PIXI.CONST.scaleModes.NEAREST;
 
     // add our container to the root
-    app.root.addChild(container);
-    // container = app.root;
+    // app.root.addChild(container);
 
     // add the first bunnies!
     createBunnies();

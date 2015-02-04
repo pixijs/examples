@@ -25,7 +25,7 @@ global.paths = {
     src: './src',
     out: './dist',
 
-    get assets  () { return this.src + '/!(_shared)/**/!(*.hbs|*.js|*.less)'; },
+    get assets  () { return this.src + '/!(_shared)/**/!(*.hbs|*.js$|*.less)'; },
     get scripts () { return this.src + '/**/*.js'; },
     get styles  () { return this.src + '/**/*.less'; },
     get hbs     () { return this.src + '/**/*.hbs'; },

@@ -3,19 +3,16 @@ var PIXI = require('pixi.js'),
 
 common.setup(function (app) {
     PIXI.loaders.loader
-        .add('img/sheet.json')
-        .load(function (resources) {
-            var sprite = new PIXI.Sprite(resources[0].textures['sword.png']);
-            var graphics = new PIXI.Graphics();
+        .add('sheet', 'img/sheet.json')
+        .load(function (res) {
+            var sword = new PIXI.Sprite(res.sheet.textures['sword.png']);
+            var banner = new PIXI.Sprite(res.sheet.textures['lore_img1.png']);
 
-            sprite.position.set(128);
+            sword.position.set(128);
+            banner.position.set(128, 64);
 
-            graphics.lineStyle(1, 0xff00ff, 1);
-            graphics.drawRect(0, 0, sprite.width, sprite.height);
-
-            sprite.addChild(graphics);
-
-            app.root.addChild(sprite);
+            app.root.addChild(sword);
+            app.root.addChild(banner);
         });
 
     app.animate();

@@ -40,7 +40,7 @@ requireDir('./gulp/tasks', { recurse: true });
 
 // default task
 gulp.task('default', function (done) {
-    runSeq('build', 'serve', done);
+    runSeq('build', done);
 });
 
 gulp .task('dev', function (done) {

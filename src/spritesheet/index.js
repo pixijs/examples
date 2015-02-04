@@ -4,7 +4,7 @@ var PIXI = require('pixi.js'),
 common.setup(function (app) {
     PIXI.loaders.loader
         .add('sheet', 'img/sheet.json')
-        .load(function (res) {
+        .load(function (loader, res) {
             var sword = new PIXI.Sprite(res.sheet.textures['sword.png']);
             var banner = new PIXI.Sprite(res.sheet.textures['lore_img1.png']);
 

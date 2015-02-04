@@ -22,7 +22,7 @@ var common = module.exports = {
         domready(function () {
             // create app object
             var app = {
-                renderer: new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, options),
+                renderer: PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, options),
                 root: new PIXI.DisplayObjectContainer(),
                 tick: null,
                 animate: null,

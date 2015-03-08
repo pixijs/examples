@@ -1,0 +1,9 @@
+{
+    "basic": [
+        {
+            "section": "basic",
+            "title": "Basic",
+            "entry": "basic.js"
+        }
+    ]
+}

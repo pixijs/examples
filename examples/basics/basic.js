@@ -8,7 +8,7 @@ var renderer = PIXI.autoDetectRenderer(400, 300, { backgroundColor: 0x66FF99 });
 document.getElementById('example').appendChild(renderer.view);
 
 // create a texture from an image path
-var texture = PIXI.Texture.fromImage("bunny.png");
+var texture = PIXI.Texture.fromImage('_assets/bunny.png');
 
 // create a new Sprite using the texture
 var bunny = new PIXI.Sprite(texture);

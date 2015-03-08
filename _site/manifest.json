@@ -1,7 +1,6 @@
 {
-    "basic": [
+    "basics": [
         {
-            "section": "basic",
             "title": "Basic",
             "entry": "basic.js"
         }

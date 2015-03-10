@@ -3,6 +3,10 @@
         {
             "title": "Basic",
             "entry": "basic.js"
+        },
+        {
+            "title": "Spritesheet",
+            "entry": "spritesheet.js"
         }
     ]
 }

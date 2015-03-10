@@ -2,13 +2,13 @@
 var root = new PIXI.Container();
 
 // create a renderer instance
-var renderer = PIXI.autoDetectRenderer(400, 300, { backgroundColor: 0x66FF99 });
+var renderer = PIXI.autoDetectRenderer(800, 600, { backgroundColor: 0x66FF99 });
 
 // add the renderer view element to the DOM
 document.getElementById('example').appendChild(renderer.view);
 
 // create a texture from an image path
-var texture = PIXI.Texture.fromImage('_assets/bunny.png');
+var texture = PIXI.Texture.fromImage('_assets/basics/bunny.png');
 
 // create a new Sprite using the texture
 var bunny = new PIXI.Sprite(texture);

@@ -54,22 +54,41 @@ $(function () {
 
     function loadPixi(url) {
         // get the pixi lib
-        $.getScript(url)
-            .done(function () {
-                loadExample('examples/' + params.s + '/' + params.f);
-            });
+        loadScript(url, 'lib-script', function () {
+            loadExample('examples/' + params.s + '/' + params.f);
+        });
     }
 
     function loadExample(url) {
         // load the example code
-        $.getScript(url)
-            .done(function () {
-                // load the example code
-                $.ajax({ url: url, dataType: 'text' })
-                    .done(function (script) {
-                        console.log(arguments);
-                        document.getElementById('sourcecode').innerHTML = script;
-                    });
+        loadScript(url, 'example-script');
+
+        // load the example code
+        $.ajax({ url: url, dataType: 'text' })
+            .done(function (script) {
+                console.log(arguments);
+                document.getElementById('sourcecode').innerHTML = script;
             });
+    }
+
+    function loadScript(url, id, cb) {
+        var script = document.getElementById(id) || document.createElement('script'),
+            loadHandler = null;
+
+        if (script.parent) {
+            script.remove();
+        }
+
+        script.setAttribute('src', url);
+
+        if (cb) {
+            script.addEventListener('load', loadHandler = function () {
+                script.removeEventListener('load', loadHandler);
+
+                cb();
+            });
+        }
+
+        document.body.appendChild(script);
     }
 });

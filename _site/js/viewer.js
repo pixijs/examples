@@ -1,4 +1,4 @@
-$(function () {
+$(document).ready(function () {
     var baseUrl = location.href.split('?')[0],
         params = location.href.split('?')[1],
         select = document.getElementById('version');
@@ -11,10 +11,14 @@ $(function () {
         return obj;
     }, {});
 
-    document.title = 'pixi.js - ' + params.t;
+    document.title = 'pixi.js - ' + params.title;
+
+    console.log('Loading tags from github ...');
 
     $.getJSON('https://api.github.com/repos/GoodBoyDigital/pixi.js/git/refs/tags')
         .done(function (data) {
+
+            console.log('pixi.js tags fetched from github');
             data = data
                 .filter(function (tag) {
                     return tag.ref.indexOf('refs/tags/v3') === 0;
@@ -23,7 +27,7 @@ $(function () {
                     return tag.ref.replace('refs/tags/', '');
                 });
 
-            for (var i = 0; i < data.length; ++i) {
+            for (var i = 0; i < data.length; i++) {
                 var option = document.createElement('option');
 
                 option.value = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + data[i] + '/bin/pixi.js';
@@ -53,10 +57,16 @@ $(function () {
         });
 
     function loadPixi(url) {
+
+        console.log('loading the pixi source');
         // get the pixi lib
-        loadScript(url, 'lib-script', function () {
+        loadScript(url, 'lib-script',onPixiLoaded);
+
+        function onPixiLoaded() {
+            console.log('pixi loaded from here : ',url);
+
             loadExample('examples/' + params.s + '/' + params.f);
-        });
+        }
     }
 
     function loadExample(url) {
@@ -65,15 +75,39 @@ $(function () {
 
         // load the example code
         $.ajax({ url: url, dataType: 'text' })
-            .done(function (script) {
-                console.log(arguments);
-                document.getElementById('sourcecode').innerHTML = script;
+            .done(function(data){
+
+                exampleCodeLoaded(url,data);
             });
     }
 
+    function exampleCodeLoaded (url,code) {
+
+        //console.log(arguments);
+
+        console.log('js code of the example : '+url+' loaded');
+
+        var textarea = document.getElementById('sourcecode');
+
+        var title = document.querySelector('h1');
+
+        title.innerHTML = params.title;
+
+        textarea.innerHTML = code;
+
+        var editorOptions = {
+            mode: "javascript",
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true
+        };
+
+        var editor = CodeMirror.fromTextArea(textarea,editorOptions);
+    }
+
     function loadScript(url, id, cb) {
-        var script = document.getElementById(id) || document.createElement('script'),
-            loadHandler = null;
+        var script = document.getElementById(id) || document.createElement('script');
+
 
         if (script.parent) {
             script.remove();
@@ -82,11 +116,14 @@ $(function () {
         script.setAttribute('src', url);
 
         if (cb) {
-            script.addEventListener('load', loadHandler = function () {
+
+            script.addEventListener('load',loadHandler);
+
+             function loadHandler() {
                 script.removeEventListener('load', loadHandler);
 
                 cb();
-            });
+            }
         }
 
         document.body.appendChild(script);

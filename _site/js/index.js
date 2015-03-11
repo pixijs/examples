@@ -1,4 +1,4 @@
-$(function () {
+$(document).ready(function () {
     $.getJSON('_site/manifest.json')
         .done(function (data) {
             var examples = document.getElementById('examples');
@@ -17,16 +17,16 @@ $(function () {
                 var files = data[sections[i]];
 
                 for (var j = 0; j < files.length; ++j) {
-                    var ex = document.createElement('li'),
+                    var exLi = document.createElement('li'),
                         exa = document.createElement('a');
 
                     exa.textContent = files[j].title;
-                    exa.href = 'view_full.html?s=' + encodeURIComponent(sections[i]) +
+                    exa.href = 'view.html?s=' + encodeURIComponent(sections[i]) +
                                 '&f=' + files[j].entry +
-                                '&t=' + files[j].title;
+                                '&title=' + files[j].title;
 
-                    ex.appendChild(exa);
-                    ul.appendChild(ex);
+                    exLi.appendChild(exa);
+                    ul.appendChild(exLi);
                 }
 
                 sect.appendChild(ul);

@@ -9,3 +9,17 @@
     width: 800px;
     height: 600px;
 }
+
+#example{
+    width : 100%;
+    margin : 20px auto;
+}
+
+#example canvas{
+    display: block;
+    margin : 0 auto;
+}
+
+h1{
+    text-align: center;
+}

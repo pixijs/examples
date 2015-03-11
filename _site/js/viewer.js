@@ -19,6 +19,9 @@ $(document).ready(function () {
         .done(function (data) {
 
             console.log('pixi.js tags fetched from github');
+
+
+            // filters the tags to only include v3 and above
             data = data
                 .filter(function (tag) {
                     return tag.ref.indexOf('refs/tags/v3') === 0;
@@ -27,6 +30,8 @@ $(document).ready(function () {
                     return tag.ref.replace('refs/tags/', '');
                 });
 
+
+            // populates the dropdrown section with the pixi tags
             for (var i = 0; i < data.length; i++) {
                 var option = document.createElement('option');
 
@@ -36,6 +41,7 @@ $(document).ready(function () {
                 select.appendChild(option);
             }
 
+            //  if a specific version was required
             if (params.v) {
                 for (var i = 0; i < select.options.length; ++i) {
                     if (select.options[i].dataset.version === params.v) {
@@ -53,7 +59,11 @@ $(document).ready(function () {
                 location.href = baseUrl + '?' + $.param(params);
             });
 
+            //https://cdn.rawgit.com/GoodBoyDigital/pixi.js/dev/bin/pixi.js
+            //console.log('select value :',select.value)
             loadPixi(select.value);
+
+
         });
 
     function loadPixi(url) {
@@ -70,7 +80,7 @@ $(document).ready(function () {
     }
 
     function loadExample(url) {
-        // load the example code
+        // load the example code and executes it
         loadScript(url, 'example-script');
 
         // load the example code

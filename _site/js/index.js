@@ -1,7 +1,10 @@
 $(document).ready(function () {
+
+    // generates the links from the json manifest
+
     $.getJSON('_site/manifest.json')
         .done(function (data) {
-            var examples = document.getElementById('examples');
+            var examples = document.getElementById('exampleList');
             var sections = Object.keys(data);
 
             sections.splice(sections.indexOf('basics'), 1);

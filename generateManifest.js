@@ -16,4 +16,10 @@ for (var i = 0; i < folders.length; ++i) {
     );
 }
 
-fs.writeFileSync('./_site/manifest.json', JSON.stringify(manifest, null, 4));
+try{
+    fs.writeFileSync('./_site/manifest.json', JSON.stringify(manifest, null, 4));
+    console.log(' The manifest was successfully generated ');
+}
+catch(e){
+    console.log('error :/ ');
+}

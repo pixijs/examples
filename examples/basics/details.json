@@ -70,9 +70,5 @@
     {
         "title": "Alpha Mask",
         "entry": "alpha-mask.js"
-    },
-    {
-        "title": "Displacement Map",
-        "entry": "displacement-map.js"
     }
 ]

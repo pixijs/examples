@@ -1,0 +1,15 @@
+[
+    {
+        "title": "Filter",
+        "entry": "filter.js"
+    },
+    {
+        "title": "Blur",
+        "entry": "blur-filter.js"
+    },
+    {
+        "title": "Displacement Map",
+        "entry": "displacement-map.js"
+    }
+
+]

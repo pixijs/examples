@@ -9,7 +9,6 @@
     //begin load
     loader.load();
 
-
     // create a new instance of a pixi stage
     var stage = new PIXI.Container();
 
@@ -18,7 +17,6 @@
 
     // create a renderer instance
     var renderer = new PIXI.autoDetectRenderer(rendererWidth, rendererHeight);
-
 
     // add render view to DOM
     document.getElementById('example').appendChild(renderer.view);
@@ -51,8 +49,6 @@
 
 		/* once position and scaled, set the animation to play */
         dragon.state.setAnimationByName(0, "flying", true);
-
-
 
 
         var logo = PIXI.Sprite.fromImage("pixi.png")

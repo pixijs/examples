@@ -71,6 +71,16 @@
         {
             "title": "Alpha Mask",
             "entry": "alpha-mask.js"
+        }
+    ],
+    "filters": [
+        {
+            "title": "Filter",
+            "entry": "filter.js"
+        },
+        {
+            "title": "Blur",
+            "entry": "blur-filter.js"
         },
         {
             "title": "Displacement Map",

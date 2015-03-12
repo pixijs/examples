@@ -13,58 +13,63 @@ $(document).ready(function () {
 
     document.title = 'pixi.js - ' + params.title;
 
-    //console.log('Loading tags from github ...');
+    console.log('Loading tags from github ...');
 
-    // $.getJSON('https://api.github.com/repos/GoodBoyDigital/pixi.js/git/refs/tags')
-    //     .done(function (data) {
+    $.getJSON('https://api.github.com/repos/GoodBoyDigital/pixi.js/git/refs/tags')
+        .done(function (data) {
 
-    //         console.log('pixi.js tags fetched from github');
-
-
-    //         // filters the tags to only include v3 and above
-    //         data = data
-    //             .filter(function (tag) {
-    //                 return tag.ref.indexOf('refs/tags/v3') === 0;
-    //             })
-    //             .map(function (tag) {
-    //                 return tag.ref.replace('refs/tags/', '');
-    //             });
+            console.log('pixi.js tags fetched from github');
 
 
-    //         // populates the dropdrown section with the pixi tags
-    //         for (var i = 0; i < data.length; i++) {
-    //             var option = document.createElement('option');
+            // filters the tags to only include v3 and above
+            data = data
+                .filter(function (tag) {
+                    return tag.ref.indexOf('refs/tags/v3') === 0;
+                })
+                .map(function (tag) {
+                    return tag.ref.replace('refs/tags/', '');
+                });
 
-    //             option.value = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + data[i] + '/bin/pixi.js';
-    //             option.textContent = data[i];
-    //             option.dataset.version = data[i];
-    //             select.appendChild(option);
-    //         }
 
-    //         //  if a specific version was required
-    //         if (params.v) {
-    //             for (var i = 0; i < select.options.length; ++i) {
-    //                 if (select.options[i].dataset.version === params.v) {
-    //                     select.selectedIndex = i;
-    //                     break;
-    //                 }
-    //             }
-    //         } else {
-    //             select.selectedIndex = 1;
-    //         }
+            // populates the dropdrown section with the pixi tags
+            for (var i = 0; i < data.length; i++) {
+                var option = document.createElement('option');
 
-    //         select.addEventListener('change', function () {
-    //             params.v = select.options[select.selectedIndex].dataset.version;
+                option.value = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + data[i] + '/bin/pixi.js';
+                option.textContent = data[i];
+                option.dataset.version = data[i];
+                select.appendChild(option);
+            }
 
-    //             location.href = baseUrl + '?' + $.param(params);
-    //         });
+            //  if a specific version was required
+            if (params.v) {
+                for (var i = 0; i < select.options.length; ++i) {
+                    if (select.options[i].dataset.version === params.v) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            } else {
+                select.selectedIndex = 1;
+            }
 
-    //         //https://cdn.rawgit.com/GoodBoyDigital/pixi.js/dev/bin/pixi.js
-    //         //console.log('select value :',select.value)
-    //         loadPixi(select.value);
-    //     });
+            select.addEventListener('change', function () {
+                params.v = select.options[select.selectedIndex].dataset.version;
 
-    loadPixi("https://cdn.rawgit.com/GoodBoyDigital/pixi.js/alvin/dev/bin/pixi.min.js");
+                location.href = baseUrl + '?' + $.param(params);
+            });
+
+
+        });
+
+    if(params.v){
+        var url = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
+        loadPixi(url);
+    }
+    else{
+        loadPixi('pixi.js');
+    }
+
 
     function loadPixi(url) {
 

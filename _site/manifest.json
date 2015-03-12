@@ -1,12 +1,80 @@
 {
     "basics": [
         {
-            "title": "Basic",
+            "title": "Basics",
             "entry": "basic.js"
         },
         {
-            "title": "Spritesheet",
+            "title": "SpriteSheet",
             "entry": "spritesheet.js"
+        },
+        {
+            "title": "MovieClip",
+            "entry": "movieclip.js"
+        },
+        {
+            "title": "Interactivity",
+            "entry": "interactivity.js"
+        },
+        {
+            "title": "Transparent Background",
+            "entry": "transparent-background.js"
+        },
+        {
+            "title": "Dragging",
+            "entry": "dragging.js"
+        },
+        {
+            "title": "Tiling Texture",
+            "entry": "tiling-sprite.js"
+        },
+        {
+            "title": "Text",
+            "entry": "text.js"
+        },
+        {
+            "title": "RenderTexture",
+            "entry": "render-texture.js"
+        },
+        {
+            "title": "Graphics",
+            "entry": "graphics.js"
+        },
+        {
+            "title": "Masking",
+            "entry": "masking.js"
+        },
+        {
+            "title": "BlendModes",
+            "entry": "blendmodes.js"
+        },
+        {
+            "title": "Tinting",
+            "entry": "tinting.js"
+        },
+        {
+            "title": "Particle Container",
+            "entry": "batch.js"
+        },
+        {
+            "title": "CacheAsBitmap",
+            "entry": "cacheAsBitmap.js"
+        },
+        {
+            "title": "Strip",
+            "entry": "strip.js"
+        },
+        {
+            "title": "Texture Swap",
+            "entry": "texture-swap.js"
+        },
+        {
+            "title": "Alpha Mask",
+            "entry": "alpha-mask.js"
+        },
+        {
+            "title": "Displacement Map",
+            "entry": "displacement-map.js"
         }
     ]
 }

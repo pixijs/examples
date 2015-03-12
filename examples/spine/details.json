@@ -1,0 +1,19 @@
+[
+    {
+        "title": "Dragon",
+        "entry": "dragon.js"
+    },
+    {
+        "title": "Goblin",
+        "entry": "goblins.js"
+    },
+    {
+        "title": "Pixie",
+        "entry": "pixie.js"
+    },
+    {
+        "title": "Walking Animation",
+        "entry": "spineboy.js"
+    }
+
+]

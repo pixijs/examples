@@ -1,7 +1,9 @@
 $(document).ready(function () {
     var baseUrl = location.href.split('?')[0],
         params = location.href.split('?')[1],
-        select = document.getElementById('version');
+        select = document.getElementById('version'),
+        themeSelect = document.getElementById('theme'),
+        editor;
 
     params = params.split('&').reduce(function (obj, val) {
         val = val.split('=');
@@ -19,7 +21,6 @@ $(document).ready(function () {
         .done(function (data) {
 
             console.log('pixi.js tags fetched from github');
-
 
             // filters the tags to only include v3 and above
             data = data
@@ -67,13 +68,14 @@ $(document).ready(function () {
         loadPixi(url);
     }
     else{
+        console.log('Loading local pixi ')
         loadPixi('pixi.js');
     }
 
 
     function loadPixi(url) {
 
-        console.log('loading the pixi source');
+        console.log('loading the pixi source from github');
         // get the pixi lib
         loadScript(url, 'lib-script',onPixiLoaded);
 
@@ -119,7 +121,14 @@ $(document).ready(function () {
             matchBrackets: true
         };
 
-        var editor = CodeMirror.fromTextArea(textarea,editorOptions);
+        editor = CodeMirror.fromTextArea(textarea,editorOptions);
+
+        themeSelect.addEventListener('change',changeTheme,false);
+
+        function changeTheme() {
+            var theme = themeSelect.options[themeSelect.selectedIndex].innerHTML;
+            editor.setOption("theme", theme);
+        }
     }
 
     function loadScript(url, id, cb) {

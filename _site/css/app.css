@@ -1,7 +1,34 @@
-#container{
+body,html{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    line-height: 1;
+}
+
+.containerTop{
+    background-color : #717478;
+}
+.containerBottom{
+    background-color : #e17478;
+}
+
+.centred{
     max-width: 60rem;
     margin : 0 auto;
-    padding : 0;
+}
+
+.liveView{
+    padding: 5px;
+    box-sizing : border-box;
+    min-height: 600px;
+}
+
+footer{
+    box-sizing : border-box;
+    padding-bottom: 10px;
 }
 
 #sourcecode{
@@ -12,7 +39,7 @@
 
 #example{
     width : 100%;
-    margin : 20px auto;
+    margin : 0 auto;
 }
 
 #example canvas{
@@ -20,6 +47,11 @@
     margin : 0 auto;
 }
 
-h1{
+.editor{
+    box-sizing : border-box;
+    padding : 10px;
+}
+
+h1,h2{
     text-align: center;
 }

@@ -1,19 +1,20 @@
 # pixi-examples
 
-Examples for using pixi.js v3
+Repository for the pixi.js v3 examples, available online [here](githubioLink)
 
 ## Running
 
-You will need to have [node][node] and [gulp][gulp] setup on your machine.
+You can either clone the repository and download the zip file directly.
 
-Then you can install dependencies and build:
+## Contributing
+
+Ideally you will need to have [node][node] setup on your machine.
+
+Then you can add a new example and build the manifest file :
 
 ```js
-npm i && npm start
+node generateManifest.js
 ```
-
-That will output the built distributables to `./dist`, and you can view the
-examples at http://localhost:9000.
+Your local copy of the website should then be updated automatically.
 
 [node]:       http://nodejs.org/
-[gulp]:       http://gulpjs.com/

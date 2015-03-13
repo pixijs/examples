@@ -11,7 +11,39 @@
         <title>Pixi.js Examples</title>
 
         <link rel="stylesheet" media="screen" type="text/css" href="_site/css/app.css" />
-        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror.css"/>
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/codemirror.css"/>
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/3024-day.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/3024-night.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/ambiance.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/base16-dark.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/base16-light.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/blackboard.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/cobalt.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/colorforth.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/eclipse.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/elegant.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/erlang-dark.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/lesser-dark.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/mbo.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/mdn-like.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/midnight.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/monokai.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/neat.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/neo.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/night.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/paraiso-dark.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/paraiso-light.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/pastel-on-dark.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/rubyblue.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/solarized.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/the-matrix.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/tomorrow-night-bright.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/tomorrow-night-eighties.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/twilight.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/vibrant-ink.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/xq-dark.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/xq-light.css">
+        <link rel="stylesheet" media="screen" type="text/css" href="_site/css/codemirror/theme/zenburn.css">
         <script src="_site/js/vendor/codemirror/codemirror.js"></script>
         <script src="_site/js/vendor/codemirror/modes/javascript.js"></script>
         <script src="_site/js/vendor/jquery-2.1.3.min.js"></script>
@@ -19,22 +51,80 @@
     </head>
     <body>
 
-        <div id="container">
+        <div class="containerTop">
 
-            <select id="version">
-                <option value="https://cdn.rawgit.com/GoodBoyDigital/pixi.js/dev/bin/pixi.js" data-version="dev">
-                    Latest dev
-                </option>
-            </select>
+            <section class="liveView centred">
 
-            <h1></h1>
+                <select id="version">
+                    <option value="https://cdn.rawgit.com/GoodBoyDigital/pixi.js/dev/bin/pixi.js" data-version="dev">
+                        Latest dev
+                    </option>
+                </select>
 
-            <div id="example"></div>
+                <h1></h1>
 
-            <textarea id="sourcecode"></textarea>
+                <div id="example"></div>
+            </section>
 
         </div>
+        <div class="containerBottom">
+            <section class="editor centred">
+                <p>
+                    Change editor theme :
+                    <select id="theme">
+                        <option selected="">default</option>
+                        <option>3024-day</option>
+                        <option>3024-night</option>
+                        <option>ambiance</option>
+                        <option>base16-dark</option>
+                        <option>base16-light</option>
+                        <option>blackboard</option>
+                        <option>cobalt</option>
+                        <option>colorforth</option>
+                        <option>eclipse</option>
+                        <option>elegant</option>
+                        <option>erlang-dark</option>
+                        <option>lesser-dark</option>
+                        <option>mbo</option>
+                        <option>mdn-like</option>
+                        <option>midnight</option>
+                        <option>monokai</option>
+                        <option>neat</option>
+                        <option>neo</option>
+                        <option>night</option>
+                        <option>paraiso-dark</option>
+                        <option>paraiso-light</option>
+                        <option>pastel-on-dark</option>
+                        <option>rubyblue</option>
+                        <option>solarized dark</option>
+                        <option>solarized light</option>
+                        <option>the-matrix</option>
+                        <option>tomorrow-night-bright</option>
+                        <option>tomorrow-night-eighties</option>
+                        <option>twilight</option>
+                        <option>vibrant-ink</option>
+                        <option>xq-dark</option>
+                        <option>xq-light</option>
+                        <option>zenburn</option>
+                    </select>
+                </p>
+                <textarea id="sourcecode"></textarea>
 
+                <p>
+                    Would you like to create a new example ? Head over to the examples repo on <a href="https://github.com/pixijs/examples">github</a>
+                </p>
+            </section>
+
+            <footer class="centred">
+                <p>
+                    Copyright © 2013-2015 Mat Groves. <a href="http://pixijs.com">pixi.js</a>
+                </p>
+                <p>
+                    Made with ♥ by <a href='http://goodboydigital.com'>Goodboy Digital</a>
+                </p>
+            </footer>
+
+        </div> <!-- end .containerBottom -->
         <!-- Google Analytics Script -->
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

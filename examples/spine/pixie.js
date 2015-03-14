@@ -15,6 +15,8 @@ var postition = 0,
     foreground,
     foreground2;
 
+stage.interactive = true;
+
 function onAssetsLoaded(loader,res)
 {
     background = PIXI.Sprite.fromImage('_assets/spine/iP4_BGtile.jpg');

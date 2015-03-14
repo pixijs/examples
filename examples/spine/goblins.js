@@ -6,7 +6,7 @@ var stage = new PIXI.Container();
 
 // load spine data
 PIXI.loader
-    .add('goblins', "_assets/spine/goblins.json")
+    .add('goblins', '_assets/spine/goblins.json')
     .load(onAssetsLoaded);
 
 stage.interactive = true;
@@ -26,7 +26,7 @@ function onAssetsLoaded(loader, res)
     goblin.scale.set(1.5);
 
     // play animation
-    goblin.state.setAnimationByName(0, "walk", true);
+    goblin.state.setAnimationByName(0, 'walk', true);
 
     stage.addChild(goblin);
 

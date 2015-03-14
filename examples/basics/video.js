@@ -25,7 +25,7 @@ stage.addChild(moveSprite);
 
 count = 0;
 
-var text = new PIXI.Text("DEUS", {fill:"white", font:"bold 444px Arial"});
+var text = new PIXI.Text('DEUS', {fill:'white', font:'bold 444px Arial'});
 //stage.addChild(text);
 
 text.anchor.set(0.5);

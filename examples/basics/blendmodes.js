@@ -5,7 +5,7 @@ document.getElementById('example').appendChild(renderer.view);
 var stage = new PIXI.Container();
 
 // create a new background sprite
-var background = new PIXI.Sprite.fromImage("_assets/BGrotate.jpg");
+var background = new PIXI.Sprite.fromImage('_assets/BGrotate.jpg');
 stage.addChild(background);
 
 // create an array to store a reference to the dudes
@@ -16,7 +16,7 @@ var totaldudes = 20;
 for (var i = 0; i < totaldudes; i++)
 {
     // create a new Sprite that uses the image name that we just generated as its source
-    var dude = PIXI.Sprite.fromImage("_assets/flowerTop.png");
+    var dude = PIXI.Sprite.fromImage('_assets/flowerTop.png');
 
     dude.anchor.set(0.5);
 

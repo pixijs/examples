@@ -11,7 +11,7 @@ PIXI.loader
 
 // holder to store aliens
 var aliens = [];
-var alienFrames = ["eggHead.png", "flowerTop.png", "helmlok.png", "skully.png"];
+var alienFrames = ['eggHead.png', 'flowerTop.png', 'helmlok.png', 'skully.png'];
 
 var count = 0;
 

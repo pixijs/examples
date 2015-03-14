@@ -19,7 +19,7 @@ for (var i = 0; i < 20; i++) {
     points.push(new PIXI.Point(i * length, 0));
 };
 
-var strip = new PIXI.Rope(PIXI.Texture.fromImage("_assets/snake.png"), points);
+var strip = new PIXI.Rope(PIXI.Texture.fromImage('_assets/snake.png'), points);
 
 strip.x = -459;
 

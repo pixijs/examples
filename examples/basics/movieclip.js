@@ -20,7 +20,7 @@ function onAssetsLoaded()
 
     for (var i = 0; i < 26; i++)
     {
-         var texture = PIXI.Texture.fromFrame("Explosion_Sequence_A " + (i+1) + ".png");
+         var texture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i+1) + '.png');
          explosionTextures.push(texture);
     };
 

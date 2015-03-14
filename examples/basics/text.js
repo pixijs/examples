@@ -35,7 +35,7 @@ function init()
 
     function onAssetsLoaded()
     {
-        var bitmapFontText = new PIXI.BitmapText("bitmap fonts are\n now supported!", { font: "35px Desyrel", align: "right" });
+        var bitmapFontText = new PIXI.BitmapText('bitmap fonts are\n now supported!', { font: '35px Desyrel', align: 'right' });
 
         bitmapFontText.position.x = 600 - bitmapFontText.textWidth;
         bitmapFontText.position.y = 20;
@@ -44,15 +44,15 @@ function init()
     }
 
     // add a shiny background...
-    var background = PIXI.Sprite.fromImage("_assets/textDemoBG.jpg");
+    var background = PIXI.Sprite.fromImage('_assets/textDemoBG.jpg');
     stage.addChild(background);
 
     // create some white text using the Snippet webfont
-    var textSample = new PIXI.Text("Pixi.js can has\n multiline text!", { font: "35px Snippet", fill: "white", align: "left" });
+    var textSample = new PIXI.Text('Pixi.js can has\n multiline text!', { font: '35px Snippet', fill: 'white', align: 'left' });
     textSample.position.set(20);
 
     // create a text object with a nice stroke
-    var spinningText = new PIXI.Text("I'm fun!", { font: "bold 60px Arial", fill: "#cc00ff", align: "center", stroke: "#FFFFFF", strokeThickness: 6 });
+    var spinningText = new PIXI.Text('I'm fun!', { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
 
     // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
@@ -60,7 +60,7 @@ function init()
     spinningText.position.y = 200;
 
     // create a text object that will be updated...
-    var countingText = new PIXI.Text("COUNT 4EVAR: 0", { font: "bold italic 60px Arvo", fill: "#3e1707", align: "center", stroke: "#a4410e", strokeThickness: 7 });
+    var countingText = new PIXI.Text('COUNT 4EVAR: 0', { font: 'bold italic 60px Arvo', fill: '#3e1707', align: 'center', stroke: '#a4410e', strokeThickness: 7 });
 
     countingText.position.x = 310;
     countingText.position.y = 320;
@@ -80,7 +80,7 @@ function init()
 
         count += 0.05;
         // update the text with a new string
-        countingText.text = "COUNT 4EVAR: " + Math.floor(count);
+        countingText.text = 'COUNT 4EVAR: ' + Math.floor(count);
 
         // let's spin the spinning text
         spinningText.rotation += 0.03;

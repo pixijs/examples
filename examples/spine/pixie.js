@@ -15,13 +15,13 @@ var background2;
 
 function onAssetsLoaded(loader,res)
 {
-    background = PIXI.Sprite.fromImage("_assets/spine/iP4_BGtile.jpg");
-    background2 = PIXI.Sprite.fromImage("_assets/spine/iP4_BGtile.jpg");
+    background = PIXI.Sprite.fromImage('_assets/spine/iP4_BGtile.jpg');
+    background2 = PIXI.Sprite.fromImage('_assets/spine/iP4_BGtile.jpg');
     stage.addChild(background);
     stage.addChild(background2);
 
-    foreground = PIXI.Sprite.fromImage("_assets/spine/iP4_ground.png");
-    foreground2 = PIXI.Sprite.fromImage("_assets/spine/iP4_ground.png");
+    foreground = PIXI.Sprite.fromImage('_assets/spine/iP4_ground.png');
+    foreground2 = PIXI.Sprite.fromImage('_assets/spine/iP4_ground.png');
     stage.addChild(foreground);
     stage.addChild(foreground2);
     foreground.position.y = foreground2.position.y = 640 - foreground2.height;
@@ -37,18 +37,18 @@ function onAssetsLoaded(loader,res)
 
     stage.addChild(pixie);
 
-    pixie.stateData.setMixByName("running", "jump", 0.2);
-    pixie.stateData.setMixByName("jump", "running", 0.4);
+    pixie.stateData.setMixByName('running', 'jump', 0.2);
+    pixie.stateData.setMixByName('jump', 'running', 0.4);
 
-    pixie.state.setAnimationByName(0, "running", true);
+    pixie.state.setAnimationByName(0, 'running', true);
 
     stage.on('mousedown', onTouchStart);
     stage.on('touchstart', onTouchStart);
 
     function onTouchStart()
     {
-        pixie.state.setAnimationByName(0, "jump", false);
-        pixie.state.addAnimationByName(0, "running", true, 0);
+        pixie.state.setAnimationByName(0, 'jump', false);
+        pixie.state.addAnimationByName(0, 'running', true, 0);
     }
 
     animate();

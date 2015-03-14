@@ -12,7 +12,7 @@ var totalDudes = 20;
 for (var i = 0; i < totalDudes; i++)
 {
     // create a new Sprite that uses the image name that we just generated as its source
-    var dude =  PIXI.Sprite.fromImage("_assets/eggHead.png");
+    var dude =  PIXI.Sprite.fromImage('_assets/eggHead.png');
 
     // set the anchor point so the texture is centerd on the sprite
     dude.anchor.set(0.5);

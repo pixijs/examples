@@ -1,17 +1,15 @@
-var loader = new PIXI.Loader();
+var renderer = PIXI.autoDetectRenderer(800, 600);
+document.getElementById('example').appendChild(renderer.view);
 
-loader.add('_assets/basics/fighter.json').load(onAssetsLoaded);
+// create the root of the scene graph
+var stage = new PIXI.Container();
+
+PIXI.loader
+    .add('_assets/basics/fighter.json')
+    .load(onAssetsLoaded);
 
 var aliens = [],
     count = 0;
-
-// create an new instance of a pixi root
-var root = new PIXI.Container(),
-    // create a renderer instance.
-    renderer = PIXI.autoDetectRenderer(800, 600);
-
-// add the renderer view element to the DOM
-document.getElementById('example').appendChild(renderer.view);
 
 // create an empty container
 var alienContainer = new PIXI.Container();
@@ -19,7 +17,7 @@ var alienContainer = new PIXI.Container();
 alienContainer.position.x = 400;
 alienContainer.position.y = 300;
 
-root.addChild(alienContainer);
+stage.addChild(alienContainer);
 
 function onAssetsLoaded(loader, res)
 {
@@ -45,7 +43,7 @@ function onAssetsLoaded(loader, res)
 
     movie.play();
 
-    root.addChild(movie);
+    stage.addChild(movie);
 
     // start animating
     requestAnimationFrame(animate);
@@ -54,8 +52,8 @@ function onAssetsLoaded(loader, res)
 function animate() {
     movie.rotation += 0.01;
 
-    // render the root container
-    renderer.render(root);
+    // render the stage container
+    renderer.render(stage);
 
     requestAnimationFrame(animate);
 }

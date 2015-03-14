@@ -1,11 +1,8 @@
-// create an new instance of a pixi stage
-var root = new PIXI.Container();
-
-// create a renderer instance
-var renderer = PIXI.autoDetectRenderer(800, 600, { backgroundColor: 0x66FF99 });
-
-// add the renderer view element to the DOM
+var renderer = PIXI.autoDetectRenderer(800, 600);
 document.getElementById('example').appendChild(renderer.view);
+
+// create the root of the scene graph
+var stage = new PIXI.Container();
 
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('_assets/basics/bunny.png');
@@ -21,7 +18,7 @@ bunny.anchor.y = 0.5;
 bunny.position.x = 200;
 bunny.position.y = 150;
 
-root.addChild(bunny);
+stage.addChild(bunny);
 
 // start animating
 requestAnimationFrame(animate);
@@ -32,5 +29,5 @@ function animate() {
     bunny.rotation += 0.1;
 
     // render the container
-    renderer.render(root);
+    renderer.render(stage);
 }

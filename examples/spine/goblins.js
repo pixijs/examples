@@ -1,78 +1,49 @@
+var renderer = PIXI.autoDetectRenderer(800, 600);
+document.getElementById('example').appendChild(renderer.view);
 
-    // create a new loader
-    var loader = new PIXI.Loader();
-    // load spine data
-    loader.add('goblins',"_assets/spine/goblins.json");
-    // use callback
-    loader.once('complete',onAssetsLoaded);
+// create the root of the scene graph
+var stage = new PIXI.Container();
 
-    //begin load
-    loader.load();
+// load spine data
+PIXI.loader
+    .add('goblins', "_assets/spine/goblins.json")
+    .load(onAssetsLoaded);
 
+stage.interactive = true;
 
-    // create a new instance of a pixi stage
-    var stage = new PIXI.Container();
+function onAssetsLoaded(loader, res)
+{
+    var goblin = new PIXI.Spine(res.goblins.spineData);
 
-    stage.interactive = true;
+    // set current skin
+    goblin.skeleton.setSkinByName('goblin');
+    goblin.skeleton.setSlotsToSetupPose();
 
-    // create a renderer instance
-    var renderer = new PIXI.autoDetectRenderer(800, 600);
+    // set the position
+    goblin.position.x = 400;
+    goblin.position.y = 600;
 
-    // add render view to DOM
-    document.getElementById('example').appendChild(renderer.view);
+    goblin.scale.set(1.5);
 
-    function onAssetsLoaded(loader,res)
+    // play animation
+    goblin.state.setAnimationByName(0, "walk", true);
+
+    stage.addChild(goblin);
+
+    stage.on('click', function ()
     {
-        var goblin = new PIXI.Spine(res.goblins.spineData);
-
-        // set current skin
-        goblin.skeleton.setSkinByName('goblin');
+        // change current skin
+        var currentSkinName = goblin.skeleton.skin.name;
+        var newSkinName = (currentSkinName === 'goblin' ? 'goblingirl' : 'goblin');
+        goblin.skeleton.setSkinByName(newSkinName);
         goblin.skeleton.setSlotsToSetupPose();
+    };
+}
 
-        // set the position
-        goblin.position.x = 400;
-        goblin.position.y = 600;
+requestAnimationFrame(animate);
 
-        goblin.scale.set(1.5);
-
-        // play animation
-        goblin.state.setAnimationByName(0, "walk", true);
-
-        stage.addChild(goblin);
-
-        stage.click = function()
-        {
-            // change current skin
-            var currentSkinName = goblin.skeleton.skin.name;
-            var newSkinName = (currentSkinName === 'goblin' ? 'goblingirl' : 'goblin');
-            goblin.skeleton.setSkinByName(newSkinName);
-            goblin.skeleton.setSlotsToSetupPose();
-        };
-
-        var logo = PIXI.Sprite.fromImage("pixi.png")
-        stage.addChild(logo);
-
-        logo.anchor.x = 1;
-        logo.scale.set(0.5);
-
-        logo.position.x = window.innerWidth
-        logo.position.y = window.innerHeight - 70;
-
-        logo.interactive = true;
-        logo.buttonMode = true;
-
-        logo.click = logo.tap = function()
-        {
-            window.open("https://github.com/GoodBoyDigital/pixi.js", "_blank")
-        }
-    }
-
-
-
-    requestAnimationFrame(animate);
-
-    function animate() {
-
-        requestAnimationFrame( animate );
-        renderer.render(stage);
-    }
+function animate()
+{
+    requestAnimationFrame( animate );
+    renderer.render(stage);
+}

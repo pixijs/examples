@@ -1,116 +1,96 @@
+var renderer = PIXI.autoDetectRenderer(800, 600);
+document.getElementById('example').appendChild(renderer.view);
 
-    var renderer = PIXI.autoDetectRenderer(620, 380);
+// create the root of the scene graph
+var stage = new PIXI.Container();
 
-    // create an new instance of a pixi stage
-    var stage = new PIXI.Container();
+stage.interactive = true;
 
-    stage.interactive = true;
+var bg = PIXI.Sprite.fromImage('_assets/BGrotate.jpg');
+bg.anchor.set(0.5);
 
-    var bg = PIXI.Sprite.fromImage("_assets/BGrotate.jpg");
-    bg.anchor.set(0.5);
+bg.position.x = renderer.width / 2;
+bg.position.y = renderer.height / 2;
 
-    bg.position.x = 310;
-    bg.position.y = 190;
+var filter = new PIXI.ColorMatrixFilter();
 
-    var colorMatrix =  [1,0,0,0,
-                        0,1,0,0,
-                        0,0,1,0,
-                        0,0,0,1];
+var container = new PIXI.Container();
+container.position.x = renderer.width / 2;
+container.position.y = renderer.height / 2;
 
-    var filter = new PIXI.ColorMatrixFilter();
+var bgFront = PIXI.Sprite.fromImage('_assets/SceneRotate.jpg');
+bgFront.anchor.set(0.5);
 
-    var container = new PIXI.DisplayObjectContainer();
-    container.position.x = 310;
-    container.position.y = 190;
+container.addChild(bgFront);
 
-    var bgFront = PIXI.Sprite.fromImage("_assets/SceneRotate.jpg");
-    bgFront.anchor.set(0.5);
+var light2 = PIXI.Sprite.fromImage('_assets/LightRotate2.png');
+light2.anchor.set(0.5);
+container.addChild(light2);
 
-    container.addChild(bgFront);
+var light1 = PIXI.Sprite.fromImage('_assets/LightRotate1.png');
+light1.anchor.set(0.5);
+container.addChild(light1);
 
-    var light2 = PIXI.Sprite.fromImage("_assets/LightRotate2.png");
-    light2.anchor.set(0.5);
-    container.addChild(light2);
+var panda =  PIXI.Sprite.fromImage('_assets/panda.png');
+panda.anchor.set(0.5);
 
-    var light1 = PIXI.Sprite.fromImage("_assets/LightRotate1.png");
-    light1.anchor.set(0.5);
-    container.addChild(light1);
+container.addChild(panda);
 
-    var panda =  PIXI.Sprite.fromImage("_assets/panda.png");
-    panda.anchor.set(0.5);
+stage.addChild(container);
 
-    container.addChild(panda);
+stage.filters = [filter];
 
-    stage.addChild(container);
+var count = 0;
+var switchy = false;
 
-    // add render view to DOM
-    document.getElementById('example').appendChild(renderer.view);
+stage.on('click', onClick);
+stage.on('tap', onClick);
 
-    stage.filters = [filter];
+function onClick()
+{
+    switchy = !switchy
 
-    var count = 0;
-    var switchy = false;
-
-    stage.click = stage.tap = function()
+    if (!switchy)
     {
-        switchy = !switchy
-
-        if(!switchy)
-        {
-            stage.filters = [filter];
-        }
-        else
-        {
-            stage.filters = null;
-        }
+        stage.filters = [filter];
     }
-
-    // Add a pixi Logo!
-    var logo = PIXI.Sprite.fromImage("../pixi.png");
-
-    logo.anchor.x = 1;
-    logo.scale.set(0.5);
-
-    logo.position.x = 620;
-    logo.position.y = 320;
-
-    logo.interactive = true;
-    logo.buttonMode = true;
-
-    logo.click = logo.tap = function()
+    else
     {
-        window.open("http://pixijs.com", "_blank");
+        stage.filters = null;
     }
+}
 
-    var help = new PIXI.Text("Click to turn filters on / off.", { font: "bold 12pt Arial", fill: "white" });
-    help.position.y = 350;
-    help.position.x = 10;
-    stage.addChild(help);
+var help = new PIXI.Text('Click to turn filters on / off.', { font: 'bold 12pt Arial', fill: 'white' });
+help.position.y = renderer.height - 25;
+help.position.x = 10;
 
+stage.addChild(help);
+
+requestAnimationFrame(animate);
+
+function animate() {
+    bg.rotation += 0.01;
+    bgFront.rotation -= 0.01;
+
+    light1.rotation += 0.02;
+    light2.rotation += 0.01;
+
+    panda.scale.x = 1 + Math.sin(count) * 0.04;
+    panda.scale.y = 1 + Math.cos(count) * 0.04;
+
+    count += 0.1;
+
+    var matrix = filter.matrix;
+
+    matrix[1] = Math.sin(count) * 3;
+    matrix[2] = Math.cos(count);
+    matrix[3] = Math.cos(count) * 1.5;
+    matrix[4] = Math.sin(count / 3) * 2;
+    matrix[5] = Math.sin(count / 2);
+    matrix[6] = Math.sin(count / 4);
+
+    renderer.render(stage);
     requestAnimationFrame(animate);
-
-    function animate() {
-        bg.rotation += 0.01;
-        bgFront.rotation -= 0.01;
-
-        light1.rotation += 0.02;
-        light2.rotation += 0.01;
-
-        panda.scale.x = 1 + Math.sin(count) * 0.04;
-        panda.scale.y = 1 + Math.cos(count) * 0.04;
-
-        count += 0.1;
-
-        // colorMatrix[1] = Math.sin(count) * 3;
-        // colorMatrix[2] = Math.cos(count);
-        // colorMatrix[3] = Math.cos(count) * 1.5;
-        // colorMatrix[4] = Math.sin(count / 3) * 2;
-        // colorMatrix[5] = Math.sin(count / 2);
-        // colorMatrix[6] = Math.sin(count / 4);
-        // filter.matrix = colorMatrix;
-
-        renderer.render(stage);
-        requestAnimationFrame(animate);
-    }
+}
 
 

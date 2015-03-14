@@ -1,11 +1,12 @@
 $(document).ready(function () {
     var baseUrl = location.href.split('?')[0],
-        params = location.href.split('?')[1],
+        params = location.search.substr(1).split('&'),
         select = document.getElementById('version'),
         themeSelect = document.getElementById('theme'),
         editor;
 
-    params = params.split('&').reduce(function (obj, val) {
+    // convert params to object
+    params = params.reduce(function (obj, val) {
         val = val.split('=');
 
         obj[val[0]] = decodeURIComponent(val[1]);
@@ -15,13 +16,9 @@ $(document).ready(function () {
 
     document.title = 'pixi.js - ' + params.title;
 
-    console.log('Loading tags from github ...');
-
     $.getJSON('https://api.github.com/repos/GoodBoyDigital/pixi.js/git/refs/tags')
-        .done(function (data) {
-
-            console.log('pixi.js tags fetched from github');
-
+        .done(function (data)
+        {
             // filters the tags to only include v3 and above
             data = data
                 .filter(function (tag) {
@@ -63,49 +60,41 @@ $(document).ready(function () {
 
         });
 
-    if(params.v){
+    if (params.v) {
         var url = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
         loadPixi(url);
     }
     else{
-        console.log('Loading local pixi ')
-        loadPixi('pixi.js');
+        loadPixi('_site/js/pixi.js');
     }
 
 
-    function loadPixi(url) {
-
-        console.log('loading the pixi source from github');
+    function loadPixi(url)
+    {
         // get the pixi lib
         loadScript(url, 'lib-script',onPixiLoaded);
 
-        function onPixiLoaded() {
-            console.log('pixi loaded from here : ',url);
-
+        function onPixiLoaded()
+        {
             loadExample('examples/' + params.s + '/' + params.f);
         }
     }
 
-    function loadExample(url) {
+    function loadExample(url)
+    {
         // load the example code and executes it
-        //
-        console.log('loading : '+url)
         loadScript(url, 'example-script');
 
         // load the example code
         $.ajax({ url: url, dataType: 'text' })
-            .done(function(data){
-
-                exampleCodeLoaded(url,data);
+            .done(function (data)
+            {
+                exampleCodeLoaded(url, data);
             });
     }
 
-    function exampleCodeLoaded (url,code) {
-
-        //console.log(arguments);
-
-        console.log('js code of the example : '+url+' loaded');
-
+    function exampleCodeLoaded (url, code)
+    {
         var textarea = document.getElementById('sourcecode');
 
         var title = document.querySelector('h1');
@@ -115,7 +104,7 @@ $(document).ready(function () {
         textarea.innerHTML = code;
 
         var editorOptions = {
-            mode: "javascript",
+            mode: 'javascript',
             lineNumbers: true,
             styleActiveLine: true,
             matchBrackets: true
@@ -125,15 +114,15 @@ $(document).ready(function () {
 
         themeSelect.addEventListener('change',changeTheme,false);
 
-        function changeTheme() {
+        function changeTheme()
+        {
             var theme = themeSelect.options[themeSelect.selectedIndex].innerHTML;
-            editor.setOption("theme", theme);
+            editor.setOption('theme', theme);
         }
     }
 
     function loadScript(url, id, cb) {
         var script = document.getElementById(id) || document.createElement('script');
-
 
         if (script.parent) {
             script.remove();
@@ -141,11 +130,12 @@ $(document).ready(function () {
 
         script.setAttribute('src', url);
 
-        if (cb) {
-
+        if (cb)
+        {
             script.addEventListener('load',loadHandler);
 
-             function loadHandler() {
+             function loadHandler()
+             {
                 script.removeEventListener('load', loadHandler);
 
                 cb();

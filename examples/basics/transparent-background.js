@@ -1,19 +1,11 @@
-
-// create an new instance of a pixi stage
-var stage = new PIXI.Container();
-
-// create a renderer instance
-var renderer = PIXI.autoDetectRenderer(400, 300, {transparent:true});
-
-// add the renderer view element to the DOM
+var renderer = PIXI.autoDetectRenderer(800, 600, { transparent: true });
 document.getElementById('example').appendChild(renderer.view);
 
+// create the root of the scene graph
+var stage = new PIXI.Container();
 
-// create a texture from an image path
-var texture = PIXI.Texture.fromImage('_assets/bunny.png');
-
-// create a new Sprite using the texture
-var bunny = new PIXI.Sprite(texture);
+// create a new Sprite from an image path.
+var bunny = PIXI.Sprite.fromImage('_assets/bunny.png');
 
 // center the sprite's anchor point
 bunny.anchor.set(0.5);

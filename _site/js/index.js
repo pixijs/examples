@@ -28,6 +28,13 @@ $(document).ready(function () {
                                 '&f=' + files[j].entry +
                                 '&title=' + files[j].title;
 
+                    // add version flag if there is a param for version on this page
+                    location.search.substr(1).split('&').forEach(function (param) {
+                        if (param.indexOf('v=') === 0) {
+                            exa.href = exa.href + '&' + param;
+                        }
+                    });
+
                     exLi.appendChild(exa);
                     ul.appendChild(exLi);
                 }

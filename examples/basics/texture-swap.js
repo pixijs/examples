@@ -1,62 +1,54 @@
-
-// create an new instance of a pixi stage
-var stage = new PIXI.Container();
-
-// create a renderer instance
-var renderer = PIXI.autoDetectRenderer(400, 300,{backgroundColor : 0x66FF99});
-
-// add the renderer view element to the DOM
+var renderer = PIXI.autoDetectRenderer(800, 600);
 document.getElementById('example').appendChild(renderer.view);
+
+// create the root of the scene graph
+var stage = new PIXI.Container();
 
 var bol = false;
 
 // create a texture from an image path
-var texture = PIXI.Texture.fromImage("_assets/flowerTop.png");
-texture.baseTexture.on("loaded", function(){
-
-    console.log("texture loaded !")
-
-});
+var texture = PIXI.Texture.fromImage('_assets/flowerTop.png');
 
 // create a second texture
-var secondTexture = PIXI.Texture.fromImage("_assets/eggHead.png");
+var secondTexture = PIXI.Texture.fromImage('_assets/eggHead.png');
 
 // create a new Sprite using the texture
-var bunny = new PIXI.Sprite(texture);
+var dude = new PIXI.Sprite(texture);
 
 // center the sprites anchor point
-bunny.anchor.set(0.5);
+dude.anchor.set(0.5);
 
 // move the sprite to the center of the screen
-bunny.position.x = 200;
-bunny.position.y = 150;
+dude.position.x = renderer.width / 2;
+dude.position.y = renderer.height / 2;
 
-stage.addChild(bunny);
+stage.addChild(dude);
 
 // make the sprite interactive
-bunny.interactive = true;
+dude.interactive = true;
 
-    bunny.click = function()
+dude.on('click', function ()
+{
+    bol = !bol;
+
+    if(bol)
     {
-        bol = !bol;
-
-        if(bol)
-        {
-            bunny.texture = secondTexture;
-        }
-        else{
-            bunny.texture = texture;
-        }
+        dude.texture = secondTexture;
     }
+    else
+    {
+        dude.texture = texture;
+    }
+});
 
+animate();
+
+function animate() {
     requestAnimationFrame(animate);
 
-    function animate() {
-        requestAnimationFrame(animate);
+    // just for fun, let's rotate mr rabbit a little
+    dude.rotation += 0.1;
 
-        // just for fun, let's rotate mr rabbit a little
-        bunny.rotation += 0.1;
-
-        // render the stage
-        renderer.render(stage);
-    }
+    // render the stage
+    renderer.render(stage);
+}

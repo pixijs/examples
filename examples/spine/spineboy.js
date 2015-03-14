@@ -35,7 +35,7 @@ function onAssetsLoaded(loader, res)
     {
         spineBoy.state.setAnimationByName(0, 'jump', false);
         spineBoy.state.addAnimationByName(0, 'walk', true, 0);
-    }
+    });
 }
 
 requestAnimationFrame(animate);

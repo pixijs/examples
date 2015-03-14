@@ -7,8 +7,6 @@ var stage = new PIXI.Container();
 var sprites = new PIXI.ParticleContainer(10000, [true, true, true, true, true]);
 stage.addChild(sprites);
 
-var tints = [0xFFFFFF, 0xFFFBEE, 0xFFEEEE, 0xFADEED, 0xE8D4CD];
-
 // create an array to store all the sprites
 var maggots = [];
 
@@ -67,7 +65,7 @@ function animate() {
     for (var i = 0; i < maggots.length; i++)
     {
         var dude = maggots[i];
-        dude.scale.y = 0.95 + Math.sin(tick + dude.offset) * 0.05
+        dude.scale.y = 0.95 + Math.sin(tick + dude.offset) * 0.05;
         dude.direction += dude.turningSpeed * 0.01;
         dude.position.x += Math.sin(dude.direction) * (dude.speed * dude.scale.y);
         dude.position.y += Math.cos(dude.direction) * (dude.speed * dude.scale.y);
@@ -75,14 +73,22 @@ function animate() {
 
         // wrap the maggots
         if (dude.position.x < dudeBounds.x)
+        {
             dude.position.x += dudeBounds.width;
+        }
         else if (dude.position.x > dudeBounds.x + dudeBounds.width)
+        {
             dude.position.x -= dudeBounds.width;
+        }
 
         if (dude.position.y < dudeBounds.y)
+        {
             dude.position.y += dudeBounds.height;
+        }
         else if (dude.position.y > dudeBounds.y + dudeBounds.height)
+        {
             dude.position.y -= dudeBounds.height;
+        }
     }
 
     // increment the ticker

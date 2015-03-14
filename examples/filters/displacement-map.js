@@ -10,7 +10,7 @@ var container = new PIXI.Container();
 stage.addChild(container);
 
 var padding = 100;
-var bounds = new PIXI.Rectangle(-padding, -padding, renderer.width + padding * 2, renderer.height + padding * 2)
+var bounds = new PIXI.Rectangle(-padding, -padding, renderer.width + padding * 2, renderer.height + padding * 2);
 var maggots = [];
 
 for (var i = 0; i < 20; i++)
@@ -30,7 +30,7 @@ for (var i = 0; i < 20; i++)
     maggot.original = maggot.scale.clone();
     maggots.push(maggot);
 
-};
+}
 
 var displacementSprite = PIXI.Sprite.fromImage('_assets/displace.png');
 var displacementFilter = new PIXI.DisplacementFilter(displacementSprite);
@@ -100,7 +100,7 @@ function animate()
         }
         else if (maggot.position.x > bounds.x + bounds.width)
         {
-            maggot.position.x -= bounds.width
+            maggot.position.x -= bounds.width;
         }
 
         if (maggot.position.y < bounds.y)
@@ -109,7 +109,7 @@ function animate()
         }
         else if (maggot.position.y > bounds.y + bounds.height)
         {
-            maggot.position.y -= bounds.height
+            maggot.position.y -= bounds.height;
         }
     }
 

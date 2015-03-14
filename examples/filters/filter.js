@@ -48,7 +48,7 @@ stage.on('tap', onClick);
 
 function onClick()
 {
-    switchy = !switchy
+    switchy = !switchy;
 
     if (!switchy)
     {

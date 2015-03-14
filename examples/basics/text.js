@@ -5,7 +5,7 @@ document.getElementById('example').appendChild(renderer.view);
 var stage = new PIXI.Container();
 
 // // Load them google fonts before starting...!
-WebFontConfig = {
+window.WebFontConfig = {
     google: {
         families: ['Snippet', 'Arvo:700italic', 'Podkova:700']
     },
@@ -17,6 +17,7 @@ WebFontConfig = {
 };
 
 // include the web-font loader script
+/* jshint ignore:start */
 (function() {
     var wf = document.createElement('script');
     wf.src = ('https:' === document.location.protocol ? 'https' : 'http') +
@@ -26,6 +27,7 @@ WebFontConfig = {
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(wf, s);
 })();
+/* jshint ignore:end */
 
 function init()
 {
@@ -52,7 +54,7 @@ function init()
     textSample.position.set(20);
 
     // create a text object with a nice stroke
-    var spinningText = new PIXI.Text('I'm fun!', { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
+    var spinningText = new PIXI.Text('I\'m fun!', { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
 
     // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);

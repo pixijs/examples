@@ -23,8 +23,6 @@ moveSprite.position.y = renderer.height / 2;
 
 stage.addChild(moveSprite);
 
-count = 0;
-
 var text = new PIXI.Text('DEUS', {fill:'white', font:'bold 444px Arial'});
 //stage.addChild(text);
 

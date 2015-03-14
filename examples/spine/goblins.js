@@ -37,7 +37,7 @@ function onAssetsLoaded(loader, res)
         var newSkinName = (currentSkinName === 'goblin' ? 'goblingirl' : 'goblin');
         goblin.skeleton.setSkinByName(newSkinName);
         goblin.skeleton.setSlotsToSetupPose();
-    };
+    });
 }
 
 requestAnimationFrame(animate);

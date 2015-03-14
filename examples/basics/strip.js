@@ -6,18 +6,15 @@ var stage = new PIXI.Container();
 
 var count = 0;
 
-var target = new PIXI.Point();
-
 // build a rope!
-var length = 918 / 20;
+var ropeLength = 918 / 20;
 
 var points = [];
 
-for (var i = 0; i < 20; i++) {
-
-    var segSize = length;
-    points.push(new PIXI.Point(i * length, 0));
-};
+for (var i = 0; i < 20; i++)
+{
+    points.push(new PIXI.Point(i * ropeLength, 0));
+}
 
 var strip = new PIXI.Rope(PIXI.Texture.fromImage('_assets/snake.png'), points);
 
@@ -27,7 +24,7 @@ var snakeContainer = new PIXI.DisplayObjectContainer();
 snakeContainer.position.x = 400;
 snakeContainer.position.y = 300;
 
-snakeContainer.scale.set(800 / 1100)
+snakeContainer.scale.set(800 / 1100);
 stage.addChild(snakeContainer);
 
 snakeContainer.addChild(strip);
@@ -39,16 +36,14 @@ function animate() {
 
     count += 0.1;
 
-    var length = 918 / 20;
-
     // make the snake
     for (var i = 0; i < points.length; i++) {
 
-        points[i].y = Math.sin(i *0.5  + count) * 30;
+        points[i].y = Math.sin((i * 0.5) + count) * 30;
 
-        points[i].x = i * length + Math.cos(i *0.3  + count) * 20;
+        points[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * 20;
 
-    };
+    }
 
     // render the stage
     renderer.render(stage);

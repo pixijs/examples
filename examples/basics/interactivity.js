@@ -27,6 +27,8 @@ var buttonPositions = [
     685, 445
 ];
 
+var noop = function () {};
+
 for (var i = 0; i < 5; i++)
 {
     var button = new PIXI.Sprite(textureButton);
@@ -59,15 +61,15 @@ for (var i = 0; i < 5; i++)
 
 
         // you can also listen to click and tap events :
-        .on('click', function() { console.log('CLICK!'); })
-        .on('tap', function() { console.log('TAP!'); });
+        .on('click', noop)
+        .on('tap', noop);
 
     // add it to the stage
     stage.addChild(button);
 
     // add button to array
     buttons.push(button);
-};
+}
 
 // set some silly values...
 buttons[0].scale.set(1.2);
@@ -89,14 +91,14 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-function onButtonDown(event)
+function onButtonDown()
 {
     this.isdown = true;
     this.texture = textureButtonDown;
     this.alpha = 1;
 }
 
-function onButtonUp(event)
+function onButtonUp()
 {
     this.isdown = false;
 
@@ -110,22 +112,26 @@ function onButtonUp(event)
     }
 }
 
-function onButtonOver(event)
+function onButtonOver()
 {
     this.isOver = true;
 
     if (this.isdown)
+    {
         return;
+    }
 
     this.texture = textureButtonOver;
 }
 
-function onButtonOut(event)
+function onButtonOut()
 {
     this.isOver = false;
 
     if (this.isdown)
+    {
         return;
+    }
 
     this.texture = textureButton;
-};
+}

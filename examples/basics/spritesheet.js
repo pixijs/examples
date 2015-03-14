@@ -8,18 +8,9 @@ PIXI.loader
     .add('_assets/basics/fighter.json')
     .load(onAssetsLoaded);
 
-var aliens = [],
-    count = 0;
+var movie;
 
-// create an empty container
-var alienContainer = new PIXI.Container();
-
-alienContainer.position.x = 400;
-alienContainer.position.y = 300;
-
-stage.addChild(alienContainer);
-
-function onAssetsLoaded(loader, res)
+function onAssetsLoaded()
 {
     // create a texture from an image path
     // add a bunch of aliens
@@ -30,7 +21,7 @@ function onAssetsLoaded(loader, res)
 
         // magically works since the spritesheet was loaded with the pixi loader
         frames.push(PIXI.Texture.fromFrame('rollSequence00' + val + '.png'));
-    };
+    }
 
     movie = new PIXI.MovieClip(frames);
 
@@ -45,8 +36,7 @@ function onAssetsLoaded(loader, res)
 
     stage.addChild(movie);
 
-    // start animating
-    requestAnimationFrame(animate);
+    animate();
 }
 
 function animate() {

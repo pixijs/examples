@@ -8,23 +8,19 @@ PIXI.loader
     .add('spritesheet', '_assets/mc.json')
     .load(onAssetsLoaded);
 
-// holder to store the explosions
-var explosions = [];
-
-var count = 0;
-
 function onAssetsLoaded()
 {
     // create an array to store the textures
-    var explosionTextures = [];
+    var explosionTextures = [],
+        i;
 
-    for (var i = 0; i < 26; i++)
+    for (i = 0; i < 26; i++)
     {
          var texture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i+1) + '.png');
          explosionTextures.push(texture);
-    };
+    }
 
-    for (var i = 0; i < 50; i++)
+    for (i = 0; i < 50; i++)
     {
         // create an explosion MovieClip
         var explosion = new PIXI.MovieClip(explosionTextures);

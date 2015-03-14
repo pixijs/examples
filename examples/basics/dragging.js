@@ -9,7 +9,7 @@ var texture = PIXI.Texture.fromImage('_assets/bunny.png');
 
 for (var i = 0; i < 10; i++)
 {
-    createBunny(Math.floor(Math.random() * 800) , Math.floor(Math.random() * 600))
+    createBunny(Math.floor(Math.random() * 800) , Math.floor(Math.random() * 600));
 }
 
 function createBunny(x, y)
@@ -71,16 +71,17 @@ function onDragStart(event)
     this.dragging = true;
 }
 
-function onDragEnd(event)
+function onDragEnd()
 {
     this.alpha = 1;
 
     this.dragging = false;
+
     // set the interaction data to null
     this.data = null;
 }
 
-function onDragMove(event)
+function onDragMove()
 {
     if (this.dragging)
     {

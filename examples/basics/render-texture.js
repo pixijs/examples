@@ -54,7 +54,7 @@ for (var i = 0; i < 20; i++)
     stuffContainer.addChild(item);
 
     items.push(item);
-};
+}
 
 // used for spinning!
 var count = 0;
@@ -70,7 +70,7 @@ function animate()
         // rotate each item
         var item = items[i];
         item.rotation += 0.1;
-    };
+    }
 
     count += 0.01;
 

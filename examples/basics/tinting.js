@@ -66,14 +66,22 @@ function animate() {
 
         // wrap the dudes by testing their bounds...
         if (dude.position.x < dudeBounds.x)
+        {
             dude.position.x += dudeBounds.width;
+        }
         else if (dude.position.x > dudeBounds.x + dudeBounds.width)
+        {
             dude.position.x -= dudeBounds.width;
+        }
 
         if (dude.position.y < dudeBounds.y)
+        {
             dude.position.y += dudeBounds.height;
+        }
         else if (dude.position.y > dudeBounds.y + dudeBounds.height)
+        {
             dude.position.y -= dudeBounds.height;
+        }
     }
 
     // increment the ticker

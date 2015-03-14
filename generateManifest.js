@@ -10,7 +10,7 @@ var folders = fs.readdirSync('./examples');
 for (var i = 0; i < folders.length; ++i) {
     manifest[folders[i]] = JSON.parse(
         fs.readFileSync(
-            path.join('examples', folders[i], 'details.json'),
+            path.join('examples', folders[i], '_details.json'),
             'utf8'
         )
     );

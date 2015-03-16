@@ -31,6 +31,8 @@ footer{
     padding-bottom: 10px;
 }
 
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
 #sourcecode{
     margin : 16px auto 16px auto;
     width: 800px;
@@ -43,7 +45,93 @@ footer{
 }
 
 nav{
-    display : none;
+    float : left;
+    width : 4rem;
+    height : 2rem;
+    overflow: hidden;
+    background-color: black;
+    color : white;
+}
+
+nav li a {
+    color : white;
+    text-decoration: none;
+}
+
+nav li a:hover{
+    color : purple;
+}
+
+nav ul{
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+nav #hamburger{
+    font-size: 1.4rem;
+    margin : 2px;
+    text-align: center;
+}
+
+/*nav:hover{
+    animation : scaleNicely 0.5s ease-in;
+}
+
+@keyframes scaleNicely{
+    from{
+        width : 100px;
+    }
+
+    to{
+        width : 200px;
+        height : 150px;
+    }
+}*/
+
+@-webkit-keyframes scaleNicely {
+  0%{ width : 4rem;
+         height : 2rem;
+     }
+  40%  {width : 12rem ; height : 2rem;}
+  100% {width : 12rem; height : 50rem;}
+}
+@-moz-keyframes scaleNicely {
+  0%{ width : 4rem;
+         height : 2rem;
+     }
+  40%  {width : 12rem ; height : 2rem;}
+  100% {width : 12rem; height : 50rem;}
+}
+@keyframes scaleNicely {
+  0%{ width : 4rem;
+         height : 2rem;
+     }
+  40%  {width : 12rem ; height : 2rem;}
+  100% {width : 12rem; height : 50rem;}
+}
+
+nav:hover {
+
+  -webkit-animation: scaleNicely 0.8s forwards; /* Safari 4+ */
+  -moz-animation:    scaleNicely 0.8s forwards; /* Fx 5+ */
+  animation:         scaleNicely 0.8s forwards; /* IE 10+, Fx 29+ */
+  color : purple;
+}
+
+
+nav li{
+    line-height : 21px;
+    list-style: none;
+}
+
+nav li span{
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Open Sans';
+    border-bottom: 1px solid white;
+    display: block;
+    margin: 6px 0;
 }
 
 #example canvas{

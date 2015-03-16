@@ -27,7 +27,9 @@ var buttonPositions = [
     685, 445
 ];
 
-var noop = function () {};
+var noop = function () {
+	console.log('click');
+};
 
 for (var i = 0; i < 5; i++)
 {
@@ -41,6 +43,8 @@ for (var i = 0; i < 5; i++)
 
     // make the button interactive...
     button.interactive = true;
+	
+	
 
     button
         // set the mousedown and touchstart callback...
@@ -61,9 +65,10 @@ for (var i = 0; i < 5; i++)
 
 
         // you can also listen to click and tap events :
-        .on('click', noop)
-        .on('tap', noop);
-
+        //.on('click', noop)
+        
+	button.tap = noop;
+	button.click = noop;
     // add it to the stage
     stage.addChild(button);
 

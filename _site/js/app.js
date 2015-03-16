@@ -16,7 +16,11 @@ var App = {
             for (var i = 0; i < sections.length; ++i) {
                 var sect = document.createElement('li');
 
-                sect.textContent = sections[i];
+                var sectionTitle = document.createElement('span');
+
+                sectionTitle.innerHTML = sections[i];
+
+                sect.appendChild(sectionTitle);
 
                 var ul = document.createElement('ul');
                 var files = data[sections[i]];

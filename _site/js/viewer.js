@@ -19,6 +19,9 @@ $(document).ready(function () {
 
     App.loadGithubTags('version',onTagsLoaded);
 
+    var nav = document.getElementById('navList');
+    App.loadManifest(nav);
+
     if (params.v) {
         var url = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
         App.loadPixi(url);

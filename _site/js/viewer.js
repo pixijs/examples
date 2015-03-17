@@ -17,7 +17,7 @@ $(document).ready(function () {
     document.title = 'pixi.js - ' + params.title;
 
 
-    App.loadGithubTags('version',onTagsLoaded);
+    //App.loadGithubTags('version',onTagsLoaded);
 
     var nav = document.getElementById('navList');
     App.loadManifest(nav);
@@ -91,6 +91,54 @@ $(document).ready(function () {
             var theme = themeSelect.options[themeSelect.selectedIndex].innerHTML;
             editor.setOption('theme', theme);
         }
+    }
+
+    window.addEventListener('resize',resizeCanvas,false);
+
+    var hamb = document.getElementById('hamburger');
+
+    hamb.addEventListener('mousedown',toggleNav,false);
+
+    hamb.addEventListener('touchstart',toggleNav,false);
+
+    var nav = document.querySelector('nav');
+
+    var bol = true;
+
+    function toggleNav () {
+
+        bol = !bol;
+
+        if(bol)
+        {
+            nav.className = 'show';
+        }
+        else{
+            nav.className = 'hidden';
+        }
+
+        console.log(nav.className)
+    }
+
+    function resizeCanvas () {
+
+        var canvas = document.querySelector('canvas');
+
+        var ratio = canvas.width/canvas.height;
+
+        ratio = window.innerWidth/(canvas.width) < window.innerHeight/(canvas.height) ? window.innerWidth/(canvas.width) : window.innerHeight/(canvas.height);
+
+        var w2 = Math.min(canvas.width * ratio, window.innerWidth);
+        var h2 = Math.min(canvas.height * ratio, window.innerHeight);
+
+        w2 = Math.min(800,w2);
+        h2 = Math.min(600,h2);
+
+        canvas.style.width = w2 + "px";
+        canvas.style.height = h2 + "px";
+        canvas.style.left = window.innerWidth/2 - (w2)/2 + "px";
+        canvas.style.top = window.innerHeight/2 - (h2)/2 + "px";
+
     }
 
 

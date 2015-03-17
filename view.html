@@ -54,18 +54,15 @@
 
         <div class="containerTop">
 
-            <nav class="centred">
-                <div id='hamburger'>&#9776;</div>
+            <nav class="show">
+                <span id='hamburger'>
+                    <img src="_site/img/burger_button.png">
+                </span>
+                <img src="_site/img/pixi_nav_title.png">
                 <ul id="navList"></ul>
             </nav>
 
             <section class="liveView centred">
-
-                <select id="version">
-                    <option value="https://cdn.rawgit.com/GoodBoyDigital/pixi.js/dev/bin/pixi.js" data-version="dev">
-                        Latest dev
-                    </option>
-                </select>
 
                 <h1></h1>
 
@@ -73,9 +70,9 @@
             </section>
 
         </div>
-        <div class="containerBottom">
-            <section class="editor centred">
-                <p>
+        <div class="grey">
+            <section class="containerBottom centred">
+                <p class="themeSelect">
                     Change editor theme :
                     <select id="theme">
                         <option selected="">default</option>
@@ -114,23 +111,39 @@
                         <option>zenburn</option>
                     </select>
                 </p>
+                <div class="codeRefresh">
+                    <button>
+                        <div class="shadow"></div>
+                        <div class="btn"></div>
+                    </button>
+                </div>
                 <textarea id="sourcecode"></textarea>
+                <section class="downloadSection marginTop">
+                    Pixi.js version :
+                    <select id="version">
+                        <option value="https://cdn.rawgit.com/GoodBoyDigital/pixi.js/dev/bin/pixi.js" data-version="dev">
+                            Latest dev
+                        </option>
+                    </select>
+                    <span><a href="#">Download the example code</a></span>
+                </section>
 
-                <p>
+
+                <p class="marginTop">
                     Would you like to create a new example ? Head over to the examples repo on <a href="https://github.com/pixijs/examples">github</a>
                 </p>
+
+                <footer>
+                    <section class="centred">
+                        <p>
+                            Copyright © 2013-2015 <a href='http://goodboydigital.com'>Goodboy Digital Ltd</a>
+                        </p>
+                    </section>
+                </footer>
             </section>
-
-            <footer class="centred">
-                <p>
-                    Copyright © 2013-2015 Mat Groves. <a href="http://pixijs.com">pixi.js</a>
-                </p>
-                <p>
-                    Made with ♥ by <a href='http://goodboydigital.com'>Goodboy Digital</a>
-                </p>
-            </footer>
-
         </div> <!-- end .containerBottom -->
+
+
         <!-- Google Analytics Script -->
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

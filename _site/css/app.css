@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
 body,html{
     margin: 0;
     padding: 0;
@@ -6,13 +8,44 @@ body,html{
     font: inherit;
     vertical-align: baseline;
     line-height: 1;
+    color : #393939;
+    font-family: 'Open Sans';
 }
 
-.containerTop{
-    background-color : #717478;
+a{
+    color : #7669e9;
+    font-family: 'Open Sans';
+    text-decoration: none;
 }
-.containerBottom{
-    background-color : #e17478;
+
+a:visited{
+    text-decoration: underline;
+}
+
+h1,h2{
+    text-align: center;
+    color : #d0c8df;
+    font-family: 'Open Sans';
+}
+
+h1{
+    font-size: 1.8rem;
+}
+
+.marginTop{
+    margin : 2rem 0;
+}
+
+
+.containerTop{
+    background: url('../img/pixi_examples_bg.jpg') no-repeat center;
+    background-size : cover;
+    width : 100%;
+    min-height : 770px;
+    margin : 0;
+}
+.grey{
+    background-color : #e2e2e2;
 }
 
 .centred{
@@ -26,17 +59,72 @@ body,html{
     min-height: 600px;
 }
 
-footer{
-    box-sizing : border-box;
-    padding-bottom: 10px;
+.themeSelect{
+    display: none;
 }
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+.codeRefresh{
+    background: url('../img/code_refresh_tab.png');
+    width : 100px;
+    height : 122px;
+    margin : 0 auto;
+}
 
-#sourcecode{
-    margin : 16px auto 16px auto;
-    width: 800px;
-    height: 600px;
+.codeRefresh button{
+    background-color: transparent;
+    border : 0;
+    outline: none;
+}
+
+.codeRefresh button:active,.codeRefresh button:focus{
+    background-color: transparent;
+    border : 0;
+    outline: none;
+}
+
+.codeRefresh button:active .btn{
+    top : 4px;
+}
+
+
+.codeRefresh .btn{
+    margin : 0 auto;
+    width : 78px;
+    height : 78px;
+    display: block;
+    background: url('../img/code_refresh_no_shadow.png') no-repeat;
+    background-size: cover;
+    cursor: pointer;
+    position: relative;
+    top : 4px;
+    z-index: 2;
+}
+
+/*.codeRefresh .shadow{
+    width:58px;
+    height:56px;
+    padding:8px;
+    position : relative;
+    left:2px;
+    top:13px;
+    z-index:1;
+    border-radius: 39px;
+    float : left;
+    box-shadow: 0px -2px 4px 3px rgba(194,191,202, 0.9);
+}*/
+
+.codeRefresh .shadow{
+    width:88px;
+    height:88px;
+    margin : 0 auto;
+    background: url('../img/code_refresh_shadow.png') no-repeat;
+    position : relative;
+    z-index:1;
+    float : left;
+}
+
+.codeRefresh .btn,.codeRefresh .shadow{
+    margin-top : 36px;
 }
 
 #example{
@@ -44,13 +132,56 @@ footer{
     margin : 0 auto;
 }
 
-nav{
-    float : left;
-    width : 4rem;
-    height : 2rem;
-    overflow: hidden;
-    background-color: black;
+#example canvas{
+    display: block;
+    margin : 0 auto;
+}
+
+.containerBottom{
+    position: relative;
+    top : -165px;
+    box-sizing : border-box;
+}
+
+.downloadSection a{
+    margin-left : 1rem;
+    font-weight: bold;
+}
+
+.downloadSection a:hover{
+    text-decoration: underline;
+}
+
+footer{
+    position: relative;
+    width: 100vw;
+    left: calc(-50vw + 50%);
+    height : 60px;
+    background-color: #000;
     color : white;
+}
+
+footer p{
+    line-height : 60px;
+}
+
+.footerBkg{
+    height : 60px;
+}
+
+#hamburger{
+    cursor: pointer;
+}
+
+nav{
+    position: absolute;
+    top: 0;
+    left : 0;
+    width : 16rem;
+    overflow: hidden;
+    background : url('../img/nav_bg.png') repeat-y;
+    color : white;
+    z-index : 15;
 }
 
 nav li a {
@@ -59,66 +190,21 @@ nav li a {
 }
 
 nav li a:hover{
-    color : purple;
+    color : #7669e9;
 }
 
 nav ul{
     padding: 0;
     margin: 0;
-    text-align: center;
 }
 
-nav #hamburger{
-    font-size: 1.4rem;
-    margin : 2px;
-    text-align: center;
+#navList{
+    margin-left : 13px;
 }
 
-/*nav:hover{
-    animation : scaleNicely 0.5s ease-in;
-}
-
-@keyframes scaleNicely{
-    from{
-        width : 100px;
-    }
-
-    to{
-        width : 200px;
-        height : 150px;
-    }
+/*nav li:first{
+    margin-left : 13px;
 }*/
-
-@-webkit-keyframes scaleNicely {
-  0%{ width : 4rem;
-         height : 2rem;
-     }
-  40%  {width : 12rem ; height : 2rem;}
-  100% {width : 12rem; height : 50rem;}
-}
-@-moz-keyframes scaleNicely {
-  0%{ width : 4rem;
-         height : 2rem;
-     }
-  40%  {width : 12rem ; height : 2rem;}
-  100% {width : 12rem; height : 50rem;}
-}
-@keyframes scaleNicely {
-  0%{ width : 4rem;
-         height : 2rem;
-     }
-  40%  {width : 12rem ; height : 2rem;}
-  100% {width : 12rem; height : 50rem;}
-}
-
-nav:hover {
-
-  -webkit-animation: scaleNicely 0.8s forwards; /* Safari 4+ */
-  -moz-animation:    scaleNicely 0.8s forwards; /* Fx 5+ */
-  animation:         scaleNicely 0.8s forwards; /* IE 10+, Fx 29+ */
-  color : purple;
-}
-
 
 nav li{
     line-height : 21px;
@@ -126,28 +212,72 @@ nav li{
 }
 
 nav li span{
-    text-align: center;
     text-transform: uppercase;
     font-family: 'Open Sans';
-    border-bottom: 1px solid white;
-    display: block;
     margin: 6px 0;
+    color : #a590d2;
 }
 
-#example canvas{
-    display: block;
-    margin : 0 auto;
+nav li img{
+    margin-left : 5px;
 }
 
-#version{
-    float : right;
+nav.hidden{
+
+  -webkit-animation: scaleDown 0.8s forwards; /* Safari 4+ */
+  -moz-animation:    scaleDown 0.8s forwards; /* Fx 5+ */
+  animation:         scaleDown 0.8s forwards; /* IE 10+, Fx 29+ */
 }
 
-.editor{
-    box-sizing : border-box;
-    padding : 10px;
+nav.show{
+
+  -webkit-animation: scaleUp 0.8s forwards; /* Safari 4+ */
+  -moz-animation:    scaleUp 0.8s forwards; /* Fx 5+ */
+  animation:         scaleUp 0.8s forwards; /* IE 10+, Fx 29+ */
+
 }
 
-h1,h2{
-    text-align: center;
+@-webkit-keyframes scaleUp {
+  0%{ width : 2rem;
+        height : 2rem;
+     }
+  40%  {width : 17rem ; height : 2rem;}
+  100% {width : 17rem; height : 50rem;}
 }
+@-moz-keyframes scaleUp {
+  0%{ width : 2rem;
+         height : 2rem;
+     }
+  40%  {width : 17rem ; height : 2rem;}
+  100% {width : 17rem; height : 50rem;}
+}
+@keyframes scaleUp {
+  0%{ width : 17rem;
+         height : 2rem;
+     }
+  40%  {width : 17rem; height : 2rem;}
+  100% {width : 17rem; height : 50rem;}
+}
+
+@-webkit-keyframes scaleDown {
+  0%{ width : 17rem;
+        height : 2rem;
+     }
+  40%  {width : 2rem;}
+  100% {width : 2rem; height : 2rem;}
+}
+@-moz-keyframes scaleDown {
+  0%{ width : 17rem;
+         height : 2rem;
+     }
+  40%  {width : 2rem;}
+  100% {width : 2rem; height : 2rem;}
+}
+@keyframes scaleDown {
+  0%{ width : 17rem;
+         height : 2rem;
+     }
+  40%  {width : 2rem;}
+  100% {width : 2rem; height : 2rem;}
+}
+

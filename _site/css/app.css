@@ -18,6 +18,10 @@ a{
     text-decoration: none;
 }
 
+a:hover{
+    text-decoration: underline;
+}
+
 a:visited{
     text-decoration: underline;
 }
@@ -38,8 +42,8 @@ h1{
 
 
 .containerTop{
-    background: url('../img/pixi_examples_bg.jpg') no-repeat center;
-    background-size : cover;
+    background: url('../img/pixi_examples_bg.jpg') no-repeat;
+    background-size : 100% 870px;
     width : 100%;
     min-height : 770px;
     margin : 0;
@@ -49,7 +53,7 @@ h1{
 }
 
 .centred{
-    max-width: 60rem;
+    max-width: 56.125428571rem;
     margin : 0 auto;
 }
 
@@ -96,7 +100,7 @@ h1{
     background-size: cover;
     cursor: pointer;
     position: relative;
-    top : 4px;
+    top : 2px;
     z-index: 2;
 }
 
@@ -144,8 +148,11 @@ h1{
 }
 
 .downloadSection a{
-    margin-left : 1rem;
     font-weight: bold;
+}
+
+#version{
+    margin-right : 1rem;
 }
 
 .downloadSection a:hover{
@@ -157,22 +164,73 @@ footer{
     width: 100vw;
     left: calc(-50vw + 50%);
     height : 60px;
-    background-color: #000;
+    background: #393939;
     color : white;
+    padding: 5px 0 5px 0px;
+    box-sizing : border-box;
+    line-height: 50px; /* the footer is 60px - 5px top and bottom -> 50px */
+}
+
+@media (max-width: 897px){
+    footer{
+        height : 120px;
+    }
+}
+
+@media (max-width: 570px){
+    footer{
+        height : 180px;
+    }
 }
 
 footer p{
-    line-height : 60px;
+    margin : 0;
 }
 
-.footerBkg{
-    height : 60px;
+.copyright, .goodboy, .icons{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 16px;
+}
+
+.goodboy{
+    margin-left: 15px;
+}
+
+.icons{
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 3.8%;
+}
+/* These two are aligned */
+.icons, .copyright{
+    margin-top: 0px;
+}
+
+.icons a{
+    color : white;
+    margin-left: 5px;
+}
+
+.icons img{
+    vertical-align: middle;
+    padding : 0px 2px;
+    box-sizing : border-box;
+}
+
+footer .copyright{
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+  margin-left : 20px;
 }
 
 #hamburger{
     cursor: pointer;
+    margin-left : 5px;
 }
-
+/* Nav section */
 nav{
     position: absolute;
     top: 0;
@@ -238,14 +296,14 @@ nav.show{
 }
 
 @-webkit-keyframes scaleUp {
-  0%{ width : 2rem;
+  0%{ width : 2.2rem;
         height : 2rem;
      }
   40%  {width : 17rem ; height : 2rem;}
   100% {width : 17rem; height : 50rem;}
 }
 @-moz-keyframes scaleUp {
-  0%{ width : 2rem;
+  0%{ width : 2.2rem;
          height : 2rem;
      }
   40%  {width : 17rem ; height : 2rem;}
@@ -263,21 +321,21 @@ nav.show{
   0%{ width : 17rem;
         height : 2rem;
      }
-  40%  {width : 2rem;}
-  100% {width : 2rem; height : 2rem;}
+  40%  {width : 2.2rem;}
+  100% {width : 2.2rem; height : 2rem;}
 }
 @-moz-keyframes scaleDown {
   0%{ width : 17rem;
          height : 2rem;
      }
-  40%  {width : 2rem;}
-  100% {width : 2rem; height : 2rem;}
+  40%  {width : 2.2rem;}
+  100% {width : 2.2rem; height : 2rem;}
 }
 @keyframes scaleDown {
   0%{ width : 17rem;
          height : 2rem;
      }
-  40%  {width : 2rem;}
-  100% {width : 2rem; height : 2rem;}
+  40%  {width : 2.2rem;}
+  100% {width : 2.2rem; height : 2rem;}
 }
 

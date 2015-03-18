@@ -118,14 +118,15 @@ var App = {
 
         if (cb)
         {
-            script.addEventListener('load',loadHandler);
-
-             function loadHandler()
-             {
+            function loadHandler()
+            {
                 script.removeEventListener('load', loadHandler);
 
                 cb();
             }
+
+            script.addEventListener('load',loadHandler);
+
         }
 
         document.body.appendChild(script);

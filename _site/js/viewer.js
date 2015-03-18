@@ -1,30 +1,24 @@
 $(document).ready(function () {
     var baseUrl = location.href.split('?')[0],
-        params = location.search.substr(1).split('&'),
+        params,
         select = document.getElementById('version'),
         themeSelect = document.getElementById('theme'),
         editor;
 
-    // convert params to object
-    params = params.reduce(function (obj, val) {
-        val = val.split('=');
-
-        obj[val[0]] = decodeURIComponent(val[1]);
-
-        return obj;
-    }, {});
+    params = App.getUrlParams();
 
     document.title = 'pixi.js - ' + params.title;
 
 
-    //App.loadGithubTags('version',onTagsLoaded);
+    App.loadGithubTags('version',onTagsLoaded);
 
     var nav = document.getElementById('navList');
     App.loadManifest(nav);
 
     if (params.v) {
+        console.log('loading external pixi ...')
         var url = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
-        App.loadPixi(url);
+        App.loadPixi(url,onPixiLoaded);
     }
     else{
         console.log('Loading local pixi');
@@ -45,10 +39,20 @@ $(document).ready(function () {
         } else {
             select.selectedIndex = 1;
         }
+
+        select.addEventListener('change', function () {
+            var params = App.getUrlParams();
+
+            params.v = select.options[select.selectedIndex].dataset.version;
+
+            console.log('hi');
+            window.location.href = baseUrl + '?' + $.param(params);
+        });
     }
 
     function onPixiLoaded()
     {
+        console.log('pixi loaded');
         loadExample('examples/' + params.s + '/' + params.f);
     }
 
@@ -100,6 +104,21 @@ $(document).ready(function () {
     hamb.addEventListener('mousedown',toggleNav,false);
 
     hamb.addEventListener('touchstart',toggleNav,false);
+
+    var refreshBtn = document.getElementById('refresh');
+
+
+    var canReload = true;
+
+    function reloadCode (e) {
+
+        if(canReload)
+        {
+            var content = editor.getValue();
+        }
+    }
+
+    refresh.addEventListener('click',reloadCode);
 
     var nav = document.querySelector('nav');
 

@@ -86,12 +86,6 @@ var App = {
                 select.appendChild(option);
             }
 
-            select.addEventListener('change', function () {
-                params.v = select.options[select.selectedIndex].dataset.version;
-
-                location.href = baseUrl + '?' + $.param(params);
-            });
-
             callback(select);
 
 
@@ -130,6 +124,21 @@ var App = {
         }
 
         document.body.appendChild(script);
+    },
+
+    getUrlParams : function () {
+        var params = window.location.search.substr(1).split('&');
+
+        // convert params to object
+        params = params.reduce(function (obj, val) {
+            val = val.split('=');
+
+            obj[val[0]] = decodeURIComponent(val[1]);
+
+            return obj;
+        }, {});
+
+        return params;
     }
 
 

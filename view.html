@@ -20,6 +20,7 @@
         <script src="_site/js/vendor/codemirror/codemirror.js"></script>
         <script src="_site/js/vendor/codemirror/modes/javascript.js"></script>
         <script src="_site/js/vendor/jquery-2.1.3.min.js"></script>
+        <script src="_site/js/Editor.js"></script>
         <script src="_site/js/app.js"></script>
         <script src="_site/js/viewer.js"></script>
     </head>
@@ -39,7 +40,9 @@
 
                 <h1></h1>
 
-                <div id="example"></div>
+                <div id="example">
+                    <iframe id="preview" frameborder="0" src=""></iframe>
+                </div>
             </section>
 
         </div>
@@ -57,6 +60,7 @@
                     </select>
                 </p>
                 <div class="codeRefresh">
+
                     <button id="refresh">
                         <div class="shadow"></div>
                         <div class="btn"></div>

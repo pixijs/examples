@@ -1,5 +1,5 @@
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-document.getElementById('example').appendChild(renderer.view);
+document.body.appendChild(renderer.view);
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
@@ -73,7 +73,7 @@ function onClick()
                             Math.random() * 620,Math.random() * 380);
 }
 // run the render loop
-requestAnimationFrame(animate);
+animate();
 
 function animate() {
 

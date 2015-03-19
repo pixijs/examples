@@ -59,7 +59,7 @@ $(document).ready(function () {
     function loadExample(url)
     {
         // load the example code and executes it
-        App.loadScript(url, 'example-script');
+        //App.loadScript(url, 'example-script');
 
         // load the example code
         $.ajax({ url: url, dataType: 'text' })
@@ -78,15 +78,11 @@ $(document).ready(function () {
         title.innerHTML = params.title;
 
         textarea.innerHTML = code;
+        var container = document.getElementById('example');
 
-        var editorOptions = {
-            mode: 'javascript',
-            lineNumbers: true,
-            styleActiveLine: true,
-            matchBrackets: true
-        };
+        editor = new Editor(container,textarea);
 
-        editor = CodeMirror.fromTextArea(textarea,editorOptions);
+        editor.init(url);
 
         themeSelect.addEventListener('change',changeTheme,false);
 
@@ -97,8 +93,6 @@ $(document).ready(function () {
         }
     }
 
-    window.addEventListener('resize',resizeCanvas,false);
-
     var hamb = document.getElementById('hamburger');
 
     hamb.addEventListener('mousedown',toggleNav,false);
@@ -107,14 +101,13 @@ $(document).ready(function () {
 
     var refreshBtn = document.getElementById('refresh');
 
-
     var canReload = true;
 
     function reloadCode (e) {
 
         if(canReload)
         {
-            var content = editor.getValue();
+            editor.updatePreview();
         }
     }
 
@@ -137,33 +130,6 @@ $(document).ready(function () {
         }
 
     }
-
-    function resizeCanvas () {
-
-        var canvas = document.querySelector('canvas');
-
-        // for slow connections
-        if(canvas)
-        {
-            var ratio = canvas.width/canvas.height;
-
-            ratio = window.innerWidth/(canvas.width) < window.innerHeight/(canvas.height) ? window.innerWidth/(canvas.width) : window.innerHeight/(canvas.height);
-
-            var w2 = Math.min(canvas.width * ratio, window.innerWidth);
-            var h2 = Math.min(canvas.height * ratio, window.innerHeight);
-
-            w2 = Math.min(800,w2);
-            h2 = Math.min(600,h2);
-
-            canvas.style.width = w2 + "px";
-            canvas.style.height = h2 + "px";
-        }
-
-
-
-    }
-
-    resizeCanvas();
 
 
 });

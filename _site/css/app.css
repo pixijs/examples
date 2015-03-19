@@ -65,17 +65,14 @@ h1{
     display: none;
 }
 
-.codeRefresh{
-    background: url('../img/code_refresh_tab.png');
-    width : 100px;
-    height : 122px;
-    margin : 0 auto;
-}
 
 .codeRefresh button{
     background-color: transparent;
     border : 0;
     outline: none;
+    margin : 0 auto;
+    display: block;
+    z-index : 4;
 }
 
 .codeRefresh button:active,.codeRefresh button:focus{
@@ -85,12 +82,11 @@ h1{
 }
 
 .codeRefresh button:active .btn{
-    top : 4px;
+    margin-top : -3px;
 }
 
-
 .codeRefresh .btn{
-    margin : 0 auto;
+    margin : -1px auto 0 auto;
     width : 78px;
     height : 78px;
     display: block;
@@ -98,35 +94,20 @@ h1{
     background-size: cover;
     cursor: pointer;
     position: relative;
-    top : 2px;
-    z-index: 2;
+    left : 17px;
+    top : 55px;
+    z-index: 7;
 }
-
-/*.codeRefresh .shadow{
-    width:58px;
-    height:56px;
-    padding:8px;
-    position : relative;
-    left:2px;
-    top:13px;
-    z-index:1;
-    border-radius: 39px;
-    float : left;
-    box-shadow: 0px -2px 4px 3px rgba(194,191,202, 0.9);
-}*/
 
 .codeRefresh .shadow{
-    width:88px;
-    height:88px;
+    width : 136px;
+    height : 139px;
     margin : 0 auto;
-    background: url('../img/code_refresh_shadow.png') no-repeat;
+    background: url('../img/code_refresh_tab_new.png') no-repeat;
     position : relative;
-    z-index:1;
+    left : 17px;
+    z-index:2;
     float : left;
-}
-
-.codeRefresh .btn,.codeRefresh .shadow{
-    margin-top : 36px;
 }
 
 #example{
@@ -134,9 +115,12 @@ h1{
     margin : 0 auto;
 }
 
-#example canvas{
+#example iframe{
     display: block;
     margin : 0 auto;
+    width: 820px;
+    height : 620px;
+    z-index : 1;
 }
 
 .containerBottom{

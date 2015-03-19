@@ -1,5 +1,5 @@
 var renderer = PIXI.autoDetectRenderer(800, 600);
-document.getElementById('example').appendChild(renderer.view);
+document.body.appendChild(renderer.view);
 
 // create the root of the scene graph
 var stage = new PIXI.Container();

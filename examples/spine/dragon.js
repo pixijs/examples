@@ -14,7 +14,7 @@ var dragon = null;
 function onAssetsLoaded(loader,res)
 {
     // instantiate the spine animation
-    dragon = new PIXI.Spine(res.dragon.spineData);
+    dragon = new PIXI.spine.Spine(res.dragon.spineData);
     dragon.skeleton.setToSetupPose();
     dragon.update(0);
     dragon.autoUpdate = false;

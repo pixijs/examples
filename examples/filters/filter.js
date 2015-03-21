@@ -12,7 +12,7 @@ bg.anchor.set(0.5);
 bg.position.x = renderer.width / 2;
 bg.position.y = renderer.height / 2;
 
-var filter = new PIXI.ColorMatrixFilter();
+var filter = new PIXI.filters.ColorMatrixFilter();
 
 var container = new PIXI.Container();
 container.position.x = renderer.width / 2;

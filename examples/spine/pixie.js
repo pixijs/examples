@@ -30,7 +30,7 @@ function onAssetsLoaded(loader,res)
     stage.addChild(foreground2);
     foreground.position.y = foreground2.position.y = 640 - foreground2.height;
 
-    var pixie = new PIXI.Spine(res.pixie.spineData);
+    var pixie = new PIXI.spine.Spine(res.pixie.spineData);
 
     var scale = 0.3;
 

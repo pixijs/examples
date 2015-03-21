@@ -23,7 +23,7 @@ function onAssetsLoaded()
     for (i = 0; i < 50; i++)
     {
         // create an explosion MovieClip
-        var explosion = new PIXI.MovieClip(explosionTextures);
+        var explosion = new PIXI.extras.MovieClip(explosionTextures);
 
         explosion.position.x = Math.random() * 800;
         explosion.position.y = Math.random() * 600;

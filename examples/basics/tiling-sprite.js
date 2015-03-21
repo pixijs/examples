@@ -10,7 +10,7 @@ var texture = PIXI.Texture.fromImage('_assets/p2.jpeg');
 // create a tiling sprite ...
 // requires a texture, a width and a height
 // in webGL the texture size should preferably be a power of two
-var tilingSprite = new PIXI.TilingSprite(texture, renderer.width, renderer.height);
+var tilingSprite = new PIXI.extras.TilingSprite(texture, renderer.width, renderer.height);
 stage.addChild(tilingSprite);
 
 var count = 0;

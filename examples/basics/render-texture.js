@@ -20,7 +20,7 @@ outputSprite.anchor.set(0.5);
 // add to stage
 stage.addChild(outputSprite);
 
-var stuffContainer = new PIXI.DisplayObjectContainer();
+var stuffContainer = new PIXI.Container();
 
 stuffContainer.position.x = 400;
 stuffContainer.position.y = 300;

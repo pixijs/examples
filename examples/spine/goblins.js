@@ -13,7 +13,7 @@ stage.interactive = true;
 
 function onAssetsLoaded(loader, res)
 {
-    var goblin = new PIXI.Spine(res.goblins.spineData);
+    var goblin = new PIXI.spine.Spine(res.goblins.spineData);
 
     // set current skin
     goblin.skeleton.setSkinByName('goblin');

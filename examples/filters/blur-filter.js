@@ -19,8 +19,8 @@ littleRobot.position.x = (renderer.width / 2) - 200;
 littleRobot.position.y = 100;
 stage.addChild(littleRobot);
 
-var blurFilter1 = new PIXI.BlurFilter();
-var blurFilter2 = new PIXI.BlurFilter();
+var blurFilter1 = new PIXI.filters.BlurFilter();
+var blurFilter2 = new PIXI.filters.BlurFilter();
 
 littleDudes.filters = [blurFilter1];
 littleRobot.filters = [blurFilter2];

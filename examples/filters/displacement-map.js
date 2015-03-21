@@ -33,7 +33,7 @@ for (var i = 0; i < 20; i++)
 }
 
 var displacementSprite = PIXI.Sprite.fromImage('_assets/displace.png');
-var displacementFilter = new PIXI.DisplacementFilter(displacementSprite);
+var displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
 
 stage.addChild(displacementSprite);
 

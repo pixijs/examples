@@ -23,7 +23,7 @@ function onAssetsLoaded()
         frames.push(PIXI.Texture.fromFrame('rollSequence00' + val + '.png'));
     }
 
-    movie = new PIXI.MovieClip(frames);
+    movie = new PIXI.extras.MovieClip(frames);
 
     movie.position.x = 300;
     movie.position.y = 300;

@@ -14,7 +14,7 @@ stage.interactive = true;
 function onAssetsLoaded(loader, res)
 {
     // create a spine boy
-    var spineBoy = new PIXI.Spine(res.spineboy.spineData);
+    var spineBoy = new PIXI.spine.Spine(res.spineboy.spineData);
 
     // set the position
     spineBoy.position.x = renderer.width / 2;

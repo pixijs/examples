@@ -37,7 +37,7 @@ function init()
 
     function onAssetsLoaded()
     {
-        var bitmapFontText = new PIXI.BitmapText('bitmap fonts are\n now supported!', { font: '35px Desyrel', align: 'right' });
+        var bitmapFontText = new PIXI.extras.BitmapText('bitmap fonts are\n now supported!', { font: '35px Desyrel', align: 'right' });
 
         bitmapFontText.position.x = 600 - bitmapFontText.textWidth;
         bitmapFontText.position.y = 20;

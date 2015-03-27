@@ -30,7 +30,7 @@ var App = {
                         exa = document.createElement('a');
 
                     exa.textContent = files[j].title;
-                    exa.href = 'view.html?s=' + encodeURIComponent(sections[i]) +
+                    exa.href = 'index.html?s=' + encodeURIComponent(sections[i]) +
                                 '&f=' + files[j].entry +
                                 '&title=' + files[j].title;
 
@@ -129,14 +129,23 @@ var App = {
     getUrlParams : function () {
         var params = window.location.search.substr(1).split('&');
 
-        // convert params to object
-        params = params.reduce(function (obj, val) {
-            val = val.split('=');
+        if(params.length > 1)
+        {
+            // convert params to object
+            params = params.reduce(function (obj, val) {
+                val = val.split('=');
 
-            obj[val[0]] = decodeURIComponent(val[1]);
+                obj[val[0]] = decodeURIComponent(val[1]);
 
-            return obj;
-        }, {});
+                return obj;
+            }, {});
+
+        }
+        else{
+            // defaults to the basic example, there might be better way to do this
+            // but this will do for now
+            params = {s: "basics", f: "basic.js", title: "Basic"};
+        }
 
         return params;
     }

@@ -103,6 +103,23 @@ $(document).ready(function () {
 
     var canReload = true;
 
+    var downloadBtn = document.getElementById('download');
+
+    download.addEventListener('click',downloadFile,false);
+
+    function downloadFile (e) {
+
+        e.preventDefault();
+
+        var blob = new Blob([editor.getContent()], {type: "text/javascript;charset=utf-8"});
+
+        var fileName = params.f || 'example.js';
+
+        saveAs(blob, fileName);
+
+        return false;
+    }
+
     function reloadCode (e) {
 
         if(canReload)

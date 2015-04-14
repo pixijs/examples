@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title> pixi.js example</title>
+    <style>
+    body,html {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+        line-height: 1;
+    }
+    </style>
+</head>
+<body>
+
+<script src="_site/js/vendor/jquery-2.1.3.min.js"></script>
+<script src="_site/js/app.js"></script>
+<script src="_site/js/pixi.js"></script>
+<script id="example-script"></script>
+<script>
+    var params = App.getUrlParams();
+    var url = 'examples/' + params.s + '/' + params.f;
+
+    App.loadScript(url, 'example-script');
+</script>
+</body>
+</html>

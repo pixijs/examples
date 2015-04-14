@@ -34,5 +34,13 @@
     {
         "title": "Render Texture",
         "entry": "render-texture.js"
+    },
+    {
+        "title": "Textured Mesh",
+        "entry": "textured-mesh.js"
+    },
+    {
+        "title": "Custom Filter",
+        "entry": "custom-filter.js"
     }
 ]

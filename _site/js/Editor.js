@@ -68,7 +68,8 @@ Editor.prototype = {
             mode: 'javascript',
             lineNumbers: true,
             styleActiveLine: true,
-            matchBrackets: true
+            matchBrackets: true,
+            viewportMargin: Infinity
         };
 
         this.editor = CodeMirror.fromTextArea(this.textarea,editorOptions);

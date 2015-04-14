@@ -1,74 +1,38 @@
 [
     {
-        'title': 'Basics',
-        'entry': 'basic.js'
+        "title": "Basics",
+        "entry": "basic.js"
     },
     {
-        'title': 'SpriteSheet',
-        'entry': 'spritesheet.js'
+        "title": "Container",
+        "entry": "container.js"
     },
     {
-        'title': 'MovieClip',
-        'entry': 'movieclip.js'
+        "title": "SpriteSheet Animation",
+        "entry": "spritesheet.js"
     },
     {
-        'title': 'Interactivity',
-        'entry': 'interactivity.js'
+        "title": "Click",
+        "entry": "click.js"
+    },
+        {
+        "title": "Tiling Sprite",
+        "entry": "tiling-sprite.js"
     },
     {
-        'title': 'Transparent Background',
-        'entry': 'transparent-background.js'
+        "title": "Text",
+        "entry": "text.js"
     },
     {
-        'title': 'Dragging',
-        'entry': 'dragging.js'
+        "title": "Graphics",
+        "entry": "graphics.js"
     },
     {
-        'title': 'Tiling Texture',
-        'entry': 'tiling-sprite.js'
+        "title": "Video",
+        "entry": "video.js"
     },
     {
-        'title': 'Text',
-        'entry': 'text.js'
-    },
-    {
-        'title': 'RenderTexture',
-        'entry': 'render-texture.js'
-    },
-    {
-        'title': 'Graphics',
-        'entry': 'graphics.js'
-    },
-    {
-        'title': 'Masking',
-        'entry': 'masking.js'
-    },
-    {
-        'title': 'BlendModes',
-        'entry': 'blendmodes.js'
-    },
-    {
-        'title': 'Tinting',
-        'entry': 'tinting.js'
-    },
-    {
-        'title': 'Particle Container',
-        'entry': 'batch.js'
-    },
-    {
-        'title': 'CacheAsBitmap',
-        'entry': 'cacheAsBitmap.js'
-    },
-    {
-        'title': 'Strip',
-        'entry': 'strip.js'
-    },
-    {
-        'title': 'Texture Swap',
-        'entry': 'texture-swap.js'
-    },
-    {
-        'title': 'Alpha Mask',
-        'entry': 'alpha-mask.js'
+        "title": "Render Texture",
+        "entry": "render-texture.js"
     }
 ]

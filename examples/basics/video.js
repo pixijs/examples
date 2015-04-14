@@ -5,38 +5,20 @@ document.body.appendChild(renderer.view);
 var stage = new PIXI.Container();
 
 // create a video texture from a path
-var texture = PIXI.Texture.fromVideo('testVideo.mp4');
+var texture = PIXI.Texture.fromVideo('_assets/testVideo.mp4');
 
 // create a new Sprite using the video texture (yes it's that easy)
-var moveSprite = new PIXI.Sprite(texture);
+var videoSprite = new PIXI.Sprite(texture);
 
-moveSprite.width = renderer.width;
-moveSprite.height = renderer.height;
+videoSprite.width = renderer.width;
+videoSprite.height = renderer.height;
 
-// center the sprites anchor point
-moveSprite.anchor.x = 0.5;
-moveSprite.anchor.y = 0.5;
+stage.addChild(videoSprite);
 
-// move the sprite to the center of the screen
-moveSprite.position.x = renderer.width / 2;
-moveSprite.position.y = renderer.height / 2;
+animate();
 
-stage.addChild(moveSprite);
+function animate(){
 
-var text = new PIXI.Text('DEUS', {fill:'white', font:'bold 444px Arial'});
-//stage.addChild(text);
-
-text.anchor.set(0.5);
-
-text.x = renderer.width / 2;
-text.y = renderer.height / 2;
-
-text.scale.set((renderer.width * 0.2) / text.texture.width);
-
-requestAnimationFrame(animate);
-
-function animate()
-{
     // render the stage
     renderer.render(stage);
 

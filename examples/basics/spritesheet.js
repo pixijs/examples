@@ -12,8 +12,7 @@ var movie;
 
 function onAssetsLoaded()
 {
-    // create a texture from an image path
-    // add a bunch of aliens
+    // create an array of textures from an image path
     var frames = [];
 
     for (var i = 0; i < 30; i++) {
@@ -23,13 +22,17 @@ function onAssetsLoaded()
         frames.push(PIXI.Texture.fromFrame('rollSequence00' + val + '.png'));
     }
 
+
+    // create a MovieClip (brings back memories from the days of Flash, right ?)
     movie = new PIXI.extras.MovieClip(frames);
 
-    movie.position.x = 300;
-    movie.position.y = 300;
+    /*
+     * A MovieClip inherits all the properties of a PIXI sprite
+     * so you can change its position, its anchor, mask it, etc
+     */
+    movie.position.set(300);
 
-    movie.anchor.x = 0.5;
-    movie.anchor.y = 0.5;
+    movie.anchor.set(0.5);
     movie.animationSpeed = 0.5;
 
     movie.play();

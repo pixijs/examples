@@ -5,12 +5,42 @@
             "entry": "basic.js"
         },
         {
-            "title": "SpriteSheet",
+            "title": "Container",
+            "entry": "container.js"
+        },
+        {
+            "title": "SpriteSheet Animation",
             "entry": "spritesheet.js"
         },
         {
+            "title": "Click",
+            "entry": "click.js"
+        },
+        {
+            "title": "Tiling Sprite",
+            "entry": "tiling-sprite.js"
+        },
+        {
+            "title": "Text",
+            "entry": "text.js"
+        },
+        {
+            "title": "Graphics",
+            "entry": "graphics.js"
+        },
+        {
+            "title": "Video",
+            "entry": "video.js"
+        },
+        {
+            "title": "Render Texture",
+            "entry": "render-texture.js"
+        }
+    ],
+    "demos": [
+        {
             "title": "MovieClip",
-            "entry": "movieclip.js"
+            "entry": "movieclip-demo.js"
         },
         {
             "title": "Interactivity",
@@ -25,20 +55,16 @@
             "entry": "dragging.js"
         },
         {
-            "title": "Tiling Texture",
-            "entry": "tiling-sprite.js"
-        },
-        {
             "title": "Text",
-            "entry": "text.js"
+            "entry": "text-demo.js"
         },
         {
             "title": "RenderTexture",
-            "entry": "render-texture.js"
+            "entry": "render-texture-demo.js"
         },
         {
             "title": "Graphics",
-            "entry": "graphics.js"
+            "entry": "graphics-demo.js"
         },
         {
             "title": "Masking",
@@ -62,7 +88,7 @@
         },
         {
             "title": "Strip",
-            "entry": "strip.js"
+            "entry": "strip-demo.js"
         },
         {
             "title": "Texture Swap",

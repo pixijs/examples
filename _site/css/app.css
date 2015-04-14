@@ -64,7 +64,11 @@ h1{
 .themeSelect{
     display: none;
 }
-
+/* Important, makes the editor scale to fit !*/
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
 
 .codeRefresh button{
     background-color: transparent;

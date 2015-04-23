@@ -4,7 +4,13 @@ document.body.appendChild(renderer.view);
 // create the root of the scene graph
 var stage = new PIXI.Container();
 
-var sprites = new PIXI.ParticleContainer(10000, [true, true, true, true, true]);
+var sprites = new PIXI.ParticleContainer(10000, {
+    scale: true,
+    position: true,
+    rotation: true,
+    uvs: true,
+    alpha: true
+});
 stage.addChild(sprites);
 
 // create an array to store all the sprites

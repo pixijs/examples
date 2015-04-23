@@ -82,7 +82,12 @@ $(document).ready(function () {
 
         editor = new Editor(container,textarea);
 
-        editor.init(url);
+        //load plugin list from parameters
+        var pluginList = [];
+        if (params.plugins) {
+            pluginList = params.plugins.split(",");
+        }
+        editor.init(url, pluginList);
 
         themeSelect.addEventListener('change',changeTheme,false);
 

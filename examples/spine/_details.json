@@ -1,19 +1,23 @@
 [
     {
         "title": "Dragon",
-        "entry": "dragon.js"
+        "entry": "dragon.js",
+        "plugins": ["pixi-spine"]
     },
     {
         "title": "Goblin",
-        "entry": "goblins.js"
+        "entry": "goblins.js",
+        "plugins": ["pixi-spine"]
     },
     {
         "title": "Pixie",
-        "entry": "pixie.js"
+        "entry": "pixie.js",
+        "plugins": ["pixi-spine"]
     },
     {
         "title": "Walking Animation",
-        "entry": "spineboy.js"
+        "entry": "spineboy.js",
+        "plugins": ["pixi-spine"]
     }
 
 ]

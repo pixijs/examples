@@ -13,15 +13,18 @@ function Editor (domElement,textarea) {
 
     this.request = new XMLHttpRequest();
     this.editor;
+    this.plugins;
 
-	return this;
+    return this;
 }
 
 Editor.prototype.constructor = Editor;
 
 Editor.prototype = {
 
-	init : function (jsFile) {
+	init : function (jsFile, plugins) {
+
+        this.plugins = plugins;
 
 	    this.iframe = document.getElementById('preview');
 
@@ -104,7 +107,13 @@ Editor.prototype = {
 	},
 
     insertBetween : function (js) {
-        var begin = '<html><head><title>pixi.js example 1</title><style>body,html {margin: 0;padding: 0;border: 0;font-size: 100%;font: inherit;vertical-align: baseline;line-height: 1;}</style><script src="' + '_site/js/pixi.js'+ '"></script></head><body><script>/* the window.onload is ABSOLUTELY essential, otherwise opening and closing Iframes does not work;*/ window.onload = function(){'
+        var begin = '<html><head><title>pixi.js example 1</title><style>body,html {margin: 0;padding: 0;border: 0;font-size: 100%;font: inherit;vertical-align: baseline;line-height: 1;}</style><script src="' + '_site/js/pixi.js'+ '"></script></head><body>";';
+        if (this.plugins) {
+            this.plugins.forEach(function(pluginName) {
+                begin+='<script src="_site/js/plugins/'+pluginName+'.js"></script>';
+            });
+        }
+        begin += '<script>/* the window.onload is ABSOLUTELY essential, otherwise opening and closing Iframes does not work;*/ window.onload = function(){';
 
         var end = "}</script></body></html>";
 

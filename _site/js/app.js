@@ -1,5 +1,4 @@
 var App = {
-
     loadManifest : function(rootUl) {
 
         rootUl = rootUl || document.body.appendChild(document.createElement('ul'));
@@ -33,6 +32,9 @@ var App = {
                     exa.href = 'index.html?s=' + encodeURIComponent(sections[i]) +
                                 '&f=' + files[j].entry +
                                 '&title=' + files[j].title;
+                    if (files[j].plugins) {
+                        exa.href += '&plugins='+ files[j].plugins.join(",");
+                    }
 
                     // add version flag if there is a param for version on this page
                     location.search.substr(1).split('&').forEach(function (param) {
@@ -97,6 +99,13 @@ var App = {
     {
         // get the pixi lib
         this.loadScript(url, 'lib-script',callback);
+
+    },
+
+    loadPlugin : function(name,url,callback)
+    {
+        // get the pixi lib
+        this.loadScript(url, 'lib-script-'+name,callback);
 
     },
 

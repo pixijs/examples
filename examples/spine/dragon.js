@@ -6,6 +6,7 @@ var stage = new PIXI.Container();
 
 // load spine data
 PIXI.loader
+    .use(PIXI.spine.loaders.atlasParser())
     .add('dragon', '_assets/spine/dragon.json')
     .load(onAssetsLoaded);
 

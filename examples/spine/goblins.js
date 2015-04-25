@@ -6,7 +6,6 @@ var stage = new PIXI.Container();
 
 // load spine data
 PIXI.loader
-    .use(PIXI.spine.loaders.atlasParser())
     .add('goblins', '_assets/spine/goblins.json')
     .load(onAssetsLoaded);
 

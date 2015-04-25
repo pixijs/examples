@@ -6,7 +6,6 @@ var stage = new PIXI.Container();
 
 // load spine data
 PIXI.loader
-    .use(PIXI.spine.loaders.atlasParser())
     .add('spineboy', '_assets/spine/spineboy.json')
     .load(onAssetsLoaded);
 

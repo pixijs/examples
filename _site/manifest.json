@@ -103,6 +103,10 @@
             "entry": "texture-swap.js"
         },
         {
+            "title": "Texture Rotate",
+            "entry": "texture-rotate.js"
+        },
+        {
             "title": "Alpha Mask",
             "entry": "alpha-mask.js"
         }

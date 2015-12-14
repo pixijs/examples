@@ -1,0 +1,9 @@
+[
+    {
+        "title": "DirectDrawSurface (DDS)",
+        "entry": "dds.js",
+        "plugins": [
+            "pixi-compressed-textures"
+        ]
+    }
+]

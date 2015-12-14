@@ -1,0 +1,30 @@
+{"frames": {
+
+"goldmine_10_5.png":
+{
+	"frame": {"x":1,"y":1,"w":95,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":95,"h":115},
+	"sourceSize": {"w":95,"h":115},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"wind_extractor_10.png":
+{
+	"frame": {"x":98,"y":1,"w":109,"h":135},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":13,"y":14,"w":109,"h":135},
+	"sourceSize": {"w":133,"h":158},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "buildings.png",
+	"format": "RGBA8888",
+	"size": {"w":234,"h":117},
+	"scale": "0.5",
+	"smartupdate": "$TexturePacker:SmartUpdate:01016b7a86172b56961649d1db114c09:70817f09d53a7b241632ae0ea0e896a5:6b8738aa5e49b230a4878937fab7cee1$"
+}
+}

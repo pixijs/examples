@@ -2,10 +2,10 @@
 (function (global){
 var compressedTextures = {
     CompressedTextureManager: require('./CompressedTextureManager.js'),
-    compressedImageParser: require('./compressedImageParser.js'),
+    imageParser: require('./imageParser.js'),
     extensionChooser: require('./extensionChooser.js'),
     extensionFixer: require('./extensionFixer.js'),
-    detectExtensions: function (renderer) {
+    detectExtensions: function (renderer, resolution) {
         var extensions = [];
         if (renderer instanceof PIXI.WebGLRenderer) {
             var data = renderer.plugins.compressedTextureManager.getSupportedExtensions();
@@ -16,30 +16,36 @@ var compressedTextures = {
             //nothing special for canvas
         }
         //retina or not
-        var res = "@"+renderer.resolution+"x";
+        resolution = resolution || renderer.resolution;
+        var res = "@"+resolution+"x";
         var ext = extensions.slice(0);
         while (ext.length > 0) {
             extensions.push(res + ext.pop());
         }
         extensions.push(res + ".png");
         extensions.push(res + ".jpg");
-        //atlas support @1x @2x
+        //atlas support @1x @2x @.5x
         extensions.push(res + ".json");
+        extensions.push(res + ".atlas");
         return extensions;
     }
 };
 
-PIXI.loaders.Loader.addPixiMiddleware(compressedTextures.compressedImageParser);
 PIXI.loaders.Loader.addPixiMiddleware(compressedTextures.extensionFixer);
-PIXI.loader.use(compressedTextures.compressedImageParser());
 PIXI.loader.use(compressedTextures.extensionFixer());
 
 module.exports = global.PIXI.compressedTextures = compressedTextures;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./CompressedTextureManager.js":3,"./compressedImageParser.js":4,"./extensionChooser.js":5,"./extensionFixer.js":6}],2:[function(require,module,exports){
+},{"./CompressedTextureManager.js":3,"./extensionChooser.js":4,"./extensionFixer.js":5,"./imageParser.js":6}],2:[function(require,module,exports){
 function CompressedImage(src, data, type, width, height, levels, internalFormat) {
+    CompressedImage.prototype.init.apply(this, arguments);
+};
+
+module.exports = CompressedImage;
+
+CompressedImage.prototype.init = function(src, data, type, width, height, levels, internalFormat) {
     this.src = src;
     this.width = width;
     this.height = height;
@@ -47,81 +53,94 @@ function CompressedImage(src, data, type, width, height, levels, internalFormat)
     this.type = type;
     this.levels = levels;
     this.internalFormat = internalFormat;
-    this.complete = true;
     this.isCompressedImage = true;
 
-    this.dispose = function () {
-        this.data = null;
-    };
-
-    this.generateWebGLTexture = function (gl, preserveSource) {
-        if (this.data == null) {
-            throw "Trying to create a second (or more) webgl texture from the same CompressedImage : " + this.src;
-            return;
-        }
-
-        var width = this.width;
-        var height = this.height;
-        var offset = 0;
-        // Loop through each mip level of compressed texture data provided and upload it to the given texture.
-        for (var i = 0; i < this.levels; ++i) {
-            // Determine how big this level of compressed texture data is in bytes.
-            var levelSize = textureLevelSize(this.internalFormat, width, height);
-            // Get a view of the bytes for this level of DXT data.
-            var dxtLevel = new Uint8Array(this.data.buffer, this.data.byteOffset + offset, levelSize);
-            // Upload!
-            gl.compressedTexImage2D(gl.TEXTURE_2D, i, this.internalFormat, width, height, 0, dxtLevel);
-            // The next mip level will be half the height and width of this one.
-            width = width >> 1;
-            if (width < 1)
-                width = 1;
-            height = height >> 1;
-            if (height < 1)
-                height = 1;
-            // Advance the offset into the compressed texture data past the current mip level's data.
-            offset += levelSize;
-        }
-
-        // We can't use gl.generateMipmaps with compressed textures, so only use
-        // mipmapped filtering if the compressed texture data contained mip levels.
-        if (levels > 1) {
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-        }
-        else {
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        }
-
-        // Cleaning the data to save memory. NOTE : BECAUSE OF THIS WE CANNOT CREATE TWO GL TEXTURE FROM THE SAME COMPRESSED IMAGE !
-        if (!preserveSource)
-            this.data = null;
-    };
+    var oldComplete = this.complete;
+    this.complete = !!data;
+    if (!oldComplete && this.complete && this.onload) {
+        this.onload( { target: this } );
+    }
+    return this;
 };
 
-module.exports = CompressedImage;
+CompressedImage.prototype.dispose = function() {
+    this.data = null;
+};
+
+CompressedImage.prototype.generateWebGLTexture = function (gl, preserveSource) {
+    if (this.data == null) {
+        throw "Trying to create a second (or more) webgl texture from the same CompressedImage : " + this.src;
+        return;
+    }
+
+    var width = this.width;
+    var height = this.height;
+    var levels = this.levels;
+    var offset = 0;
+    // Loop through each mip level of compressed texture data provided and upload it to the given texture.
+    for (var i = 0; i < this.levels; ++i) {
+        // Determine how big this level of compressed texture data is in bytes.
+        var levelSize = textureLevelSize(this.internalFormat, width, height);
+        // Get a view of the bytes for this level of DXT data.
+        var dxtLevel = new Uint8Array(this.data.buffer, this.data.byteOffset + offset, levelSize);
+        // Upload!
+        gl.compressedTexImage2D(gl.TEXTURE_2D, i, this.internalFormat, width, height, 0, dxtLevel);
+        // The next mip level will be half the height and width of this one.
+        width = width >> 1;
+        if (width < 1)
+            width = 1;
+        height = height >> 1;
+        if (height < 1)
+            height = 1;
+        // Advance the offset into the compressed texture data past the current mip level's data.
+        offset += levelSize;
+    }
+
+    // We can't use gl.generateMipmaps with compressed textures, so only use
+    // mipmapped filtering if the compressed texture data contained mip levels.
+    if (levels > 1) {
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+    }
+    else {
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    }
+
+    // Cleaning the data to save memory. NOTE : BECAUSE OF THIS WE CANNOT CREATE TWO GL TEXTURE FROM THE SAME COMPRESSED IMAGE !
+    if (!preserveSource)
+        this.data = null;
+};
+
 /**
  * Charge une image compressée depuis un array buffer
  * @param arrayBuffer : le buffer à partir duquel charger l'image
  * @return la CompressedImage chargée
  */
 CompressedImage.loadFromArrayBuffer = function (arrayBuffer, src) {
+    return new CompressedImage(src).loadFromArrayBuffer(arrayBuffer);
+};
+
+CompressedImage.prototype.loadFromArrayBuffer = function(arrayBuffer) {
     var entete = new Uint8Array(arrayBuffer, 0, 3);
 
+    //todo: implement onload
+
     if (entete[0] == "DDS".charCodeAt(0) && entete[1] == "DDS".charCodeAt(1) && entete[2] == "DDS".charCodeAt(2))
-        return loadDDS(arrayBuffer, src);
+        return this._loadDDS(arrayBuffer);
     else if (entete[0] == "PVR".charCodeAt(0) && entete[1] == "PVR".charCodeAt(1) && entete[2] == "PVR".charCodeAt(2))
-        return loadPVR(arrayBuffer, src);
+        return this._loadPVR(arrayBuffer);
     else
         throw "Compressed texture format is not recognized: " + src;
-};
+    return this;
+}
 
 /**
  * Charge une image compressГ©e au format DDS depuis un array buffer
  * @param arrayBuffer : le buffer Г  partir duquel charger l'image
  * @return la CompressedImage chargГ©e
  */
-function loadDDS(arrayBuffer, src) {
+CompressedImage.prototype._loadDDS = function(arrayBuffer) {
     // Get a view of the arrayBuffer that represents the DDS header.
     var header = new Int32Array(arrayBuffer, 0, DDS_HEADER_LENGTH);
 
@@ -170,7 +189,7 @@ function loadDDS(arrayBuffer, src) {
     var dataOffset = header[DDS_HEADER_SIZE] + 4;
     var dxtData = new Uint8Array(arrayBuffer, dataOffset);
 
-    return new CompressedImage(src, dxtData, 'DDS', width, height, levels, internalFormat);
+    return this.init(this.src, dxtData, 'DDS', width, height, levels, internalFormat);
 };
 
 /**
@@ -178,7 +197,7 @@ function loadDDS(arrayBuffer, src) {
  * @param arrayBuffer : le buffer Г  partir duquel charger l'image
  * @return la CompressedImage chargГ©e
  */
-function loadPVR(arrayBuffer, src) {
+CompressedImage.prototype._loadPVR = function(arrayBuffer) {
     // Get a view of the arrayBuffer that represents the DDS header.
     var header = new Int32Array(arrayBuffer, 0, PVR_HEADER_LENGTH);
 
@@ -225,7 +244,7 @@ function loadPVR(arrayBuffer, src) {
     var dataOffset = header[PVR_HEADER_METADATA] + 52;
     var pvrtcData = new Uint8Array(arrayBuffer, dataOffset);
 
-    return new CompressedImage(src, pvrtcData, 'PVR', width, height, levels, internalFormat);
+    return this.init(this.src, pvrtcData, 'PVR', width, height, levels, internalFormat);
 };
 
 
@@ -403,11 +422,14 @@ CompressedTextureManager.prototype.getSupportedExtensions = function () {
 };
 
 CompressedTextureManager.prototype.updateTexture = function (texture, removeSource) {
-    var renderer = this.renderer;
-    var gl = this.renderer.gl;
     var source = texture.source;
     if (!(source instanceof CompressedImage)) {
         throw "Not a compressed image";
+    }
+    var renderer = this.renderer;
+    var gl = this.renderer.gl;
+    if (!source.complete) {
+        throw "CompressedImage wasnt loaded yet. Check if you have `loader.before(PIXI.compressedTextures.imageParser())` thing";
     }
     if (!texture._glTextures[gl.id]) {
         texture._glTextures[gl.id] = gl.createTexture();
@@ -438,42 +460,10 @@ CompressedTextureManager.prototype.updateAllTextures = function (resources, remo
     }
 };
 },{"./CompressedImage":2}],4:[function(require,module,exports){
-var core = PIXI,
-    utils = core.utils,
-    CompressedImage = require('./CompressedImage'),
-    Resource = core.loaders.Resource;
-
-Resource._xhrTypeMap['dds'] = Resource.XHR_RESPONSE_TYPE.BUFFER;
-Resource._xhrTypeMap['pvr'] = Resource.XHR_RESPONSE_TYPE.BUFFER;
-
-function compressedTextureParser(supportedExtensions) {
-    supportedExtensions = supportedExtensions || [];
-
-    return function (resource, next) {
-        resource.isCompressedImage = false;
-        if (resource.xhr && resource.xhrType === Resource.XHR_RESPONSE_TYPE.BUFFER) {
-            if (resource.url.indexOf('.dds') != -1 || resource.url.indexOf('.pvr') != -1) {
-                var compressedImage = CompressedImage.loadFromArrayBuffer(resource.data);
-                var baseTexture = new core.BaseTexture(compressedImage, null, core.utils.getResolutionOfUrl(resource.url));
-                baseTexture.imageUrl = resource.url;
-
-                resource.texture = new PIXI.Texture(baseTexture);
-                resource.data = null;
-                resource.isCompressedImage = true;
-
-                utils.BaseTextureCache[baseTexture.imageUrl] = baseTexture;
-                utils.TextureCache[baseTexture.imageUrl] = resource.texture;
-            }
-        }
-        next();
-    }
-}
-
-module.exports = compressedTextureParser;
-
-},{"./CompressedImage":2}],5:[function(require,module,exports){
 function extensionChooser(supportedExtensions) {
     supportedExtensions = supportedExtensions || [];
+
+    var imageParser = require('./imageParser')();
 
     return function (resource, next) {
         var ext = resource.metadata.choice;
@@ -498,17 +488,17 @@ function extensionChooser(supportedExtensions) {
                 if (ext[i] === supportedExtensions[j]) {
                     resource.url = url;
                     resource.loadType = resource._determineLoadType();
-                    return next();
+                    return imageParser(resource, next);
                 }
             }
         }
-        next();
+        return imageParser(resource, next);
     };
 }
 
 module.exports = extensionChooser;
 
-},{}],6:[function(require,module,exports){
+},{"./imageParser":6}],5:[function(require,module,exports){
 var core = PIXI,
     utils = core.utils,
     extensionFixer = require('./CompressedImage');
@@ -529,6 +519,36 @@ function textureExtensionFixer(supportedExtensions) {
 }
 
 module.exports = textureExtensionFixer;
+
+},{"./CompressedImage":2}],6:[function(require,module,exports){
+var core = PIXI,
+    utils = core.utils,
+    CompressedImage = require('./CompressedImage'),
+    Resource = core.loaders.Resource;
+
+Resource.setExtensionXhrType('dds', Resource.XHR_RESPONSE_TYPE.BUFFER);
+Resource.setExtensionXhrType('pvr', Resource.XHR_RESPONSE_TYPE.BUFFER);
+
+function imageParser() {
+    return function (resource, next) {
+        if (resource.url.indexOf('.dds') != -1 || resource.url.indexOf('.pvr') != -1) {
+            var compressedImage = resource.compressedImage || new CompressedImage(resource.url);
+            if (resource.data) {
+                throw "compressedImageParser middleware must be specified in loader.before() and must have zero resource.data";
+            }
+            resource.isCompressedImage = true;
+            resource.data = compressedImage;
+            resource.once('complete', function() {
+                resource.isImage = true;
+                compressedImage.loadFromArrayBuffer(resource.data);
+                resource.data = compressedImage;
+            });
+        }
+        next();
+    }
+}
+
+module.exports = imageParser;
 
 },{"./CompressedImage":2}]},{},[1])
 

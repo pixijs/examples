@@ -3,9 +3,11 @@ renderer.view.style.width = "800px";
 renderer.view.style.height = "600px";
 document.body.appendChild(renderer.view);
 
+// use empty array if you dont want to use detect feature
+var extensions = PIXI.compressedTextures.detectExtensions(renderer);
+
 var loader = new PIXI.loaders.Loader();
-// textureParser will form list of allowed extensions based on renderer.
-loader.before(PIXI.compressedTextures.extensionChooser(PIXI.compressedTextures.detectExtensions(renderer)));
+loader.before(PIXI.compressedTextures.extensionChooser(extensions));
 // use @2x texture if resolution is 2, use dds format if its windows
 var textureOptions1 = { metadata: {choice: ["@2x.png", ".dds", "@2x.dds"]} };
 // use dds format if its windows but dont care for retina

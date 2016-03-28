@@ -23,13 +23,15 @@ function init() {
         var h = D8.isSwapWidthHeight(rotate) ? texture.frame.width : texture.frame.height;
         var w = D8.isSwapWidthHeight(rotate) ? texture.frame.height : texture.frame.width;
 
-        var frame = new PIXI.Rectangle(texture.frame.x, texture.frame.y, w, h);
+      	var frame = texture.frame;
+        var crop = new PIXI.Rectangle(texture.frame.x, texture.frame.y, w, h);
+        var trim = crop;
         if (rotate%2==0) {
-        	var rotatedTexture = new PIXI.Texture(texture.baseTexture, frame, null, null, rotate);
+        	var rotatedTexture = new PIXI.Texture(texture.baseTexture, frame, crop, trim, rotate);
         } else {
             //HACK to avoid exception
 			//PIXI doesnt like diamond-shaped UVs, because they are different in canvas and webgl
-          	var rotatedTexture = new PIXI.Texture(texture.baseTexture, frame, null, null, rotate-1);
+          	var rotatedTexture = new PIXI.Texture(texture.baseTexture, frame, crop, trim, rotate-1);
           	rotatedTexture.rotate++;
         }
         textures.push(rotatedTexture);

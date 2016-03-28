@@ -45,6 +45,12 @@
             "entry": "custom-filter.js"
         }
     ],
+    "camera": [
+        {
+            "title": "Mirror",
+            "entry": "mirror.js"
+        }
+    ],
     "demos": [
         {
             "title": "MovieClip",

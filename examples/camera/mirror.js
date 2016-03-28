@@ -8,8 +8,8 @@ document.body.appendChild(renderer.view);
 var stage = new PIXI.Container();
 var up = new PIXI.Container();
 stage.addChild(up);
-var camera1 = new PIXI.Camera2d();
-up.addChild(camera1);
+var bunnies = new PIXI.Container();
+up.addChild(bunnies);
 var camera2 = new PIXI.Camera2d();
 camera2.position.x = 800;
 camera2.rotation = Math.PI/2;
@@ -43,8 +43,8 @@ bunnyCenter.anchor.x = 0.5;
 bunnyCenter.anchor.y = 0.5;
 
 // now add both sprites to the scene and see how they differ
-camera1.addChild(bunnyLeft);
-camera1.addChild(bunnyCenter);
+bunnies.addChild(bunnyLeft);
+bunnies.addChild(bunnyCenter);
 
 // start animating
 animate();
@@ -56,7 +56,7 @@ function animate() {
 	bunnyLeft.rotation += 0.08;
 	bunnyCenter.rotation += 0.08;
 
-	camera2.proxyContainer(camera1);
+	camera2.proxyContainer(bunnies);
 	camera3.proxyContainer(up);
 	// render the container
 	renderer.render(stage);

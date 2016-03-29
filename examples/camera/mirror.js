@@ -1,5 +1,3 @@
-//in this example there are only two bunnies. There are 2 extra cameras.
-
 // create a renderer, detecting automatically which one to create between Canvas and WebGL
 var renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);

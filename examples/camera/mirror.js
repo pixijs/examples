@@ -1,4 +1,4 @@
-//in this example there are only two bunnies. There are 3 cameras.
+//in this example there are only two bunnies. There are 2 extra cameras.
 
 // create a renderer, detecting automatically which one to create between Canvas and WebGL
 var renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x1099bb});
@@ -46,18 +46,29 @@ bunnyCenter.anchor.y = 0.5;
 bunnies.addChild(bunnyLeft);
 bunnies.addChild(bunnyCenter);
 
+function resize(event) {
+    var target = event.target;
+    target.scale.x = 2.5 - target.scale.x;
+    target.scale.y = 2.5 - target.scale.y;
+}
+bunnyLeft.interactive = true;
+bunnyCenter.interactive = true;
+bunnyLeft.on('click', resize);
+bunnyCenter.on('click', resize);
+
+
 // start animating
 animate();
 
 function animate() {
-	requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 
-	// rotate both sprites and see the effect of the anchor
-	bunnyLeft.rotation += 0.08;
-	bunnyCenter.rotation += 0.08;
+    // rotate both sprites and see the effect of the anchor
+    bunnyLeft.rotation += 0.08;
+    bunnyCenter.rotation += 0.08;
 
-	camera2.proxyContainer(bunnies);
-	camera3.proxyContainer(up);
-	// render the container
-	renderer.render(stage);
+    camera2.proxyContainer(bunnies);
+    camera3.proxyContainer(up);
+    // render the container
+    renderer.render(stage);
 }

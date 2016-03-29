@@ -7451,8 +7451,7 @@ Camera2d.prototype.renderCanvas = function(renderer) {
 };
 
 },{"../c2d/ComputedTransform2d":35,"../c2d/Transform2d":43,"./Container":48}],47:[function(require,module,exports){
-var Container = require('./Container'),
-    ContainerProxy = require('./ContainerProxy'),
+var ContainerProxy = require('./ContainerProxy'),
     Camera2d = require('./Camera2d'),
     ComputedTransform2d = require('../c2d/ComputedTransform2d');
 
@@ -7501,7 +7500,7 @@ Camera2d.prototype.createProxy = function() {
     return new CameraProxy(this);
 };
 
-},{"../c2d/ComputedTransform2d":35,"./Camera2d":46,"./Container":48,"./ContainerProxy":49}],48:[function(require,module,exports){
+},{"../c2d/ComputedTransform2d":35,"./Camera2d":46,"./ContainerProxy":49}],48:[function(require,module,exports){
 var math = require('../math'),
     utils = require('../utils'),
     DisplayObject = require('./DisplayObject');
@@ -8141,8 +8140,7 @@ Container.prototype.destroy = function (destroyChildren)
 };
 
 },{"../math":68,"../utils":113,"./DisplayObject":50}],49:[function(require,module,exports){
-var math = require('../math'),
-    DisplayObjectProxy = require('./DisplayObjectProxy'),
+var DisplayObjectProxy = require('./DisplayObjectProxy'),
     Container = require('./Container');
 
 /**
@@ -8208,7 +8206,7 @@ ContainerProxy.prototype.createProxy = function() {
  */
 ContainerProxy.prototype.destroy = Container.prototype.destroy;
 
-},{"../math":68,"./Container":48,"./DisplayObjectProxy":51}],50:[function(require,module,exports){
+},{"./Container":48,"./DisplayObjectProxy":51}],50:[function(require,module,exports){
 var math = require('../math'),
     EventEmitter = require('eventemitter3'),
     Transform2d = require('../c2d/Transform2d'),
@@ -9130,6 +9128,10 @@ DisplayObjectProxy.prototype.updateTransform = function ()
 
 DisplayObjectProxy.prototype.displayObjectUpdateTransform = DisplayObjectProxy.prototype.updateTransform;
 
+DisplayObjectProxy.prototype.containsLocalPoint = function(point) {
+    return this.original.containsLocalPoint(point);
+}
+
 DisplayObjectProxy.prototype.destroy = function() {
     //do nothing.
 };
@@ -9140,6 +9142,18 @@ DisplayObjectProxy.prototype.destroy = function() {
  */
 DisplayObjectProxy.prototype.createProxy = function() {
     return new DisplayObjectProxy(this);
+};
+
+DisplayObjectProxy.prototype.getOriginal = function() {
+    var orig = this.original;
+    while (orig.original) {
+        orig = orig.original;
+    }
+    return orig;
+};
+
+DisplayObjectProxy.prototype.emit = function(eventString, eventData) {
+    this.original.emit(eventString, eventData);
 };
 
 /**
@@ -16821,16 +16835,20 @@ Sprite.prototype.makeDirty = function() {
 */
 Sprite.prototype._renderWebGL = function (renderer)
 {
+    this.updateGeometry();
+
+    renderer.setObjectRenderer(renderer.plugins.sprite);
+    renderer.plugins.sprite.render(this);
+};
+
+Sprite.prototype.updateTransform = function() {
     if(this.textureDirty)
     {
         this.textureDirty = false;
         // set the vertex data
         this.calculateVertices();
     }
-    this.updateGeometry();
-
-    renderer.setObjectRenderer(renderer.plugins.sprite);
-    renderer.plugins.sprite.render(this);
+    this.containerUpdateTransform();
 };
 
 /**
@@ -21281,7 +21299,7 @@ core.utils.uuid = function ()
     return core.utils.uid();
 };
 
-},{"./core":64,"./extras":123,"./filters":135,"./mesh":150}],117:[function(require,module,exports){
+},{"./core":64,"./extras":123,"./filters":135,"./mesh":151}],117:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -24197,7 +24215,7 @@ Object.assign(core, require('./deprecation'));
 global.PIXI = core;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./accessibility":32,"./core":64,"./deprecation":116,"./extras":123,"./filters":135,"./interaction":140,"./loaders":143,"./mesh":150,"./particles":153,"./polyfill":159}],138:[function(require,module,exports){
+},{"./accessibility":32,"./core":64,"./deprecation":116,"./extras":123,"./filters":135,"./interaction":140,"./loaders":144,"./mesh":151,"./particles":154,"./polyfill":160}],138:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -24219,8 +24237,16 @@ function InteractionData()
      * The target Sprite that was interacted with
      *
      * @member {PIXI.Sprite}
+     * @private
      */
-    this.target = null;
+    this._target = null;
+
+    /**
+     * The target proxy that was interacted with
+     *
+     * @member {PIXI.Sprite}
+     */
+    this.targetProxy = null;
 
     /**
      * When passed to an event handler, this will be the original DOM Event that was captured
@@ -24232,6 +24258,23 @@ function InteractionData()
 
 InteractionData.prototype.constructor = InteractionData;
 module.exports = InteractionData;
+
+Object.defineProperties(InteractionData.prototype, {
+    target: {
+        get: function() {
+            return this._target;
+        },
+        set: function(value) {
+            if (value && value.original) {
+                this._target = value.getOriginal();
+                this.targetProxy = value;
+            } else {
+                this._target = value;
+                this.targetProxy = null;
+            }
+        }
+    }
+});
 
 /**
  * This will return the local coordinates of the specified displayObject for this InteractionData
@@ -24255,6 +24298,11 @@ var core = require('../core'),
 Object.assign(
     core.DisplayObject.prototype,
     require('./interactiveTarget')
+);
+
+Object.defineProperties(
+    core.DisplayObjectProxy.prototype,
+    require('./interactiveTargetProxy')
 );
 
 /**
@@ -25179,7 +25227,7 @@ InteractionManager.prototype.destroy = function () {
 core.WebGLRenderer.registerPlugin('interaction', InteractionManager);
 core.CanvasRenderer.registerPlugin('interaction', InteractionManager);
 
-},{"../core":64,"./InteractionData":138,"./interactiveTarget":141}],140:[function(require,module,exports){
+},{"../core":64,"./InteractionData":138,"./interactiveTarget":141,"./interactiveTargetProxy":142}],140:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI interactions library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -25246,6 +25294,46 @@ var interactiveTarget = {
 module.exports = interactiveTarget;
 
 },{}],142:[function(require,module,exports){
+/**
+ * Default property values of interactive objects
+ * used by {@link PIXI.interaction.InteractionManager}.
+ *
+ * @mixin
+ * @memberof PIXI.interaction
+ * @example
+ *      function MyObject() {}
+ *
+ *      Object.assign(
+ *          MyObject.prototype,
+ *          PIXI.interaction.interactiveTarget
+ *      );
+ */
+var interactiveTargetProxy = {
+    interactive: {
+        get: function() {
+            return this.original.interactive;
+        }
+    },
+    buttonMode: {
+        get: function() {
+            return this.original.buttonMode;
+        }
+    },
+    interactiveChildren: {
+        get: function() {
+            return this.original.interactiveChildren;
+        }
+    },
+    defaultCursor: {
+        get: function() {
+            return this.original.defaultCursor;
+        }
+    }
+};
+
+module.exports = interactiveTargetProxy;
+
+},{}],143:[function(require,module,exports){
 var Resource = require('resource-loader').Resource,
     core = require('../core'),
     extras = require('../extras'),
@@ -25369,7 +25457,7 @@ module.exports = function ()
     };
 };
 
-},{"../core":64,"../extras":123,"path":4,"resource-loader":164}],143:[function(require,module,exports){
+},{"../core":64,"../extras":123,"path":4,"resource-loader":165}],144:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI loaders library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -25390,7 +25478,7 @@ module.exports = {
     Resource:           require('resource-loader').Resource
 };
 
-},{"./bitmapFontParser":142,"./loader":144,"./spritesheetParser":145,"./textureParser":146,"resource-loader":164}],144:[function(require,module,exports){
+},{"./bitmapFontParser":143,"./loader":145,"./spritesheetParser":146,"./textureParser":147,"resource-loader":165}],145:[function(require,module,exports){
 var ResourceLoader = require('resource-loader'),
     textureParser = require('./textureParser'),
     spritesheetParser = require('./spritesheetParser'),
@@ -25452,7 +25540,7 @@ var Resource = ResourceLoader.Resource;
 
 Resource.setExtensionXhrType('fnt', Resource.XHR_RESPONSE_TYPE.DOCUMENT);
 
-},{"./bitmapFontParser":142,"./spritesheetParser":145,"./textureParser":146,"resource-loader":164}],145:[function(require,module,exports){
+},{"./bitmapFontParser":143,"./spritesheetParser":146,"./textureParser":147,"resource-loader":165}],146:[function(require,module,exports){
 var Resource = require('resource-loader').Resource,
     path = require('path'),
     core = require('../core');
@@ -25524,7 +25612,7 @@ module.exports = function ()
     };
 };
 
-},{"../core":64,"path":4,"resource-loader":164}],146:[function(require,module,exports){
+},{"../core":64,"path":4,"resource-loader":165}],147:[function(require,module,exports){
 var core = require('../core');
 
 module.exports = function ()
@@ -25546,7 +25634,7 @@ module.exports = function ()
     };
 };
 
-},{"../core":64}],147:[function(require,module,exports){
+},{"../core":64}],148:[function(require,module,exports){
 var core = require('../core'),
     glCore = require('pixi-gl-core'),
     Shader = require('./webgl/MeshShader');
@@ -25998,7 +26086,7 @@ Mesh.DRAW_MODES = {
     TRIANGLES: 1
 };
 
-},{"../core":64,"./webgl/MeshShader":151,"pixi-gl-core":15}],148:[function(require,module,exports){
+},{"../core":64,"./webgl/MeshShader":152,"pixi-gl-core":15}],149:[function(require,module,exports){
 var Mesh = require('./Mesh');
 
 /**
@@ -26124,7 +26212,7 @@ Plane.prototype._onTextureUpdate = function ()
     }
 };
 
-},{"./Mesh":147}],149:[function(require,module,exports){
+},{"./Mesh":148}],150:[function(require,module,exports){
 var Mesh = require('./Mesh');
 var core = require('../core');
 
@@ -26337,7 +26425,7 @@ Rope.prototype.updateTransform = function ()
     this.containerUpdateTransform();
 };
 
-},{"../core":64,"./Mesh":147}],150:[function(require,module,exports){
+},{"../core":64,"./Mesh":148}],151:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI extras library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -26355,7 +26443,7 @@ module.exports = {
     MeshShader:     require('./webgl/MeshShader')
 };
 
-},{"./Mesh":147,"./Plane":148,"./Rope":149,"./webgl/MeshShader":151}],151:[function(require,module,exports){
+},{"./Mesh":148,"./Plane":149,"./Rope":150,"./webgl/MeshShader":152}],152:[function(require,module,exports){
 var Shader = require('pixi-gl-core').GLShader;
 
 /**
@@ -26405,7 +26493,7 @@ MeshShader.prototype.constructor = MeshShader;
 module.exports = MeshShader;
 
 
-},{"pixi-gl-core":15}],152:[function(require,module,exports){
+},{"pixi-gl-core":15}],153:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -26738,7 +26826,7 @@ ParticleContainer.prototype.destroy = function () {
     this._buffers = null;
 };
 
-},{"../core":64}],153:[function(require,module,exports){
+},{"../core":64}],154:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI extras library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -26754,7 +26842,7 @@ module.exports = {
     ParticleRenderer: 			 require('./webgl/ParticleRenderer')
 };
 
-},{"./ParticleContainer":152,"./webgl/ParticleRenderer":155}],154:[function(require,module,exports){
+},{"./ParticleContainer":153,"./webgl/ParticleRenderer":156}],155:[function(require,module,exports){
 var glCore = require('pixi-gl-core'),
     createIndicesForQuads = require('../../core/utils/createIndicesForQuads');
 
@@ -26975,7 +27063,7 @@ ParticleBuffer.prototype.destroy = function ()
     this.staticBuffer.destroy();
 };
 
-},{"../../core/utils/createIndicesForQuads":111,"pixi-gl-core":15}],155:[function(require,module,exports){
+},{"../../core/utils/createIndicesForQuads":111,"pixi-gl-core":15}],156:[function(require,module,exports){
 var core = require('../../core'),
     ParticleShader = require('./ParticleShader'),
     ParticleBuffer = require('./ParticleBuffer');
@@ -27406,7 +27494,7 @@ ParticleRenderer.prototype.destroy = function ()
     this.tempMatrix = null;
 };
 
-},{"../../core":64,"./ParticleBuffer":154,"./ParticleShader":156}],156:[function(require,module,exports){
+},{"../../core":64,"./ParticleBuffer":155,"./ParticleShader":157}],157:[function(require,module,exports){
 var Shader = require('pixi-gl-core').GLShader;
 
 /**
@@ -27474,7 +27562,7 @@ ParticleShader.prototype.constructor = ParticleShader;
 
 module.exports = ParticleShader;
 
-},{"pixi-gl-core":15}],157:[function(require,module,exports){
+},{"pixi-gl-core":15}],158:[function(require,module,exports){
 // References:
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
 
@@ -27490,7 +27578,7 @@ if (!Math.sign)
     };
 }
 
-},{}],158:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 // References:
 // https://github.com/sindresorhus/object-assign
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -27500,7 +27588,7 @@ if (!Object.assign)
     Object.assign = require('object-assign');
 }
 
-},{"object-assign":14}],159:[function(require,module,exports){
+},{"object-assign":14}],160:[function(require,module,exports){
 require('./Object.assign');
 require('./requestAnimationFrame');
 require('./Math.sign');
@@ -27518,7 +27606,7 @@ if(!window.Uint16Array){
   window.Uint16Array = Array;
 }
 
-},{"./Math.sign":157,"./Object.assign":158,"./requestAnimationFrame":160}],160:[function(require,module,exports){
+},{"./Math.sign":158,"./Object.assign":159,"./requestAnimationFrame":161}],161:[function(require,module,exports){
 (function (global){
 // References:
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -27588,7 +27676,7 @@ if (!global.cancelAnimationFrame) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],161:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 var async       = require('async'),
     urlParser   = require('url'),
     Resource    = require('./Resource'),
@@ -28046,7 +28134,7 @@ Loader.LOAD_TYPE = Resource.LOAD_TYPE;
 Loader.XHR_READY_STATE = Resource.XHR_READY_STATE;
 Loader.XHR_RESPONSE_TYPE = Resource.XHR_RESPONSE_TYPE;
 
-},{"./Resource":162,"async":1,"eventemitter3":2,"url":10}],162:[function(require,module,exports){
+},{"./Resource":163,"async":1,"eventemitter3":2,"url":10}],163:[function(require,module,exports){
 var EventEmitter = require('eventemitter3'),
     _url = require('url'),
     // tests is CORS is supported in XHR, if not we need to use XDR
@@ -28856,7 +28944,7 @@ function setExtMap(map, extname, val) {
     map[extname] = val;
 }
 
-},{"eventemitter3":2,"url":10}],163:[function(require,module,exports){
+},{"eventemitter3":2,"url":10}],164:[function(require,module,exports){
 module.exports = {
 
     // private property
@@ -28922,7 +29010,7 @@ module.exports = {
     }
 };
 
-},{}],164:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 module.exports = require('./Loader');
 
 module.exports.Resource = require('./Resource');
@@ -28936,7 +29024,7 @@ module.exports.middleware = {
     }
 };
 
-},{"./Loader":161,"./Resource":162,"./middlewares/caching/memory":165,"./middlewares/parsing/blob":166}],165:[function(require,module,exports){
+},{"./Loader":162,"./Resource":163,"./middlewares/caching/memory":166,"./middlewares/parsing/blob":167}],166:[function(require,module,exports){
 // a simple in-memory cache for resources
 var cache = {};
 
@@ -28958,7 +29046,7 @@ module.exports = function () {
     };
 };
 
-},{}],166:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 var Resource = require('../../Resource'),
     b64 = require('../../b64');
 
@@ -29018,6 +29106,6 @@ module.exports = function () {
     };
 };
 
-},{"../../Resource":162,"../../b64":163}]},{},[137])(137)
+},{"../../Resource":163,"../../b64":164}]},{},[137])(137)
 });
 //# sourceMappingURL=pixi.js.map

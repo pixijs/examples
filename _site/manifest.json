@@ -47,8 +47,12 @@
     ],
     "camera": [
         {
-            "title": "Mirror",
+            "title": "2 bunnies 2 cameras",
             "entry": "mirror.js"
+        },
+        {
+            "title": "Z-order",
+            "entry": "zorder.js"
         }
     ],
     "demos": [

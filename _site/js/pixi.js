@@ -6430,7 +6430,7 @@ function ComputedTransform2d()
     this.matrix2d = new math.Matrix();
 
     this.version = 0;
-    this.uid = utils.uid();
+    this.uid = utils.incTransform();
     this.is3d = false;
     this.updated = false;
     this._dirtyLocalUid = -1;
@@ -6575,7 +6575,7 @@ var Point = require('../math/Point'),
 
 function DisplayPoint() {
     this._point = new Point();
-    this.uid = utils.uid();
+    this.uid = utils.incRaycast();
     this.is3d = false;
     this.version = 0;
     this.valid = true;
@@ -6646,7 +6646,7 @@ function Geometry() {
     this.indices = null;
     this.stride = 2;
     this.is3d = false;
-    this.uid = utils.uid();
+    this.uid = utils.incGeometry();
     this.version = 0;
     this._bounds = new math.Rectangle();
     this._dirtyBounds = -1;
@@ -6982,7 +6982,7 @@ function Raycast2d() {
     this.valid = false;
     this.intersects = false;
     this.version = 0;
-    this.uid = utils.uid();
+    this.uid = utils.incRaycast();
 }
 
 Object.defineProperties(Raycast2d.prototype, {
@@ -7103,7 +7103,7 @@ function Transform2d(isStatic)
     this._dirtyVersion = 0;
     this.version = 0;
 
-    this.uid = utils.uid();
+    this.uid = utils.incTransform();
 }
 
 Transform2d.prototype.constructor = Transform2d;
@@ -7223,7 +7223,8 @@ arguments[4][33][0].apply(exports,arguments)
 },{"./utils/maxRecommendedTextures":114,"dup":33}],46:[function(require,module,exports){
 var Container = require('./Container'),
     Transform2d = require('../c2d/Transform2d'),
-    ComputedTransform2d = require('../c2d/ComputedTransform2d');
+    ComputedTransform2d = require('../c2d/ComputedTransform2d'),
+    utils = require('../utils');
 
 /**
  * Camera object, stores everything in `projection` instead of `transform`
@@ -7249,6 +7250,37 @@ function Camera2d()
     this.proxyCache = [{}, {}];
 
     this.initProjection();
+
+    /**
+     * Calculate z-order to make a displaylist
+     * @member {Function}
+     */
+    this.onZOrder = null;
+
+    /**
+     * Display list
+     * @type {Array}
+     * @Private
+     */
+    this._displayList = [];
+
+    this._displayListFlag = [];
+
+    /**
+     * Enable display list, sort elements by z-index, z-order and updateOrder
+     * @type {boolean}
+     */
+    this.enableDisplayList = false;
+
+    this.displayListSort = function(a, b) {
+        if (a.zIndex !== b.zIndex) {
+            return a.zIndex - b.zIndex;
+        }
+        if (a.zOrder !== b.zOrder) {
+            return b.zOrder - a.zOrder;
+        }
+        return a.updateOrder - b.updateOrder;
+    };
 }
 
 // constructor
@@ -7394,6 +7426,13 @@ Camera2d.prototype.displayObjectUpdateTransform = function() {
     return this.computedTransform;
 };
 
+Camera2d.prototype.updateTransform = function() {
+    this.containerUpdateTransform();
+    if (this.enableDisplayList) {
+        this.updateDisplayList();
+    }
+};
+
 Camera2d.prototype._proxyContainer = function(containerFrom, containerTo) {
     var proxyCache = this.proxyCache[0];
     var newProxyCache = this.proxyCache[1];
@@ -7427,30 +7466,96 @@ Camera2d.prototype.proxyContainer = function(containerFrom, containerTo) {
     this._proxySwapBuffer();
 };
 
-Camera2d.prototype.proxySwapContext = function() {
+/*Camera2d.prototype.proxySwapContext = function() {
     var pc = this.proxyCache[0];
     for (var key in pc) {
         var val = pc[key];
         val.swapContext();
     }
-};
+};*/
 
 Camera2d.prototype.containerRenderWebGL = Container.prototype.renderWebGL;
 Camera2d.prototype.containerRenderCanvas = Container.prototype.renderCanvas;
 
 Camera2d.prototype.renderWebGL = function(renderer) {
-    this.proxySwapContext();
-    this.containerRenderWebGL(renderer);
-    this.proxySwapContext();
+    if (this.enableDisplayList) {
+        var list = this._displayList;
+        var flags = this._displayListFlag;
+        for (var i=0;i<list.length;i++) {
+            if (flags[i]) {
+                list[i].renderWebGL(renderer);
+            } else {
+                list[i].displayOrder = utils.incDisplayOrder();
+                list[i]._renderWebGL(renderer);
+            }
+        }
+    } else {
+        this.containerRenderWebGL(renderer);
+    }
 };
 
 Camera2d.prototype.renderCanvas = function(renderer) {
-    this.proxySwapContext();
-    this.containerRenderCanvas(renderer);
-    this.proxySwapContext();
+    if (this.enableDisplayList) {
+        var list = this._displayList;
+        var flags = this._displayListFlag;
+        for (var i=0;i<list.length;i++) {
+            if (flags[i]) {
+                list[i].renderCanvas(renderer);
+            } else {
+                list[i].displayOrder = utils.incDisplayOrder();
+                list[i]._renderCanvas(renderer);
+            }
+        }
+    } else {
+        this.containerRenderCanvas(renderer);
+    }
 };
 
-},{"../c2d/ComputedTransform2d":35,"../c2d/Transform2d":43,"./Container":48}],47:[function(require,module,exports){
+Camera2d.prototype._addInList = function(container, parentZ) {
+    if (!container.visible || !container.renderable) {
+        return;
+    }
+    var list = this._displayList;
+    var flags = this._displayListFlag;
+    container.displayOrder = list.length;
+    if (container.inheritZIndex) {
+        container.zIndex = parentZ;
+    }
+    var z = container.zIndex;
+    list.push(container);
+    if (container._mask || container._filters && !container._filters.length) {
+        flags.push(1);
+    } else {
+        var children = container.children;
+        if (children) {
+            flags.push(0);
+            for (var i = 0; i < children.length; i++) {
+                this._addInList(children[i], z);
+            }
+        } else {
+            flags.push(2);
+        }
+    }
+};
+
+Camera2d.prototype.updateDisplayList = function() {
+    var list = this._displayList;
+    var flags = this._displayListFlag;
+    list.length = 0;
+    flags.length = 0;
+    var children = this.children;
+    for (var i=0;i<children.length;i++) {
+        this._addInList(children[i], 0);
+    }
+    if (this.onZOrder) {
+        for (i = 0; i < list.length; i++) {
+            this.onZOrder(list[i]);
+        }
+    }
+    list.sort(this.displayListSort);
+};
+
+},{"../c2d/ComputedTransform2d":35,"../c2d/Transform2d":43,"../utils":113,"./Container":48}],47:[function(require,module,exports){
 var ContainerProxy = require('./ContainerProxy'),
     Camera2d = require('./Camera2d'),
     ComputedTransform2d = require('../c2d/ComputedTransform2d');
@@ -7467,6 +7572,12 @@ function CameraProxy(original)
     ContainerProxy.call(this, original);
 
     this.worldProjection = new ComputedTransform2d();
+
+    this._displayList = original._displayList;
+
+    this._displayListFlag = original._displayListFlag;
+
+    this.enableDisplayList = original.enableDisplayList;
 }
 
 // constructor
@@ -7484,9 +7595,14 @@ Object.defineProperties(CameraProxy.prototype, {
 
 CameraProxy.prototype.displayObjectUpdateTransform = Camera2d.prototype.displayObjectUpdateTransform;
 
+CameraProxy.prototype.containerRenderWebGL = Camera2d.prototype.containerRenderWebGL;
+CameraProxy.prototype.containerRenderCanvas = Camera2d.prototype.containerRenderCanvas;
+
+CameraProxy.prototype.renderWebGL = Camera2d.prototype.renderWebGL;
+CameraProxy.prototype.renderCanvas = Camera2d.prototype.renderCanvas;
 /**
  * Proxy of a Proxy of a Camera. You super-perverted bastard!
- * @return {PIXI.ContainerProxy}
+ * @return {PIXI.CameraProxy}
  */
 CameraProxy.prototype.createProxy = function() {
     return new CameraProxy(this);
@@ -7494,7 +7610,7 @@ CameraProxy.prototype.createProxy = function() {
 
 /**
  * Proxy of a Camera. You perverted bastard!
- * @return {PIXI.ContainerProxy}
+ * @return {PIXI.CameraProxy}
  */
 Camera2d.prototype.createProxy = function() {
     return new CameraProxy(this);
@@ -7528,6 +7644,12 @@ function Container()
      * @readonly
      */
     this.children = [];
+
+    /**
+     * Display post order, to determine if some element is a direct child of this container
+     * @type {number}
+     */
+    this.updatePostOrder = 0;
 }
 
 // constructor
@@ -7875,7 +7997,7 @@ Container.prototype.updateTransform = function ()
         this.children[i].updateTransform();
     }
 
-    this._currentBounds = null;
+    this.updatePostOrder = utils.incUpdateOrder();
 };
 
 // performance increase to avoid using call.. (10x faster)
@@ -7951,7 +8073,7 @@ Container.prototype.getBounds = function ()
 
     if(!this._currentBounds)
     {
-        var geom = this.updateGeometry();
+        var geom = this.updateProjectedGeometry();
         if (!geom)
         {
             this._currentBounds = this._getChildBounds();
@@ -8002,13 +8124,14 @@ Container.prototype.getLocalBounds = function ()
  */
 Container.prototype.renderWebGL = function (renderer)
 {
-
     // if the object is not visible or the alpha is 0 then no need to render this element
     if (!this.visible || this.worldAlpha <= 0 || !this.renderable)
     {
-
+        this.displayOrder = 0;
         return;
     }
+
+    this.displayOrder = utils.incDisplayOrder();
 
     var i, j;
 
@@ -8192,6 +8315,22 @@ ContainerProxy.prototype.containerGetBounds = Container.prototype.getBounds;
 
 ContainerProxy.prototype.getLocalBounds = Container.prototype.getLocalBounds;
 
+ContainerProxy.prototype.renderWebGL = Container.prototype.renderWebGL;
+
+ContainerProxy.prototype.renderCanvas = Container.prototype.renderCanvas;
+
+ContainerProxy.prototype._renderWebGL = function(renderer) {
+    this.swapContext();
+    this.original._renderWebGL(renderer);
+    this.swapContext();
+};
+
+ContainerProxy.prototype._renderCanvas = function(renderer) {
+    this.swapContext();
+    this.original._renderCanvas(renderer);
+    this.swapContext();
+};
+
 /**
  * Make a proxy object, for extra camera projections. Original createProxy() will be called
  * @return {PIXI.ContainerProxy}
@@ -8230,7 +8369,7 @@ function DisplayObject()
      * DisplayObject uid, for making a map out of it
      * @member {null}
      */
-    this.uid = utils.uid();
+    this.uid = utils.incDisplayObject();
 
     /**
      * Local transform
@@ -8378,9 +8517,43 @@ function DisplayObject()
 
     /**
      * At rendering stage, if some proxy swapped its context to ours, then we can read the original context here
-     * @type {PIXI.DisplayObjectProxy}
+     * @member {PIXI.DisplayObjectProxy}
      */
     this.proxyContext = null;
+
+    /**
+     * Order in updateTransform
+     * @member {number}
+     */
+    this.updateOrder = 0;
+
+    /**
+     * Order in displayList of camera
+     * @member {number}
+     */
+    this.displayOrder = 0;
+
+    /**
+     * if object has zIndex, it will be used for display ordering
+     * @member {boolean}
+     */
+    this.inheritZIndex = true;
+
+    /**
+     * z-index is used for display ordering
+     * You MUST specify camera.enableDisplayList=true for this to work
+     * Two objects with same z-index will be sorted in zOrder and then in display order
+     * @member {number}
+     * @private
+     */
+    this._zIndex = 0;
+
+    /**
+     * z-order is used for display ordering
+     * Two objects with same z-index will be sorted by zOrder and then by updateOrder
+     * @member {number}
+     */
+    this.zOrder = 0;
 
     this.initTransform(true);
 }
@@ -8392,6 +8565,23 @@ module.exports = DisplayObject;
 
 
 Object.defineProperties(DisplayObject.prototype, {
+    /**
+     * z-index is used for display ordering
+     * You MUST specify it in your camera too, otherwise it wont work
+     * Two objects with same z-index will be sorted in zOrder and then in display order
+     * @member {number}
+     * @memberof PIXI.DisplayObject#
+     */
+    zIndex: {
+        get: function() {
+            return this._zIndex;
+        },
+        set: function(value) {
+            this._zIndex = value;
+            this.inheritZIndex = false;
+        }
+    },
+
     /**
      * The position of the displayObject on the x axis relative to the local coordinates of the parent.
      *
@@ -8635,6 +8825,8 @@ DisplayObject.prototype.displayObjectInitTransform = DisplayObject.prototype.ini
  */
 DisplayObject.prototype.updateTransform = function ()
 {
+    this.updateOrder = utils.incUpdateOrder();
+    this.displayOrder = 0;
     this._currentBounds = null;
     // multiply the alphas..
     this.worldAlpha = this.alpha * this.parent.worldAlpha;
@@ -8649,6 +8841,16 @@ DisplayObject.prototype.updateTransform = function ()
  * @returns {*}
  */
 DisplayObject.prototype.updateGeometry = function ()
+{
+    this.computedGeometry = this.computedTransform.updateChildGeometry(this.computedGeometry, this.geometry);
+    return this.computedGeometry;
+};
+
+/**
+ * Updates the object geometry. Assume that geometry actually exist.
+ * @returns {*}
+ */
+DisplayObject.prototype.updateProjectedGeometry = function ()
 {
     this.computedGeometry = this.computedTransform.updateChildGeometry(this.computedGeometry, this.geometry);
     if (this.worldProjection && this.computedGeometry) {
@@ -8690,7 +8892,7 @@ DisplayObject.prototype.getBounds = function () // jshint unused:false
         return this._localBounds.getBounds(this.computedTransform, this.projectedTransform);
     }
 
-    var geom = this.updateGeometry();
+    var geom = this.updateProjectedGeometry();
     if (!geom || !geom.valid) {
         return math.Rectangle.EMPTY;
     }
@@ -8923,7 +9125,7 @@ function DisplayObjectProxy(original)
 {
     this.original = original;
 
-    this.uid = utils.uid();
+    this.uid = utils.incDisplayObject();
 
     /**
      * Projected transform, need for canvas mode
@@ -8990,6 +9192,17 @@ function DisplayObjectProxy(original)
      * @type {PIXI.DisplayObjectProxy}
      */
     this.proxyContext = this;
+
+    /**
+     * z-order is used for display ordering
+     * Two objects with same z-index will be sorted by zOrder and then by updateOrder
+     * @member {number}
+     */
+    this.zOrder = 0;
+
+    this.updateOrder = 0;
+
+    this.displayOrder = 0;
 }
 
 // constructor
@@ -9082,6 +9295,11 @@ Object.defineProperties(DisplayObjectProxy.prototype, {
         get: function() {
             return this.original.visible;
         }
+    },
+    zIndex: {
+        get: function() {
+            return this.original.zIndex;
+        }
     }
 });
 
@@ -9111,16 +9329,21 @@ DisplayObjectProxy.prototype.swapContext = function() {
 };
 
 DisplayObjectProxy.prototype.renderWebGL = function(renderer) {
+    this.swapContext();
     this.original.renderWebGL(renderer);
+    this.swapContext();
 };
 
 DisplayObjectProxy.prototype.renderCanvas = function(renderer) {
+    this.swapContext();
     this.original.renderCanvas(renderer);
+    this.swapContext();
 };
 
 DisplayObjectProxy.prototype.updateTransform = function ()
 {
-    // multiply the alphas..
+    this.updateOrder = utils.incUpdateOrder();
+    this.displayOrder = 0;
     this._currentBounds = null;
     this.worldAlpha = this.alpha * this.parent.worldAlpha;
     this.worldProjection = this.parent.worldProjection;
@@ -9130,7 +9353,7 @@ DisplayObjectProxy.prototype.displayObjectUpdateTransform = DisplayObjectProxy.p
 
 DisplayObjectProxy.prototype.containsLocalPoint = function(point) {
     return this.original.containsLocalPoint(point);
-}
+};
 
 DisplayObjectProxy.prototype.destroy = function() {
     //do nothing.
@@ -14267,6 +14490,7 @@ WebGLRenderer.prototype.render = function (displayObject, renderTexture, clear, 
 
     if(!skipUpdateTransform)
     {
+        utils.resetUpdateOrder();
         // update the scene graph
         var cacheParent = displayObject.parent;
         displayObject.parent = this._tempDisplayObjectParent;
@@ -14285,7 +14509,7 @@ WebGLRenderer.prototype.render = function (displayObject, renderTexture, clear, 
     }
 
 
-
+    utils.resetDisplayOrder();
     displayObject.renderWebGL(this);
 
     // apply transform..
@@ -16569,8 +16793,7 @@ function mapWebGLDrawModesToPixi(gl, object)
 module.exports = mapWebGLDrawModesToPixi;
 
 },{"../../../const":45}],96:[function(require,module,exports){
-var math = require('../math'),
-    Texture = require('../textures/Texture'),
+var Texture = require('../textures/Texture'),
     ObservablePoint2d = require('../c2d/ObservablePoint2d'),
     Geometry2d = require('../c2d/Geometry2d'),
     Container = require('../display/Container'),
@@ -16836,7 +17059,6 @@ Sprite.prototype.makeDirty = function() {
 Sprite.prototype._renderWebGL = function (renderer)
 {
     this.updateGeometry();
-
     renderer.setObjectRenderer(renderer.plugins.sprite);
     renderer.plugins.sprite.render(this);
 };
@@ -16956,11 +17178,11 @@ Sprite.fromImage = function (imageId, crossorigin, scaleMode)
     return new Sprite(Texture.fromImage(imageId, crossorigin, scaleMode));
 };
 
-},{"../c2d/Geometry2d":38,"../c2d/ObservablePoint2d":41,"../const":45,"../display/Container":48,"../math":68,"../textures/Texture":106,"../utils":113}],97:[function(require,module,exports){
+},{"../c2d/Geometry2d":38,"../c2d/ObservablePoint2d":41,"../const":45,"../display/Container":48,"../textures/Texture":106,"../utils":113}],97:[function(require,module,exports){
 var CanvasRenderer = require('../../renderers/canvas/CanvasRenderer'),
     CONST = require('../../const'),
     math = require('../../math'),
-    canvasRenderWorldTransform = new math.Matrix();
+    canvasRenderWorldTransform = new math.Matrix(),
     CanvasTinter = require('./CanvasTinter');
 
 /**
@@ -18760,7 +18982,7 @@ function BaseTexture(source, scaleMode, resolution)
     EventEmitter.call(this);
 
     this.uid = utils.uid();
-    
+
     this.touched = 0;
 
     /**
@@ -18895,7 +19117,7 @@ function BaseTexture(source, scaleMode, resolution)
     this._glTextures = [];
     this._enabled = 0;
     this._id = 0;
-    
+
     // if no source passed don't try to load
     if (source)
     {
@@ -19141,7 +19363,7 @@ BaseTexture.fromImage = function (imageUrl, crossorigin, scaleMode)
         // new Image() breaks tex loading in some versions of Chrome.
         // See https://code.google.com/p/chromium/issues/detail?id=238071
         var image = new Image();//document.createElement('img');
-      
+
 
         if (crossorigin === undefined && imageUrl.indexOf('data:') !== 0)
         {
@@ -20637,6 +20859,38 @@ var utils = module.exports = {
     uid: function ()
     {
         return ++utils._uid;
+    },
+
+    _uidTransform: 0,
+    _uidUpdateOrder: 0,
+    _uidDisplayOrder: 0,
+    _uidDisplayObject: 0,
+    _uidGeometry: 0,
+    _uidRaycast: 0,
+
+    incTransform: function() {
+        return ++utils._uidTransform;
+    },
+    incUpdateOrder: function() {
+        return ++utils._uidUpdateOrder;
+    },
+    incDisplayOrder: function() {
+        return ++utils._uidDisplayOrder;
+    },
+    incDisplayObject: function() {
+        return ++utils._uidDisplayObject;
+    },
+    incGeometry: function() {
+        return ++utils._uidGeometry;
+    },
+    incRaycast: function() {
+        return ++utils._uidRaycast;
+    },
+    resetUpdateOrder: function() {
+        this._uidUpdateOrder = 0;
+    },
+    resetDisplayOrder: function() {
+        this._uidDisplayOrder = 0;
     },
 
     /**
@@ -24469,6 +24723,9 @@ function InteractionManager(renderer, options)
      */
     this._tempPoint = new core.Point();
 
+    this._queue = [[], []];
+
+    this._eventDisplayOrder = 0;
 
     /**
      * The current resolution
@@ -24653,16 +24910,9 @@ InteractionManager.prototype.mapPositionToPoint = function ( point, x, y )
 };
 
 /**
- * This function is provides a neat way of crawling through the scene graph and running a specified function on all interactive objects it finds.
- * It will also take care of hit testing the interactive objects and passes the hit across in the function.
- *
- * @param  {PIXI.Point} point the point that is tested for collision
- * @param  {PIXI.Container|PIXI.Sprite|PIXI.extras.TilingSprite} displayObject the displayObject that will be hit test (recurcsivly crawls its children)
- * @param  {Function} func the function that will be called on each interactive object. The displayObject and hit will be passed to the function
- * @param  {boolean} hitTest this indicates if the objects inside should be hit test against the point
- * @return {boolean} returns true if the displayObject hit the point
+ * This is private recursive copy of processInteractive
  */
-InteractionManager.prototype.processInteractive = function (point, displayObject, func, hitTest, interactive)
+InteractionManager.prototype._processInteractive = function (point, displayObject, hitTestOrder, interactive)
 {
     if(!displayObject || !displayObject.visible)
     {
@@ -24680,7 +24930,7 @@ InteractionManager.prototype.processInteractive = function (point, displayObject
     // As another little optimisation once an interactive object has been hit we can carry on through the scenegraph, but we know that there will be no more hits! So we can avoid extra hit tests
     // A final optimisation is that an object is not hit test directly if a child has already been hit.
 
-    var hit = false,
+    var hit = 0,
         interactiveParent = interactive = displayObject.interactive || interactive;
 
 
@@ -24693,20 +24943,20 @@ InteractionManager.prototype.processInteractive = function (point, displayObject
     }
 
     // it has a mask! Then lets hit test that before continuing..
-    if(hitTest && displayObject._mask)
+    if(hitTestOrder < Infinity && displayObject._mask)
     {
         if(!displayObject._mask.containsPoint(point))
         {
-            hitTest = false;
+            hitTestOrder = Infinity;
         }
     }
 
     // it has a filterArea! Same as mask but easier, its a rectangle
-    if(hitTest && displayObject.filterArea)
+    if(hitTestOrder < Infinity && displayObject.filterArea)
     {
         if(!displayObject.filterArea.contains(point.x, point.y))
         {
-            hitTest = false;
+            hitTestOrder = Infinity;
         }
     }
 
@@ -24721,30 +24971,12 @@ InteractionManager.prototype.processInteractive = function (point, displayObject
 
             var child = children[i];
 
-            // time to get recursive.. if this function will return if somthing is hit..
-            if(this.processInteractive(point, child, func, hitTest, interactiveParent))
+            var hitChild = this._processInteractive(point, child, hitTestOrder, interactiveParent);
+            // time to get recursive.. if this function will return if something is hit..
+            if(hitChild)
             {
-                // its a good idea to check if a child has lost its parent.
-                // this means it has been removed whilst looping so its best
-                if(!child.parent)
-                {
-                    continue;
-                }
-
-                hit = true;
-
-                // we no longer need to hit test any more objects in this container as we we now know the parent has been hit
-                interactiveParent = false;
-
-                // If the child is interactive , that means that the object hit was actually interactive and not just the child of an interactive object.
-                // This means we no longer need to hit test anything else. We still need to run through all objects, but we don't need to perform any hit tests.
-                //  if(child.interactive)
-                //{
-                hitTest = false;
-                //}
-
-                // we can break now as we have hit an object.
-
+                hit = hitChild;
+                hitTestOrder = hitChild;
             }
         }
     }
@@ -24756,17 +24988,19 @@ InteractionManager.prototype.processInteractive = function (point, displayObject
     {
         // if we are hit testing (as in we have no hit any objects yet)
         // We also don't need to worry about hit testing if once of the displayObjects children has already been hit!
-        if(hitTest && !hit)
+        if(hitTestOrder < displayObject.displayOrder)
         {
             if(displayObject.hitArea || displayObject.isRaycastPossible)
             {
-                hit = displayObject.containsPoint(point);
+                if (displayObject.containsPoint(point)) {
+                    hit = displayObject.displayOrder;
+                }
             }
         }
 
         if(displayObject.interactive)
         {
-            func(displayObject, hit);
+            this._queueAdd(displayObject, hit);
         }
     }
 
@@ -24774,6 +25008,61 @@ InteractionManager.prototype.processInteractive = function (point, displayObject
 
 };
 
+/**
+ * This function is provides a neat way of crawling through the scene graph and running a specified function on all interactive objects it finds.
+ * It will also take care of hit testing the interactive objects and passes the hit across in the function.
+ *
+ * @param  {PIXI.Point} point the point that is tested for collision
+ * @param  {PIXI.Container|PIXI.Sprite|PIXI.extras.TilingSprite} displayObject the displayObject that will be hit test (recursively crawls its children)
+ * @param  {boolean} hitTest this indicates if the objects inside should be hit test against the point
+ * @param {Function} func the function that will be called on each interactive object. The displayObject and hit will be passed to the function
+ * @private
+ * @return {boolean} returns true if the displayObject hit the point
+ */
+InteractionManager.prototype.processInteractive = function (point, displayObject, func, hitTest) {
+    this._startInteractionProcess();
+    this._processInteractive(point, displayObject, hitTest ? 0 : Infinity, false);
+    this._finishInteractionProcess(func);
+};
+
+InteractionManager.prototype._startInteractionProcess = function() {
+    this._eventDisplayOrder = 1;
+    this._queue[0].length = 0;
+    this._queue[1].length = 0;
+};
+
+InteractionManager.prototype._queueAdd = function(displayObject, order) {
+    var queue = this._queue;
+    if (order < this._eventDisplayOrder) {
+        queue[0].push(displayObject);
+    } else {
+        if (order > this._eventDisplayOrder) {
+            this._eventDisplayOrder = order;
+            var q = queue[1];
+            for (var i = 0; i < q.length; i++) {
+                queue[0].push(q[i]);
+            }
+            queue[1].length = 0;
+        }
+        queue[1].push(displayObject);
+    }
+};
+
+/**
+ *
+ * @param {Function} func the function that will be called on each interactive object. The displayObject and hit will be passed to the function
+ */
+InteractionManager.prototype._finishInteractionProcess = function(func) {
+    var queue = this._queue;
+    var q = queue[0];
+    for (var i = 0; i < q.length; i++) {
+        func(q[i], false);
+    }
+    q = queue[1];
+    for (i = q.length - 1; i>=0; i--) {
+        func(q[i], true);
+    }
+};
 
 /**
  * Is called when the mouse button is pressed down on the renderer element

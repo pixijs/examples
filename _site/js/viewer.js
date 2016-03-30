@@ -34,7 +34,7 @@ $(document).ready(function () {
                 }
             }
         } else {
-            select.selectedIndex = 1;
+            select.selectedIndex = 0;
         }
 
         select.addEventListener('change', function () {

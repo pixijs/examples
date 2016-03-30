@@ -41,12 +41,8 @@
             "entry": "render-texture-v4.js"
         },
         {
-            "title": "Textured Mesh [v3]",
-            "entry": "textured-mesh-v3.js"
-        },
-        {
-            "title": "Textured Mesh [v4]",
-            "entry": "textured-mesh-v4.js"
+            "title": "Textured Mesh",
+            "entry": "textured-mesh.js"
         },
         {
             "title": "Custom Filter [v3]",

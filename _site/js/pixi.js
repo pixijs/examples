@@ -4868,6 +4868,7 @@ module.exports = Texture;
 },{}],20:[function(require,module,exports){
 
 // state object//
+var setVertexAttribArrays = require( './setVertexAttribArrays' );
 
 /**
  * Helper class to work with WebGL VertexArrayObjects (vaos)
@@ -4877,7 +4878,7 @@ module.exports = Texture;
  * @memberof pixi.gl
  * @param gl {WebGLRenderingContext} The current WebGL rendering context
  */
-function VertexArrayObject(gl)
+function VertexArrayObject(gl, state)
 {
 
 	this.nativeVaoExtension = (
@@ -4886,9 +4887,17 @@ function VertexArrayObject(gl)
       gl.getExtension('WEBKIT_OES_vertex_array_object')
     );
 
+	this.nativeState = state;
+
 	if(this.nativeVaoExtension)
 	{
 		this.nativeVao = this.nativeVaoExtension.createVertexArrayOES();
+		
+		var maxAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+		
+		// VAO - overwrite the state..
+		this.nativeState = {tempAttribState:new Array(maxAttribs)
+							,attribState:new Array(maxAttribs)};
 	}
 
 	/**
@@ -4918,12 +4927,11 @@ function VertexArrayObject(gl)
 	 * @member {Boolean}
 	 */
 	this.dirty = false;
-
-
 }
 
 VertexArrayObject.prototype.constructor = VertexArrayObject;
 module.exports = VertexArrayObject;
+
 
 /**
  * Binds the buffer
@@ -4942,6 +4950,7 @@ VertexArrayObject.prototype.bind = function()
 	}
 	else
 	{
+		
 		this.activate();
 	}
 
@@ -4966,12 +4975,19 @@ VertexArrayObject.prototype.unbind = function()
  */
 VertexArrayObject.prototype.activate = function()
 {
+	
 	var gl = this.gl;
+	var lastBuffer = null;
 
 	for (var i = 0; i < this.attributes.length; i++)
 	{
 		var attrib = this.attributes[i];
-		attrib.buffer.bind();
+
+		if(lastBuffer !== attrib.buffer)
+		{
+			attrib.buffer.bind();
+			lastBuffer = attrib.buffer;
+		}
 
 		//attrib.attribute.pointer(attrib.type, attrib.normalized, attrib.stride, attrib.start);
 		gl.vertexAttribPointer(attrib.attribute.location,
@@ -4980,9 +4996,11 @@ VertexArrayObject.prototype.activate = function()
 							   attrib.stride || 0,
 							   attrib.start || 0);
 
-		gl.enableVertexAttribArray(attrib.attribute.location);
+
 	};
 
+	setVertexAttribArrays(gl, this.attributes, this.nativeState);
+	
 	this.indexBuffer.bind();
 
 	return this;
@@ -5034,18 +5052,14 @@ VertexArrayObject.prototype.addIndex = function(buffer, options)
  */
 VertexArrayObject.prototype.clear = function()
 {
+	var gl = this.gl;
+
 	// TODO - should this function unbind after clear?
 	// for now, no but lets see what happens in the real world!
 	if(this.nativeVao)
 	{
 		this.nativeVaoExtension.bindVertexArrayOES(this.nativeVao);
 	}
-
-	for (var i = 0; i < this.attributes.length; i++)
-	{
-		var attrib = this.attributes[i];
-		gl.disableVertexAttribArray(attrib.attribute.location);
-	};
 
 	this.attributes.length = 0;
 	this.indexBuffer = null;
@@ -5067,7 +5081,7 @@ VertexArrayObject.prototype.draw = function(type, size, start)
 	return this;
 }
 
-},{}],21:[function(require,module,exports){
+},{"./setVertexAttribArrays":22}],21:[function(require,module,exports){
 
 /**
  * Helper class to create a webGL Context
@@ -5103,47 +5117,51 @@ var GL_MAP = {};
  * @param gl {WebGLRenderingContext} The current WebGL context
  * @param attribs {[type]}
  */
-var setVertexAttribArrays = function (gl, attribs)
+var setVertexAttribArrays = function (gl, attribs, state)
 {
-   // console.log(gl.id)
-    var data = GL_MAP[gl.id];
 
-    if(!data)
+    if(state)
     {
-	   var maxAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-		data = GL_MAP[gl.id] = {tempAttribState:new Array(maxAttribs)
-				 	 		   ,attribState:new Array(maxAttribs)};
-	}
 
-    var i,
-    	tempAttribState = data.tempAttribState,
-    	attribState = data.attribState;
+        var i,
+            tempAttribState = state.tempAttribState,
+            attribState = state.attribState;
 
-    for (i = 0; i < tempAttribState.length; i++)
-    {
-        tempAttribState[i] = false;
-    }
-
-    // set the new attribs
-    for (i in attribs)
-    {
-        tempAttribState[attribs[i].location] = true;
-    }
-
-    for (i = 1; i < attribState.length; i++)
-    {
-        if (attribState[i] !== tempAttribState[i])
+        for (i = 0; i < tempAttribState.length; i++)
         {
-            attribState[i] = tempAttribState[i];
+            tempAttribState[i] = false;
+        }
 
-            if (data.attribState[i])
+        // set the new attribs
+        for (i in attribs)
+        {
+            tempAttribState[attribs[i].attribute.location] = true;
+        }
+
+        for (i = 0; i < attribState.length; i++)
+        {
+            if (attribState[i] !== tempAttribState[i])
             {
-                gl.enableVertexAttribArray(i);
+                attribState[i] = tempAttribState[i];
+
+                if (state.attribState[i])
+                {
+                    gl.enableVertexAttribArray(i);
+                }
+                else
+                {
+                    gl.disableVertexAttribArray(i);
+                }
             }
-            else
-            {
-                gl.disableVertexAttribArray(i);
-            }
+        }
+
+    }
+    else
+    {
+        for (var i = 0; i < attribs.length; i++)
+        {
+            var attrib = attribs[i];
+            gl.enableVertexAttribArray(attrib.attribute.location);
         }
     }
 };
@@ -10035,7 +10053,7 @@ var buildRectangle = function (graphicsData, webGLData)
 module.exports = buildRectangle;
 },{"../../../utils":100,"./buildLine":46}],49:[function(require,module,exports){
 var earcut = require('earcut'),
-    // buildLine = require('./buildLine'),
+    buildLine = require('./buildLine'),
     utils = require('../../../utils');
 
 /**
@@ -10057,10 +10075,10 @@ var buildRoundedRectangle = function (graphicsData, webGLData)
 
     var recPoints = [];
     recPoints.push(x, y + radius);
-    this.quadraticBezierCurve(x, y + height - radius, x, y + height, x + radius, y + height, recPoints);
-    this.quadraticBezierCurve(x + width - radius, y + height, x + width, y + height, x + width, y + height - radius, recPoints);
-    this.quadraticBezierCurve(x + width, y + radius, x + width, y, x + width - radius, y, recPoints);
-    this.quadraticBezierCurve(x + radius, y, x, y, x, y + radius + 0.0000000001, recPoints);
+    quadraticBezierCurve(x, y + height - radius, x, y + height, x + radius, y + height, recPoints);
+    quadraticBezierCurve(x + width - radius, y + height, x + width, y + height, x + width, y + height - radius, recPoints);
+    quadraticBezierCurve(x + width, y + radius, x + width, y, x + width - radius, y, recPoints);
+    quadraticBezierCurve(x + radius, y, x, y, x, y + radius + 0.0000000001, recPoints);
 
     // this tiny number deals with the issue that occurs when points overlap and earcut fails to triangulate the item.
     // TODO - fix this properly, this is not very elegant.. but it works for now.
@@ -10103,7 +10121,7 @@ var buildRoundedRectangle = function (graphicsData, webGLData)
 
         graphicsData.points = recPoints;
 
-        this.buildLine(graphicsData, webGLData);
+        buildLine(graphicsData, webGLData);
 
         graphicsData.points = tempPoints;
     }
@@ -10123,47 +10141,47 @@ var buildRoundedRectangle = function (graphicsData, webGLData)
  * @param [out] {number[]} The output array to add points into. If not passed, a new array is created.
  * @return {number[]} an array of points
  */
-// var quadraticBezierCurve = function (fromX, fromY, cpX, cpY, toX, toY, out)
-// {
-//     var xa,
-//         ya,
-//         xb,
-//         yb,
-//         x,
-//         y,
-//         n = 20,
-//         points = out || [];
-//
-//     function getPt(n1 , n2, perc) {
-//         var diff = n2 - n1;
-//
-//         return n1 + ( diff * perc );
-//     }
-//
-//     var j = 0;
-//     for (var i = 0; i <= n; i++ ) {
-//         j = i / n;
-//
-//         // The Green Line
-//         xa = getPt( fromX , cpX , j );
-//         ya = getPt( fromY , cpY , j );
-//         xb = getPt( cpX , toX , j );
-//         yb = getPt( cpY , toY , j );
-//
-//         // The Black Dot
-//         x = getPt( xa , xb , j );
-//         y = getPt( ya , yb , j );
-//
-//         points.push(x, y);
-//     }
-//
-//     return points;
-// };
+var quadraticBezierCurve = function (fromX, fromY, cpX, cpY, toX, toY, out)
+{
+    var xa,
+        ya,
+        xb,
+        yb,
+        x,
+        y,
+        n = 20,
+        points = out || [];
+
+    function getPt(n1 , n2, perc) {
+        var diff = n2 - n1;
+
+        return n1 + ( diff * perc );
+    }
+
+    var j = 0;
+    for (var i = 0; i <= n; i++ ) {
+        j = i / n;
+
+        // The Green Line
+        xa = getPt( fromX , cpX , j );
+        ya = getPt( fromY , cpY , j );
+        xb = getPt( cpX , toX , j );
+        yb = getPt( cpY , toY , j );
+
+        // The Black Dot
+        x = getPt( xa , xb , j );
+        y = getPt( ya , yb , j );
+
+        points.push(x, y);
+    }
+
+    return points;
+};
 
 
 module.exports = buildRoundedRectangle;
 
-},{"../../../utils":100,"earcut":11}],50:[function(require,module,exports){
+},{"../../../utils":100,"./buildLine":46,"earcut":11}],50:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI core library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -15646,7 +15664,7 @@ Sprite.fromImage = function (imageId, crossorigin, scaleMode)
 var CanvasRenderer = require('../../renderers/canvas/CanvasRenderer'),
     CONST = require('../../const'),
     math = require('../../math'),
-    canvasRenderWorldTransform = new math.Matrix();
+    canvasRenderWorldTransform = new math.Matrix(),
     CanvasTinter = require('./CanvasTinter');
 
 /**
@@ -18410,7 +18428,7 @@ Texture.from = function (source)
         if (!texture)
         {
             // check if its a video..
-            var isVideo = source.match(/\.(mp4|webm|ogg|h264|avi|mov)$/) != null;
+            var isVideo = source.match(/\.(mp4|webm|ogg|h264|avi|mov)$/) !== null;
             if(isVideo)
             {
                 return Texture.fromVideoUrl(source);
@@ -19584,6 +19602,7 @@ module.exports = {
 /*global console */
 var core = require('./core'),
     mesh = require('./mesh'),
+    particles = require('./particles'),
     extras = require('./extras'),
     filters = require('./filters');
 
@@ -19678,6 +19697,21 @@ Object.defineProperties(core, {
         {
             console.warn('The Rope class has been moved to mesh.Rope, please use mesh.Rope from now on.');
             return mesh.Rope;
+        }
+    },
+
+    /**
+     * @class
+     * @private
+     * @name ParticleContainer
+     * @memberof PIXI
+     * @see PIXI.particles.ParticleContainer
+     * @deprecated since version 4.0.0
+     */
+    ParticleContainer: {
+        get: function() {
+            console.warn('The ParticleContainer class has been moved to particles.ParticleContainer, please useparticles.ParticleContainer from now on.');
+            return particles.ParticleContainer;
         }
     },
 
@@ -19954,7 +19988,7 @@ core.utils.uuid = function ()
     return core.utils.uid();
 };
 
-},{"./core":50,"./extras":110,"./filters":122,"./mesh":137}],104:[function(require,module,exports){
+},{"./core":50,"./extras":110,"./filters":122,"./mesh":137,"./particles":140}],104:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -23079,9 +23113,9 @@ function InteractionManager(renderer, options)
     /**
      * Every update cursor will be reset to this value, if some element wont override it in its hitTest
      * @member {string}
-     * @default "inherit"
+     * @default 'inherit'
      */
-    this.defaultCursorStyle = "inherit";
+    this.defaultCursorStyle = 'inherit';
 
     /**
      * The css style of the cursor that is being used
@@ -24291,6 +24325,7 @@ function Mesh(texture, vertices, uvs, indices, drawMode)
      * @member {boolean}
      */
     this.dirty = true;
+    this.indexDirty = true;
 
     /**
      * The blend mode to be applied to the sprite. Set to `PIXI.BLEND_MODES.NORMAL` to remove any blend mode.
@@ -24404,12 +24439,22 @@ Mesh.prototype._renderWebGL = function (renderer)
         .addAttribute(glData.uvBuffer, glData.shader.attributes.aTextureCoord, gl.FLOAT, false, 2 * 4, 0);
 
         this._glDatas[renderer.CONTEXT_UID] = glData;
+
+
+        this.indexDirty = false;
     }
 
     if(this.dirty)
     {
         this.dirty = false;
         glData.uvBuffer.upload();
+
+    }
+
+    if(this.indexDirty)
+    {
+        this.indexDirty = false;
+        glData.indexBuffer.upload();
     }
 
     glData.vertexBuffer.upload();
@@ -24815,9 +24860,6 @@ Plane.prototype.refresh = function()
     var indices = [];
     var texture = this.texture;
 
-  //  texture.width = 800 texture.width || 800;
- //   texture.height = 800//texture.height || 800;
-
     var segmentsXSub = this.segmentsX - 1;
     var segmentsYSub = this.segmentsY - 1;
     var i = 0;
@@ -24863,6 +24905,8 @@ Plane.prototype.refresh = function()
     this.uvs = new Float32Array(uvs);
     this.colors = new Float32Array(colors);
     this.indices = new Uint16Array(indices);
+
+    this.indexDirty = true;
 };
 
 /**
@@ -25008,6 +25052,7 @@ Rope.prototype.refresh = function ()
     }
 
     this.dirty = true;
+    this.indexDirty = true;
 };
 
 /**
@@ -25017,6 +25062,7 @@ Rope.prototype.refresh = function ()
  */
 Rope.prototype._onTextureUpdate = function ()
 {
+
     Mesh.prototype._onTextureUpdate.call(this);
 
     // wait for the Rope ctor to finish before calling refresh
@@ -25186,7 +25232,7 @@ var core = require('../core');
  *
  * @class
  * @extends PIXI.Container
- * @memberof PIXI
+ * @memberof PIXI.particles
  * @param [maxSize=15000] {number} The maximum number of particles that can be renderer by the container.
  * @param [properties] {object} The properties of children that should be uploaded to the gpu and applied.
  * @param [properties.scale=false] {boolean} When true, scale be uploaded and applied.

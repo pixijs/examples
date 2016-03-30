@@ -59,11 +59,11 @@
     ],
     "camera": [
         {
-            "title": "2 bunnies 2 cameras [v4.1]",
+            "title": "[v4.1] 2 bunnies 2 cameras",
             "entry": "mirror.js"
         },
         {
-            "title": "Z-order [v4.1]",
+            "title": "[v4.1] Z-order",
             "entry": "zorder.js"
         }
     ],

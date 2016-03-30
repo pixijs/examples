@@ -33,16 +33,28 @@
             "entry": "video.js"
         },
         {
-            "title": "Render Texture",
-            "entry": "render-texture.js"
+            "title": "Render Texture [v3]",
+            "entry": "render-texture-v3.js"
         },
         {
-            "title": "Textured Mesh",
-            "entry": "textured-mesh.js"
+            "title": "Render Texture [v4]",
+            "entry": "render-texture-v4.js"
         },
         {
-            "title": "Custom Filter",
-            "entry": "custom-filter.js"
+            "title": "Textured Mesh [v3]",
+            "entry": "textured-mesh-v3.js"
+        },
+        {
+            "title": "Textured Mesh [v4]",
+            "entry": "textured-mesh-v4.js"
+        },
+        {
+            "title": "Custom Filter [v3]",
+            "entry": "custom-filter-v3.js"
+        },
+        {
+            "title": "Custom Filter [v4]",
+            "entry": "custom-filter-v4.js"
         }
     ],
     "camera": [

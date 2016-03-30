@@ -15,14 +15,11 @@ $(document).ready(function () {
     var nav = document.getElementById('navList');
     App.loadManifest(nav);
 
-    if (params.v) {
+    var pixiUrl = '_site/js/pixi.js';
+    params.v = params.v || '';
+    if (params.v !== '') {
         console.log('loading external pixi ...')
-        var url = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
-        App.loadPixi(url,onPixiLoaded);
-    }
-    else{
-        console.log('Loading local pixi');
-        App.loadPixi('_site/js/pixi.js',onPixiLoaded);
+        pixiUrl = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
     }
 
     function onTagsLoaded (select)
@@ -50,11 +47,13 @@ $(document).ready(function () {
         });
     }
 
-    function onPixiLoaded()
+    /*function onPixiLoaded()
     {
         console.log('pixi loaded');
         loadExample('examples/' + params.s + '/' + params.f);
-    }
+    }*/
+
+    loadExample('examples/' + params.s + '/' + params.f);
 
     function loadExample(url)
     {
@@ -80,7 +79,7 @@ $(document).ready(function () {
         textarea.innerHTML = code;
         var container = document.getElementById('example');
 
-        editor = new Editor(container,textarea);
+        editor = new Editor(container,textarea,pixiUrl);
 
         //load plugin list from parameters
         var pluginList = [];

@@ -1,4 +1,4 @@
-function Editor (domElement,textarea) {
+function Editor (domElement,textarea, pixiUrl) {
 
 	/*  this is the delay before refreshing the iframe
 	 * after the user presses a key
@@ -14,6 +14,8 @@ function Editor (domElement,textarea) {
     this.request = new XMLHttpRequest();
     this.editor;
     this.plugins;
+
+    this.pixiUrl = pixiUrl;
 
     return this;
 }
@@ -107,7 +109,8 @@ Editor.prototype = {
 	},
 
     insertBetween : function (js) {
-        var begin = '<html><head><title>pixi.js example 1</title><style>body,html {margin: 0;padding: 0;border: 0;font-size: 100%;font: inherit;vertical-align: baseline;line-height: 1;}</style><script src="' + '_site/js/pixi.js'+ '"></script></head><body>";';
+        var begin = '<html><head><title>pixi.js example 1</title><style>body,html {margin: 0;padding: 0;border: 0;font-size: 100%;font: inherit;vertical-align: baseline;line-height: 1;}</style>";' +
+            '<script src="' + this.pixiUrl+ '"></script></head><body>";';
         if (this.plugins) {
             this.plugins.forEach(function(pluginName) {
                 begin+='<script src="_site/js/plugins/'+pluginName+'.js"></script>';

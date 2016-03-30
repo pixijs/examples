@@ -48,7 +48,7 @@
         "entry": "custom-filter-v3.js"
     },
 	{
-        "title": "Custom Filter [v4]",
-        "entry": "custom-filter-v4.js"
+        "title": "Custom Filter",
+        "entry": "custom-filter.js"
     }
 ]

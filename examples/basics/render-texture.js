@@ -19,7 +19,8 @@ for (var j = 0; j < 5; j++) {
     };
 };
 
-var rt = new PIXI.RenderTexture(renderer, 300, 200, PIXI.SCALE_MODES.LINEAR, 0.1);
+var brt = new PIXI.BaseRenderTexture(300, 200, PIXI.SCALE_MODES.LINEAR, 0.1);
+var rt = new PIXI.RenderTexture(brt);
 
 var sprite = new PIXI.Sprite(rt);
 
@@ -40,7 +41,7 @@ animate();
 
 function animate() {
 
-    rt.render(container)
+    renderer.render(container, rt)
 
     requestAnimationFrame(animate);
 

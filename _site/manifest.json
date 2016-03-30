@@ -37,8 +37,8 @@
             "entry": "render-texture-v3.js"
         },
         {
-            "title": "Render Texture [v4]",
-            "entry": "render-texture-v4.js"
+            "title": "Render Texture",
+            "entry": "render-texture.js"
         },
         {
             "title": "Textured Mesh",

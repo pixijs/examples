@@ -4,7 +4,7 @@ document.body.appendChild(renderer.view);
 // create the root of the scene graph
 var stage = new PIXI.Container();
 
-var sprites = new PIXI.particles.ParticleContainer(10000, {
+var sprites = new PIXI.ParticleContainer(10000, {
     scale: true,
     position: true,
     rotation: true,

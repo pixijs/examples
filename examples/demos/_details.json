@@ -39,6 +39,10 @@
         "title": "Tinting",
         "entry": "tinting.js"
     },
+	{
+        "title": "Particle Container [v3]",
+        "entry": "batch-v3.js"
+    },
     {
         "title": "Particle Container",
         "entry": "batch.js"

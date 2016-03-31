@@ -8,19 +8,15 @@ var stage = new PIXI.Container();
 function CustomFilter(fragmentSource)
 {
 
-    PIXI.AbstractFilter.call(this,
+    PIXI.Filter.call(this,
         // vertex shader
         null,
         // fragment shader
-        fragmentSource,
-        // set the uniforms
-        {
-            customUniform : {type : '1f', value : 0}
-        }
+        fragmentSource
     );
 }
 
-CustomFilter.prototype = Object.create(PIXI.AbstractFilter.prototype);
+CustomFilter.prototype = Object.create(PIXI.Filter.prototype);
 CustomFilter.prototype.constructor = CustomFilter;
 
 
@@ -49,7 +45,7 @@ function onLoaded (loader,res) {
 
 function animate() {
 
-    filter.uniforms.customUniform.value += 0.04;
+    filter.uniforms.customUniform += 0.04;
 
     renderer.render(stage);
     requestAnimationFrame( animate );

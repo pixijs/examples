@@ -82,7 +82,7 @@ var App = {
             for (var i = 0; i < data.length; i++) {
                 var option = document.createElement('option');
 
-                option.value = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + data[i] + '/bin/pixi.js';
+                option.value = 'https://cdn.rawgit.com/pixijs/pixi.js/' + data[i] + '/bin/pixi.js';
                 option.textContent = data[i];
                 option.dataset.version = data[i];
                 select.appendChild(option);

@@ -7,6 +7,7 @@
     "url": "https://github.com/pixijs/examples.git"
   },
   "scripts": {
+    "hint": "jshint ./examples/**/*.js --reporter ./node_modules/jshint-summary/lib/summary.js",
     "start": "hs ."
   },
   "keywords": [
@@ -23,9 +24,10 @@
   },
   "homepage": "https://github.com/pixijs/examples",
   "devDependencies": {
-    "gulp": "^3.8.11",
-    "gulp-jshint": "^1.9.2",
     "http-server": "^0.7.5",
     "jshint-summary": "^0.4.0"
+  },
+  "peerDependencies": {
+    "jshint": "^2"
   }
 }

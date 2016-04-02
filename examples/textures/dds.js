@@ -1,6 +1,6 @@
 var renderer = PIXI.autoDetectRenderer(800, 600, { resolution: window.devicePixelRatio || 1 });
-renderer.view.style.width = "800px";
-renderer.view.style.height = "600px";
+renderer.view.style.width = '800px';
+renderer.view.style.height = '600px';
 document.body.appendChild(renderer.view);
 
 // use empty array if you dont want to use detect feature
@@ -9,11 +9,11 @@ var extensions = PIXI.compressedTextures.detectExtensions(renderer);
 var loader = new PIXI.loaders.Loader();
 loader.before(PIXI.compressedTextures.extensionChooser(extensions));
 // use @2x texture if resolution is 2, use dds format if its windows
-var textureOptions1 = { metadata: {choice: ["@2x.png", ".dds", "@2x.dds"]} };
+var textureOptions1 = { metadata: {choice: ['@2x.png', '.dds', '@2x.dds']} };
 // use dds format if its windows but dont care for retina
-var textureOptions2 = { metadata: {choice: [".dds"]} };
+var textureOptions2 = { metadata: {choice: ['.dds']} };
 // while loading atlas, choose resolution for atlas and choose format for image
-var atlasOptions = { metadata: { choice: ["@2x.json"], imageMetadata: { choice: [".dds"]} } };
+var atlasOptions = { metadata: { choice: ['@2x.json'], imageMetadata: { choice: ['.dds']} } };
 
 var stage = new PIXI.Container();
 
@@ -24,8 +24,9 @@ loader.add('building1', '_assets/compressed/building1.png', textureOptions1)
         // You have to preload all compressed textures into videomemory, pixi renderer cant do that for you.
         // You also can specify different renderer or set in that function
         // and this thing doesnt work for canvas
-        if (renderer.type == PIXI.RENDERER_TYPE.WEBGL)
+        if (renderer.type === PIXI.RENDERER_TYPE.WEBGL){
             renderer.plugins.compressedTextureManager.updateAllTextures(resources, true);
+        }
 
         var spr1 = new PIXI.Sprite(resources.building1.texture);
         var spr2 = new PIXI.Sprite(resources.building2.texture);

@@ -24,7 +24,7 @@ CustomFilter.prototype = Object.create(PIXI.AbstractFilter.prototype);
 CustomFilter.prototype.constructor = CustomFilter;
 
 
-var bg = PIXI.Sprite.fromImage("_assets/bkg-grass.jpg");
+var bg = PIXI.Sprite.fromImage('_assets/bkg-grass.jpg');
 bg.scale.set(1.3,1);
 stage.addChild(bg);
 

@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/pixijs/examples",
   "devDependencies": {
-    "http-server": "^0.7.5",
+    "http-server": "^0.9",
     "jshint-summary": "^0.4.0"
   },
   "peerDependencies": {

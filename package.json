@@ -24,8 +24,8 @@
   "homepage": "https://github.com/pixijs/examples",
   "devDependencies": {
     "gulp": "^3.8.11",
-    "gulp-jshint": "^1.9.2",
-    "http-server": "^0.7.5",
+    "gulp-jshint": "^2",
+    "http-server": "^0.9",
     "jshint-summary": "^0.4.0"
   }
 }

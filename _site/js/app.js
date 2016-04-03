@@ -65,13 +65,14 @@ var App = {
         var select = document.getElementById(selectId);
         console.log('Loading tags from github ...');
 
-        $.getJSON('https://api.github.com/repos/GoodBoyDigital/pixi.js/git/refs/tags')
+        $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/tags')
         .done(function (data)
         {
             // filters the tags to only include v3 and above
             data = data
                 .filter(function (tag) {
-                    return tag.ref.indexOf('refs/tags/v3') === 0;
+                    return tag.ref.indexOf('refs/tags/v3.0.11') === 0 ||
+                        tag.ref.indexOf('refs/tags/v4') === 0;
                 })
                 .map(function (tag) {
                     return tag.ref.replace('refs/tags/', '');

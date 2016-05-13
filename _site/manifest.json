@@ -9,6 +9,10 @@
             "entry": "container.js"
         },
         {
+            "title": "Container Pivot",
+            "entry": "container-pivot.js"
+        },
+        {
             "title": "SpriteSheet Animation",
             "entry": "spritesheet.js"
         },

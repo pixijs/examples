@@ -1,10 +1,10 @@
 [
     {
-        "title": "[v4.1] 2 bunnies 2 cameras",
+        "title": "[v4 exp] 2 bunnies 2 cameras",
         "entry": "mirror.js"
     },
     {
-        "title": "[v4.1] Z-order",
+        "title": "[v4 exp] Z-order",
         "entry": "zorder.js"
     }
 ]

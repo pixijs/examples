@@ -1,0 +1,7 @@
+[
+    {
+        "title": "Border artifacts",
+        "entry": "border-artifacts.js",
+		"plugins": ["pixi-picture"]
+    }
+]

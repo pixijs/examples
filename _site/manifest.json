@@ -67,15 +67,6 @@
             "entry": "zorder.js"
         }
     ],
-    "cookbook": [
-        {
-            "title": "Border artifacts",
-            "entry": "border-artifacts.js",
-            "plugins": [
-                "pixi-picture"
-            ]
-        }
-    ],
     "demos": [
         {
             "title": "MovieClip",
@@ -158,6 +149,22 @@
         {
             "title": "Displacement Map",
             "entry": "displacement-map.js"
+        }
+    ],
+    "picture": [
+        {
+            "title": "Border artifacts",
+            "entry": "border-artifacts.js",
+            "plugins": [
+                "pixi-picture"
+            ]
+        },
+        {
+            "title": "Overlay blendMode",
+            "entry": "overlay.js",
+            "plugins": [
+                "pixi-picture"
+            ]
         }
     ],
     "spine": [

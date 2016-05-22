@@ -10622,6 +10622,17 @@ Transform.prototype.updateChildTransform = function (childTransform)
     return childTransform;
 };
 
+
+/**
+ * Decomposes a matrix and sets the transforms properties based on it.
+ * @param {Matrix}
+ */
+Transform.prototype.setFromMatrix = function (matrix)
+{
+    matrix.decompose(this);
+};
+
+
 Object.defineProperties(Transform.prototype, {
     /**
      * The rotation of the object in radians.
@@ -13890,6 +13901,54 @@ Matrix.prototype.prepend = function(matrix)
 };
 
 /**
+ * Decomposes the matrix (x, y, scaleX, scaleY, and rotation) and sets the properties on to a transform.
+ * @param {Transform} the transform to apply the properties to.
+ * @return {Transform} The transform with the newly applied properies
+*/
+Matrix.prototype.decompose = function(transform)
+{
+    // sort out rotation / skew..
+    var a = this.a,
+        b = this.b,
+        c = this.c,
+        d = this.d;
+
+    var skewX = Math.atan2(-c, d);
+    var skewY = Math.atan2(b, a);
+
+    var delta = Math.abs(1-skewX/skewY);
+
+    if (delta < 0.00001)
+    {
+        transform.rotation = skewY;
+
+        if (a < 0 && d >= 0)
+        {
+            transform.rotation += (transform.rotation <= 0) ? Math.PI : -Math.PI;
+        }
+
+        transform.skew.x = transform.skew.y = 0;
+
+    }
+    else
+    {
+        transform.skew.x = skewX;
+        transform.skew.y = skewY;
+    }
+
+    // next set scale
+    transform.scale.x = Math.sqrt(a * a + b * b);
+    transform.scale.y = Math.sqrt(c * c + d * d);
+
+    // next set position
+    transform.position.x = this.tx;
+    transform.position.y = this.ty;
+
+    return transform;
+};
+
+
+/**
  * Inverts this matrix
  *
  * @return {PIXI.Matrix} This matrix. Good for chaining method calls.
@@ -16665,10 +16724,20 @@ WebGLState.prototype.setFrontFace = function(value)
  */
 WebGLState.prototype.resetAttributes = function()
 {
+	var i;
+
+    for ( i = 0; i < this.attribState.tempAttribState.length; i++) {
+    	this.attribState.tempAttribState[i] = 0;
+    }
+
+    for ( i = 0; i < this.attribState.attribState.length; i++) {
+    	this.attribState.attribState[i] = 0;
+    }
+
 	var gl = this.gl;
 
 	// im going to assume one is always active for performance reasons.
-	for (var i = 1; i < this.maxAttribs; i++)
+	for (i = 1; i < this.maxAttribs; i++)
   	{
 		gl.disableVertexAttribArray(i);
   	}
@@ -16680,6 +16749,7 @@ WebGLState.prototype.resetAttributes = function()
  */
 WebGLState.prototype.resetToDefault = function()
 {
+
 	// unbind any VAO if they exist..
 	if(this.nativeVaoExtension)
 	{
@@ -17085,10 +17155,12 @@ FilterManager.prototype.pushFilter = function(target, filters)
 {
     var renderer = this.renderer;
 
-    var filterData = this.renderer._activeRenderTarget.filterStack;
+    var filterData = this.filterData;
 
     if(!filterData)
     {
+        filterData = this.renderer._activeRenderTarget.filterStack;
+
         // add new stack
         var filterState = new FilterState();
         filterState.sourceFrame = filterState.destinationFrame = this.renderer._activeRenderTarget.size;
@@ -17098,9 +17170,9 @@ FilterManager.prototype.pushFilter = function(target, filters)
             index:0,
             stack:[filterState]
         };
-    }
 
-    this.filterData = filterData;
+        this.filterData = filterData;
+    }
 
     // get the current filter state..
     var currentState = filterData.stack[++filterData.index];
@@ -17182,6 +17254,11 @@ FilterManager.prototype.popFilter = function()
     }
 
     filterData.index--;
+
+    if(filterData.index === 0)
+    {
+        this.filterData = null;
+    }
 };
 
 FilterManager.prototype.applyFilter = function (filter, input, output, clear)
@@ -17236,6 +17313,8 @@ FilterManager.prototype.applyFilter = function (filter, input, output, clear)
 
     // bind the input texture..
     input.texture.bind(0);
+    // when you manually bind a texture, please switch active texture location to it
+    renderer._activeTextureLocation = 0;
 
     renderer.state.setBlendMode( filter.blendMode );
 

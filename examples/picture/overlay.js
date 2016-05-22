@@ -10,6 +10,7 @@ var background = new PIXI.Sprite.fromImage('_assets/BGrotate.jpg');
 stage.addChild(background);
 //speed up the process, because OVERLAY and HARD_LIGHT will use copyTex instead of readPixels
 stage.filters = [new PIXI.filters.VoidFilter()];
+stage.filterArea = new PIXI.Rectangle(0, 0, 800, 600);
 
 // create an array to store a reference to the dudes
 var dudeArray = [];

@@ -183,7 +183,7 @@ PictureRenderer.prototype._renderBlend = function (sprite, shader) {
     renderer.bindTexture(rt, 1);
     var gl = renderer.gl;
     if (renderTarget.root) {
-        var buf = this._getBuf();
+        var buf = this._getBuf(pixelsWidth * pixelsHeight * 4);
         gl.readPixels(x_1, y_1, pixelsWidth, pixelsHeight, gl.RGBA, gl.UNSIGNED_BYTE, this._bigBuf);
         //REVERT Y?
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, pixelsWidth, pixelsHeight, gl.RGBA, gl.UNSIGNED_BYTE, this._bigBuf);

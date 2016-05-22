@@ -178,11 +178,15 @@ PictureRenderer.prototype._renderBlend = function (sprite, shader) {
     var y_2 = Math.ceil(Math.min(screen.y + screen.height, bounds.y + bounds.height));
     var pixelsWidth = x_2 - x_1;
     var pixelsHeight = y_2 - y_1;
+    if (pixelsWidth <= 0 || pixelsHeight <= 0) {
+        //culling
+        return;
+    }
     //TODO: padding
     var rt = this._getRenderTexture(pixelsWidth, pixelsHeight);
     renderer.bindTexture(rt, 1);
     var gl = renderer.gl;
-    if (renderTarget.root) {
+    if (renderer.renderingToScreen && renderTarget.root) {
         var buf = this._getBuf(pixelsWidth * pixelsHeight * 4);
         gl.readPixels(x_1, y_1, pixelsWidth, pixelsHeight, gl.RGBA, gl.UNSIGNED_BYTE, this._bigBuf);
         //REVERT Y?

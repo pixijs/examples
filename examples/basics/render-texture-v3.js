@@ -14,10 +14,10 @@ for (var j = 0; j < 5; j++) {
         var bunny = PIXI.Sprite.fromImage('_assets/basics/bunny.png');
         bunny.x = 30 * i;
         bunny.y = 30 * j;
-        bunny.rotation = Math.random() * (Math.PI * 2)
+        bunny.rotation = Math.random() * (Math.PI * 2);
         container.addChild(bunny);
-    };
-};
+    }
+}
 
 var rt = new PIXI.RenderTexture(renderer, 300, 200, PIXI.SCALE_MODES.LINEAR, 0.1);
 
@@ -25,7 +25,7 @@ var sprite = new PIXI.Sprite(rt);
 
 sprite.x = 450;
 sprite.y = 60;
-stage.addChild(sprite)
+stage.addChild(sprite);
 /*
  * All the bunnies are added to the container with the addChild method
  * when you do this, all the bunnies become children of the container, and when a container moves,
@@ -40,7 +40,7 @@ animate();
 
 function animate() {
 
-    rt.render(container)
+    rt.render(container);
 
     requestAnimationFrame(animate);
 

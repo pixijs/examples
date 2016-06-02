@@ -43,8 +43,8 @@ for (var i = 0; i < 5; i++)
 
     // make the button interactive...
     button.interactive = true;
-	
-	
+
+
 
     button
         // set the mousedown and touchstart callback...
@@ -61,12 +61,12 @@ for (var i = 0; i < 5; i++)
         .on('mouseover', onButtonOver)
 
         // set the mouseout callback...
-        .on('mouseout', onButtonOut)
+        .on('mouseout', onButtonOut);
 
 
-        // you can also listen to click and tap events :
-        //.on('click', noop)
-        
+    // you can also listen to click and tap events :
+    // button.on('click', noop)
+
 	button.tap = noop;
 	button.click = noop;
     // add it to the stage

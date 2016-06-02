@@ -1,4 +1,4 @@
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
+var renderer = PIXI.autoDetectRenderer(800, 600, {backgroundColor: 0x1099bb});
 document.body.appendChild(renderer.view);
 
 // create the root of the scene graph
@@ -15,8 +15,9 @@ for (var j = 0; j < 5; j++) {
         bunny.x = 40 * i;
         bunny.y = 40 * j;
         container.addChild(bunny);
-    };
-};
+    }
+}
+
 /*
  * All the bunnies are added to the container with the addChild method
  * when you do this, all the bunnies become children of the container, and when a container moves,

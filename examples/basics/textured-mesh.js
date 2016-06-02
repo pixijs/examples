@@ -7,13 +7,11 @@ var stage = new PIXI.Container();
 var count = 0;
 
 // build a rope!
-var ropeLength = 918 / 20;
 var ropeLength = 45;
 
 var points = [];
 
-for (var i = 0; i < 25; i++)
-{
+for (var i = 0; i < 25; i++) {
     points.push(new PIXI.Point(i * ropeLength, 0));
 }
 
@@ -54,20 +52,22 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-function renderPoints () {
+function renderPoints() {
+
+    var i;
 
     g.clear();
 
-    g.lineStyle(2,0xffc2c2);
-    g.moveTo(points[0].x,points[0].y);
+    g.lineStyle(2, 0xffc2c2);
+    g.moveTo(points[0].x, points[0].y);
 
-    for (var i = 1; i < points.length; i++) {
-        g.lineTo(points[i].x,points[i].y);
-    };
+    for (i = 1; i < points.length; i++) {
+        g.lineTo(points[i].x, points[i].y);
+    }
 
-    for (var i = 1; i < points.length; i++) {
+    for (i = 1; i < points.length; i++) {
         g.beginFill(0xff0022);
-        g.drawCircle(points[i].x,points[i].y,10);
+        g.drawCircle(points[i].x, points[i].y, 10);
         g.endFill();
-    };
+    }
 }

@@ -1,6 +1,6 @@
 # pixi-examples
 
-Repository for the pixi.js v3 examples, available online [here](pixijs.github.io/examples/).
+Repository for the pixi.js v3 examples, available online [here](https://pixijs.github.io/examples/).
 
 ## Running
 

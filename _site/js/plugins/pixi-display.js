@@ -357,7 +357,10 @@ DisplayList.prototype._addRecursive = function (container, parent) {
  */
 DisplayList.prototype.update = function (parentContainer) {
     this.clear();
-    parentContainer.displayGroup = this.defaultDisplayGroup;
+    var tempGroup = parentContainer.displayGroup;
+    this.displayGroups.push(this.defaultDisplayGroup);
+    this.defaultDisplayGroup.add(parentContainer);
+
     this.container = parentContainer;
     var children = parentContainer.children;
     var i;
@@ -493,10 +496,8 @@ var InteractionManagerMixin = {
     /**
      * This is private recursive copy of processInteractive
      */
-    _processInteractive: function (point, displayObject, hitTestOrder, interactive)
-    {
-        if(!displayObject || !displayObject.visible)
-        {
+    _processInteractive: function (point, displayObject, hitTestOrder, interactive) {
+        if (!displayObject || !displayObject.visible) {
             return false;
         }
 
@@ -515,47 +516,37 @@ var InteractionManagerMixin = {
             interactiveParent = interactive = displayObject.interactive || interactive;
 
 
-
-
         // if the displayobject has a hitArea, then it does not need to hitTest children.
-        if(displayObject.hitArea)
-        {
+        if (displayObject.hitArea) {
             interactiveParent = false;
         }
 
         // it has a mask! Then lets hit test that before continuing..
-        if(hitTestOrder < Infinity && displayObject._mask)
-        {
-            if(!displayObject._mask.containsPoint(point))
-            {
+        if (hitTestOrder < Infinity && displayObject._mask) {
+            if (!displayObject._mask.containsPoint(point)) {
                 hitTestOrder = Infinity;
             }
         }
 
         // it has a filterArea! Same as mask but easier, its a rectangle
-        if(hitTestOrder < Infinity && displayObject.filterArea)
-        {
-            if(!displayObject.filterArea.contains(point.x, point.y))
-            {
+        if (hitTestOrder < Infinity && displayObject.filterArea) {
+            if (!displayObject.filterArea.contains(point.x, point.y)) {
                 hitTestOrder = Infinity;
             }
         }
 
         // ** FREE TIP **! If an object is not interactive or has no buttons in it (such as a game scene!) set interactiveChildren to false for that displayObject.
         // This will allow pixi to completly ignore and bypass checking the displayObjects children.
-        if(displayObject.interactiveChildren)
-        {
+        if (displayObject.interactiveChildren) {
             var children = displayObject.children;
 
-            for (var i = children.length-1; i >= 0; i--)
-            {
+            for (var i = children.length - 1; i >= 0; i--) {
 
                 var child = children[i];
 
                 var hitChild = this._processInteractive(point, child, hitTestOrder, interactiveParent);
                 // time to get recursive.. if this function will return if something is hit..
-                if(hitChild)
-                {
+                if (hitChild) {
                     hit = hitChild;
                     hitTestOrder = hitChild;
                 }
@@ -563,33 +554,27 @@ var InteractionManagerMixin = {
         }
 
 
-
         // no point running this if the item is not interactive or does not have an interactive parent.
-        if(interactive)
-        {
+        if (interactive) {
             // if we are hit testing (as in we have no hit any objects yet)
             // We also don't need to worry about hit testing if once of the displayObjects children has already been hit!
-            if(hitTestOrder < displayObject.displayOrder)
-            {
+            if (hitTestOrder < displayObject.displayOrder) {
                 if (gameofbombs) {
                     //gameofbombs version
-                    if(displayObject.hitArea && displayObject.isRaycastPossible)
-                    {
+                    if (displayObject.hitArea && displayObject.isRaycastPossible) {
                         if (displayObject.containsPoint(point)) {
                             hit = displayObject.displayOrder;
                         }
                     }
                 } else {
                     //pixi v4
-                    if(displayObject.hitArea)
-                    {
-                        displayObject.worldTransform.applyInverse(point,  this._tempPoint);
-                        if (displayObject.hitArea.contains( this._tempPoint.x, this._tempPoint.y )) {
+                    if (displayObject.hitArea) {
+                        displayObject.worldTransform.applyInverse(point, this._tempPoint);
+                        if (displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y)) {
                             hit = displayObject.displayOrder;
                         }
                     }
-                    else if(displayObject.containsPoint)
-                    {
+                    else if (displayObject.containsPoint) {
                         if (displayObject.containsPoint(point)) {
                             hit = displayObject.displayOrder;
                         }
@@ -597,8 +582,7 @@ var InteractionManagerMixin = {
                 }
             }
 
-            if(displayObject.interactive)
-            {
+            if (displayObject.interactive) {
                 this._queueAdd(displayObject, hit);
             }
         }
@@ -624,7 +608,7 @@ var InteractionManagerMixin = {
         this._finishInteractionProcess(func);
     },
 
-    _startInteractionProcess: function() {
+    _startInteractionProcess: function () {
         //move it to constructor
         this._eventDisplayOrder = 1;
         if (!this._queue) {
@@ -635,7 +619,7 @@ var InteractionManagerMixin = {
         this._queue[1].length = 0;
     },
 
-    _queueAdd: function(displayObject, order) {
+    _queueAdd: function (displayObject, order) {
         var queue = this._queue;
         if (order < this._eventDisplayOrder) {
             queue[0].push(displayObject);
@@ -656,7 +640,7 @@ var InteractionManagerMixin = {
      *
      * @param {Function} func the function that will be called on each interactive object. The displayObject and hit will be passed to the function
      */
-    _finishInteractionProcess: function(func) {
+    _finishInteractionProcess: function (func) {
         var queue = this._queue;
         var q = queue[0];
         var i;

@@ -57,16 +57,6 @@
             "entry": "custom-filter.js"
         }
     ],
-    "camera": [
-        {
-            "title": "[v4 exp] 2 bunnies 2 cameras",
-            "entry": "mirror.js"
-        },
-        {
-            "title": "[v4 exp] Z-order",
-            "entry": "zorder.js"
-        }
-    ],
     "demos": [
         {
             "title": "MovieClip",
@@ -135,6 +125,15 @@
         {
             "title": "Alpha Mask",
             "entry": "alpha-mask.js"
+        }
+    ],
+    "display": [
+        {
+            "title": "Z-order",
+            "entry": "zorder.js",
+            "plugins": [
+                "pixi-display"
+            ]
         }
     ],
     "filters": [

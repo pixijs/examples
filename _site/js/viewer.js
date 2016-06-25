@@ -15,7 +15,7 @@ $(document).ready(function () {
     var nav = document.getElementById('navList');
     App.loadManifest(nav);
 
-    var pixiUrl = '_site/js/pixi.js';
+    var pixiUrl = '_site/js/pixi1.js';
     params.v = params.v || '';
     if (params.v !== '') {
         console.log('loading external pixi ...')

@@ -325,7 +325,7 @@ DisplayList.prototype._addRecursive = function (container, parent) {
         }
         group.add(container);
 
-        container.displayParent = this;
+        container.displayParent = container;
     } else {
         container.displayParent = parent;
         if (!parent.displayChildren) {
@@ -431,6 +431,7 @@ DisplayList.prototype.renderCanvas = function (parentContainer, renderer) {
                 if (children && children.length) {
                     for (var k = 0; k < children.length; k++) {
                         var child = children[k];
+                        child.displayOrder = renderer.incDisplayOrder();
                         if (child.displayFlag) {
                             child.renderCanvas(renderer);
                         } else {

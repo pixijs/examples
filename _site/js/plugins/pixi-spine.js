@@ -795,7 +795,7 @@ Object.defineProperties(spine.AtlasRegion.prototype, {
             var tex = this.texture;
             return this.originalHeight - this.height - (tex.trim ? tex.trim.y : 0);
         }
-    },
+    },  
     originalWidth: {
         get: function() {
             var tex = this.texture;
@@ -955,86 +955,80 @@ spine.Bone.prototype = {
             m.c = pa * lb + pb * ld;
             m.b = pc * la + pd * lc;
             m.d = pc * lb + pd * ld;
-        } else if (data.inheritRotation) { // No scale inheritance.
-            pa = 1;
-            pb = 0;
-            pc = 0;
-            pd = 1;
-            do {
-                cos = Math.cos(parent.rotationIK * spine.degRad);
-                sin = Math.sin(parent.rotationIK * spine.degRad);
-                var temp = pa * cos + pb * sin;
-                pb = pa * -sin + pb * cos;
-                pa = temp;
-                temp = pc * cos + pd * sin;
-                pd = pc * -sin + pd * cos;
-                pc = temp;
-
-                if (!parent.data.inheritRotation) break;
-                parent = parent.parent;
-            } while (parent != null);
-            m.a = pa * la + pb * lc;
-            m.c = pa * lb + pb * ld;
-            m.b = pc * la + pd * lc;
-            m.d = pc * lb + pd * ld;
-            if (skeleton.flipX) {
-                m.a = -m.a;
-                m.c = -m.c;
-            }
-            if (skeleton.flipY !== spine.Bone.yDown) {
-                m.b = -m.b;
-                m.d = -m.d;
-            }
-        } else if (data.inheritScale) { // No rotation inheritance.
-            pa = 1;
-            pb = 0;
-            pc = 0;
-            pd = 1;
-            do {
-                var r = parent.rotation;
-                cos = Math.cos(r * spine.degRad);
-                sin = Math.sin(r * spine.degRad);
-                var psx = parent.scaleX, psy = parent.scaleY;
-                var za = cos * psx, zb = -sin * psy, zc = sin * psx, zd = cos * psy;
-                temp = pa * za + pb * zc;
-                pb = pa * zb + pb * zd;
-                pa = temp;
-                temp = pc * za + pd * zc;
-                pd = pc * zb + pd * zd;
-                pc = temp;
-
-                if (psx < 0) {
-                    r = -r;
-                } else {
-                    sin = -sin;
-                }
-                temp = pa * cos + pb * sin;
-                pb = pa * -sin + pb * cos;
-                pa = temp;
-                temp = pc * cos + pd * sin;
-                pd = pc * -sin + pd * cos;
-                pc = temp;
-
-                if (!parent.data.inheritScale) break;
-                parent = parent.parent;
-            } while (parent != null);
-            m.a = pa * la + pb * lc;
-            m.c = pa * lb + pb * ld;
-            m.b = pc * la + pd * lc;
-            m.d = pc * lb + pd * ld;
-            if (skeleton.flipX) {
-                m.a = -m.a;
-                m.c = -m.c;
-            }
-            if (skeleton.flipY !== spine.Bone.yDown) {
-                m.b = -m.b;
-                m.d = -m.d;
-            }
         } else {
-            m.a = la;
-            m.c = lb;
-            m.b = lc;
-            m.d = ld;
+            if (data.inheritRotation) { // No scale inheritance.
+                pa = 1;
+                pb = 0;
+                pc = 0;
+                pd = 1;
+                do {
+                    cos = Math.cos(parent.rotationIK * spine.degRad);
+                    sin = Math.sin(parent.rotationIK * spine.degRad);
+                    var temp = pa * cos + pb * sin;
+                    pb = pa * -sin + pb * cos;
+                    pa = temp;
+                    temp = pc * cos + pd * sin;
+                    pd = pc * -sin + pd * cos;
+                    pc = temp;
+
+                    if (!parent.data.inheritRotation) break;
+                    parent = parent.parent;
+                } while (parent != null);
+                m.a = pa * la + pb * lc;
+                m.c = pa * lb + pb * ld;
+                m.b = pc * la + pd * lc;
+                m.d = pc * lb + pd * ld;
+            } else if (data.inheritScale) { // No rotation inheritance.
+                pa = 1;
+                pb = 0;
+                pc = 0;
+                pd = 1;
+                do {
+                    var r = parent.rotationIK;
+                    cos = Math.cos(r * spine.degRad);
+                    sin = Math.sin(r * spine.degRad);
+                    var psx = parent.scaleX, psy = parent.scaleY;
+                    var za = cos * psx, zb = -sin * psy, zc = sin * psx, zd = cos * psy;
+                    temp = pa * za + pb * zc;
+                    pb = pa * zb + pb * zd;
+                    pa = temp;
+                    temp = pc * za + pd * zc;
+                    pd = pc * zb + pd * zd;
+                    pc = temp;
+
+                    if (psx < 0) {
+                        r = -r;
+                    } else {
+                        sin = -sin;
+                    }
+                    temp = pa * cos + pb * sin;
+                    pb = pa * -sin + pb * cos;
+                    pa = temp;
+                    temp = pc * cos + pd * sin;
+                    pd = pc * -sin + pd * cos;
+                    pc = temp;
+
+                    if (!parent.data.inheritScale) break;
+                    parent = parent.parent;
+                } while (parent != null);
+                m.a = pa * la + pb * lc;
+                m.c = pa * lb + pb * ld;
+                m.b = pc * la + pd * lc;
+                m.d = pc * lb + pd * ld;
+            } else {
+                m.a = la;
+                m.c = lb;
+                m.b = lc;
+                m.d = ld;
+            }
+            if (skeleton.flipX) {
+                m.a = -m.a;
+                m.c = -m.c;
+            }
+            if (skeleton.flipY !== spine.Bone.yDown) {
+                m.b = -m.b;
+                m.d = -m.d;
+            }
         }
     },
 
@@ -1832,6 +1826,17 @@ spine.MeshAttachment.prototype = {
             this.triangles = parentMesh.triangles;
             this.hullLength = parentMesh.hullLength;
         }
+    },
+    hackRegion: function(newRegion) {
+        if (!newRegion) {
+            if (!this.oldRegion) return;
+            newRegion = this.oldRegion;
+        }
+        if (!this.oldRegion) {
+            this.oldRegion = this.rendererObject;
+        }
+        this.rendererObject = newRegion;
+        this.updateUVs();
     }
 };
 module.exports = spine.MeshAttachment;
@@ -1927,6 +1932,21 @@ spine.RegionAttachment.prototype = {
         vertices[5/*X3*/] = offset[4/*X3*/] * m10 + offset[5/*X3*/] * m11 + y;
         vertices[6/*X4*/] = offset[6/*X4*/] * m00 + offset[7/*Y4*/] * m01 + x;
         vertices[7/*Y4*/] = offset[6/*X4*/] * m10 + offset[7/*Y4*/] * m11 + y;
+    },
+    hackRegion: function(newRegion) {
+        if (!newRegion) {
+            if (!this.oldRegion) return;
+            newRegion = this.oldRegion;
+        }
+        if (!this.oldRegion) {
+            this.oldRegion = this.rendererObject;
+            this.oldRegion.size = { width: this.width, height: this.height };
+        }
+        this.rendererObject = newRegion;
+        if (newRegion.size) {
+            this.width = newRegion.size.width;
+            this.height = newRegion.size.height;
+        }
     }
 };
 module.exports = spine.RegionAttachment;
@@ -2079,8 +2099,8 @@ spine.ShearTimeline.prototype = {
 
         if (time >= frames[frames.length - 3])
         { // Time is after last frame.
-            bone.shearX += (bone.data.shearX * frames[frames.length - 2] - bone.shearX) * alpha;
-            bone.shearY += (bone.data.shearY * frames[frames.length - 1] - bone.shearY) * alpha;
+            bone.shearX += (bone.data.shearX + frames[frames.length - 2] - bone.shearX) * alpha;
+            bone.shearY += (bone.data.shearY + frames[frames.length - 1] - bone.shearY) * alpha;
             return;
         }
 
@@ -4081,15 +4101,34 @@ Spine.prototype.update = function (dt)
             }
 
             if (slotContainer.transform ) {
-                //PIXI v4.0
-                if (!slotContainer.transform._dirtyLocal) {
-                    slotContainer.transform = new PIXI.TransformStatic();
-                }
                 var transform = slotContainer.transform;
-                var lt = transform.localTransform;
-                transform._dirtyParentVersion = -1;
-                transform._dirtyLocal = 1;
-                transform._versionLocal = 1;
+                var lt;
+                if (slotContainer.transform.matrix2d) {
+                    //gameofbombs pixi fork
+                    lt = transform.matrix2d;
+                    transform._dirtyVersion++;
+                    transform.version = transform._dirtyVersion;
+                    transform.isStatic = true;
+                    transform.operMode = 0;
+                } else
+                if (PIXI.TransformManual) {
+                    //PIXI v4.0
+                    if (transform.position) {
+                        transform = new PIXI.TransformManual();
+                        slotContainer.transform = transform;
+                    }
+                    lt = transform.localTransform;
+                } else {
+                    //PIXI v4.0rc
+                    if (!transform._dirtyLocal) {
+                        transform = new PIXI.TransformStatic();
+                        slotContainer.transform = transform;
+                    }
+                    lt = transform.localTransform;
+                    transform._dirtyParentVersion = -1;
+                    transform._dirtyLocal = 1;
+                    transform._versionLocal = 1;
+                }
                 slot.bone.matrix.copy(lt);
                 lt.tx += slot.bone.skeleton.x;
                 lt.ty += slot.bone.skeleton.y;
@@ -4104,9 +4143,9 @@ Spine.prototype.update = function (dt)
             }
 
             slot.currentSprite.blendMode = slot.blendMode;
-            slot.currentSprite.tint = PIXI.utils.rgb2hex([slot.r,slot.g,slot.b]);
+            slot.currentSprite.tint = PIXI.utils.rgb2hex([slot.r * attachment.r, slot.g * attachment.g, slot.b * attachment.b]);
         }
-        else if (type === spine.AttachmentType.skinnedmesh || type === spine.AttachmentType.mesh)
+        else if (type === spine.AttachmentType.skinnedmesh || type === spine.AttachmentType.mesh || type === spine.AttachmentType.linkedmesh)
         {
             if (!slot.currentMeshName || slot.currentMeshName !== attachment.name)
             {
@@ -4132,6 +4171,10 @@ Spine.prototype.update = function (dt)
                 slot.currentMeshName = meshName;
             }
             attachment.computeWorldVertices(slot.bone.skeleton.x, slot.bone.skeleton.y, slot, slot.currentMesh.vertices);
+            if (PIXI.VERSION[0] !== '3') {
+                // PIXI version 4
+                slot.currentMesh.dirty = true;
+            }
         }
         else
         {
@@ -4218,6 +4261,75 @@ Spine.prototype.createMesh = function (slot, attachment)
     return strip;
 };
 
+/**
+ * Changes texture in attachment in specific slot.
+ *
+ * PIXI runtime feature, it was made to satisfy our users.
+ *
+ * @param slotName {string}
+ * @param [texture = null] {PIXI.Texture} If null, take default (original) texture
+ * @param [size = null] {PIXI.Point} sometimes we need new size for region attachment, you can pass 'texture.orig' there
+ * @returns {boolean} Success flag
+ */
+Spine.prototype.hackTextureBySlotIndex = function(slotIndex, texture, size) {
+    var slot = this.skeleton.slots[slotIndex];
+    if (!slot) {
+        return false;
+    }
+    var attachment = slot.attachment;
+    if (!attachment || !attachment.hackRegion) {
+        return false;
+    }
+    var region = null;
+    if (texture) {
+        region = new spine.AtlasRegion();
+        region.texture = texture;
+        region.size = size;
+    }
+
+    attachment.hackRegion(region);
+    var descriptor = attachment.rendererObject;
+    if (slot.currentSprite) {
+        var sprite = slot.currentSprite;
+        sprite.texture = descriptor.texture;
+        sprite.scale.x = attachment.width / descriptor.originalWidth;
+        sprite.scale.y = - attachment.height / descriptor.originalHeight;
+    }
+    if (slot.currentMesh) {
+        var mesh = slot.currentMesh;
+        mesh.texture = descriptor.texture;
+        for (var i = 0; i < attachment.uvs.length; i++) {
+            mesh.uvs[i] = attachment.uvs[i];
+        }
+        if (PIXI.VERSION[0] !== '3') {
+            // PIXI version 4
+            mesh.indexDirty = true;
+        } else {
+            // PIXI version 3
+            mesh.dirty = true;
+        }
+    }
+    return true;
+};
+
+/**
+ * Changes texture in attachment in specific slot.
+ *
+ * PIXI runtime feature, it was made to satisfy our users.
+ *
+ * @param slotName {string}
+ * @param [texture = null] {PIXI.Texture} If null, take default (original) texture
+ * @param [size = null] {PIXI.Point} sometimes we need new size for region attachment, you can pass 'texture.orig' there
+ * @returns {boolean} Success flag
+ */
+Spine.prototype.hackTextureBySlotName = function(slotName, texture, size) {
+    var index = this.skeleton.findSlotIndex(slotName);
+    if (index == -1) {
+        return false;
+    }
+    return this.hackTextureBySlotIndex(index,texture, size);
+};
+
 function SlotContainerUpdateTransformV3()
 {
     var pt = this.parent.worldTransform;
@@ -4277,7 +4389,12 @@ var atlasParser = module.exports = function () {
                 atlasParser.AnimCache[resource.name] = resource.spineData;
             }
 
-            next();
+            return next();
+        }
+
+        var metadataAtlasSuffix = '.atlas';
+        if (resource.metadata && resource.metadata.spineAtlasSuffix) {
+            metadataAtlasSuffix = resource.metadata.spineAtlasSuffix;
         }
 
         /**
@@ -4285,7 +4402,7 @@ var atlasParser = module.exports = function () {
          * that correspond to the spine file are in the same base URL and that the .json and .atlas files
          * have the same name
          */
-        var atlasPath = resource.url.substr(0, resource.url.lastIndexOf('.')) + '.atlas';
+        var atlasPath = resource.url.substr(0, resource.url.lastIndexOf('.')) + metadataAtlasSuffix;
         //remove the baseUrl
         atlasPath = atlasPath.replace(this.baseUrl, '');
 

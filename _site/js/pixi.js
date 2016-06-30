@@ -11614,8 +11614,8 @@ Graphics.prototype._renderSpriteRect = function (renderer)
 
     this._spriteRect.transform.worldTransform = this.transform.worldTransform;
 
-    this._spriteRect.anchor.x = -rect.x / rect.width;
-    this._spriteRect.anchor.y = -rect.y / rect.height;
+    this._spriteRect.anchor.set(-rect.x / rect.width, -rect.y / rect.height);
+    this._spriteRect.onAnchorUpdate();
 
     this._spriteRect._renderWebGL(renderer);
 };
@@ -14147,8 +14147,9 @@ Matrix.IDENTITY = new Matrix();
 Matrix.TEMP_MATRIX = new Matrix();
 
 },{"./Point":63}],62:[function(require,module,exports){
-/**
- * The Point object represents a location in a two-dimensional coordinate system, where x represents
+var Point = require('./Point');
+
+/* The Point object represents a location in a two-dimensional coordinate system, where x represents
  * the horizontal axis and y represents the vertical axis.
  * An observable point is a point that triggers a callback when the point's position is changed.
  *
@@ -14215,6 +14216,15 @@ Object.defineProperties(ObservablePoint.prototype, {
 });
 
 /**
+ * Creates a clone of this point. Clone is not observable!
+ *
+ * @return {PIXI.Point} a copy of the point
+ */
+ObservablePoint.prototype.clone = function() {
+    return new Point(this._x, this._y);
+};
+
+/**
  * Sets the point to a new x and y position.
  * If y is omitted, both x and y will be set to x.
  *
@@ -14248,7 +14258,7 @@ ObservablePoint.prototype.copy = function (point)
     }
 };
 
-},{}],63:[function(require,module,exports){
+},{"./Point":63}],63:[function(require,module,exports){
 /**
  * The Point object represents a location in a two-dimensional coordinate system, where x represents
  * the horizontal axis and y represents the vertical axis.

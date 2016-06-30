@@ -8907,7 +8907,7 @@ AccessibilityManager.prototype.destroy = function ()
 core.WebGLRenderer.registerPlugin('accessibility', AccessibilityManager);
 core.CanvasRenderer.registerPlugin('accessibility', AccessibilityManager);
 
-},{"../core":60,"./accessibleTarget":38,"ismobilejs":5}],38:[function(require,module,exports){
+},{"../core":59,"./accessibleTarget":38,"ismobilejs":5}],38:[function(require,module,exports){
 /**
  * Default property values of accessible objects
  * used by {@link PIXI.accessibility.AccessibilityManager}.
@@ -9360,216 +9360,10 @@ var CONST = {
 
 module.exports = CONST;
 
-},{"./utils/maxRecommendedTextures":115}],42:[function(require,module,exports){
-var math = require('../math'),
-    Rectangle = math.Rectangle;
-
-/**
- * 'Builder' pattern for bounds rectangles
- * Axis-Aligned Bounding Box
- * It is not a shape! Its mutable thing, no 'EMPTY' or that kind of problems
- *
- * @class
- * @memberof PIXI
- */
-function BoundsBuilder()
-{
-    /**
-     * @member {number}
-     * @default 0
-     */
-    this.minX = Infinity;
-
-    /**
-     * @member {number}
-     * @default 0
-     */
-    this.minY = Infinity;
-
-    /**
-     * @member {number}
-     * @default 0
-     */
-    this.maxX = -Infinity;
-
-    /**
-     * @member {number}
-     * @default 0
-     */
-    this.maxY = -Infinity;
-}
-
-BoundsBuilder.prototype.constructor = BoundsBuilder;
-module.exports = BoundsBuilder;
-
-BoundsBuilder.prototype.isEmpty = function()
-{
-    return this.minX > this.maxX || this.minY > this.maxY;
-};
-
-BoundsBuilder.prototype.clear = function()
-{
-    this.minX = Infinity;
-    this.minY = Infinity;
-    this.maxX = -Infinity;
-    this.maxY = -Infinity;
-};
-
-/**
- * Can return Rectangle.EMPTY constant, either construct new rectangle, either use your rectangle
- * It is not guaranteed that it will return tempRect
- * @param tempRect {PIXI.Rectangle} temporary object will be used if AABB is not empty
- * @returns {PIXI.Rectangle}
- */
-BoundsBuilder.prototype.getRectangle = function(tempRect)
-{
-    if (this.minX > this.maxX || this.minY > this.maxY) {
-        return Rectangle.EMPTY;
-    }
-    tempRect = tempRect || new Rectangle(0, 0, 1, 1);
-    tempRect.x = this.minX;
-    tempRect.y = this.minY;
-    tempRect.width = this.maxX - this.minX;
-    tempRect.height = this.maxY - this.minY;
-    return tempRect;
-};
-
-/**
- * This function should be inlined when its possible
- * @param point {PIXI.Point}
- */
-BoundsBuilder.prototype.addPoint = function (point)
-{
-    this.minX = Math.min(this.minX, point.x);
-    this.maxX = Math.max(this.maxX, point.x);
-    this.minY = Math.min(this.minY, point.y);
-    this.maxY = Math.max(this.maxY, point.y);
-};
-
-/**
- * Adds a quad, not transformed
- * @param vertices {Float32Array}
- * @returns {PIXI.BoundsBuilder}
- */
-BoundsBuilder.prototype.addQuad = function(vertices)
-{
-    var minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY;
-
-    var x = vertices[0];
-    var y = vertices[1];
-    minX = x < minX ? x : minX;
-    minY = y < minY ? y : minY;
-    maxX = x > maxX ? x : maxX;
-    maxY = y > maxY ? y : maxY;
-
-    x = vertices[2];
-    y = vertices[3];
-    minX = x < minX ? x : minX;
-    minY = y < minY ? y : minY;
-    maxX = x > maxX ? x : maxX;
-    maxY = y > maxY ? y : maxY;
-
-    x = vertices[4];
-    y = vertices[5];
-    minX = x < minX ? x : minX;
-    minY = y < minY ? y : minY;
-    maxX = x > maxX ? x : maxX;
-    maxY = y > maxY ? y : maxY;
-
-    x = vertices[6];
-    y = vertices[7];
-    minX = x < minX ? x : minX;
-    minY = y < minY ? y : minY;
-    maxX = x > maxX ? x : maxX;
-    maxY = y > maxY ? y : maxY;
-
-    this.minX = minX;
-    this.minY = minY;
-    this.maxX = maxX;
-    this.maxY = maxY;
-};
-
-/**
- * Adds sprite frame, transformed
- * @param transform {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual}
- * @param x0 {number}
- * @param y0 {number}
- * @param x1 {number}
- * @param y1 {number}
- */
-BoundsBuilder.prototype.addFrame = function(transform, x0, y0, x1, y1)
-{
-    var matrix = transform.worldTransform;
-    var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
-    var minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY;
-
-    var x = a * x0 + c * y0 + tx;
-    var y = b * x0 + d * y0 + ty;
-    minX = x < minX ? x : minX;
-    minY = y < minY ? y : minY;
-    maxX = x > maxX ? x : maxX;
-    maxY = y > maxY ? y : maxY;
-
-    x = a * x1 + c * y0 + tx;
-    y = b * x1 + d * y0 + ty;
-    minX = x < minX ? x : minX;
-    minY = y < minY ? y : minY;
-    maxX = x > maxX ? x : maxX;
-    maxY = y > maxY ? y : maxY;
-
-    x = a * x0 + c * y1 + tx;
-    y = b * x0 + d * y1 + ty;
-    minX = x < minX ? x : minX;
-    minY = y < minY ? y : minY;
-    maxX = x > maxX ? x : maxX;
-    maxY = y > maxY ? y : maxY;
-
-    x = a * x1 + c * y1 + tx;
-    y = b * x1 + d * y1 + ty;
-    minX = x < minX ? x : minX;
-    minY = y < minY ? y : minY;
-    maxX = x > maxX ? x : maxX;
-    maxY = y > maxY ? y : maxY;
-
-    this.minX = minX;
-    this.minY = minY;
-    this.maxX = maxX;
-    this.maxY = maxY;
-};
-
-/**
- * add an array of vertices
- * @param transform {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual}
- * @param vertices {Float32Array}
- * @param beginOffset {number}
- * @param endOffset {number}
- */
-BoundsBuilder.prototype.addVertices = function(transform, vertices, beginOffset, endOffset) {
-    var matrix = transform.worldTransform;
-    var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
-    var minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY;
-    for (var i = beginOffset; i < endOffset; i += 2) {
-        var rawX = vertices[i], rawY = vertices[i + 1];
-        var x = (a * rawX) + (c * rawY) + tx;
-        var y = (d * rawY) + (b * rawX) + ty;
-        minX = x < minX ? x : minX;
-        minY = y < minY ? y : minY;
-        maxX = x > maxX ? x : maxX;
-        maxY = y > maxY ? y : maxY;
-    }
-    this.minX = minX;
-    this.minY = minY;
-    this.maxX = maxX;
-    this.maxY = maxY;
-};
-
-},{"../math":65}],43:[function(require,module,exports){
+},{"./utils/maxRecommendedTextures":114}],42:[function(require,module,exports){
 var math = require('../math'),
     utils = require('../utils'),
-    DisplayObject = require('./DisplayObject'),
-    TransformManual = require('./TransformManual'),
-    BoundsBuilder = require('./BoundsBuilder'),
-    _tempBoundsBuilder = new BoundsBuilder();
+    DisplayObject = require('./DisplayObject');
 
 /**
  * A Container represents a collection of display objects.
@@ -9964,19 +9758,24 @@ Container.prototype.getBounds = function ()
     if(!this._currentBounds)
     {
 
-        var rb = _tempBoundsBuilder;
-        rb.clear();
-        this._calcBounds(rb, this.transform);
+        if (this.children.length === 0)
+        {
+            return math.Rectangle.EMPTY;
+        }
 
-        // _tempBoundsBuilder can be used inside cycle, so we have to maintain our own set of variables
-        var minX = rb.minX;
-        var minY = rb.minY;
-        var maxX = rb.maxX;
-        var maxY = rb.maxY;
+        // TODO the bounds have already been calculated this render session so return what we have
+
+        var minX = Infinity;
+        var minY = Infinity;
+
+        var maxX = -Infinity;
+        var maxY = -Infinity;
 
         var childBounds;
         var childMaxX;
         var childMaxY;
+
+        var childVisible = false;
 
         for (var i = 0, j = this.children.length; i < j; ++i)
         {
@@ -9991,6 +9790,7 @@ Container.prototype.getBounds = function ()
             if (childBounds === math.Rectangle.EMPTY) {
                 continue;
             }
+            childVisible = true;
 
             minX = minX < childBounds.x ? minX : childBounds.x;
             minY = minY < childBounds.y ? minY : childBounds.y;
@@ -10002,20 +9802,52 @@ Container.prototype.getBounds = function ()
             maxY = maxY > childMaxY ? maxY : childMaxY;
         }
 
-        //return variables to their place
-        rb.minX = minX;
-        rb.minY = minY;
-        rb.maxX = maxX;
-        rb.maxY = maxY;
+        if (!childVisible)
+        {
+             this._currentBounds = math.Rectangle.EMPTY;
+             return this._currentBounds;
+        }
 
-        //use BoundsBuilder logic
-        this._currentBounds = rb.getRectangle(this._bounds);
+        var bounds = this._bounds;
+
+        bounds.x = minX;
+        bounds.y = minY;
+        bounds.width = maxX - minX;
+        bounds.height = maxY - minY;
+
+        this._currentBounds = bounds;
     }
 
     return this._currentBounds;
 };
 
 Container.prototype.containerGetBounds = Container.prototype.getBounds;
+
+/**
+ * Retrieves the non-global local bounds of the Container as a rectangle.
+ * The calculation takes all visible children into consideration.
+ *
+ * @return {PIXI.Rectangle} The rectangular bounding area
+ */
+Container.prototype.getLocalBounds = function ()
+{
+    var matrixCache = this.transform.worldTransform;
+
+    this.transform.worldTransform = math.Matrix.IDENTITY;
+    this.transform._worldID++;
+
+    for (var i = 0, j = this.children.length; i < j; ++i)
+    {
+        this.children[i].updateTransform();
+    }
+
+    this.transform.worldTransform = matrixCache;
+    this.transform._worldID++;
+
+    this._currentBounds = null;
+
+    return this.getBounds();
+};
 
 /**
  * Renders the object using the WebGL renderer
@@ -10085,58 +9917,6 @@ Container.prototype.renderWebGL = function (renderer)
             this.children[i].renderWebGL(renderer);
         }
     }
-};
-
-/**
- * _calcBounds() adds bounds of this object with transform to builder.
- * calcBounds() adds child bounds too.
- *
- * Please do not override it.
- *
- * The calculation takes all visible children into consideration.
- * If there are any visible children, one temporary cached transform object will be used.
- *
- * @param {PIXI.BoundsBuilder} builder
- * @param {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual} transform
- */
-
-Container.prototype.calcBounds = function (builder, transform)
-{
-    var children = this.children;
-    var i, j;
-    this._calcBounds(builder, transform);
-    // now loop through the children and make sure they get rendered
-    for (i = 0, j = children.length; i < j; i++)
-    {
-        var child = children[i];
-        if (!child.visible)
-        {
-            continue;
-        }
-        var bt = this._boundsTransform;
-        if (!bt)
-        {
-            bt = new TransformManual();
-            this._boundsTransform = bt;
-        }
-        bt.localTransform = child.transform.localTransform;
-        bt.updateTransform(transform);
-        this.children[i].calcBounds(builder, bt);
-    }
-};
-
-/**
- * To be overridden by the subclass. Same strategy as for renderWebGL/_renderWebGL applies:
- * _calcBounds() adds bounds of this object with transform to builder
- * calcBounds() adds child bounds too
- *
- * @param {PIXI.BoundsBuilder} builder
- * @param {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual} transform
- * @private
- */
-Container.prototype._calcBounds = function (builder, transform) // jshint unused:false
-{
-    // this is where content bounds are measured
 };
 
 /**
@@ -10216,16 +9996,13 @@ Container.prototype.destroy = function (options)
     this.children = null;
 };
 
-},{"../math":65,"../utils":114,"./BoundsBuilder":42,"./DisplayObject":44,"./TransformManual":46}],44:[function(require,module,exports){
+},{"../math":64,"../utils":113,"./DisplayObject":43}],43:[function(require,module,exports){
 var math = require('../math'),
     EventEmitter = require('eventemitter3'),
     CONST = require('../const'),
     TransformStatic = require('./TransformStatic'),
     Transform = require('./Transform'),
-    TransformManual = require('./TransformManual'),
-    BoundsBuilder = require('./BoundsBuilder'),
-    _tempDisplayObjectParent = new DisplayObject(),
-    _tempBoundsBuilder = new BoundsBuilder();
+    _tempDisplayObjectParent = new DisplayObject();
 
 
 /**
@@ -10310,20 +10087,6 @@ function DisplayObject()
     this._bounds = new math.Rectangle(0, 0, 1, 1);
 
     /**
-     * Cache for local bounds
-     * @member {PIXI.Rectangle}
-     * @private
-     */
-    this._localBounds = null;
-
-    /**
-     * Last asked localBounds. Can be null, this._localBounds or PIXI.Rectangle.EMPTY
-     * @member {PIXI.Rectangle}
-     * @private
-     */
-    this._currentLocalBounds = null;
-
-    /**
      * The most up-to-date bounds of the object
      *
      * @member {PIXI.Rectangle}
@@ -10338,13 +10101,6 @@ function DisplayObject()
      * @private
      */
     this._mask = null;
-
-    /**
-     * Used for bounds calculation
-     * @member {PIXI.Transform}
-     * @private
-     */
-    this._boundsTransform = null;
 }
 
 // constructor
@@ -10603,33 +10359,13 @@ DisplayObject.prototype.getBounds = function () // jshint unused:false
 };
 
 /**
- * Fills the builder with points. Both parameters are required
- * @param {PIXI.BoundsBuilder} builder
- * @param {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual} transform
- */
-DisplayObject.prototype.calcBounds = function(builder, transform) // jshint unused:false
-{
-
-};
-
-/**
  * Retrieves the local bounds of the displayObject as a rectangle object
- *
- * For a container, the calculation takes all visible children into consideration.
  *
  * @return {PIXI.Rectangle} the rectangular bounding area
  */
 DisplayObject.prototype.getLocalBounds = function ()
 {
-    var rb = _tempBoundsBuilder;
-    rb.clear();
-    this.calcBounds(rb, TransformManual.IDENTITY);
-    var bounds = rb.getRectangle(this._localBounds);
-    if (bounds !== math.Rectangle.EMPTY) {
-        this._localBounds = bounds;
-    }
-    this._currentLocalBounds = bounds;
-    return bounds;
+    return this.getBounds(math.Matrix.IDENTITY);
 };
 
 /**
@@ -10776,12 +10512,13 @@ DisplayObject.prototype.destroy = function ()
     this.filterArea = null;
 };
 
-},{"../const":41,"../math":65,"./BoundsBuilder":42,"./Transform":45,"./TransformManual":46,"./TransformStatic":47,"eventemitter3":4}],45:[function(require,module,exports){
+},{"../const":41,"../math":64,"./Transform":44,"./TransformStatic":46,"eventemitter3":4}],44:[function(require,module,exports){
 var math = require('../math');
 
 
 /**
  * Generic class to deal with traditional 2D matrix transforms
+ * This will be reworked in v4.1, please do not use it yet unless you know what are you doing!
  *
  * @class
  * @memberof PIXI
@@ -10924,7 +10661,7 @@ Object.defineProperties(Transform.prototype, {
 
 module.exports = Transform;
 
-},{"../math":65}],46:[function(require,module,exports){
+},{"../math":64}],45:[function(require,module,exports){
 var math = require('../math');
 
 
@@ -10934,9 +10671,8 @@ var math = require('../math');
  *
  * @class
  * @memberof PIXI
- * @params [localTransform=null] {PIXI.Matrix} use this local matrix. Useful for model parts like Spine or Spriter
  */
-function TransformManual(localTransform)
+function TransformManual()
 {
     /**
      * @member {PIXI.Matrix} The global matrix transform
@@ -10945,7 +10681,7 @@ function TransformManual(localTransform)
     /**
      * @member {PIXI.Matrix} The local matrix transform
      */
-    this.localTransform = localTransform || new math.Matrix();
+    this.localTransform = new math.Matrix();
 
     this._worldID = 0;
 }
@@ -10975,15 +10711,14 @@ TransformManual.prototype.updateTransform = function (parentTransform)
     this._worldID ++;
 };
 
-TransformManual.IDENTITY = new TransformManual();
-
 module.exports = TransformManual;
 
-},{"../math":65}],47:[function(require,module,exports){
+},{"../math":64}],46:[function(require,module,exports){
 var math = require('../math');
 
 /**
  * Transform that takes care about its versions
+ * This will be reworked in v4.1, please do not use it yet unless you know what are you doing!
  *
  * @class
  * @memberof PIXI
@@ -11142,7 +10877,7 @@ Object.defineProperties(TransformStatic.prototype, {
 
 module.exports = TransformStatic;
 
-},{"../math":65}],48:[function(require,module,exports){
+},{"../math":64}],47:[function(require,module,exports){
 var Container = require('../display/Container'),
     RenderTexture = require('../textures/RenderTexture'),
     Texture = require('../textures/Texture'),
@@ -11263,7 +10998,7 @@ function Graphics()
      * @member {PIXI.Rectangle}
      * @private
      */
-    this._cacheLocalBounds = new math.Rectangle(0,0,1,1);
+    this._localBounds = new math.Rectangle(0,0,1,1);
 
     /**
      * Used to detect if the graphics object has changed. If this is set to true then the graphics
@@ -11879,8 +11614,8 @@ Graphics.prototype._renderSpriteRect = function (renderer)
 
     this._spriteRect.transform.worldTransform = this.transform.worldTransform;
 
-    this._spriteRect.anchor.x = -rect.x / rect.width;
-    this._spriteRect.anchor.y = -rect.y / rect.height;
+    this._spriteRect.anchor.set(-rect.x / rect.width, -rect.y / rect.height);
+    this._spriteRect.onAnchorUpdate();
 
     this._spriteRect._renderWebGL(renderer);
 };
@@ -11902,48 +11637,90 @@ Graphics.prototype._renderCanvas = function (renderer)
 };
 
 /**
- * Takes graphics cached localBounds, rotates them with transform, passes to the builder
- * @param {PIXI.BoundsBuilder} builder
- * @param {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual} transform
- */
-Graphics.prototype._calcBounds = function (builder, transform)
-{
-    if (this.boundsDirty)
-    {
-        this.updateLocalBounds();
-
-        this.glDirty = true;
-        this.cachedSpriteDirty = true;
-        this.boundsDirty = false;
-    }
-
-    var bounds = this._cacheLocalBounds;
-
-    var w0 = bounds.x;
-    var w1 = bounds.width + bounds.x;
-
-    var h0 = bounds.y;
-    var h1 = bounds.height + bounds.y;
-    builder.addFrame(transform, w0, h0, w1, h1);
-};
-
-/**
  * Retrieves the bounds of the graphic shape as a rectangle object
- * contains a hack: it does return Rectangle.EMPTY if graphics is not renderable (is a mask)
  *
+ * @param [matrix] {PIXI.Matrix} The world transform matrix to use, defaults to this
+ *  object's worldTransform.
  * @return {PIXI.Rectangle} the rectangular bounding area
  */
-Graphics.prototype.getBounds = function ()
+Graphics.prototype.getBounds = function (matrix)
 {
     if(!this._currentBounds)
     {
+
         // return an empty object if the item is a mask!
         if (!this.renderable)
         {
             return math.Rectangle.EMPTY;
         }
 
-        return this.containerGetBounds();
+        if (this.boundsDirty)
+        {
+            this.updateLocalBounds();
+
+            this.glDirty = true;
+            this.cachedSpriteDirty = true;
+            this.boundsDirty = false;
+        }
+
+        var bounds = this._localBounds;
+
+        var w0 = bounds.x;
+        var w1 = bounds.width + bounds.x;
+
+        var h0 = bounds.y;
+        var h1 = bounds.height + bounds.y;
+
+        var worldTransform = matrix || this.worldTransform;
+
+        var a = worldTransform.a;
+        var b = worldTransform.b;
+        var c = worldTransform.c;
+        var d = worldTransform.d;
+        var tx = worldTransform.tx;
+        var ty = worldTransform.ty;
+
+        var x1 = a * w1 + c * h1 + tx;
+        var y1 = d * h1 + b * w1 + ty;
+
+        var x2 = a * w0 + c * h1 + tx;
+        var y2 = d * h1 + b * w0 + ty;
+
+        var x3 = a * w0 + c * h0 + tx;
+        var y3 = d * h0 + b * w0 + ty;
+
+        var x4 =  a * w1 + c * h0 + tx;
+        var y4 =  d * h0 + b * w1 + ty;
+
+        var maxX = x1;
+        var maxY = y1;
+
+        var minX = x1;
+        var minY = y1;
+
+        minX = x2 < minX ? x2 : minX;
+        minX = x3 < minX ? x3 : minX;
+        minX = x4 < minX ? x4 : minX;
+
+        minY = y2 < minY ? y2 : minY;
+        minY = y3 < minY ? y3 : minY;
+        minY = y4 < minY ? y4 : minY;
+
+        maxX = x2 > maxX ? x2 : maxX;
+        maxX = x3 > maxX ? x3 : maxX;
+        maxX = x4 > maxX ? x4 : maxX;
+
+        maxY = y2 > maxY ? y2 : maxY;
+        maxY = y3 > maxY ? y3 : maxY;
+        maxY = y4 > maxY ? y4 : maxY;
+
+        this._bounds.x = minX;
+        this._bounds.width = maxX - minX;
+
+        this._bounds.y = minY;
+        this._bounds.height = maxY - minY;
+
+        this._currentBounds = this._bounds;
     }
 
     return this._currentBounds;
@@ -12074,11 +11851,11 @@ Graphics.prototype.updateLocalBounds = function ()
 
     var padding = this.boundsPadding;
 
-    this._cacheLocalBounds.x = minX - padding;
-    this._cacheLocalBounds.width = (maxX - minX) + padding * 2;
+    this._localBounds.x = minX - padding;
+    this._localBounds.width = (maxX - minX) + padding * 2;
 
-    this._cacheLocalBounds.y = minY - padding;
-    this._cacheLocalBounds.height = (maxY - minY) + padding * 2;
+    this._localBounds.y = minY - padding;
+    this._localBounds.height = (maxY - minY) + padding * 2;
 };
 
 
@@ -12120,7 +11897,7 @@ Graphics.prototype.generateCanvasTexture = function(scaleMode, resolution)
 {
     resolution = resolution || 1;
 
-    var bounds = this.getLegacyLocalBounds();
+    var bounds = this.getLocalBounds();
 
     var canvasBuffer = new RenderTexture.create(bounds.width * resolution, bounds.height * resolution);
 
@@ -12191,10 +11968,10 @@ Graphics.prototype.destroy = function ()
 
     this.currentPath = null;
     this._webgl = null;
-    this._cacheLocalBounds = null;
+    this._localBounds = null;
 };
 
-},{"../const":41,"../display/Container":43,"../math":65,"../renderers/canvas/CanvasRenderer":72,"../sprites/Sprite":96,"../textures/RenderTexture":106,"../textures/Texture":107,"./GraphicsData":49,"./utils/bezierCurveTo":51}],49:[function(require,module,exports){
+},{"../const":41,"../display/Container":42,"../math":64,"../renderers/canvas/CanvasRenderer":71,"../sprites/Sprite":95,"../textures/RenderTexture":105,"../textures/Texture":106,"./GraphicsData":48,"./utils/bezierCurveTo":50}],48:[function(require,module,exports){
 /**
  * A GraphicsData object.
  *
@@ -12301,7 +12078,7 @@ GraphicsData.prototype.destroy = function () {
     this.holes = null;
 };
 
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var CanvasRenderer = require('../../renderers/canvas/CanvasRenderer'),
     CONST = require('../../const');
 
@@ -12579,7 +12356,7 @@ CanvasGraphicsRenderer.prototype.destroy = function ()
   this.renderer = null;
 };
 
-},{"../../const":41,"../../renderers/canvas/CanvasRenderer":72}],51:[function(require,module,exports){
+},{"../../const":41,"../../renderers/canvas/CanvasRenderer":71}],50:[function(require,module,exports){
 
 /**
  * Calculate the points for a bezier curve and then draws it.
@@ -12630,7 +12407,7 @@ var bezierCurveTo = function (fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY, path
 
 module.exports = bezierCurveTo;
 
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 var utils = require('../../utils'),
     CONST = require('../../const'),
     ObjectRenderer = require('../../renderers/webgl/utils/ObjectRenderer'),
@@ -12851,7 +12628,7 @@ GraphicsRenderer.prototype.getWebGLData = function (webGL, type)
     return webGLData;
 };
 
-},{"../../const":41,"../../renderers/webgl/WebGLRenderer":79,"../../renderers/webgl/utils/ObjectRenderer":89,"../../utils":114,"./WebGLGraphicsData":53,"./shaders/PrimitiveShader":54,"./utils/buildCircle":55,"./utils/buildPoly":57,"./utils/buildRectangle":58,"./utils/buildRoundedRectangle":59}],53:[function(require,module,exports){
+},{"../../const":41,"../../renderers/webgl/WebGLRenderer":78,"../../renderers/webgl/utils/ObjectRenderer":88,"../../utils":113,"./WebGLGraphicsData":52,"./shaders/PrimitiveShader":53,"./utils/buildCircle":54,"./utils/buildPoly":56,"./utils/buildRectangle":57,"./utils/buildRoundedRectangle":58}],52:[function(require,module,exports){
 var glCore = require('pixi-gl-core');
 
 
@@ -12978,7 +12755,7 @@ WebGLGraphicsData.prototype.destroy = function ()
     this.glIndices = null;
 };
 
-},{"pixi-gl-core":14}],54:[function(require,module,exports){
+},{"pixi-gl-core":14}],53:[function(require,module,exports){
 var Shader = require('../../../Shader');
 
 /**
@@ -13027,7 +12804,7 @@ PrimitiveShader.prototype.constructor = PrimitiveShader;
 
 module.exports = PrimitiveShader;
 
-},{"../../../Shader":40}],55:[function(require,module,exports){
+},{"../../../Shader":40}],54:[function(require,module,exports){
 var buildLine = require('./buildLine'),
     CONST = require('../../../const'),
     utils = require('../../../utils');
@@ -13116,7 +12893,7 @@ var buildCircle = function (graphicsData, webGLData)
 
 module.exports = buildCircle;
 
-},{"../../../const":41,"../../../utils":114,"./buildLine":56}],56:[function(require,module,exports){
+},{"../../../const":41,"../../../utils":113,"./buildLine":55}],55:[function(require,module,exports){
 var math = require('../../../math'),
     utils = require('../../../utils');
 
@@ -13337,7 +13114,7 @@ var buildLine = function (graphicsData, webGLData)
 
 module.exports = buildLine;
 
-},{"../../../math":65,"../../../utils":114}],57:[function(require,module,exports){
+},{"../../../math":64,"../../../utils":113}],56:[function(require,module,exports){
 var buildLine = require('./buildLine'),
     utils = require('../../../utils'),
     earcut = require('earcut');
@@ -13416,7 +13193,7 @@ var buildPoly = function (graphicsData, webGLData)
 
 module.exports = buildPoly;
 
-},{"../../../utils":114,"./buildLine":56,"earcut":3}],58:[function(require,module,exports){
+},{"../../../utils":113,"./buildLine":55,"earcut":3}],57:[function(require,module,exports){
 var buildLine = require('./buildLine'),
     utils = require('../../../utils');
 
@@ -13488,7 +13265,7 @@ var buildRectangle = function (graphicsData, webGLData)
 
 module.exports = buildRectangle;
 
-},{"../../../utils":114,"./buildLine":56}],59:[function(require,module,exports){
+},{"../../../utils":113,"./buildLine":55}],58:[function(require,module,exports){
 var earcut = require('earcut'),
     buildLine = require('./buildLine'),
     utils = require('../../../utils');
@@ -13618,7 +13395,7 @@ var quadraticBezierCurve = function (fromX, fromY, cpX, cpY, toX, toY, out)// js
 
 module.exports = buildRoundedRectangle;
 
-},{"../../../utils":114,"./buildLine":56,"earcut":3}],60:[function(require,module,exports){
+},{"../../../utils":113,"./buildLine":55,"earcut":3}],59:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI core library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -13641,7 +13418,6 @@ var core = module.exports = Object.assign(require('./const'), require('./math'),
     Transform:              require('./display/Transform'),
     TransformStatic:        require('./display/TransformStatic'),
     TransformManual:        require('./display/TransformManual'),
-    BoundsBuilder:          require('./display/BoundsBuilder'),
 
     // sprites
     Sprite:                 require('./sprites/Sprite'),
@@ -13717,7 +13493,7 @@ var core = module.exports = Object.assign(require('./const'), require('./math'),
     }
 });
 
-},{"./Shader":40,"./const":41,"./display/BoundsBuilder":42,"./display/Container":43,"./display/DisplayObject":44,"./display/Transform":45,"./display/TransformManual":46,"./display/TransformStatic":47,"./graphics/Graphics":48,"./graphics/GraphicsData":49,"./graphics/canvas/CanvasGraphicsRenderer":50,"./graphics/webgl/GraphicsRenderer":52,"./math":65,"./renderers/canvas/CanvasRenderer":72,"./renderers/canvas/utils/CanvasRenderTarget":74,"./renderers/webgl/WebGLRenderer":79,"./renderers/webgl/filters/Filter":81,"./renderers/webgl/filters/spriteMask/SpriteMaskFilter":84,"./renderers/webgl/managers/WebGLManager":88,"./renderers/webgl/utils/ObjectRenderer":89,"./renderers/webgl/utils/Quad":90,"./renderers/webgl/utils/RenderTarget":91,"./sprites/Sprite":96,"./sprites/canvas/CanvasSpriteRenderer":97,"./sprites/canvas/CanvasTinter":98,"./sprites/webgl/SpriteRenderer":100,"./text/Text":102,"./text/TextStyle":103,"./textures/BaseRenderTexture":104,"./textures/BaseTexture":105,"./textures/RenderTexture":106,"./textures/Texture":107,"./textures/TextureUvs":108,"./textures/VideoBaseTexture":109,"./ticker":111,"./utils":114,"pixi-gl-core":14}],61:[function(require,module,exports){
+},{"./Shader":40,"./const":41,"./display/Container":42,"./display/DisplayObject":43,"./display/Transform":44,"./display/TransformManual":45,"./display/TransformStatic":46,"./graphics/Graphics":47,"./graphics/GraphicsData":48,"./graphics/canvas/CanvasGraphicsRenderer":49,"./graphics/webgl/GraphicsRenderer":51,"./math":64,"./renderers/canvas/CanvasRenderer":71,"./renderers/canvas/utils/CanvasRenderTarget":73,"./renderers/webgl/WebGLRenderer":78,"./renderers/webgl/filters/Filter":80,"./renderers/webgl/filters/spriteMask/SpriteMaskFilter":83,"./renderers/webgl/managers/WebGLManager":87,"./renderers/webgl/utils/ObjectRenderer":88,"./renderers/webgl/utils/Quad":89,"./renderers/webgl/utils/RenderTarget":90,"./sprites/Sprite":95,"./sprites/canvas/CanvasSpriteRenderer":96,"./sprites/canvas/CanvasTinter":97,"./sprites/webgl/SpriteRenderer":99,"./text/Text":101,"./text/TextStyle":102,"./textures/BaseRenderTexture":103,"./textures/BaseTexture":104,"./textures/RenderTexture":105,"./textures/Texture":106,"./textures/TextureUvs":107,"./textures/VideoBaseTexture":108,"./ticker":110,"./utils":113,"pixi-gl-core":14}],60:[function(require,module,exports){
 // Your friendly neighbour https://en.wikipedia.org/wiki/Dihedral_group of order 16
 
 var ux = [1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1];
@@ -13881,7 +13657,7 @@ var GroupD8 = {
 
 module.exports = GroupD8;
 
-},{"./Matrix":62}],62:[function(require,module,exports){
+},{"./Matrix":61}],61:[function(require,module,exports){
 // @todo - ignore the too many parameters warning for now
 // should either fix it or change the jshint config
 // jshint -W072
@@ -14370,9 +14146,10 @@ Matrix.IDENTITY = new Matrix();
  */
 Matrix.TEMP_MATRIX = new Matrix();
 
-},{"./Point":64}],63:[function(require,module,exports){
-/**
- * The Point object represents a location in a two-dimensional coordinate system, where x represents
+},{"./Point":63}],62:[function(require,module,exports){
+var Point = require('./Point');
+
+/* The Point object represents a location in a two-dimensional coordinate system, where x represents
  * the horizontal axis and y represents the vertical axis.
  * An observable point is a point that triggers a callback when the point's position is changed.
  *
@@ -14439,6 +14216,15 @@ Object.defineProperties(ObservablePoint.prototype, {
 });
 
 /**
+ * Creates a clone of this point. Clone is not observable!
+ *
+ * @return {PIXI.Point} a copy of the point
+ */
+ObservablePoint.prototype.clone = function() {
+    return new Point(this._x, this._y);
+};
+
+/**
  * Sets the point to a new x and y position.
  * If y is omitted, both x and y will be set to x.
  *
@@ -14472,7 +14258,7 @@ ObservablePoint.prototype.copy = function (point)
     }
 };
 
-},{}],64:[function(require,module,exports){
+},{"./Point":63}],63:[function(require,module,exports){
 /**
  * The Point object represents a location in a two-dimensional coordinate system, where x represents
  * the horizontal axis and y represents the vertical axis.
@@ -14542,7 +14328,7 @@ Point.prototype.set = function (x, y)
     this.y = y || ( (y !== 0) ? this.x : 0 ) ;
 };
 
-},{}],65:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /**
  * Math classes and utilities mixed into PIXI namespace.
  *
@@ -14566,7 +14352,7 @@ module.exports = {
     RoundedRectangle:   require('./shapes/RoundedRectangle')
 };
 
-},{"./GroupD8":61,"./Matrix":62,"./ObservablePoint":63,"./Point":64,"./shapes/Circle":66,"./shapes/Ellipse":67,"./shapes/Polygon":68,"./shapes/Rectangle":69,"./shapes/RoundedRectangle":70}],66:[function(require,module,exports){
+},{"./GroupD8":60,"./Matrix":61,"./ObservablePoint":62,"./Point":63,"./shapes/Circle":65,"./shapes/Ellipse":66,"./shapes/Polygon":67,"./shapes/Rectangle":68,"./shapes/RoundedRectangle":69}],65:[function(require,module,exports){
 var Rectangle = require('./Rectangle'),
     CONST = require('../../const');
 
@@ -14657,7 +14443,7 @@ Circle.prototype.getBounds = function ()
     return new Rectangle(this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
 };
 
-},{"../../const":41,"./Rectangle":69}],67:[function(require,module,exports){
+},{"../../const":41,"./Rectangle":68}],66:[function(require,module,exports){
 var Rectangle = require('./Rectangle'),
     CONST = require('../../const');
 
@@ -14755,7 +14541,7 @@ Ellipse.prototype.getBounds = function ()
     return new Rectangle(this.x - this.width, this.y - this.height, this.width, this.height);
 };
 
-},{"../../const":41,"./Rectangle":69}],68:[function(require,module,exports){
+},{"../../const":41,"./Rectangle":68}],67:[function(require,module,exports){
 var Point = require('../Point'),
     CONST = require('../../const');
 
@@ -14873,7 +14659,7 @@ Polygon.prototype.contains = function (x, y)
     return inside;
 };
 
-},{"../../const":41,"../Point":64}],69:[function(require,module,exports){
+},{"../../const":41,"../Point":63}],68:[function(require,module,exports){
 var CONST = require('../../const');
 
 /**
@@ -15048,7 +14834,7 @@ Rectangle.prototype.enlarge = function (rect)
     this.height = y2 - y1;
 };
 
-},{"../../const":41}],70:[function(require,module,exports){
+},{"../../const":41}],69:[function(require,module,exports){
 var CONST = require('../../const');
 
 /**
@@ -15143,7 +14929,7 @@ RoundedRectangle.prototype.contains = function (x, y)
     return false;
 };
 
-},{"../../const":41}],71:[function(require,module,exports){
+},{"../../const":41}],70:[function(require,module,exports){
 var utils = require('../utils'),
     math = require('../math'),
     CONST = require('../const'),
@@ -15388,14 +15174,7 @@ SystemRenderer.prototype.generateTexture = function (displayObject, scaleMode, r
     tempMatrix.tx = -bounds.x;
     tempMatrix.ty = -bounds.y;
 
-    renderTexture.generatedSpriteFrame = bounds.clone();
-    renderTexture.generatedSpriteAnchor = new math.Point(-bounds.x / bounds.width, -bounds.y / bounds.height);
-
-    displayObject.beginTextureGeneration(tempMatrix);
-
-    this.render(displayObject, renderTexture, false, null, true);
-
-    displayObject.endTextureGeneration(true);
+    this.render(displayObject, renderTexture, false, tempMatrix, true);
 
     return renderTexture;
 };
@@ -15440,7 +15219,7 @@ SystemRenderer.prototype.destroy = function (removeView) {
     this._lastObjectRendered = null;
 };
 
-},{"../const":41,"../display/Container":43,"../math":65,"../textures/RenderTexture":106,"../utils":114,"eventemitter3":4}],72:[function(require,module,exports){
+},{"../const":41,"../display/Container":42,"../math":64,"../textures/RenderTexture":105,"../utils":113,"eventemitter3":4}],71:[function(require,module,exports){
 var SystemRenderer = require('../SystemRenderer'),
     CanvasMaskManager = require('./utils/CanvasMaskManager'),
     CanvasRenderTarget = require('./utils/CanvasRenderTarget'),
@@ -15705,7 +15484,7 @@ CanvasRenderer.prototype.resize = function (width, height)
 
 };
 
-},{"../../const":41,"../../utils":114,"../SystemRenderer":71,"./utils/CanvasMaskManager":73,"./utils/CanvasRenderTarget":74,"./utils/mapCanvasBlendModesToPixi":76}],73:[function(require,module,exports){
+},{"../../const":41,"../../utils":113,"../SystemRenderer":70,"./utils/CanvasMaskManager":72,"./utils/CanvasRenderTarget":73,"./utils/mapCanvasBlendModesToPixi":75}],72:[function(require,module,exports){
 var CONST = require('../../../const');
 /**
  * A set of functions used to handle masking.
@@ -15867,7 +15646,7 @@ CanvasMaskManager.prototype.popMask = function (renderer)
 
 CanvasMaskManager.prototype.destroy = function () {};
 
-},{"../../../const":41}],74:[function(require,module,exports){
+},{"../../../const":41}],73:[function(require,module,exports){
 var CONST = require('../../../const');
 
 /**
@@ -15972,7 +15751,7 @@ CanvasRenderTarget.prototype.destroy = function ()
     this.canvas = null;
 };
 
-},{"../../../const":41}],75:[function(require,module,exports){
+},{"../../../const":41}],74:[function(require,module,exports){
 
 /**
  * Checks whether the Canvas BlendModes are supported by the current browser
@@ -16011,7 +15790,7 @@ var canUseNewCanvasBlendModes = function ()
 
 module.exports = canUseNewCanvasBlendModes;
 
-},{}],76:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 var CONST = require('../../../const'),
 canUseNewCanvasBlendModes = require('./canUseNewCanvasBlendModes');
 
@@ -16072,7 +15851,7 @@ function mapCanvasBlendModesToPixi(array)
 
 module.exports = mapCanvasBlendModesToPixi;
 
-},{"../../../const":41,"./canUseNewCanvasBlendModes":75}],77:[function(require,module,exports){
+},{"../../../const":41,"./canUseNewCanvasBlendModes":74}],76:[function(require,module,exports){
 
 var CONST = require('../../const');
 
@@ -16183,7 +15962,7 @@ TextureGarbageCollector.prototype.unload = function( displayObject )
     }
 };
 
-},{"../../const":41}],78:[function(require,module,exports){
+},{"../../const":41}],77:[function(require,module,exports){
 var GLTexture = require('pixi-gl-core').GLTexture,
     CONST = require('../../const'),
     RenderTarget = require('./utils/RenderTarget'),
@@ -16390,7 +16169,7 @@ TextureManager.prototype.destroy = function()
 
 module.exports = TextureManager;
 
-},{"../../const":41,"../../utils":114,"./utils/RenderTarget":91,"pixi-gl-core":14}],79:[function(require,module,exports){
+},{"../../const":41,"../../utils":113,"./utils/RenderTarget":90,"pixi-gl-core":14}],78:[function(require,module,exports){
 var SystemRenderer = require('../SystemRenderer'),
     MaskManager = require('./managers/MaskManager'),
     StencilManager = require('./managers/StencilManager'),
@@ -16954,7 +16733,7 @@ WebGLRenderer.prototype.destroy = function (removeView)
     // this = null;
 };
 
-},{"../../const":41,"../../utils":114,"../SystemRenderer":71,"./TextureGarbageCollector":77,"./TextureManager":78,"./WebGLState":80,"./managers/FilterManager":85,"./managers/MaskManager":86,"./managers/StencilManager":87,"./utils/ObjectRenderer":89,"./utils/RenderTarget":91,"./utils/mapWebGLDrawModesToPixi":94,"./utils/validateContext":95,"pixi-gl-core":14}],80:[function(require,module,exports){
+},{"../../const":41,"../../utils":113,"../SystemRenderer":70,"./TextureGarbageCollector":76,"./TextureManager":77,"./WebGLState":79,"./managers/FilterManager":84,"./managers/MaskManager":85,"./managers/StencilManager":86,"./utils/ObjectRenderer":88,"./utils/RenderTarget":90,"./utils/mapWebGLDrawModesToPixi":93,"./utils/validateContext":94,"pixi-gl-core":14}],79:[function(require,module,exports){
 var mapWebGLBlendModesToPixi = require('./utils/mapWebGLBlendModesToPixi');
 
 /**
@@ -17238,7 +17017,7 @@ WebGLState.prototype.resetToDefault = function()
 
 module.exports = WebGLState;
 
-},{"./utils/mapWebGLBlendModesToPixi":93}],81:[function(require,module,exports){
+},{"./utils/mapWebGLBlendModesToPixi":92}],80:[function(require,module,exports){
 var extractUniformsFromSrc = require('./extractUniformsFromSrc'),
     utils = require('../../../utils'),
     CONST = require('../../../const'),
@@ -17371,7 +17150,7 @@ Filter.defaultFragmentSrc = [
     '}'
 ].join('\n');
 
-},{"../../../const":41,"../../../utils":114,"./extractUniformsFromSrc":82}],82:[function(require,module,exports){
+},{"../../../const":41,"../../../utils":113,"./extractUniformsFromSrc":81}],81:[function(require,module,exports){
 var defaultValue = require('pixi-gl-core').shader.defaultValue;
 
 function extractUniformsFromSrc(vertexSrc, fragmentSrc, mask)
@@ -17433,7 +17212,7 @@ function extractUniformsFromString(string)
 
 module.exports = extractUniformsFromSrc;
 
-},{"pixi-gl-core":14}],83:[function(require,module,exports){
+},{"pixi-gl-core":14}],82:[function(require,module,exports){
 var math = require('../../../math');
 
 /*
@@ -17518,7 +17297,7 @@ module.exports = {
     calculateSpriteMatrix:calculateSpriteMatrix
 };
 
-},{"../../../math":65}],84:[function(require,module,exports){
+},{"../../../math":64}],83:[function(require,module,exports){
 var Filter = require('../Filter'),
     math =  require('../../../../math');
 
@@ -17569,7 +17348,7 @@ SpriteMaskFilter.prototype.apply = function (filterManager, input, output)
     filterManager.applyFilter(this, input, output);
 };
 
-},{"../../../../math":65,"../Filter":81}],85:[function(require,module,exports){
+},{"../../../../math":64,"../Filter":80}],84:[function(require,module,exports){
 
 var WebGLManager = require('./WebGLManager'),
     RenderTarget = require('../utils/RenderTarget'),
@@ -17981,7 +17760,7 @@ FilterManager.prototype.freePotRenderTarget = function(renderTarget)
     this.pool[key].push(renderTarget);
 };
 
-},{"../../../Shader":40,"../../../math":65,"../filters/filterTransforms":83,"../utils/Quad":90,"../utils/RenderTarget":91,"./WebGLManager":88,"bit-twiddle":2}],86:[function(require,module,exports){
+},{"../../../Shader":40,"../../../math":64,"../filters/filterTransforms":82,"../utils/Quad":89,"../utils/RenderTarget":90,"./WebGLManager":87,"bit-twiddle":2}],85:[function(require,module,exports){
 var WebGLManager = require('./WebGLManager'),
     AlphaMaskFilter = require('../filters/spriteMask/SpriteMaskFilter');
 
@@ -18175,7 +17954,7 @@ MaskManager.prototype.popScissorMask = function ()
     gl.disable(gl.SCISSOR_TEST);
 };
 
-},{"../filters/spriteMask/SpriteMaskFilter":84,"./WebGLManager":88}],87:[function(require,module,exports){
+},{"../filters/spriteMask/SpriteMaskFilter":83,"./WebGLManager":87}],86:[function(require,module,exports){
 var WebGLManager = require('./WebGLManager');
 
 /**
@@ -18288,7 +18067,7 @@ StencilMaskManager.prototype.destroy = function ()
     this.stencilMaskStack.stencilStack = null;
 };
 
-},{"./WebGLManager":88}],88:[function(require,module,exports){
+},{"./WebGLManager":87}],87:[function(require,module,exports){
 /**
  * @class
  * @memberof PIXI
@@ -18329,7 +18108,7 @@ WebGLManager.prototype.destroy = function ()
     this.renderer = null;
 };
 
-},{}],89:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 var WebGLManager = require('../managers/WebGLManager');
 
 /**
@@ -18387,7 +18166,7 @@ ObjectRenderer.prototype.render = function (object) // jshint unused:false
     // render the object
 };
 
-},{"../managers/WebGLManager":88}],90:[function(require,module,exports){
+},{"../managers/WebGLManager":87}],89:[function(require,module,exports){
 var glCore = require('pixi-gl-core'),
     createIndicesForQuads = require('../../../utils/createIndicesForQuads');
 
@@ -18560,7 +18339,7 @@ Quad.prototype.destroy = function()
 
 module.exports = Quad;
 
-},{"../../../utils/createIndicesForQuads":112,"pixi-gl-core":14}],91:[function(require,module,exports){
+},{"../../../utils/createIndicesForQuads":111,"pixi-gl-core":14}],90:[function(require,module,exports){
 var math = require('../../../math'),
     CONST = require('../../../const'),
     GLFramebuffer = require('pixi-gl-core').GLFramebuffer;
@@ -18880,7 +18659,7 @@ RenderTarget.prototype.destroy = function ()
     this.texture = null;
 };
 
-},{"../../../const":41,"../../../math":65,"pixi-gl-core":14}],92:[function(require,module,exports){
+},{"../../../const":41,"../../../math":64,"pixi-gl-core":14}],91:[function(require,module,exports){
 var glCore = require('pixi-gl-core');
 
 var fragTemplate = [
@@ -18961,7 +18740,7 @@ function generateIfTestSrc(maxIfs)
 
 module.exports = checkMaxIfStatmentsInShader;
 
-},{"pixi-gl-core":14}],93:[function(require,module,exports){
+},{"pixi-gl-core":14}],92:[function(require,module,exports){
 var CONST = require('../../../const');
 
 /**
@@ -19000,7 +18779,7 @@ function mapWebGLBlendModesToPixi(gl, array)
 
 module.exports = mapWebGLBlendModesToPixi;
 
-},{"../../../const":41}],94:[function(require,module,exports){
+},{"../../../const":41}],93:[function(require,module,exports){
 var CONST = require('../../../const');
 
 /**
@@ -19026,7 +18805,7 @@ function mapWebGLDrawModesToPixi(gl, object)
 
 module.exports = mapWebGLDrawModesToPixi;
 
-},{"../../../const":41}],95:[function(require,module,exports){
+},{"../../../const":41}],94:[function(require,module,exports){
 
 
 function validateContext(gl)
@@ -19042,7 +18821,7 @@ function validateContext(gl)
 
 module.exports = validateContext;
 
-},{}],96:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 var math = require('../math'),
     Texture = require('../textures/Texture'),
     Container = require('../display/Container'),
@@ -19137,17 +18916,7 @@ function Sprite(texture)
 
     // call texture setter
     this.texture = texture || Texture.EMPTY;
-    /**
-     * Current vertex data
-     * @type {Float32Array}
-     */
-    this.vertexData = new Float32Array(8);
-    /**
-     * Current border data. Do you need it? please call callBorde
-     * @type {null}
-     */
-    this.borderData = null;
-
+    this.vertexData = new Float32Array(16);
     this._transformID = -1;
     this._textureID = -1;
 }
@@ -19321,23 +19090,31 @@ Sprite.prototype.calculateVertices = function ()
 };
 
 /**
- * calculates worldTransform * border, store it in borderData. It is not trimmed!
- * Utility function, is not used in PIXI renderer. It is here just for your own good.
+ * we need this method to be compatible with pixiv3. v3 does calculate bounds of original texture are, not trimmed one
  */
-Sprite.prototype.calculateBorder = function ()
+Sprite.prototype.calculateBoundsVertices = function ()
 {
     var texture = this._texture,
-        wt = this.transform.worldTransform,
-        a = wt.a, b = wt.b, c = wt.c, d = wt.d, tx = wt.tx, ty = wt.ty,
-        borderData = this.borderData,
-        w0, w1, h0, h1,
+        trim = texture.trim,
+        vertexData = this.vertexData,
         orig = texture.orig;
 
-    if (!borderData)
-    {
-        borderData = new Float32Array(8);
-        this.borderData = borderData;
+    if (!trim || trim.width === orig.width && trim.height === orig.height) {
+        vertexData[8] = vertexData[0];
+        vertexData[9] = vertexData[1];
+        vertexData[10] = vertexData[2];
+        vertexData[11] = vertexData[3];
+        vertexData[12] = vertexData[4];
+        vertexData[13] = vertexData[5];
+        vertexData[14] = vertexData[6];
+        vertexData[15] = vertexData[7];
+        return;
     }
+
+    var wt = this.transform.worldTransform,
+        a = wt.a, b = wt.b, c = wt.c, d = wt.d, tx = wt.tx, ty = wt.ty,
+        w0, w1, h0, h1;
+
 
     w0 = (orig.width ) * (1-this.anchor.x);
     w1 = (orig.width ) * -this.anchor.x;
@@ -19346,20 +19123,20 @@ Sprite.prototype.calculateBorder = function ()
     h1 = orig.height * -this.anchor.y;
 
     // xy
-    borderData[0] = a * w1 + c * h1 + tx;
-    borderData[1] = d * h1 + b * w1 + ty;
+    vertexData[8] = a * w1 + c * h1 + tx;
+    vertexData[9] = d * h1 + b * w1 + ty;
 
     // xy
-    borderData[2] = a * w0 + c * h1 + tx;
-    borderData[3] = d * h1 + b * w0 + ty;
+    vertexData[10] = a * w0 + c * h1 + tx;
+    vertexData[11] = d * h1 + b * w0 + ty;
 
     // xy
-    borderData[4] = a * w0 + c * h0 + tx;
-    borderData[5] = d * h0 + b * w0 + ty;
+    vertexData[12] = a * w0 + c * h0 + tx;
+    vertexData[13] = d * h0 + b * w0 + ty;
 
     // xy
-    borderData[6] = a * w1 + c * h0 + tx;
-    borderData[7] = d * h0 + b * w1 + ty;
+    vertexData[14] = a * w1 + c * h0 + tx;
+    vertexData[15] = d * h0 + b * w1 + ty;
 };
 
 /**
@@ -19390,39 +19167,92 @@ Sprite.prototype._renderCanvas = function (renderer)
 
 
 /**
- * Pass sprite corners (without trimming) to the builder.
- * @param {PIXI.BoundsBuilder} builder
- * @param {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual} transform
+ * Returns the bounds of the Sprite as a rectangle. The bounds calculation takes the worldTransform into account.
+ *
+ * @return {PIXI.Rectangle} the framing rectangle
  */
-Sprite.prototype._calcBounds = function (builder, transform)
+Sprite.prototype.getBounds = function ()
 {
-    var texture = this._texture,
-        trim = texture.trim,
-        vertexData = this.vertexData,
-        orig = texture.orig;
-
-    if (transform === this.transform) {
+    //TODO lookinto caching..
+    if(!this._currentBounds)
+    {
+        // set the vertex data
         this.calculateVertices();
-        if (!trim || trim.width === orig.width && trim.height === orig.height) {
-            builder.addQuad(vertexData);
-            return;
+
+        // set the vertex data
+        this.calculateBoundsVertices();
+
+        var minX, maxX, minY, maxY,
+            w0, w1, h0, h1,
+            vertexData = this.vertexData;
+
+        var x1 = vertexData[8];
+        var y1 = vertexData[9];
+
+        var x2 = vertexData[10];
+        var y2 = vertexData[11];
+
+        var x3 = vertexData[12];
+        var y3 = vertexData[13];
+
+        var x4 = vertexData[14];
+        var y4 = vertexData[15];
+
+        minX = x1;
+        minX = x2 < minX ? x2 : minX;
+        minX = x3 < minX ? x3 : minX;
+        minX = x4 < minX ? x4 : minX;
+
+        minY = y1;
+        minY = y2 < minY ? y2 : minY;
+        minY = y3 < minY ? y3 : minY;
+        minY = y4 < minY ? y4 : minY;
+
+        maxX = x1;
+        maxX = x2 > maxX ? x2 : maxX;
+        maxX = x3 > maxX ? x3 : maxX;
+        maxX = x4 > maxX ? x4 : maxX;
+
+        maxY = y1;
+        maxY = y2 > maxY ? y2 : maxY;
+        maxY = y3 > maxY ? y3 : maxY;
+        maxY = y4 > maxY ? y4 : maxY;
+
+        // check for children
+        if(this.children.length)
+        {
+            var childBounds = this.containerGetBounds();
+
+            w0 = childBounds.x;
+            w1 = childBounds.x + childBounds.width;
+            h0 = childBounds.y;
+            h1 = childBounds.y + childBounds.height;
+
+            minX = (minX < w0) ? minX : w0;
+            minY = (minY < h0) ? minY : h0;
+
+            maxX = (maxX > w1) ? maxX : w1;
+            maxY = (maxY > h1) ? maxY : h1;
         }
+
+        var bounds = this._bounds;
+
+        bounds.x = minX;
+        bounds.width = maxX - minX;
+
+        bounds.y = minY;
+        bounds.height = maxY - minY;
+
+        // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
+        this._currentBounds = bounds;
     }
 
-    var w0, w1, h0, h1;
-
-    w0 = (orig.width ) * (1-this.anchor.x);
-    w1 = (orig.width ) * -this.anchor.x;
-
-    h0 = orig.height * (1-this.anchor.y);
-    h1 = orig.height * -this.anchor.y;
-
-    builder.addFrame(transform, w1, h1, w0, h0);
+    return this._currentBounds;
 };
 
 /**
  * Gets the local bounds of the sprite object.
- * Does not care about children. This is compliant with PIXI-v3
+ *
  */
 Sprite.prototype.getLocalBounds = function ()
 {
@@ -19538,7 +19368,7 @@ Sprite.fromImage = function (imageId, crossorigin, scaleMode)
     return new Sprite(Texture.fromImage(imageId, crossorigin, scaleMode));
 };
 
-},{"../const":41,"../display/Container":43,"../math":65,"../textures/Texture":107,"../utils":114}],97:[function(require,module,exports){
+},{"../const":41,"../display/Container":42,"../math":64,"../textures/Texture":106,"../utils":113}],96:[function(require,module,exports){
 var CanvasRenderer = require('../../renderers/canvas/CanvasRenderer'),
     CONST = require('../../const'),
     math = require('../../math'),
@@ -19704,7 +19534,7 @@ CanvasSpriteRenderer.prototype.destroy = function (){
   this.renderer = null;
 };
 
-},{"../../const":41,"../../math":65,"../../renderers/canvas/CanvasRenderer":72,"./CanvasTinter":98}],98:[function(require,module,exports){
+},{"../../const":41,"../../math":64,"../../renderers/canvas/CanvasRenderer":71,"./CanvasTinter":97}],97:[function(require,module,exports){
 var utils = require('../../utils'),
 canUseNewCanvasBlendModes = require('../../renderers/canvas/utils/canUseNewCanvasBlendModes');
 /**
@@ -19956,7 +19786,7 @@ CanvasTinter.canUseMultiply = canUseNewCanvasBlendModes();
  */
 CanvasTinter.tintMethod = CanvasTinter.canUseMultiply ? CanvasTinter.tintWithMultiply :  CanvasTinter.tintWithPerPixel;
 
-},{"../../renderers/canvas/utils/canUseNewCanvasBlendModes":75,"../../utils":114}],99:[function(require,module,exports){
+},{"../../renderers/canvas/utils/canUseNewCanvasBlendModes":74,"../../utils":113}],98:[function(require,module,exports){
 
 
  var Buffer = function(size)
@@ -19987,7 +19817,7 @@ CanvasTinter.tintMethod = CanvasTinter.canUseMultiply ? CanvasTinter.tintWithMul
    this.uvs = null;
    this.colors  = null;
  };
-},{}],100:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 var ObjectRenderer = require('../../renderers/webgl/utils/ObjectRenderer'),
     WebGLRenderer = require('../../renderers/webgl/WebGLRenderer'),
     createIndicesForQuads = require('../../utils/createIndicesForQuads'),
@@ -20389,7 +20219,7 @@ SpriteRenderer.prototype.destroy = function ()
 
 };
 
-},{"../../const":41,"../../renderers/webgl/WebGLRenderer":79,"../../renderers/webgl/utils/ObjectRenderer":89,"../../renderers/webgl/utils/checkMaxIfStatmentsInShader":92,"../../utils/createIndicesForQuads":112,"./BatchBuffer":99,"./generateMultiTextureShader":101,"bit-twiddle":2,"pixi-gl-core":14}],101:[function(require,module,exports){
+},{"../../const":41,"../../renderers/webgl/WebGLRenderer":78,"../../renderers/webgl/utils/ObjectRenderer":88,"../../renderers/webgl/utils/checkMaxIfStatmentsInShader":91,"../../utils/createIndicesForQuads":111,"./BatchBuffer":98,"./generateMultiTextureShader":100,"bit-twiddle":2,"pixi-gl-core":14}],100:[function(require,module,exports){
 var Shader = require('../../Shader');
 
 
@@ -20462,7 +20292,7 @@ function generateSampleSrc(maxTextures)
 
 module.exports = generateMultiTextureShader;
 
-},{"../../Shader":40}],102:[function(require,module,exports){
+},{"../../Shader":40}],101:[function(require,module,exports){
 var Sprite = require('../sprites/Sprite'),
     Texture = require('../textures/Texture'),
     math = require('../math'),
@@ -21197,7 +21027,7 @@ Text.prototype.destroy = function (options)
     this._style = null;
 };
 
-},{"../const":41,"../math":65,"../sprites/Sprite":96,"../textures/Texture":107,"./TextStyle":103}],103:[function(require,module,exports){
+},{"../const":41,"../math":64,"../sprites/Sprite":95,"../textures/Texture":106,"./TextStyle":102}],102:[function(require,module,exports){
 var EventEmitter = require('eventemitter3'),
     CONST = require('../const'),
     utils = require('../utils');
@@ -21695,7 +21525,7 @@ function getColor(color)
     return color;
 }
 
-},{"../const":41,"../utils":114,"eventemitter3":4}],104:[function(require,module,exports){
+},{"../const":41,"../utils":113,"eventemitter3":4}],103:[function(require,module,exports){
 var BaseTexture = require('./BaseTexture'),
     CONST = require('../const');
 
@@ -21833,7 +21663,7 @@ BaseRenderTexture.prototype.destroy = function ()
 };
 
 
-},{"../const":41,"./BaseTexture":105}],105:[function(require,module,exports){
+},{"../const":41,"./BaseTexture":104}],104:[function(require,module,exports){
 var utils = require('../utils'),
     CONST = require('../const'),
     EventEmitter = require('eventemitter3'),
@@ -22283,7 +22113,7 @@ BaseTexture.fromCanvas = function (canvas, scaleMode)
     return baseTexture;
 };
 
-},{"../const":41,"../utils":114,"../utils/determineCrossOrigin":113,"bit-twiddle":2,"eventemitter3":4}],106:[function(require,module,exports){
+},{"../const":41,"../utils":113,"../utils/determineCrossOrigin":112,"bit-twiddle":2,"eventemitter3":4}],105:[function(require,module,exports){
 var BaseRenderTexture = require('./BaseRenderTexture'),
     Texture = require('./Texture');
 
@@ -22364,20 +22194,6 @@ function RenderTexture(baseRenderTexture, frame)
      */
     this.valid = true;
 
-    /**
-     * may contain some sprite anchor corresponding to generatedSpriteFrame
-     * generated by renderer.renderTexture
-     * @type {PIXI.Point|null}
-     */
-    this.generatedSpriteAnchor = null;
-
-    /**
-     * may contain some original bounds of object that was used to generate it
-     * generated by renderer.renderTexture
-     * @type {PIXI.Rectangle|null}
-     */
-    this.generatedSpriteFrame = null;
-
     this._updateUvs();
 }
 
@@ -22421,7 +22237,7 @@ RenderTexture.create = function(width, height, scaleMode, resolution)
     return new RenderTexture(new BaseRenderTexture(width, height, scaleMode, resolution));
 };
 
-},{"./BaseRenderTexture":104,"./Texture":107}],107:[function(require,module,exports){
+},{"./BaseRenderTexture":103,"./Texture":106}],106:[function(require,module,exports){
 var BaseTexture = require('./BaseTexture'),
     VideoBaseTexture = require('./VideoBaseTexture'),
     TextureUvs = require('./TextureUvs'),
@@ -22940,7 +22756,7 @@ Texture.EMPTY.once = function() {};
 Texture.EMPTY.emit = function() {};
 
 
-},{"../math":65,"../utils":114,"./BaseTexture":105,"./TextureUvs":108,"./VideoBaseTexture":109,"eventemitter3":4}],108:[function(require,module,exports){
+},{"../math":64,"../utils":113,"./BaseTexture":104,"./TextureUvs":107,"./VideoBaseTexture":108,"eventemitter3":4}],107:[function(require,module,exports){
 
 /**
  * A standard object to store the Uvs of a texture
@@ -23025,7 +22841,7 @@ TextureUvs.prototype.set = function (frame, baseFrame, rotate)
     this.uvsUint32[3] = (((this.y3 * 65535) & 0xFFFF) << 16) | ((this.x3 * 65535) & 0xFFFF);
 };
 
-},{"../math/GroupD8":61}],109:[function(require,module,exports){
+},{"../math/GroupD8":60}],108:[function(require,module,exports){
 var BaseTexture = require('./BaseTexture'),
     utils = require('../utils');
 
@@ -23262,7 +23078,7 @@ function createSource(path, type)
     return source;
 }
 
-},{"../utils":114,"./BaseTexture":105}],110:[function(require,module,exports){
+},{"../utils":113,"./BaseTexture":104}],109:[function(require,module,exports){
 var CONST = require('../const'),
     EventEmitter = require('eventemitter3'),
     // Internal event used by composed emitter
@@ -23638,7 +23454,7 @@ Ticker.prototype.update = function update(currentTime)
 
 module.exports = Ticker;
 
-},{"../const":41,"eventemitter3":4}],111:[function(require,module,exports){
+},{"../const":41,"eventemitter3":4}],110:[function(require,module,exports){
 var Ticker = require('./Ticker');
 
 /**
@@ -23694,7 +23510,7 @@ module.exports = {
     Ticker: Ticker
 };
 
-},{"./Ticker":110}],112:[function(require,module,exports){
+},{"./Ticker":109}],111:[function(require,module,exports){
 /**
  * Generic Mask Stack data structure
  * @class
@@ -23726,7 +23542,7 @@ var createIndicesForQuads = function (size)
 
 module.exports = createIndicesForQuads;
 
-},{}],113:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 var tempAnchor;
 var _url = require('url');
 
@@ -23771,7 +23587,7 @@ var determineCrossOrigin = function (url, loc) {
 
 module.exports = determineCrossOrigin;
 
-},{"url":36}],114:[function(require,module,exports){
+},{"url":36}],113:[function(require,module,exports){
 var CONST = require('../const');
 
 /**
@@ -23999,7 +23815,7 @@ var utils = module.exports = {
     BaseTextureCache: {}
 };
 
-},{"../const":41,"./pluginTarget":116,"eventemitter3":4}],115:[function(require,module,exports){
+},{"../const":41,"./pluginTarget":115,"eventemitter3":4}],114:[function(require,module,exports){
 
 
 var  Device = require('ismobilejs');
@@ -24020,7 +23836,7 @@ var maxRecommendedTextures = function(max)
 };
 
 module.exports = maxRecommendedTextures;
-},{"ismobilejs":5}],116:[function(require,module,exports){
+},{"ismobilejs":5}],115:[function(require,module,exports){
 /**
  * Mixins functionality to make an object have "plugins".
  *
@@ -24090,7 +23906,7 @@ module.exports = {
     }
 };
 
-},{}],117:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 /*global console */
 var core = require('./core'),
     mesh = require('./mesh'),
@@ -24633,7 +24449,7 @@ core.utils.canUseNewCanvasBlendModes = function() {
 };
 
 
-},{"./core":60,"./core/const":41,"./extras":127,"./filters":138,"./mesh":154,"./particles":157}],118:[function(require,module,exports){
+},{"./core":59,"./core/const":41,"./extras":126,"./filters":137,"./mesh":153,"./particles":156}],117:[function(require,module,exports){
 var core = require('../../core'),
     tempRect = new core.Rectangle();
 
@@ -24785,13 +24601,13 @@ CanvasExtract.prototype.destroy = function ()
 
 core.CanvasRenderer.registerPlugin('extract', CanvasExtract);
 
-},{"../../core":60}],119:[function(require,module,exports){
+},{"../../core":59}],118:[function(require,module,exports){
 
 module.exports = {
     webGL: require('./webgl/WebGLExtract'),
     canvas: require('./canvas/CanvasExtract')
 };
-},{"./canvas/CanvasExtract":118,"./webgl/WebGLExtract":120}],120:[function(require,module,exports){
+},{"./canvas/CanvasExtract":117,"./webgl/WebGLExtract":119}],119:[function(require,module,exports){
 var core = require('../../core'),
     tempRect = new core.Rectangle();
 
@@ -24988,7 +24804,7 @@ WebGLExtract.prototype.destroy = function ()
 
 core.WebGLRenderer.registerPlugin('extract', WebGLExtract);
 
-},{"../../core":60}],121:[function(require,module,exports){
+},{"../../core":59}],120:[function(require,module,exports){
 var core = require('../core'),
     ObservablePoint = require('../core/math/ObservablePoint');
 
@@ -25421,7 +25237,7 @@ BitmapText.prototype.makeDirty = function() {
 
 BitmapText.fonts = {};
 
-},{"../core":60,"../core/math/ObservablePoint":63}],122:[function(require,module,exports){
+},{"../core":59,"../core/math/ObservablePoint":62}],121:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -25750,7 +25566,7 @@ MovieClip.fromImages = function (images)
     return new MovieClip(textures);
 };
 
-},{"../core":60}],123:[function(require,module,exports){
+},{"../core":59}],122:[function(require,module,exports){
 var core = require('../core'),
     tempPoint = new core.Point(),
     CanvasTinter = require('../core/sprites/canvas/CanvasTinter'),
@@ -26035,11 +25851,11 @@ TilingSprite.prototype._renderCanvas = function (renderer)
 
 
 /**
- * Calculates TilingSprite corners and pushes them to the builder.
- * @param {PIXI.BoundsBuilder} builder
- * @param {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual} transform
+ * Returns the framing rectangle of the sprite as a Rectangle object
+*
+ * @return {PIXI.Rectangle} the framing rectangle
  */
-TilingSprite.prototype._calcBounds = function (builder, transform)
+TilingSprite.prototype.getBounds = function ()
 {
     var width = this._width;
     var height = this._height;
@@ -26050,7 +25866,64 @@ TilingSprite.prototype._calcBounds = function (builder, transform)
     var h0 = height * (1-this.anchor.y);
     var h1 = height * -this.anchor.y;
 
-    builder.addFrame(transform, w1, h1, w0, h0);
+    var worldTransform = this.worldTransform;
+
+    var a = worldTransform.a;
+    var b = worldTransform.b;
+    var c = worldTransform.c;
+    var d = worldTransform.d;
+    var tx = worldTransform.tx;
+    var ty = worldTransform.ty;
+
+    var x1 = a * w1 + c * h1 + tx;
+    var y1 = d * h1 + b * w1 + ty;
+
+    var x2 = a * w0 + c * h1 + tx;
+    var y2 = d * h1 + b * w0 + ty;
+
+    var x3 = a * w0 + c * h0 + tx;
+    var y3 = d * h0 + b * w0 + ty;
+
+    var x4 =  a * w1 + c * h0 + tx;
+    var y4 =  d * h0 + b * w1 + ty;
+
+    var minX,
+        maxX,
+        minY,
+        maxY;
+
+    minX = x1;
+    minX = x2 < minX ? x2 : minX;
+    minX = x3 < minX ? x3 : minX;
+    minX = x4 < minX ? x4 : minX;
+
+    minY = y1;
+    minY = y2 < minY ? y2 : minY;
+    minY = y3 < minY ? y3 : minY;
+    minY = y4 < minY ? y4 : minY;
+
+    maxX = x1;
+    maxX = x2 > maxX ? x2 : maxX;
+    maxX = x3 > maxX ? x3 : maxX;
+    maxX = x4 > maxX ? x4 : maxX;
+
+    maxY = y1;
+    maxY = y2 > maxY ? y2 : maxY;
+    maxY = y3 > maxY ? y3 : maxY;
+    maxY = y4 > maxY ? y4 : maxY;
+
+    var bounds = this._bounds;
+
+    bounds.x = minX;
+    bounds.width = maxX - minX;
+
+    bounds.y = minY;
+    bounds.height = maxY - minY;
+
+    // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
+    this._currentBounds = bounds;
+
+    return bounds;
 };
 
 /**
@@ -26133,7 +26006,7 @@ TilingSprite.fromImage = function (imageId, width, height, crossorigin, scaleMod
     return new TilingSprite(core.Texture.fromImage(imageId, crossorigin, scaleMode),width,height);
 };
 
-},{"../core":60,"../core/sprites/canvas/CanvasTinter":98,"./webgl/TilingShader":128}],124:[function(require,module,exports){
+},{"../core":59,"../core/sprites/canvas/CanvasTinter":97,"./webgl/TilingShader":127}],123:[function(require,module,exports){
 var core = require('../core'),
     DisplayObject = core.DisplayObject,
     _tempMatrix = new core.Matrix();
@@ -26208,49 +26081,6 @@ Object.defineProperties(DisplayObject.prototype, {
         }
     }
 });
-
-/**
- * This is old v3 implementation of getLocalBounds() which is required for cacheAsBitmap and generateTexture functions.
- * Temporarily hijacks
- *
- * The calculation takes all visible children into consideration.
- *
- * The calculation can mess up with current transforms and bounds!
- *
- * @param matrix {PIXI.Matrix} required, take PIXI.Matrix.IDENTITY
- */
-DisplayObject.prototype.beginTextureGeneration = function(matrix) {
-    this._cacheWorldTransform = this.transform.worldTransform;
-    this._cacheWorldAlpha = this.worldAlpha;
-
-    this.transform.worldTransform = matrix;
-    this.transform._worldID++;
-    this.worldAlpha = this.alpha;
-
-    for (var i = 0, j = this.children.length; i < j; ++i)
-    {
-        this.children[i].updateTransform();
-    }
-    this._currentBounds = null;
-};
-
-/**
- * Finalizes texture generation, returns all previous values.
- * You can omit that for performance, nothing really bad will happen, just some side-effects
- * @param updateChildren {boolean} may update children again to return them in old state
- */
-DisplayObject.prototype.endTextureGeneration = function(updateChildren) {
-    this.transform.worldTransform = this._cacheWorldTransform;
-    this.transform._worldID++;
-    this.worldAlpha = this._cacheWorldAlpha;
-    if (updateChildren) {
-        for (var i = 0, j = this.children.length; i < j; ++i) {
-            this.children[i].updateTransform();
-        }
-    }
-    this._currentBounds = null;
-};
-
 /**
 * Renders a cached version of the sprite with WebGL
 *
@@ -26291,7 +26121,6 @@ DisplayObject.prototype._initCachedDisplayObject = function (renderer)
     // next we find the dimensions of the untransformed object
     // this function also calls updatetransform on all its children as part of the measuring. This means we don't need to update the transform again in this function
     // TODO pass an object to clone too? saves having to create a new one each time!
-    console.log(this.getLocalBounds());
     var bounds = this.getLocalBounds().clone();
 
     // add some padding!
@@ -26321,14 +26150,11 @@ DisplayObject.prototype._initCachedDisplayObject = function (renderer)
     m.tx = -bounds.x;
     m.ty = -bounds.y;
 
-    this.beginTextureGeneration(_tempMatrix);
-    console.log(this.getBounds());
     // set all properties to there original so we can render to a texture
     this.renderWebGL = this._originalRenderWebGL;
 
-    renderer.render(this, renderTexture, true, null, true);
+    renderer.render(this, renderTexture, true, m, true);
     // now restore the state be setting the new properties
-    this.endTextureGeneration(false);
 
     renderer.bindRenderTarget(cachedRenderTarget);
 
@@ -26387,7 +26213,7 @@ DisplayObject.prototype._initCachedDisplayObjectCanvas = function (renderer)
     }
 
     //get bounds actually transforms the object for us already!
-    var bounds = this.getLegacyLocalBounds();
+    var bounds = this.getLocalBounds();
 
     var cachedRenderTarget = renderer.context;
 
@@ -26436,7 +26262,7 @@ DisplayObject.prototype._getCachedBounds = function ()
 {
     this._cachedSprite._currentBounds = null;
 
-    return this._cachedSprite.getBounds();
+    return this._cachedSprite.getBounds(core.Matrix.IDENTITY);
 };
 
 /**
@@ -26456,7 +26282,7 @@ DisplayObject.prototype._cacheAsBitmapDestroy = function ()
     this._originalDestroy();
 };
 
-},{"../core":60}],125:[function(require,module,exports){
+},{"../core":59}],124:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -26486,7 +26312,7 @@ core.Container.prototype.getChildByName = function (name)
     return null;
 };
 
-},{"../core":60}],126:[function(require,module,exports){
+},{"../core":59}],125:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -26516,7 +26342,7 @@ core.DisplayObject.prototype.getGlobalPosition = function (point)
     return point;
 };
 
-},{"../core":60}],127:[function(require,module,exports){
+},{"../core":59}],126:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI extras library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -26537,7 +26363,7 @@ module.exports = {
     BitmapText:     require('./BitmapText')
 };
 
-},{"./BitmapText":121,"./MovieClip":122,"./TilingSprite":123,"./cacheAsBitmap":124,"./getChildByName":125,"./getGlobalPosition":126}],128:[function(require,module,exports){
+},{"./BitmapText":120,"./MovieClip":121,"./TilingSprite":122,"./cacheAsBitmap":123,"./getChildByName":124,"./getGlobalPosition":125}],127:[function(require,module,exports){
 var Shader = require('../../core/Shader');
 
 
@@ -26561,7 +26387,7 @@ TilingShader.prototype.constructor = TilingShader;
 module.exports = TilingShader;
 
 
-},{"../../core/Shader":40}],129:[function(require,module,exports){
+},{"../../core/Shader":40}],128:[function(require,module,exports){
 var core = require('../../core'),
     BlurXFilter = require('./BlurXFilter'),
     BlurYFilter = require('./BlurYFilter');
@@ -26681,7 +26507,7 @@ Object.defineProperties(BlurFilter.prototype, {
     }
 });
 
-},{"../../core":60,"./BlurXFilter":130,"./BlurYFilter":131}],130:[function(require,module,exports){
+},{"../../core":59,"./BlurXFilter":129,"./BlurYFilter":130}],129:[function(require,module,exports){
 var core = require('../../core');
 var generateBlurVertSource  = require('./generateBlurVertSource');
 var generateBlurFragSource  = require('./generateBlurFragSource');
@@ -26806,7 +26632,7 @@ Object.defineProperties(BlurXFilter.prototype, {
     }
 });
 
-},{"../../core":60,"./generateBlurFragSource":132,"./generateBlurVertSource":133,"./getMaxBlurKernelSize":134}],131:[function(require,module,exports){
+},{"../../core":59,"./generateBlurFragSource":131,"./generateBlurVertSource":132,"./getMaxBlurKernelSize":133}],130:[function(require,module,exports){
 var core = require('../../core');
 var generateBlurVertSource  = require('./generateBlurVertSource');
 var generateBlurFragSource  = require('./generateBlurFragSource');
@@ -26929,7 +26755,7 @@ Object.defineProperties(BlurYFilter.prototype, {
     }
 });
 
-},{"../../core":60,"./generateBlurFragSource":132,"./generateBlurVertSource":133,"./getMaxBlurKernelSize":134}],132:[function(require,module,exports){
+},{"../../core":59,"./generateBlurFragSource":131,"./generateBlurVertSource":132,"./getMaxBlurKernelSize":133}],131:[function(require,module,exports){
 var GAUSSIAN_VALUES = {
 	5:[0.153388, 0.221461, 0.250301],
 	7:[0.071303, 0.131514, 0.189879, 0.214607],
@@ -26991,7 +26817,7 @@ var generateFragBlurSource = function(kernelSize)
 
 module.exports = generateFragBlurSource;
 
-},{}],133:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 
 var vertTemplate = [
 	'attribute vec2 aVertexPosition;',
@@ -27057,7 +26883,7 @@ var generateVertBlurSource = function(kernelSize, x)
 
 module.exports = generateVertBlurSource;
 
-},{}],134:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 
 
 var getMaxKernelSize = function(gl)
@@ -27075,7 +26901,7 @@ var getMaxKernelSize = function(gl)
 
 module.exports = getMaxKernelSize;
 
-},{}],135:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 var core = require('../../core');
 // @see https://github.com/substack/brfs/issues/25
 
@@ -27632,7 +27458,7 @@ Object.defineProperties(ColorMatrixFilter.prototype, {
     }
 });
 
-},{"../../core":60}],136:[function(require,module,exports){
+},{"../../core":59}],135:[function(require,module,exports){
 var core = require('../../core');
 
 
@@ -27713,7 +27539,7 @@ Object.defineProperties(DisplacementFilter.prototype, {
     }
 });
 
-},{"../../core":60}],137:[function(require,module,exports){
+},{"../../core":59}],136:[function(require,module,exports){
 var core = require('../../core');
 
 
@@ -27748,7 +27574,7 @@ FXAAFilter.prototype.constructor = FXAAFilter;
 
 module.exports = FXAAFilter;
 
-},{"../../core":60}],138:[function(require,module,exports){
+},{"../../core":59}],137:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI filters library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -27770,7 +27596,7 @@ module.exports = {
     VoidFilter:         require('./void/VoidFilter')
 };
 
-},{"./blur/BlurFilter":129,"./blur/BlurXFilter":130,"./blur/BlurYFilter":131,"./colormatrix/ColorMatrixFilter":135,"./displacement/DisplacementFilter":136,"./fxaa/FXAAFilter":137,"./noise/NoiseFilter":139,"./void/VoidFilter":140}],139:[function(require,module,exports){
+},{"./blur/BlurFilter":128,"./blur/BlurXFilter":129,"./blur/BlurYFilter":130,"./colormatrix/ColorMatrixFilter":134,"./displacement/DisplacementFilter":135,"./fxaa/FXAAFilter":136,"./noise/NoiseFilter":138,"./void/VoidFilter":139}],138:[function(require,module,exports){
 var core = require('../../core');
 
 
@@ -27822,7 +27648,7 @@ Object.defineProperties(NoiseFilter.prototype, {
     }
 });
 
-},{"../../core":60}],140:[function(require,module,exports){
+},{"../../core":59}],139:[function(require,module,exports){
 var core = require('../../core');
 // @see https://github.com/substack/brfs/issues/25
 
@@ -27850,7 +27676,7 @@ VoidFilter.prototype = Object.create(core.Filter.prototype);
 VoidFilter.prototype.constructor = VoidFilter;
 module.exports = VoidFilter;
 
-},{"../../core":60}],141:[function(require,module,exports){
+},{"../../core":59}],140:[function(require,module,exports){
 (function (global){
 // run the polyfills
 require('./polyfill');
@@ -27885,7 +27711,7 @@ Object.assign(core, require('./deprecation'));
 global.PIXI = core;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./accessibility":39,"./core":60,"./deprecation":117,"./extract":119,"./extras":127,"./filters":138,"./interaction":144,"./loaders":147,"./mesh":154,"./particles":157,"./polyfill":163,"./prepare":166}],142:[function(require,module,exports){
+},{"./accessibility":39,"./core":59,"./deprecation":116,"./extract":118,"./extras":126,"./filters":137,"./interaction":143,"./loaders":146,"./mesh":153,"./particles":156,"./polyfill":162,"./prepare":165}],141:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -27934,7 +27760,7 @@ InteractionData.prototype.getLocalPosition = function (displayObject, point, glo
     return displayObject.worldTransform.applyInverse(globalPos || this.global, point);
 };
 
-},{"../core":60}],143:[function(require,module,exports){
+},{"../core":59}],142:[function(require,module,exports){
 var core = require('../core'),
     InteractionData = require('./InteractionData');
 
@@ -28886,7 +28712,7 @@ InteractionManager.prototype.destroy = function () {
 core.WebGLRenderer.registerPlugin('interaction', InteractionManager);
 core.CanvasRenderer.registerPlugin('interaction', InteractionManager);
 
-},{"../core":60,"./InteractionData":142,"./interactiveTarget":145}],144:[function(require,module,exports){
+},{"../core":59,"./InteractionData":141,"./interactiveTarget":144}],143:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI interactions library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -28903,7 +28729,7 @@ module.exports = {
     interactiveTarget:  require('./interactiveTarget')
 };
 
-},{"./InteractionData":142,"./InteractionManager":143,"./interactiveTarget":145}],145:[function(require,module,exports){
+},{"./InteractionData":141,"./InteractionManager":142,"./interactiveTarget":144}],144:[function(require,module,exports){
 /**
  * Default property values of interactive objects
  * Used by {@link PIXI.interaction.InteractionManager} to automatically give all DisplayObjects these properties
@@ -28992,7 +28818,7 @@ var interactiveTarget = {
 
 module.exports = interactiveTarget;
 
-},{}],146:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 var Resource = require('resource-loader').Resource,
     core = require('../core'),
     extras = require('../extras'),
@@ -29118,7 +28944,7 @@ module.exports = function ()
     };
 };
 
-},{"../core":60,"../extras":127,"path":7,"resource-loader":33}],147:[function(require,module,exports){
+},{"../core":59,"../extras":126,"path":7,"resource-loader":33}],146:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI loaders library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -29139,7 +28965,7 @@ module.exports = {
     Resource:           require('resource-loader').Resource
 };
 
-},{"./bitmapFontParser":146,"./loader":148,"./spritesheetParser":149,"./textureParser":150,"resource-loader":33}],148:[function(require,module,exports){
+},{"./bitmapFontParser":145,"./loader":147,"./spritesheetParser":148,"./textureParser":149,"resource-loader":33}],147:[function(require,module,exports){
 var ResourceLoader = require('resource-loader'),
     textureParser = require('./textureParser'),
     spritesheetParser = require('./spritesheetParser'),
@@ -29202,7 +29028,7 @@ var Resource = ResourceLoader.Resource;
 
 Resource.setExtensionXhrType('fnt', Resource.XHR_RESPONSE_TYPE.DOCUMENT);
 
-},{"./bitmapFontParser":146,"./spritesheetParser":149,"./textureParser":150,"resource-loader":33}],149:[function(require,module,exports){
+},{"./bitmapFontParser":145,"./spritesheetParser":148,"./textureParser":149,"resource-loader":33}],148:[function(require,module,exports){
 var Resource = require('resource-loader').Resource,
     path = require('path'),
     core = require('../core'),
@@ -29319,7 +29145,7 @@ module.exports = function ()
     };
 };
 
-},{"../core":60,"async":1,"path":7,"resource-loader":33}],150:[function(require,module,exports){
+},{"../core":59,"async":1,"path":7,"resource-loader":33}],149:[function(require,module,exports){
 var core = require('../core');
 
 module.exports = function ()
@@ -29341,7 +29167,7 @@ module.exports = function ()
     };
 };
 
-},{"../core":60}],151:[function(require,module,exports){
+},{"../core":59}],150:[function(require,module,exports){
 var core = require('../core'),
     glCore = require('pixi-gl-core'),
     Shader = require('./webgl/MeshShader'),
@@ -29784,13 +29610,59 @@ Mesh.prototype._onTextureUpdate = function ()
 };
 
 /**
- * Pass mesh vertices to the builder.
- * @param {PIXI.BoundsBuilder} builder
- * @param {PIXI.Transform | PIXI.TransformStatic | PIXI.TransformManual} transform
+ * Returns the bounds of the mesh as a rectangle. The bounds calculation takes the worldTransform into account.
+ *
+ * @param [matrix=this.worldTransform] {PIXI.Matrix} the transformation matrix of the sprite
+ * @return {PIXI.Rectangle} the framing rectangle
  */
-Mesh.prototype._calcBounds = function (builder, transform)
+Mesh.prototype.getBounds = function (matrix)
 {
-    builder.addVertices(transform, this.vertices, 0, this.vertices.length);
+    if (!this._currentBounds) {
+        var worldTransform = matrix || this.worldTransform;
+
+        var a = worldTransform.a;
+        var b = worldTransform.b;
+        var c = worldTransform.c;
+        var d = worldTransform.d;
+        var tx = worldTransform.tx;
+        var ty = worldTransform.ty;
+
+        var maxX = -Infinity;
+        var maxY = -Infinity;
+
+        var minX = Infinity;
+        var minY = Infinity;
+
+        var vertices = this.vertices;
+        for (var i = 0, n = vertices.length; i < n; i += 2) {
+            var rawX = vertices[i], rawY = vertices[i + 1];
+            var x = (a * rawX) + (c * rawY) + tx;
+            var y = (d * rawY) + (b * rawX) + ty;
+
+            minX = x < minX ? x : minX;
+            minY = y < minY ? y : minY;
+
+            maxX = x > maxX ? x : maxX;
+            maxY = y > maxY ? y : maxY;
+        }
+
+        if (minX === -Infinity || maxY === Infinity) {
+            return core.Rectangle.EMPTY;
+        }
+
+        var bounds = this._bounds;
+
+        bounds.x = minX;
+        bounds.width = maxX - minX;
+
+        bounds.y = minY;
+        bounds.height = maxY - minY;
+
+        // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
+        this._currentBounds = bounds;
+    }
+
+    return this._currentBounds;
 };
 
 /**
@@ -29856,7 +29728,7 @@ Mesh.DRAW_MODES = {
     TRIANGLES: 1
 };
 
-},{"../core":60,"./webgl/MeshShader":155,"pixi-gl-core":14}],152:[function(require,module,exports){
+},{"../core":59,"./webgl/MeshShader":154,"pixi-gl-core":14}],151:[function(require,module,exports){
 var Mesh = require('./Mesh');
 
 /**
@@ -29981,7 +29853,7 @@ Plane.prototype._onTextureUpdate = function ()
     }
 };
 
-},{"./Mesh":151}],153:[function(require,module,exports){
+},{"./Mesh":150}],152:[function(require,module,exports){
 var Mesh = require('./Mesh');
 var core = require('../core');
 
@@ -30196,7 +30068,7 @@ Rope.prototype.updateTransform = function ()
     this.containerUpdateTransform();
 };
 
-},{"../core":60,"./Mesh":151}],154:[function(require,module,exports){
+},{"../core":59,"./Mesh":150}],153:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI extras library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -30214,7 +30086,7 @@ module.exports = {
     MeshShader:     require('./webgl/MeshShader')
 };
 
-},{"./Mesh":151,"./Plane":152,"./Rope":153,"./webgl/MeshShader":155}],155:[function(require,module,exports){
+},{"./Mesh":150,"./Plane":151,"./Rope":152,"./webgl/MeshShader":154}],154:[function(require,module,exports){
 var Shader = require('../../core/Shader');
 
 /**
@@ -30262,7 +30134,7 @@ MeshShader.prototype.constructor = MeshShader;
 module.exports = MeshShader;
 
 
-},{"../../core/Shader":40}],156:[function(require,module,exports){
+},{"../../core/Shader":40}],155:[function(require,module,exports){
 var core = require('../core');
 
 /**
@@ -30594,7 +30466,7 @@ ParticleContainer.prototype.destroy = function () {
     this._buffers = null;
 };
 
-},{"../core":60}],157:[function(require,module,exports){
+},{"../core":59}],156:[function(require,module,exports){
 /**
  * @file        Main export of the PIXI extras library
  * @author      Mat Groves <mat@goodboydigital.com>
@@ -30610,7 +30482,7 @@ module.exports = {
     ParticleRenderer: 			 require('./webgl/ParticleRenderer')
 };
 
-},{"./ParticleContainer":156,"./webgl/ParticleRenderer":159}],158:[function(require,module,exports){
+},{"./ParticleContainer":155,"./webgl/ParticleRenderer":158}],157:[function(require,module,exports){
 var glCore = require('pixi-gl-core'),
     createIndicesForQuads = require('../../core/utils/createIndicesForQuads');
 
@@ -30831,7 +30703,7 @@ ParticleBuffer.prototype.destroy = function ()
     this.staticBuffer.destroy();
 };
 
-},{"../../core/utils/createIndicesForQuads":112,"pixi-gl-core":14}],159:[function(require,module,exports){
+},{"../../core/utils/createIndicesForQuads":111,"pixi-gl-core":14}],158:[function(require,module,exports){
 var core = require('../../core'),
     ParticleShader = require('./ParticleShader'),
     ParticleBuffer = require('./ParticleBuffer');
@@ -31263,7 +31135,7 @@ ParticleRenderer.prototype.destroy = function ()
     this.tempMatrix = null;
 };
 
-},{"../../core":60,"./ParticleBuffer":158,"./ParticleShader":160}],160:[function(require,module,exports){
+},{"../../core":59,"./ParticleBuffer":157,"./ParticleShader":159}],159:[function(require,module,exports){
 var Shader = require('../../core/Shader');
 
 /**
@@ -31329,7 +31201,7 @@ ParticleShader.prototype.constructor = ParticleShader;
 
 module.exports = ParticleShader;
 
-},{"../../core/Shader":40}],161:[function(require,module,exports){
+},{"../../core/Shader":40}],160:[function(require,module,exports){
 // References:
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
 
@@ -31345,7 +31217,7 @@ if (!Math.sign)
     };
 }
 
-},{}],162:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 // References:
 // https://github.com/sindresorhus/object-assign
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -31355,7 +31227,7 @@ if (!Object.assign)
     Object.assign = require('object-assign');
 }
 
-},{"object-assign":6}],163:[function(require,module,exports){
+},{"object-assign":6}],162:[function(require,module,exports){
 require('./Object.assign');
 require('./requestAnimationFrame');
 require('./Math.sign');
@@ -31373,7 +31245,7 @@ if(!window.Uint16Array){
   window.Uint16Array = Array;
 }
 
-},{"./Math.sign":161,"./Object.assign":162,"./requestAnimationFrame":164}],164:[function(require,module,exports){
+},{"./Math.sign":160,"./Object.assign":161,"./requestAnimationFrame":163}],163:[function(require,module,exports){
 (function (global){
 // References:
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -31443,7 +31315,7 @@ if (!global.cancelAnimationFrame) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],165:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 var core = require('../../core');
 
 /**
@@ -31503,13 +31375,13 @@ CanvasPrepare.prototype.destroy = function()
 };
 
 core.CanvasRenderer.registerPlugin('prepare', CanvasPrepare);
-},{"../../core":60}],166:[function(require,module,exports){
+},{"../../core":59}],165:[function(require,module,exports){
 
 module.exports = {
     webGL: require('./webgl/WebGLPrepare'),
     canvas: require('./canvas/CanvasPrepare')
 };
-},{"./canvas/CanvasPrepare":165,"./webgl/WebGLPrepare":167}],167:[function(require,module,exports){
+},{"./canvas/CanvasPrepare":164,"./webgl/WebGLPrepare":166}],166:[function(require,module,exports){
 var core = require('../../core'),
     SharedTicker = core.ticker.shared;
 
@@ -31813,6 +31685,6 @@ function findGraphics(item, queue)
 }
 
 core.WebGLRenderer.registerPlugin('prepare', WebGLPrepare);
-},{"../../core":60}]},{},[141])(141)
+},{"../../core":59}]},{},[140])(140)
 });
 //# sourceMappingURL=pixi.js.map

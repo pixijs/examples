@@ -27,7 +27,8 @@ for (var i = 0; i < 20; i++)
     maggot.position.y = Math.random() * bounds.height;
 
     maggot.scale.set(1 + Math.random() * 0.3);
-    maggot.original = maggot.scale.clone();
+    maggot.original = new PIXI.Point();
+	maggot.original.copy(maggot.scale);
     maggots.push(maggot);
 
 }

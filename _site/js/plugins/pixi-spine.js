@@ -1,8 +1,8 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}(g.PIXI || (g.PIXI = {})).spine = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /**
  * @namespace PIXI.spine
  */
-module.exports = PIXI.spine = {
+module.exports = PIXI.spine = { // "PIXI.spine" assignment is here for people/plugins who use plugin both through require and as a plugin.
     Spine:          require('./Spine'),
     SpineRuntime:   require('./SpineRuntime'),
     loaders:        require('./loaders')
@@ -1551,6 +1551,24 @@ spine.IkConstraint.apply1 = function (bone, targetX, targetY, alpha)
     var rotation = bone.rotation;
     var rotationIK = Math.atan2(targetY - bone.worldY, targetX - bone.worldX) * spine.radDeg - parentRotation;
     if ((bone.worldSignX != bone.worldSignY) != (bone.skeleton.flipX != (bone.skeleton.flipY != spine.Bone.yDown))) rotationIK = 360 - rotationIK;
+
+    //OLD ONE:
+
+    // float parentRotation = bone.parent == null ? 0 : bone.parent.getWorldRotationX();
+    // float rotation = bone.rotation;
+    // float rotationIK = atan2(targetY - bone.worldY, targetX - bone.worldX) * radDeg - parentRotation;
+    // if ((bone.worldSignX != bone.worldSignY) != (bone.skeleton.flipX != bone.skeleton.flipY)) rotationIK = 360 - rotationIK;
+
+    //NEW ONE
+
+    // var pp = bone.parent;
+    // float id = 1 / (pp.a * pp.d - pp.b * pp.c);
+    // float x = targetX - pp.worldX, y = targetY - pp.worldY;
+    // float tx = (x * pp.d - y * pp.b) * id - bone.x, ty = (y * pp.a - x * pp.c) * id - bone.y;
+    // float rotationIK = atan2(ty, tx) * radDeg - bone.shearX;
+    // if (bone.scaleX < 0) rotationIK += 180;
+
+
     if (rotationIK > 180)
         rotationIK -= 360;
     else if (rotationIK < -180) rotationIK += 360;
@@ -1600,6 +1618,33 @@ spine.IkConstraint.apply2 = function (parent, child, targetX, targetY, bendDir, 
         dx = (x * d - y * b) * invDet - px;
         dy = (y * a - x * c) * invDet - py;
     }
+
+    //OLD ONE
+    // float tx, ty, dx, dy;
+    // if (pp == null) {
+    //     tx = targetX - px;
+    //     ty = targetY - py;
+    //     dx = child.worldX - px;
+    //     dy = child.worldY - py;
+    // } else {
+    //     float a = pp.a, b = pp.b, c = pp.c, d = pp.d, invDet = 1 / (a * d - b * c);
+    //     float wx = pp.worldX, wy = pp.worldY, x = targetX - wx, y = targetY - wy;
+    //     tx = (x * d - y * b) * invDet - px;
+    //     ty = (y * a - x * c) * invDet - py;
+    //     x = child.worldX - wx;
+    //     y = child.worldY - wy;
+    //     dx = (x * d - y * b) * invDet - px;
+    //     dy = (y * a - x * c) * invDet - py;
+    // }
+
+    //NEW ONE
+    // float ppa = pp.a, ppb = pp.b, ppc = pp.c, ppd = pp.d, id = 1 / (ppa * ppd - ppb * ppc);
+    // float x = targetX - pp.worldX, y = targetY - pp.worldY;
+    // float tx = (x * ppd - y * ppb) * id - px, ty = (y * ppa - x * ppc) * id - py;
+    // x = child.worldX - pp.worldX;
+    // y = child.worldY - pp.worldY;
+    // float dx = (x * ppd - y * ppb) * id - px, dy = (y * ppa - x * ppc) * id - py;
+
     var l1 = Math.sqrt(dx * dx + dy * dy), l2 = child.data.length * csx, a1, a2;
     outer:
         if (Math.abs(psx - psy) <= 0.0001) {
@@ -2915,83 +2960,85 @@ spine.SkeletonJsonParser.prototype = {
             for (var i = 0, n = vertices.length; i < n; i++)
                 attachment.vertices.push(vertices[i] * scale);
             return attachment;
-        } else if (type == spine.AttachmentType.mesh || type == spine.AttachmentType.linkedmesh)
+        } else if (type == spine.AttachmentType.mesh || type == spine.AttachmentType.linkedmesh ||
+            type == spine.AttachmentType.weightedmesh || type == spine.AttachmentType.weightedlinkedmesh)
         {
-            var mesh = this.attachmentLoader.newMeshAttachment(skin, name, path);
-            if (!mesh) return null;
-            mesh.path = path;
-            color = map["color"];
-            if (color)
-            {
-                mesh.r = this.toColor(color, 0);
-                mesh.g = this.toColor(color, 1);
-                mesh.b = this.toColor(color, 2);
-                mesh.a = this.toColor(color, 3);
-            }
-            mesh.width = (map["width"] || 0) * scale;
-            mesh.height = (map["height"] || 0) * scale;
-
-            var parent = map["parent"];
-            if (!parent) {
-                mesh.vertices = this.getFloatArray(map, "vertices", scale);
-                mesh.triangles = this.getIntArray(map, "triangles");
-                mesh.regionUVs = this.getFloatArray(map, "uvs", 1);
-                mesh.updateUVs();
-                mesh.hullLength = (map["hull"] || 0) * 2;
-                if (map["edges"]) mesh.edges = this.getIntArray(map, "edges");
-            } else {
-                mesh.inheritFFD = !!map["ffd"];
-                this.linkedMeshes.push(new LinkedMesh(mesh, map["skin"] || null, slotIndex, parent));
-            }
-            return mesh;
-        } else if (type == spine.AttachmentType.weightedmesh || type == spine.AttachmentType.weightedlinkedmesh)
-        {
-            var mesh = this.attachmentLoader.newWeightedMeshAttachment(skin, name, path);
-            if (!mesh) return null;
-            mesh.path = path;
-            color = map["color"];
-            if (color)
-            {
-                mesh.r = this.toColor(color, 0);
-                mesh.g = this.toColor(color, 1);
-                mesh.b = this.toColor(color, 2);
-                mesh.a = this.toColor(color, 3);
-            }
-            mesh.width = (map["width"] || 0) * scale;
-            mesh.height = (map["height"] || 0) * scale;
-
-            var parent = map["parent"];
-            if (!parent) {
-                var uvs = this.getFloatArray(map, "uvs", 1);
-                var vertices = this.getFloatArray(map, "vertices", 1);
-                var weights = [];
-                var bones = [];
-                for (var i = 0, n = vertices.length; i < n; )
-                {
-                    var boneCount = vertices[i++] | 0;
-                    bones[bones.length] = boneCount;
-                    for (var nn = i + boneCount * 4; i < nn; )
-                    {
-                        bones[bones.length] = vertices[i];
-                        weights[weights.length] = vertices[i + 1] * scale;
-                        weights[weights.length] = vertices[i + 2] * scale;
-                        weights[weights.length] = vertices[i + 3];
-                        i += 4;
-                    }
+            var vertexCount = map["vertexCount"] || 0;
+            if (vertexCount * 2 === map["vertices"].length ||
+                map["vertices"].length === map["uvs"].length) {
+                //regular mesh
+                var mesh = this.attachmentLoader.newMeshAttachment(skin, name, path);
+                if (!mesh) return null;
+                mesh.path = path;
+                color = map["color"];
+                if (color) {
+                    mesh.r = this.toColor(color, 0);
+                    mesh.g = this.toColor(color, 1);
+                    mesh.b = this.toColor(color, 2);
+                    mesh.a = this.toColor(color, 3);
                 }
-                mesh.bones = bones;
-                mesh.weights = weights;
-                mesh.triangles = this.getIntArray(map, "triangles");
-                mesh.regionUVs = uvs;
-                mesh.updateUVs();
+                mesh.width = (map["width"] || 0) * scale;
+                mesh.height = (map["height"] || 0) * scale;
 
-                mesh.hullLength = (map["hull"] || 0) * 2;
-                if (map["edges"]) mesh.edges = this.getIntArray(map, "edges");
+                var parent = map["parent"];
+                if (!parent) {
+                    mesh.vertices = this.getFloatArray(map, "vertices", scale);
+                    mesh.triangles = this.getIntArray(map, "triangles");
+                    mesh.regionUVs = this.getFloatArray(map, "uvs", 1);
+                    mesh.updateUVs();
+                    mesh.hullLength = (map["hull"] || 0) * 2;
+                    if (map["edges"]) mesh.edges = this.getIntArray(map, "edges");
+                } else {
+                    mesh.inheritFFD = !!map["ffd"];
+                    this.linkedMeshes.push(new LinkedMesh(mesh, map["skin"] || null, slotIndex, parent));
+                }
+                return mesh;
             } else {
-                mesh.inheritFFD = !!map["ffd"];
-                this.linkedMeshes.push(new LinkedMesh(mesh, map["skin"] || null, slotIndex, parent));
+                //weighted mesh
+                var mesh = this.attachmentLoader.newWeightedMeshAttachment(skin, name, path);
+                if (!mesh) return null;
+                mesh.path = path;
+                color = map["color"];
+                if (color) {
+                    mesh.r = this.toColor(color, 0);
+                    mesh.g = this.toColor(color, 1);
+                    mesh.b = this.toColor(color, 2);
+                    mesh.a = this.toColor(color, 3);
+                }
+                mesh.width = (map["width"] || 0) * scale;
+                mesh.height = (map["height"] || 0) * scale;
+
+                var parent = map["parent"];
+                if (!parent) {
+                    var uvs = this.getFloatArray(map, "uvs", 1);
+                    var vertices = this.getFloatArray(map, "vertices", 1);
+                    var weights = [];
+                    var bones = [];
+                    for (var i = 0, n = vertices.length; i < n;) {
+                        var boneCount = vertices[i++] | 0;
+                        bones[bones.length] = boneCount;
+                        for (var nn = i + boneCount * 4; i < nn;) {
+                            bones[bones.length] = vertices[i];
+                            weights[weights.length] = vertices[i + 1] * scale;
+                            weights[weights.length] = vertices[i + 2] * scale;
+                            weights[weights.length] = vertices[i + 3];
+                            i += 4;
+                        }
+                    }
+                    mesh.bones = bones;
+                    mesh.weights = weights;
+                    mesh.triangles = this.getIntArray(map, "triangles");
+                    mesh.regionUVs = uvs;
+                    mesh.updateUVs();
+
+                    mesh.hullLength = (map["hull"] || 0) * 2;
+                    if (map["edges"]) mesh.edges = this.getIntArray(map, "edges");
+                } else {
+                    mesh.inheritFFD = !!map["ffd"];
+                    this.linkedMeshes.push(new LinkedMesh(mesh, map["skin"] || null, slotIndex, parent));
+                }
+                return mesh;
             }
-            return mesh;
         }
         throw "Unknown attachment type: " + type;
     },
@@ -3162,7 +3209,7 @@ spine.SkeletonJsonParser.prototype = {
             duration = Math.max(duration, timeline.frames[timeline.getFrameCount() * 5 - 5]);
         }
 
-        var ffd = map["ffd"];
+        var ffd = map["deform"] || map["ffd"];
         for (var skinName in ffd)
         {
             var skin = skeletonData.findSkin(skinName);
@@ -3894,6 +3941,7 @@ module.exports = {
 },{}],45:[function(require,module,exports){
 var spine = require('../SpineRuntime');
 var atlasParser = require('../loaders/atlasParser');
+var TransformBase = PIXI.TransformBase || PIXI.TransformManual;
 
 /* Esoteric Software SPINE wrapper for pixi.js */
 spine.Bone.yDown = true;
@@ -3998,6 +4046,14 @@ function Spine(spineData)
      * @member {boolean}
      */
     this.autoUpdate = true;
+
+    /**
+     * The tint applied to all spine slots. This is a [r,g,b] value. A value of [1,1,1] will remove any tint effect.
+     *
+     * @member {number}
+     * @memberof PIXI.spine.Spine#
+     */
+    this.tintRgb = new Float32Array([1, 1, 1]);
 }
 
 Spine.fromAtlas = function(resourceName) {
@@ -4026,7 +4082,7 @@ Object.defineProperties(Spine.prototype, {
      * autoupdate enabled but are harder to achieve.
      *
      * @member {boolean}
-     * @memberof Spine#
+     * @memberof PIXI.spine.Spine#
      * @default true
      */
     autoUpdate: {
@@ -4039,8 +4095,25 @@ Object.defineProperties(Spine.prototype, {
         {
             this.updateTransform = value ? Spine.prototype.autoUpdateTransform : PIXI.Container.prototype.updateTransform;
         }
+    },
+    /**
+     * The tint applied to the spine object. This is a hex value. A value of 0xFFFFFF will remove any tint effect.
+     *
+     * @member {number}
+     * @memberof PIXI.spine.Spine#
+     * @default 0xFFFFFF
+     */
+    tint: {
+        get: function() {
+            return PIXI.utils.rgb2hex(this.tintRgb);
+        },
+        set: function(value) {
+            this.tintRgb = PIXI.utils.hex2rgb(value, this.tintRgb);
+        }
     }
 });
+
+var tempRgb = [0, 0, 0];
 
 /**
  * Update the spine skeleton and its animations by delta time (dt)
@@ -4060,6 +4133,10 @@ Spine.prototype.update = function (dt)
     {
         this.children[i] = this.slotContainers[drawOrder[i]];
     }
+
+    var r0 = this.tintRgb[0];
+    var g0 = this.tintRgb[1];
+    var b0 = this.tintRgb[2];
 
     for (i = 0, n = slots.length; i < n; i++)
     {
@@ -4110,24 +4187,25 @@ Spine.prototype.update = function (dt)
                     transform.version = transform._dirtyVersion;
                     transform.isStatic = true;
                     transform.operMode = 0;
-                } else
-                if (PIXI.TransformManual) {
-                    //PIXI v4.0
-                    if (transform.position) {
-                        transform = new PIXI.TransformManual();
-                        slotContainer.transform = transform;
-                    }
-                    lt = transform.localTransform;
                 } else {
-                    //PIXI v4.0rc
-                    if (!transform._dirtyLocal) {
-                        transform = new PIXI.TransformStatic();
-                        slotContainer.transform = transform;
+                    if (TransformBase) {
+                        //PIXI v4.0
+                        if (transform.position) {
+                            transform = new PIXI.TransformBase();
+                            slotContainer.transform = transform;
+                        }
+                        lt = transform.localTransform;
+                    } else {
+                        //PIXI v4.0rc
+                        if (!transform._dirtyLocal) {
+                            transform = new PIXI.TransformStatic();
+                            slotContainer.transform = transform;
+                        }
+                        lt = transform.localTransform;
+                        transform._dirtyParentVersion = -1;
+                        transform._dirtyLocal = 1;
+                        transform._versionLocal = 1;
                     }
-                    lt = transform.localTransform;
-                    transform._dirtyParentVersion = -1;
-                    transform._dirtyLocal = 1;
-                    transform._versionLocal = 1;
                 }
                 slot.bone.matrix.copy(lt);
                 lt.tx += slot.bone.skeleton.x;
@@ -4141,9 +4219,11 @@ Spine.prototype.update = function (dt)
                 slotContainer.localTransform = lt;
                 slotContainer.displayObjectUpdateTransform = SlotContainerUpdateTransformV3;
             }
-
+            tempRgb[0] = r0 * slot.r * attachment.r;
+            tempRgb[1] = g0 * slot.g * attachment.g;
+            tempRgb[2] = b0 * slot.b * attachment.b;
+            slot.currentSprite.tint = PIXI.utils.rgb2hex(tempRgb);
             slot.currentSprite.blendMode = slot.blendMode;
-            slot.currentSprite.tint = PIXI.utils.rgb2hex([slot.r * attachment.r, slot.g * attachment.g, slot.b * attachment.b]);
         }
         else if (type === spine.AttachmentType.skinnedmesh || type === spine.AttachmentType.mesh || type === spine.AttachmentType.linkedmesh)
         {
@@ -4174,7 +4254,13 @@ Spine.prototype.update = function (dt)
             if (PIXI.VERSION[0] !== '3') {
                 // PIXI version 4
                 slot.currentMesh.dirty = true;
+                //only for PIXI v4
+                var tintRgb = slot.currentMesh.tintRgb;
+                tintRgb[0] = r0 * slot.r * attachment.r;
+                tintRgb[1] = g0 * slot.g * attachment.g;
+                tintRgb[2] = b0 * slot.b * attachment.b;
             }
+            slot.currentMesh.blendMode = slot.blendMode;
         }
         else
         {
@@ -4479,7 +4565,8 @@ module.exports = function (baseUrl, crossOrigin) {
     }
 };
 
-},{"../SpineRuntime":43}]},{},[1])
+},{"../SpineRuntime":43}]},{},[1])(1)
+});
 
 
 //# sourceMappingURL=pixi-spine.js.map

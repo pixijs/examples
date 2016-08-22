@@ -15,8 +15,8 @@ bunny.anchor.x = 0.5;
 bunny.anchor.y = 0.5;
 
 // move the sprite to the center of the screen
-bunny.position.x = 200;
-bunny.position.y = 150;
+bunny.position.x = 400;
+bunny.position.y = 300;
 
 stage.addChild(bunny);
 

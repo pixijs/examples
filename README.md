@@ -1,11 +1,7 @@
 # Pixi examples guidelines: #
 
-<<<<<<< HEAD
 This is the new repository for the pixi examples.
 In the previous one, each example was a JavaScript file, we moved away from this and it is now an HTML file that can be opened on its own.
-=======
-Repository for the pixi.js v3 examples, available online [here](https://pixijs.github.io/examples/).
->>>>>>> origin/master
 
 The iframe that displays the examples is **800 * 600**, consequently please avoid creating a renderer that is larger than these dimensions.
 

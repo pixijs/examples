@@ -1,0 +1,208 @@
+{
+    "basics": [
+        {
+            "title": "Basics",
+            "entry": "basic.js"
+        },
+        {
+            "title": "Container",
+            "entry": "container.js"
+        },
+        {
+            "title": "Container Pivot",
+            "entry": "container-pivot.js"
+        },
+        {
+            "title": "SpriteSheet Animation",
+            "entry": "spritesheet.js"
+        },
+        {
+            "title": "Click",
+            "entry": "click.js"
+        },
+        {
+            "title": "Tiling Sprite",
+            "entry": "tiling-sprite.js"
+        },
+        {
+            "title": "Text",
+            "entry": "text.js"
+        },
+        {
+            "title": "Graphics",
+            "entry": "graphics.js"
+        },
+        {
+            "title": "Video",
+            "entry": "video.js"
+        },
+        {
+            "title": "Render Texture [v3]",
+            "entry": "render-texture-v3.js"
+        },
+        {
+            "title": "Render Texture",
+            "entry": "render-texture.js"
+        },
+        {
+            "title": "Textured Mesh",
+            "entry": "textured-mesh.js"
+        },
+        {
+            "title": "Custom Filter [v3]",
+            "entry": "custom-filter-v3.js"
+        },
+        {
+            "title": "Custom Filter",
+            "entry": "custom-filter.js"
+        }
+    ],
+    "demos": [
+        {
+            "title": "MovieClip",
+            "entry": "movieclip-demo.js"
+        },
+        {
+            "title": "Interactivity",
+            "entry": "interactivity.js"
+        },
+        {
+            "title": "Transparent Background",
+            "entry": "transparent-background.js"
+        },
+        {
+            "title": "Dragging",
+            "entry": "dragging.js"
+        },
+        {
+            "title": "Text",
+            "entry": "text-demo.js"
+        },
+        {
+            "title": "RenderTexture",
+            "entry": "render-texture-demo.js"
+        },
+        {
+            "title": "Graphics",
+            "entry": "graphics-demo.js"
+        },
+        {
+            "title": "Masking",
+            "entry": "masking.js"
+        },
+        {
+            "title": "BlendModes",
+            "entry": "blendmodes.js"
+        },
+        {
+            "title": "Tinting",
+            "entry": "tinting.js"
+        },
+        {
+            "title": "Particle Container [v3]",
+            "entry": "batch-v3.js"
+        },
+        {
+            "title": "Particle Container",
+            "entry": "batch.js"
+        },
+        {
+            "title": "CacheAsBitmap",
+            "entry": "cacheAsBitmap.js"
+        },
+        {
+            "title": "Strip",
+            "entry": "strip-demo.js"
+        },
+        {
+            "title": "Texture Swap",
+            "entry": "texture-swap.js"
+        },
+        {
+            "title": "Texture Rotate",
+            "entry": "texture-rotate.js"
+        },
+        {
+            "title": "Alpha Mask",
+            "entry": "alpha-mask.js"
+        }
+    ],
+    "display": [
+        {
+            "title": "Z-order",
+            "entry": "zorder.js",
+            "plugins": [
+                "pixi-display"
+            ]
+        }
+    ],
+    "filters": [
+        {
+            "title": "Filter",
+            "entry": "filter.js"
+        },
+        {
+            "title": "Blur",
+            "entry": "blur-filter.js"
+        },
+        {
+            "title": "Displacement Map",
+            "entry": "displacement-map.js"
+        }
+    ],
+    "picture": [
+        {
+            "title": "Border artifacts",
+            "entry": "border-artifacts.js",
+            "plugins": [
+                "pixi-picture"
+            ]
+        },
+        {
+            "title": "Overlay blendMode",
+            "entry": "overlay.js",
+            "plugins": [
+                "pixi-picture"
+            ]
+        }
+    ],
+    "spine": [
+        {
+            "title": "Dragon",
+            "entry": "dragon.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        },
+        {
+            "title": "Goblin",
+            "entry": "goblins.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        },
+        {
+            "title": "Pixie",
+            "entry": "pixie.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        },
+        {
+            "title": "Walking Animation",
+            "entry": "spineboy.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        }
+    ],
+    "textures": [
+        {
+            "title": "DirectDrawSurface (DDS)",
+            "entry": "dds.js",
+            "plugins": [
+                "pixi-compressed-textures"
+            ]
+        }
+    ]
+}

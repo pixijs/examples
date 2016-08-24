@@ -1,0 +1,32 @@
+{
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "indent": 2,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "quotmark": true,
+  "undef": true,
+  "unused": true,
+  "trailing": true,
+  "asi": true,
+  "boss": true,
+  "esnext": true,
+  "sub": true,
+  "eqnull": true,
+  "browser": true,
+  "worker": true,
+  "globals": {
+    "fetch": false,
+    "Headers": false,
+    "Request": false,
+    "Response": false,
+    "mocha": false,
+    "chai": false,
+    "suite": false,
+    "setup": false,
+    "test": false,
+    "assert": false
+  }
+}

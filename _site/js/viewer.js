@@ -19,7 +19,7 @@ $(document).ready(function () {
     params.v = params.v || '';
     if (params.v !== '') {
         console.log('loading external pixi ...')
-        pixiUrl = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
+        pixiUrl = 'https://rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
     }
 
     function onTagsLoaded (select)

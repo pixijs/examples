@@ -1,0 +1,1 @@
+module.exports = require("npm:signals@1.0.0/dist/signals.js");

@@ -52,7 +52,7 @@ function init() {
         dude.position.x = offsetX + gridW * (i % 4);
         dude.position.y = offsetY + gridH * (i / 4 | 0);
         stage.addChild(dude);
-        var text = new PIXI.Text("rotate = "+dude.texture.rotate, { font: '12px Courier New', fill: 'white', align: 'left' });
+        var text = new PIXI.Text("rotate = "+dude.texture.rotate, { fontFamily:'Courier New', fontSize:'12px', fill: 'white', align: 'left' });
         text.position.x = dude.position.x;
         text.position.y = dude.position.y - 20;
         stage.addChild(text);

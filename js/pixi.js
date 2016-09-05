@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
 	};
 
 	// async script loading
-	bpc.scriptsToLoad = ['http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js'];
+	bpc.scriptsToLoad = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js'];
 	bpc.scriptsLoaded = 0;
 
 	if (bpc.clickType === 'tap') {

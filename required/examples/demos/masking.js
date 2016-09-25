@@ -73,7 +73,7 @@ function onClick()
     }
 }
 
-var help = new PIXI.Text('Click to turn masking on / off.', { font:'bold 12pt Arial', fill: 'white' });
+var help = new PIXI.Text('Click to turn masking on / off.', { fontFamily:'Arial', fontSize:'12pt', fontWeight:'bold', fill: 'white' });
 help.position.y = renderer.height - 26;
 help.position.x = 10;
 stage.addChild(help);

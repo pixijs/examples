@@ -60,7 +60,7 @@ function onClick()
     }
 }
 
-var help = new PIXI.Text('Click to turn filters on / off.', { font: 'bold 12pt Arial', fill: 'white' });
+var help = new PIXI.Text('Click to turn filters on / off.', { fontFamily:'Arial', fontSize:'12pt', fontWeight:'bold', fill: 'white' });
 help.position.y = renderer.height - 25;
 help.position.x = 10;
 

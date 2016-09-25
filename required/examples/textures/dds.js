@@ -21,12 +21,6 @@ loader.add('building1', 'required/assets/compressed/building1.png', textureOptio
     .add('building2', 'required/assets/compressed/building2.png', textureOptions2)
     .add('atlas1', 'required/assets/compressed/buildings.json', atlasOptions )
     .load(function(loader, resources) {
-        // You have to preload all compressed textures into videomemory, pixi renderer cant do that for you.
-        // You also can specify different renderer or set in that function
-        // and this thing doesnt work for canvas
-        if (renderer.type == PIXI.RENDERER_TYPE.WEBGL)
-            renderer.plugins.compressedTextureManager.updateAllTextures(resources, true);
-
         var spr1 = new PIXI.Sprite(resources.building1.texture);
         var spr2 = new PIXI.Sprite(resources.building2.texture);
         var spr3 = new PIXI.Sprite.fromImage('goldmine_10_5.png');

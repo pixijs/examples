@@ -11,7 +11,10 @@ basicText.y = 90;
 stage.addChild(basicText);
 
 var style = {
-    font : 'bold italic 36px Arial',
+    fontFamily : 'Arial',
+    fontSize : '36px',
+    fontStyle : 'italic',
+    fontWeight : 'bold',
     fill : '#F7EDCA',
     stroke : '#4a1850',
     strokeThickness : 5,

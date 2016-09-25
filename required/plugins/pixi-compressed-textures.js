@@ -1,47 +1,14 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
-var compressedTextures = {
-    CompressedTextureManager: require('./CompressedTextureManager.js'),
-    imageParser: require('./imageParser.js'),
-    extensionChooser: require('./extensionChooser.js'),
-    extensionFixer: require('./extensionFixer.js'),
-    detectExtensions: function (renderer, resolution) {
-        var extensions = [];
-        if (renderer instanceof PIXI.WebGLRenderer) {
-            var data = renderer.plugins.compressedTextureManager.getSupportedExtensions();
-            if (data.dxt) extensions.push('.dds');
-            if (data.pvrtc) extensions.push('.pvr');
-            if (data.atc) extensions.push('.atc');
-        } else if (renderer instanceof PIXI.CanvasRenderer) {
-            //nothing special for canvas
-        }
-        //retina or not
-        resolution = resolution || renderer.resolution;
-        var res = "@"+resolution+"x";
-        var ext = extensions.slice(0);
-        while (ext.length > 0) {
-            extensions.push(res + ext.pop());
-        }
-        extensions.push(res + ".png");
-        extensions.push(res + ".jpg");
-        //atlas support @1x @2x @.5x
-        extensions.push(res + ".json");
-        extensions.push(res + ".atlas");
-        return extensions;
-    }
-};
-
-PIXI.loaders.Loader.addPixiMiddleware(compressedTextures.extensionFixer);
-PIXI.loader.use(compressedTextures.extensionFixer());
-
-module.exports = global.PIXI.compressedTextures = compressedTextures;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"./CompressedTextureManager.js":3,"./extensionChooser.js":4,"./extensionFixer.js":5,"./imageParser.js":6}],2:[function(require,module,exports){
+/*!
+ * pixi-compressed-textures - v1.1.0
+ * Compiled Mon Sep 26 2016 01:44:53 GMT+0300 (RTZ 2 (зима))
+ *
+ * pixi-compressed-textures is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.pixiCompressedTextures = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 function CompressedImage(src, data, type, width, height, levels, internalFormat) {
     CompressedImage.prototype.init.apply(this, arguments);
-};
+}
 
 module.exports = CompressedImage;
 
@@ -68,9 +35,8 @@ CompressedImage.prototype.dispose = function() {
 };
 
 CompressedImage.prototype.generateWebGLTexture = function (gl, preserveSource) {
-    if (this.data == null) {
+    if (this.data === null) {
         throw "Trying to create a second (or more) webgl texture from the same CompressedImage : " + this.src;
-        return;
     }
 
     var width = this.width;
@@ -122,18 +88,18 @@ CompressedImage.loadFromArrayBuffer = function (arrayBuffer, src) {
 };
 
 CompressedImage.prototype.loadFromArrayBuffer = function(arrayBuffer) {
-    var entete = new Uint8Array(arrayBuffer, 0, 3);
+    var head = new Uint8Array(arrayBuffer, 0, 3);
 
     //todo: implement onload
 
-    if (entete[0] == "DDS".charCodeAt(0) && entete[1] == "DDS".charCodeAt(1) && entete[2] == "DDS".charCodeAt(2))
+    if (head[0] == "DDS".charCodeAt(0) && head[1] == "DDS".charCodeAt(1) && head[2] == "DDS".charCodeAt(2))
         return this._loadDDS(arrayBuffer);
-    else if (entete[0] == "PVR".charCodeAt(0) && entete[1] == "PVR".charCodeAt(1) && entete[2] == "PVR".charCodeAt(2))
+    else if (head[0] == "PVR".charCodeAt(0) && head[1] == "PVR".charCodeAt(1) && head[2] == "PVR".charCodeAt(2))
         return this._loadPVR(arrayBuffer);
     else
         throw "Compressed texture format is not recognized: " + src;
     return this;
-}
+};
 
 /**
  * Charge une image compressГ©e au format DDS depuis un array buffer
@@ -376,7 +342,7 @@ var PVR_HEADER_WIDTH = 7;
 var PVR_HEADER_MIPMAPCOUNT = 11;
 var PVR_HEADER_METADATA = 12;
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 /**
  * Created by Liza on 12.12.2015.
  */
@@ -418,48 +384,52 @@ CompressedTextureManager.prototype.getSupportedExtensions = function () {
         dxt: getExtension(gl, "WEBGL_compressed_texture_s3tc"),
         pvrtc: getExtension(gl, "WEBGL_compressed_texture_pvrtc"),
         atc: getExtension(gl, "WEBGL_compressed_texture_atc")
-    }
+    };
 };
 
-CompressedTextureManager.prototype.updateTexture = function (texture, removeSource) {
-    var source = texture.source;
-    if (!(source instanceof CompressedImage)) {
-        throw "Not a compressed image";
-    }
-    var renderer = this.renderer;
-    var gl = this.renderer.gl;
-    if (!source.complete) {
-        throw "CompressedImage wasnt loaded yet. Check if you have `loader.before(PIXI.compressedTextures.imageParser())` thing";
-    }
-    if (!texture._glTextures[gl.id]) {
-        texture._glTextures[gl.id] = gl.createTexture();
-        texture.on('dispose', renderer.destroyTexture, renderer);
-    }
-    gl.bindTexture(gl.TEXTURE_2D, texture._glTextures[gl.id]);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultipliedAlpha);
-    source.generateWebGLTexture(gl, !removeSource);
-};
+},{"./CompressedImage":1}],3:[function(require,module,exports){
+var CompressedImage = require('./CompressedImage');
+var GLTexture = PIXI.glCore.GLTexture;
 
-CompressedTextureManager.prototype.updateAllCompressedTextures = function (resources, removeSource) {
-    for (var key in resources) {
-        var resource = resources[key];
-        if (resource.isCompressedImage) {
-            this.updateTexture(resource.texture, removeSource);
+/**
+ * @mixin
+ */
+var GLTextureMixin = {
+    uploadNotCompressed: GLTexture.uploadNotCompressed,
+    isCompressed: false,
+    upload: function(source)
+    {
+        if (!(source instanceof CompressedImage)) {
+            return this.uploadNotCompressed(source);
         }
+        this.bind();
+
+        var gl = this.gl;
+
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
+
+        this.isCompressed = true;
+
+        source.generateWebGLTexture(gl, true);
+    },
+
+    enableMipmap: function() {
+        if (source.isCompressed) {
+            return;
+        }
+        var gl = this.gl;
+
+        this.bind();
+
+        this.mipmap = true;
+
+        gl.generateMipmap(gl.TEXTURE_2D);
     }
 };
 
-CompressedTextureManager.prototype.updateAllTextures = function (resources, removeSource) {
-    for (var key in resources) {
-        var resource = resources[key];
-        if (resource.isCompressedImage) {
-            this.updateTexture(resource.texture.baseTexture, removeSource);
-        } else if (resource.isImage) {
-            this.renderer.updateTexture(resource.texture.baseTexture);
-        }
-    }
-};
-},{"./CompressedImage":2}],4:[function(require,module,exports){
+module.exports = GLTextureMixin;
+
+},{"./CompressedImage":1}],4:[function(require,module,exports){
 function extensionChooser(supportedExtensions) {
     supportedExtensions = supportedExtensions || [];
 
@@ -515,12 +485,12 @@ function textureExtensionFixer(supportedExtensions) {
             core.utils.TextureCache[baseTexture.imageUrl] = texture;
         }
         next();
-    }
+    };
 }
 
 module.exports = textureExtensionFixer;
 
-},{"./CompressedImage":2}],6:[function(require,module,exports){
+},{"./CompressedImage":1}],6:[function(require,module,exports){
 var core = PIXI,
     utils = core.utils,
     CompressedImage = require('./CompressedImage'),
@@ -528,10 +498,11 @@ var core = PIXI,
 
 Resource.setExtensionXhrType('dds', Resource.XHR_RESPONSE_TYPE.BUFFER);
 Resource.setExtensionXhrType('pvr', Resource.XHR_RESPONSE_TYPE.BUFFER);
+Resource.setExtensionXhrType('etc1', Resource.XHR_RESPONSE_TYPE.BUFFER);
 
 function imageParser() {
     return function (resource, next) {
-        if (resource.url.indexOf('.dds') != -1 || resource.url.indexOf('.pvr') != -1) {
+        if (resource.url.indexOf('.dds') != -1 || resource.url.indexOf('.pvr') != -1 || resource.url.indexOf('.etc1') != -1) {
             var compressedImage = resource.compressedImage || new CompressedImage(resource.url);
             if (resource.data) {
                 throw "compressedImageParser middleware must be specified in loader.before() and must have zero resource.data";
@@ -545,12 +516,56 @@ function imageParser() {
             });
         }
         next();
-    }
+    };
 }
 
 module.exports = imageParser;
 
-},{"./CompressedImage":2}]},{},[1])
+},{"./CompressedImage":1}],7:[function(require,module,exports){
+(function (global){
+var plugin = {
+    CompressedTextureManager: require('./CompressedTextureManager'),
+    imageParser: require('./imageParser'),
+    extensionChooser: require('./extensionChooser'),
+    extensionFixer: require('./extensionFixer'),
+    GLTextureMixin: require('./GLTextureMixin'),
+    detectExtensions: function (renderer, resolution) {
+        var extensions = [];
+        if (renderer instanceof PIXI.WebGLRenderer) {
+            var data = renderer.plugins.compressedTextureManager.getSupportedExtensions();
+            if (data.dxt) extensions.push('.dds');
+            if (data.pvrtc) extensions.push('.pvr');
+            if (data.atc) extensions.push('.atc');
+        } else if (renderer instanceof PIXI.CanvasRenderer) {
+            //nothing special for canvas
+        }
+        //retina or not
+        resolution = resolution || renderer.resolution;
+        var res = "@"+resolution+"x";
+        var ext = extensions.slice(0);
+        while (ext.length > 0) {
+            extensions.push(res + ext.pop());
+        }
+        extensions.push(res + ".png");
+        extensions.push(res + ".jpg");
+        //atlas support @1x @2x @.5x
+        extensions.push(res + ".json");
+        extensions.push(res + ".atlas");
+        return extensions;
+    }
+};
+
+Object.assign(PIXI.glCore.GLTexture.prototype, plugin.GLTextureMixin);
+
+PIXI.loaders.Loader.addPixiMiddleware(plugin.extensionFixer);
+PIXI.loader.use(plugin.extensionFixer());
+
+module.exports = global.PIXI.compressedTextures = plugin;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./CompressedTextureManager":2,"./GLTextureMixin":3,"./extensionChooser":4,"./extensionFixer":5,"./imageParser":6}]},{},[7])(7)
+});
 
 
 //# sourceMappingURL=pixi-compressed-textures.js.map

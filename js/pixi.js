@@ -246,7 +246,7 @@ jQuery(document).ready(function($) {
 		}
 		// other versions come from S3
 		else {
-			pixiUrl = 'https://s3-eu-west-1.amazonaws.com/pixi-builds/' + bpc.version + '/pixi.js';
+			pixiUrl = 'https://d157l7jdn8e5sf.cloudfront.net/' + bpc.version + '/pixi.js';
 		}
 
 		var html = '<!DOCTYPE html><html><head><style>body,html{margin:0px;height:100%;overflow:hidden;}canvas{width:100%;height:100%;}</style></head><body>';

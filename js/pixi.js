@@ -6,11 +6,11 @@ jQuery(document).ready(function($) {
 	bpc.aniOut = 0.3;
 	bpc.currentSource = '';
 	bpc.currentFilename = '';
-	bpc.version = 'dev';
+	bpc.version = 'release';
 	bpc.plugins = '';
-	
+
 	bpc.clickType = Modernizr.touchevents ? 'tap' : 'click';
-	
+
 	bpc.resize = function() {
 	};
 
@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
 	if (bpc.clickType === 'tap') {
 		bpc.scriptsToLoad.push('js/jquery.mobile.custom.min.js');
 	}
-	
+
 	bpc.loadScriptsAsync = function() {
 		for (var i=0; i<bpc.scriptsToLoad.length; i++) {
 			$.ajax({
@@ -53,7 +53,7 @@ jQuery(document).ready(function($) {
 					html += '<li data-src="'+items[j].entry+'" data-plugins="'+plugins+'">'+items[j].title+'</li>';
 				}
 				html += '</ul>';
-				
+
 				$('.main-menu').append(html);
 			}
 
@@ -89,7 +89,7 @@ jQuery(document).ready(function($) {
 	bpc.closeMobileNav = function() {
 		TweenMax.to('#line1', 0.2, {rotation: 0, ease: Linear.easeNone, delay: 0});
 		TweenMax.to('#line3', 0.2, {rotation: 0, ease: Linear.easeNone, delay: 0});
-		
+
 		TweenMax.to('#line2', 0, {alpha: 1, ease: Quart.easeOut, delay: 0.2});
 		TweenMax.to('#line1', 0.2, {y: -8, ease: Quart.easeOut, delay: 0.2});
 		TweenMax.to('#line3', 0.2, {y: 8, ease: Quart.easeOut, delay: 0.2});
@@ -127,7 +127,7 @@ jQuery(document).ready(function($) {
 				bpc.currentSource = 'required/examples/'+$(this).parent().attr('data-section')+'/'+$(this).attr('data-src');
 				bpc.currentFilename = $(this).attr('data-src');
 				bpc.plugins = $(this).attr('data-plugins');
-				
+
 				$.ajax({
 					url : 'required/examples/'+$(this).parent().attr('data-section')+'/'+$(this).attr('data-src'),
 					dataType: "text",

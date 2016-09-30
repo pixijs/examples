@@ -18,21 +18,12 @@ $(document).ready(function () {
     var pixiUrl = '_site/js/pixi.js';
     params.v = params.v || '';
 
-
-    // Latest release branch
-    if (!params.v) {
-        App.loadPixi('https://pixi-builds.s3-website-eu-west-1.amazonaws.com/release/pixi.js', onPixiLoaded);
-    }
-    // Latest dev branch
-    else if (params.v === 'dev') {
-        App.loadPixi('https://pixi-builds.s3-website-eu-west-1.amazonaws.com/dev/pixi.js', onPixiLoaded);
-    }
     // pull v3 from github cdn
     else if (params.v.substr(0, 2) === 'v3') {
         App.loadPixi('https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js', onPixiLoaded);
     }
     // other versions come from S3
-    else if (params.v.substr(0, 1) === 'v') {
+    else {
         App.loadPixi('https://pixi-builds.s3-website-eu-west-1.amazonaws.com/' + params.v + '/pixi.js', onPixiLoaded);
     }
 

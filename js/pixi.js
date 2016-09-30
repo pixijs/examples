@@ -1,12 +1,29 @@
 /* Brett Meyer - Broken Pony Club */
 
+function getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
 jQuery(document).ready(function($) {
+    window.onpopstate = function (event) {
+        bpc.version = event.state || 'release';
+        bpc.generateIFrameContent();
+
+        $('.select-group .select li.selected').removeClass('selected');
+        var $selected = $('.select-group .select li[data-val="' + bpc.version + '"]');
+        $selected.addClass('selected');
+        $('.select-group .select .current').text($selected.text());
+
+        $('.main-content').animate({ scrollTop: 0 }, 300);
+    };
+
     var bpc = bpc || {};
     bpc.aniIn = 0.2;
     bpc.aniOut = 0.3;
     bpc.currentSource = '';
     bpc.currentFilename = '';
-    bpc.version = 'release';
+    bpc.version = getParameterByName('v') || 'release';
     bpc.plugins = '';
 
     bpc.clickType = Modernizr.touchevents ? 'tap' : 'click';
@@ -72,6 +89,10 @@ jQuery(document).ready(function($) {
             for (var i = 0; i < data.length; i++) {
                 $('.select-group .select ul').append('<li data-val="'+data[i]+'">'+data[i]+'</li>');
             }
+
+            var $selected = $('.select-group .select li[data-val="' + bpc.version + '"]');
+            $selected.addClass('selected');
+            $('.select-group .select .current').text($selected.text());
         });
     };
 
@@ -211,6 +232,8 @@ jQuery(document).ready(function($) {
                 $('.select-group .select .current').text($(this).text());
 
                 bpc.version = $(this).attr('data-val');
+                window.history.pushState(bpc.version, null, '?v=' + bpc.version + location.hash);
+
                 //$('#preview').attr('src', 'iframe.html?src='+bpc.currentSource+'&v='+bpc.version+'&plugins='+bpc.plugins);
                 bpc.generateIFrameContent();
                 $('.main-content').animate({scrollTop: 0}, 300);

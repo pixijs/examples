@@ -241,12 +241,12 @@ jQuery(document).ready(function($) {
 		var pixiUrl = '';
 
 		// pull v3 from github cdn
-		if (params.v.substr(0, 2) === 'v3') {
-			pixiUrl = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
+		if (bpc.version.substr(0, 2) === 'v3') {
+			pixiUrl = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + bpc.version + '/bin/pixi.js';
 		}
 		// other versions come from S3
 		else {
-			pixiUrl = 'https://pixi-builds.s3-website-eu-west-1.amazonaws.com/' + params.v + '/pixi.js';
+			pixiUrl = 'https://s3-eu-west-1.amazonaws.com/pixi-builds/' + bpc.version + '/pixi.js';
 		}
 
 		var html = '<!DOCTYPE html><html><head><style>body,html{margin:0px;height:100%;overflow:hidden;}canvas{width:100%;height:100%;}</style></head><body>';

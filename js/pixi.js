@@ -238,9 +238,20 @@ jQuery(document).ready(function($) {
 		$('#example').html('<iframe id="preview" src="blank.html"></iframe>');
 		// Generate HTML and insert into iFrame
 		var js = bpc.jsSource;
+		var pixiUrl = '';
+
+		// pull v3 from github cdn
+		if (params.v.substr(0, 2) === 'v3') {
+			pixiUrl = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js';
+		}
+		// other versions come from S3
+		else {
+			pixiUrl = 'https://pixi-builds.s3-website-eu-west-1.amazonaws.com/' + params.v + '/pixi.js';
+		}
+
 		var html = '<!DOCTYPE html><html><head><style>body,html{margin:0px;height:100%;overflow:hidden;}canvas{width:100%;height:100%;}</style></head><body>';
 		html += '<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>';
-		html += '<script src="https://cdn.rawgit.com/pixijs/pixi.js/'+bpc.version+'/bin/pixi.js"></script>';
+		html += '<script src="' + pixiUrl + '"></script>';
 
 		var plugins = bpc.plugins === '' ? [] : bpc.plugins.split(',');
 		for (i=0; i < plugins.length; i++) {

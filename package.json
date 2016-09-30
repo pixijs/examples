@@ -1,0 +1,22 @@
+{
+  "name": "pixi-examples",
+  "version": "1.0.0",
+  "description": "The examples site for pixi",
+  "author": "Pixi Team",
+  "license": "MIT",
+  "homepage": "https://github.com/pixijs/examples#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pixijs/examples.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pixijs/examples/issues"
+  },
+  "scripts": {
+    "build": "cd js && uglifyjs pixi.js --stats -c -m -o pixi.min.js --source-map pixi.min.js.map"
+  },
+  "devDependencies": {
+    "uglify-js": "^2.7.3"
+  },
+  "dependencies": {}
+}

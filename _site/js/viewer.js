@@ -19,7 +19,7 @@ $(document).ready(function () {
     params.v = params.v || '';
 
     // pull v3 from github cdn
-    else if (params.v.substr(0, 2) === 'v3') {
+    if (params.v.substr(0, 2) === 'v3') {
         App.loadPixi('https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + params.v + '/bin/pixi.js', onPixiLoaded);
     }
     // other versions come from S3

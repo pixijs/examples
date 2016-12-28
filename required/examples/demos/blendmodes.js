@@ -45,7 +45,7 @@ for (var i = 0; i < totaldudes; i++)
     stage.addChild(dude);
 }
 
-// create a bounding box box for the little dudes
+// create a bounding box for the little dudes
 var dudeBoundsPadding = 100;
 
 var dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,

@@ -1,6 +1,6 @@
 /*!
- * pixi-compressed-textures - v1.1.0
- * Compiled Mon Sep 26 2016 01:44:53 GMT+0300 (RTZ 2 (зима))
+ * pixi-compressed-textures - v1.1.2
+ * Compiled Wed, 18 Jan 2017 23:44:30 UTC
  *
  * pixi-compressed-textures is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -79,9 +79,9 @@ CompressedImage.prototype.generateWebGLTexture = function (gl, preserveSource) {
 };
 
 /**
- * Charge une image compressée depuis un array buffer
- * @param arrayBuffer : le buffer à partir duquel charger l'image
- * @return la CompressedImage chargée
+ * Load a compressed image from an array buffer
+ * @param arrayBuffer the buffer contains the image
+ * @return the loaded CompressedImage
  */
 CompressedImage.loadFromArrayBuffer = function (arrayBuffer, src) {
     return new CompressedImage(src).loadFromArrayBuffer(arrayBuffer);
@@ -102,9 +102,9 @@ CompressedImage.prototype.loadFromArrayBuffer = function(arrayBuffer) {
 };
 
 /**
- * Charge une image compressГ©e au format DDS depuis un array buffer
- * @param arrayBuffer : le buffer Г  partir duquel charger l'image
- * @return la CompressedImage chargГ©e
+ * Load a DDS compressed image from an array buffer
+ * @param arrayBuffer the buffer contains the image
+ * @return the loaded CompressedImage
  */
 CompressedImage.prototype._loadDDS = function(arrayBuffer) {
     // Get a view of the arrayBuffer that represents the DDS header.
@@ -159,9 +159,9 @@ CompressedImage.prototype._loadDDS = function(arrayBuffer) {
 };
 
 /**
- * Charge une image compressГ©e au format PVR depuis un array buffer
- * @param arrayBuffer : le buffer Г  partir duquel charger l'image
- * @return la CompressedImage chargГ©e
+ * Load a PVR compressed image from an array buffer
+ * @param arrayBuffer the buffer contains the image
+ * @return the loaded CompressedImage
  */
 CompressedImage.prototype._loadPVR = function(arrayBuffer) {
     // Get a view of the arrayBuffer that represents the DDS header.
@@ -395,10 +395,10 @@ var GLTexture = PIXI.glCore.GLTexture;
  * @mixin
  */
 var GLTextureMixin = {
-    uploadNotCompressed: GLTexture.uploadNotCompressed,
+    uploadNotCompressed: GLTexture.prototype.upload,
     isCompressed: false,
     upload: function(source)
-    {
+    {   
         if (!(source instanceof CompressedImage)) {
             return this.uploadNotCompressed(source);
         }
@@ -414,7 +414,7 @@ var GLTextureMixin = {
     },
 
     enableMipmap: function() {
-        if (source.isCompressed) {
+        if (this.isCompressed) {
             return;
         }
         var gl = this.gl;
@@ -509,8 +509,8 @@ function imageParser() {
             }
             resource.isCompressedImage = true;
             resource.data = compressedImage;
-            resource.once('complete', function() {
-                resource.isImage = true;
+            resource.onComplete.add(function() {
+                resource.type = Resource.TYPE.IMAGE;
                 compressedImage.loadFromArrayBuffer(resource.data);
                 resource.data = compressedImage;
             });

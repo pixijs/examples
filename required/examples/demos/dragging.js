@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('required/assets/bunny.png');
@@ -48,17 +45,7 @@ function createBunny(x, y)
     bunny.position.y = y;
 
     // add it to the stage
-    stage.addChild(bunny);
-}
-
-requestAnimationFrame( animate );
-
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    // render the stage
-    renderer.render(stage);
+    app.stage.addChild(bunny);
 }
 
 function onDragStart(event)

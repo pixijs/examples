@@ -1,8 +1,7 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
+app.stop();
 
 // load resources
 PIXI.loader
@@ -21,9 +20,8 @@ alienContainer.position.x = 400;
 alienContainer.position.y = 300;
 
 // make the stage interactive
-stage.interactive = true;
-
-stage.addChild(alienContainer);
+app.stage.interactive = true;
+app.stage.addChild(alienContainer);
 
 function onAssetsLoaded()
 {
@@ -50,12 +48,11 @@ function onAssetsLoaded()
         alienContainer.addChild(alien);
     }
 
-    // start animating
-    requestAnimationFrame(animate);
+    app.start();
 }
 
-stage.on('click', onClick);
-stage.on('tap', onClick);
+app.stage.on('click', onClick);
+app.stage.on('tap', onClick);
 
 function onClick()
 {
@@ -63,12 +60,12 @@ function onClick()
 
 //        feel free to play with what's below
 //        var sprite = new PIXI.Sprite(alienContainer.generateTexture());
-//        stage.addChild(sprite);
+//        app.stage.addChild(sprite);
 //        sprite.position.x = Math.random() * 800;
 //        sprite.position.y = Math.random() * 600;
 }
 
-function animate() {
+app.ticker.add(function() {
     // let's rotate the aliens a little bit
     for (var i = 0; i < 100; i++)
     {
@@ -82,9 +79,4 @@ function animate() {
     alienContainer.scale.y = Math.sin(count);
 
     alienContainer.rotation += 0.01;
-
-    // render the stage
-    renderer.render(stage);
-
-    requestAnimationFrame(animate);
-}
+});

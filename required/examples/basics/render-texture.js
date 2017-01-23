@@ -1,12 +1,9 @@
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
+document.body.appendChild(app.view);
 
 var container = new PIXI.Container();
 
-stage.addChild(container);
+app.stage.addChild(container);
 
 for (var j = 0; j < 5; j++) {
 
@@ -26,7 +23,8 @@ var sprite = new PIXI.Sprite(rt);
 
 sprite.x = 450;
 sprite.y = 60;
-stage.addChild(sprite)
+app.stage.addChild(sprite);
+
 /*
  * All the bunnies are added to the container with the addChild method
  * when you do this, all the bunnies become children of the container, and when a container moves,
@@ -36,15 +34,6 @@ stage.addChild(sprite)
 container.x = 100;
 container.y = 60;
 
-// start animating
-animate();
-
-function animate() {
-
-    renderer.render(container, rt)
-
-    requestAnimationFrame(animate);
-
-    // render the root container
-    renderer.render(stage);
-}
+app.ticker.add(function() {
+    app.renderer.render(container, rt);
+});

@@ -1,22 +1,19 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
-
-stage.interactive = true;
+app.stage.interactive = true;
 
 var bg = PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
 bg.anchor.set(0.5);
 
-bg.position.x = renderer.width / 2;
-bg.position.y = renderer.height / 2;
+bg.position.x = app.renderer.width / 2;
+bg.position.y = app.renderer.height / 2;
 
 var filter = new PIXI.filters.ColorMatrixFilter();
 
 var container = new PIXI.Container();
-container.position.x = renderer.width / 2;
-container.position.y = renderer.height / 2;
+container.position.x = app.renderer.width / 2;
+container.position.y = app.renderer.height / 2;
 
 var bgFront = PIXI.Sprite.fromImage('required/assets/SceneRotate.jpg');
 bgFront.anchor.set(0.5);
@@ -36,15 +33,15 @@ panda.anchor.set(0.5);
 
 container.addChild(panda);
 
-stage.addChild(container);
+app.stage.addChild(container);
 
-stage.filters = [filter];
+app.stage.filters = [filter];
 
 var count = 0;
 var switchy = false;
 
-stage.on('click', onClick);
-stage.on('tap', onClick);
+app.stage.on('click', onClick);
+app.stage.on('tap', onClick);
 
 function onClick()
 {
@@ -52,23 +49,21 @@ function onClick()
 
     if (!switchy)
     {
-        stage.filters = [filter];
+        app.stage.filters = [filter];
     }
     else
     {
-        stage.filters = null;
+        app.stage.filters = null;
     }
 }
 
 var help = new PIXI.Text('Click to turn filters on / off.', { fontFamily:'Arial', fontSize:'12pt', fontWeight:'bold', fill: 'white' });
-help.position.y = renderer.height - 25;
+help.position.y = app.renderer.height - 25;
 help.position.x = 10;
 
-stage.addChild(help);
+app.stage.addChild(help);
 
-requestAnimationFrame(animate);
-
-function animate() {
+app.ticker.add(function() {
     bg.rotation += 0.01;
     bgFront.rotation -= 0.01;
 
@@ -88,9 +83,4 @@ function animate() {
     matrix[4] = Math.sin(count / 3) * 2;
     matrix[5] = Math.sin(count / 2);
     matrix[6] = Math.sin(count / 4);
-
-    renderer.render(stage);
-    requestAnimationFrame(animate);
-}
-
-
+});

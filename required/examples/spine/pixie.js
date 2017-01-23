@@ -1,8 +1,7 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
+app.stop();
 
 // load spine data
 PIXI.loader
@@ -15,19 +14,19 @@ var postition = 0,
     foreground,
     foreground2;
 
-stage.interactive = true;
+app.stage.interactive = true;
 
 function onAssetsLoaded(loader,res)
 {
     background = PIXI.Sprite.fromImage('required/assets/spine/iP4_BGtile.jpg');
     background2 = PIXI.Sprite.fromImage('required/assets/spine/iP4_BGtile.jpg');
-    stage.addChild(background);
-    stage.addChild(background2);
+    app.stage.addChild(background);
+    app.stage.addChild(background2);
 
     foreground = PIXI.Sprite.fromImage('required/assets/spine/iP4_ground.png');
     foreground2 = PIXI.Sprite.fromImage('required/assets/spine/iP4_ground.png');
-    stage.addChild(foreground);
-    stage.addChild(foreground2);
+    app.stage.addChild(foreground);
+    app.stage.addChild(foreground2);
     foreground.position.y = foreground2.position.y = 640 - foreground2.height;
 
     var pixie = new PIXI.spine.Spine(res.pixie.spineData);
@@ -39,15 +38,15 @@ function onAssetsLoaded(loader,res)
 
     pixie.scale.x = pixie.scale.y = scale;
 
-    stage.addChild(pixie);
+    app.stage.addChild(pixie);
 
     pixie.stateData.setMixByName('running', 'jump', 0.2);
     pixie.stateData.setMixByName('jump', 'running', 0.4);
 
     pixie.state.setAnimationByName(0, 'running', true);
 
-    stage.on('mousedown', onTouchStart);
-    stage.on('touchstart', onTouchStart);
+    app.stage.on('mousedown', onTouchStart);
+    app.stage.on('touchstart', onTouchStart);
 
     function onTouchStart()
     {
@@ -55,10 +54,10 @@ function onAssetsLoaded(loader,res)
         pixie.state.addAnimationByName(0, 'running', true, 0);
     }
 
-    animate();
+    app.start();
 }
 
-function animate()
+app.ticker.add(function()
 {
     postition += 10;
 
@@ -93,8 +92,4 @@ function animate()
         foreground2.position.x += 1286 * 2;
     }
     foreground2.position.x -= 1286;
-
-    requestAnimationFrame(animate);
-
-    renderer.render(stage);
-}
+});

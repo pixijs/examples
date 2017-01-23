@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
+document.body.appendChild(app.view);
 
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('required/assets/basics/bunny.png');
@@ -18,16 +15,10 @@ bunny.anchor.y = 0.5;
 bunny.position.x = 200;
 bunny.position.y = 150;
 
-stage.addChild(bunny);
+app.stage.addChild(bunny);
 
-// start animating
-animate();
-function animate() {
-    requestAnimationFrame(animate);
-
+// Listen for animate update
+app.ticker.add(function() {
     // just for fun, let's rotate mr rabbit a little
     bunny.rotation += 0.1;
-
-    // render the container
-    renderer.render(stage);
-}
+});

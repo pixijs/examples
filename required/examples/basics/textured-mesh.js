@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 var count = 0;
 
@@ -22,18 +19,16 @@ var strip = new PIXI.mesh.Rope(PIXI.Texture.fromImage('required/assets/snake.png
 strip.position.x = -40;
 strip.position.y = 300;
 
-stage.addChild(strip);
+app.stage.addChild(strip);
 
 var g = new PIXI.Graphics();
 
 g.x = strip.x;
 g.y = strip.y;
-stage.addChild(g);
+app.stage.addChild(g);
 
 // start animating
-animate();
-
-function animate() {
+app.ticker.add(function() {
 
     count += 0.1;
 
@@ -43,16 +38,9 @@ function animate() {
         points[i].y = Math.sin((i * 0.5) + count) * 30;
 
         points[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * 20;
-
     }
-
-    // render the stage
-    renderer.render(stage);
-
     renderPoints();
-
-    requestAnimationFrame(animate);
-}
+});
 
 function renderPoints () {
 

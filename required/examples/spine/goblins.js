@@ -1,15 +1,12 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 // load spine data
 PIXI.loader
     .add('goblins', 'required/assets/spine/goblins.json')
     .load(onAssetsLoaded);
 
-stage.interactive = true;
+app.stage.interactive = true;
 
 function onAssetsLoaded(loader, res)
 {
@@ -28,9 +25,9 @@ function onAssetsLoaded(loader, res)
     // play animation
     goblin.state.setAnimationByName(0, 'walk', true);
 
-    stage.addChild(goblin);
+    app.stage.addChild(goblin);
 
-    stage.on('click', function ()
+    app.stage.on('click', function ()
     {
         // change current skin
         var currentSkinName = goblin.skeleton.skin.name;
@@ -38,12 +35,4 @@ function onAssetsLoaded(loader, res)
         goblin.skeleton.setSkinByName(newSkinName);
         goblin.skeleton.setSlotsToSetupPose();
     });
-}
-
-requestAnimationFrame(animate);
-
-function animate()
-{
-    requestAnimationFrame( animate );
-    renderer.render(stage);
 }

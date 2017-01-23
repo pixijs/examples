@@ -1,10 +1,7 @@
-var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600, { antialias: true });
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
-
-stage.interactive = true;
+app.stage.interactive = true;
 
 var graphics = new PIXI.Graphics();
 
@@ -36,14 +33,4 @@ graphics.beginFill(0xFFFF0B, 0.5);
 graphics.drawCircle(470, 90,60);
 graphics.endFill();
 
-
-stage.addChild(graphics);
-
-// run the render loop
-animate();
-
-function animate() {
-
-    renderer.render(stage);
-    requestAnimationFrame( animate );
-}
+app.stage.addChild(graphics);

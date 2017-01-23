@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600, { transparent: true });
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application(800, 600, { transparent: true });
+document.body.appendChild(app.view);
 
 // create a new Sprite from an image path.
 var bunny = PIXI.Sprite.fromImage('required/assets/bunny.png');
@@ -14,16 +11,10 @@ bunny.anchor.set(0.5);
 bunny.position.x = 200;
 bunny.position.y = 150;
 
-stage.addChild(bunny);
+app.stage.addChild(bunny);
 
-requestAnimationFrame(animate);
-
-function animate() {
-    requestAnimationFrame(animate);
+app.ticker.add(function() {
 
     // just for fun, let's rotate mr rabbit a little
     bunny.rotation += 0.1;
-
-    // render the stage
-    renderer.render(stage);
-}
+});

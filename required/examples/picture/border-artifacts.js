@@ -3,22 +3,15 @@
 
 // ivan: border artifact example is not ready yet :)
 
-var renderer = new PIXI.CanvasRenderer(800, 600,{backgroundColor : 0x1099bb});
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
+document.body.appendChild(app.view);
 
-var stage = new PIXI.Container();
+app.stop();
 
 PIXI.loader.add('bunny', 'required/assets/bunny.png');
 PIXI.loader.load(function(loader, resources) {
 	var pic = new PIXI.extras.PictureSprite(resources.bunny.texture);
 	pic.position.set(200,200);
-	stage.addChild(pic);
-	
-	animate();
+	app.stage.addChild(pic);
+	app.start();
 });
-
-function animate() {
-    requestAnimationFrame(animate);
-    // render the container
-    renderer.render(stage);
-}

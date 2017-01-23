@@ -1,16 +1,13 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 // create a background...
 var background = PIXI.Sprite.fromImage('required/assets/button_test_BG.jpg');
-background.width = renderer.width;
-background.height = renderer.height;
+background.width = app.renderer.width;
+background.height = app.renderer.height;
 
 // add background to stage...
-stage.addChild(background);
+app.stage.addChild(background);
 
 // create some textures from an image path
 var textureButton = PIXI.Texture.fromImage('required/assets/button.png');
@@ -70,7 +67,7 @@ for (var i = 0; i < 5; i++)
 	button.tap = noop;
 	button.click = noop;
     // add it to the stage
-    stage.addChild(button);
+    app.stage.addChild(button);
 
     // add button to array
     buttons.push(button);
@@ -85,16 +82,6 @@ buttons[3].scale.set(0.8);
 
 buttons[4].scale.set(0.8,1.2);
 buttons[4].rotation = Math.PI;
-
-
-animate();
-
-function animate() {
-    // render the stage
-    renderer.render(stage);
-
-    requestAnimationFrame(animate);
-}
 
 function onButtonDown()
 {

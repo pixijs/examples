@@ -1,12 +1,7 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
-
-
-function CustomFilter(fragmentSource)
-{
+function CustomFilter(fragmentSource) {
 
     PIXI.Filter.call(this,
         // vertex shader
@@ -19,14 +14,16 @@ function CustomFilter(fragmentSource)
 CustomFilter.prototype = Object.create(PIXI.Filter.prototype);
 CustomFilter.prototype.constructor = CustomFilter;
 
+// Stop the renderer until finished loading
+app.stop();
 
 var bg = PIXI.Sprite.fromImage("required/assets/bkg-grass.jpg");
 bg.scale.set(1.3,1);
-stage.addChild(bg);
+app.stage.addChild(bg);
 
-PIXI.loader.add('shader','required/assets/basics/shader.frag');
+PIXI.loader.add('shader', 'required/assets/basics/shader.frag');
 
-PIXI.loader.once('complete',onLoaded);
+PIXI.loader.once('complete', onLoaded);
 
 PIXI.loader.load();
 
@@ -40,13 +37,9 @@ function onLoaded (loader,res) {
 
     bg.filters = [filter];
 
-    animate();
+    app.start();
 }
 
-function animate() {
-
+app.ticker.add(function() {
     filter.uniforms.customUniform += 0.04;
-
-    renderer.render(stage);
-    requestAnimationFrame( animate );
-}
+});

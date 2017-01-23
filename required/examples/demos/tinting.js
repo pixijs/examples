@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 // holder to store the aliens
 var aliens = [];
@@ -21,8 +18,8 @@ for (var i = 0; i < totalDudes; i++)
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally lets set the dude to be at a random position..
-    dude.position.x = Math.random() * renderer.width;
-    dude.position.y = Math.random() * renderer.height;
+    dude.position.x = Math.random() * app.renderer.width;
+    dude.position.y = Math.random() * app.renderer.height;
 
     dude.tint = Math.random() * 0xFFFFFF;
 
@@ -39,21 +36,17 @@ for (var i = 0; i < totalDudes; i++)
     // finally we push the dude into the aliens array so it it can be easily accessed later
     aliens.push(dude);
 
-    stage.addChild(dude);
+    app.stage.addChild(dude);
 }
 
 // create a bounding box for the little dudes
 var dudeBoundsPadding = 100;
 var dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
                                     -dudeBoundsPadding,
-                                    renderer.width + dudeBoundsPadding * 2,
-                                    renderer.height + dudeBoundsPadding * 2);
+                                    app.renderer.width + dudeBoundsPadding * 2,
+                                    app.renderer.height + dudeBoundsPadding * 2);
 
-var tick = 0;
-
-requestAnimationFrame(animate);
-
-function animate() {
+app.ticker.add(function() {
 
     // iterate through the dudes and update their position
     for (var i = 0; i < aliens.length; i++)
@@ -83,13 +76,4 @@ function animate() {
             dude.position.y -= dudeBounds.height;
         }
     }
-
-    // increment the ticker
-    tick += 0.1;
-
-    // time to render the stage!
-    renderer.render(stage);
-
-    // request another animation frame...
-    requestAnimationFrame(animate);
-}
+});

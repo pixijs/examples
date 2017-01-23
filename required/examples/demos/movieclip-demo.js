@@ -1,8 +1,7 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
+app.stop();
 
 PIXI.loader
     .add('spritesheet', 'required/assets/mc.json')
@@ -23,7 +22,7 @@ function onAssetsLoaded()
     for (i = 0; i < 50; i++)
     {
         // create an explosion MovieClip
-        var explosion = new PIXI.extras.MovieClip(explosionTextures);
+        var explosion = new PIXI.extras.AnimatedSprite(explosionTextures);
 
         explosion.position.x = Math.random() * 800;
         explosion.position.y = Math.random() * 600;
@@ -36,15 +35,9 @@ function onAssetsLoaded()
 
         explosion.gotoAndPlay(Math.random() * 27);
 
-        stage.addChild(explosion);
+        app.stage.addChild(explosion);
     }
 
     // start animating
-    requestAnimationFrame(animate);
-}
-
-function animate() {
-    renderer.render(stage);
-
-    requestAnimationFrame(animate);
+    app.start();
 }

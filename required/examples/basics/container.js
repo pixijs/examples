@@ -1,12 +1,9 @@
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
+document.body.appendChild(app.view);
 
 var container = new PIXI.Container();
 
-stage.addChild(container);
+app.stage.addChild(container);
 
 for (var j = 0; j < 5; j++) {
 
@@ -25,14 +22,3 @@ for (var j = 0; j < 5; j++) {
  */
 container.x = 100;
 container.y = 60;
-
-// start animating
-animate();
-
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    // render the root container
-    renderer.render(stage);
-}

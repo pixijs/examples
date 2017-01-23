@@ -1,6 +1,6 @@
 [
     {
-        "title": "MovieClip",
+        "title": "AnimatedSprite",
         "entry": "movieclip-demo.js"
     },
     {
@@ -38,10 +38,6 @@
     {
         "title": "Tinting",
         "entry": "tinting.js"
-    },
-	{
-        "title": "Particle Container [v3]",
-        "entry": "batch-v3.js"
     },
     {
         "title": "Particle Container",

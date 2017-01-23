@@ -1,13 +1,11 @@
 // This is demo of pixi-display.js, https://github.com/gameofbombs/pixi-display
 // Drag the rabbits to understand what's going on
 
-var renderer = new PIXI.WebGLRenderer(800, 600, {backgroundColor: 0x1099bb});
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600, {backgroundColor: 0x1099bb});
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var root = new PIXI.Container();
 //specify display list component
-root.displayList = new PIXI.DisplayList();
+app.stage.displayList = new PIXI.DisplayList();
 
 // z-index = 0, sorting = true;
 var greenLayer = new PIXI.DisplayGroup(0, true);
@@ -39,9 +37,9 @@ var texture_blue = PIXI.Texture.fromImage('required/assets/bunnies/square_blue.p
 var bunniesOdd = new PIXI.Container();
 var bunniesEven = new PIXI.Container();
 var bunniesBlue = new PIXI.Container();
-root.addChild(bunniesOdd);
-root.addChild(bunniesBlue);
-root.addChild(bunniesEven);
+app.stage.addChild(bunniesOdd);
+app.stage.addChild(bunniesBlue);
+app.stage.addChild(bunniesEven);
 
 var ind = [];
 for (var i = 0; i < 15; i++) {
@@ -132,12 +130,3 @@ function onDragMove() {
         this.position.y = newPosition.y - this.dragPoint.y;
     }
 }
-
-// start animating
-var ticker = new PIXI.ticker.Ticker();
-
-ticker.add(function (deltaTime) {
-    renderer.render(root);
-});
-
-ticker.start();

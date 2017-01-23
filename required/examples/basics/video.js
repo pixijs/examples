@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600, { transparent: true });
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application(800, 600, { transparent: true });
+document.body.appendChild(app.view);
 
 // create a video texture from a path
 var texture = PIXI.Texture.fromVideo('required/assets/testVideo.mp4');
@@ -10,17 +7,7 @@ var texture = PIXI.Texture.fromVideo('required/assets/testVideo.mp4');
 // create a new Sprite using the video texture (yes it's that easy)
 var videoSprite = new PIXI.Sprite(texture);
 
-videoSprite.width = renderer.width;
-videoSprite.height = renderer.height;
+videoSprite.width = app.renderer.width;
+videoSprite.height = app.renderer.height;
 
-stage.addChild(videoSprite);
-
-animate();
-
-function animate(){
-
-    // render the stage
-    renderer.render(stage);
-
-    requestAnimationFrame(animate);
-}
+app.stage.addChild(videoSprite);

@@ -1,21 +1,19 @@
-var renderer = PIXI.autoDetectRenderer(800, 600, { resolution: window.devicePixelRatio || 1 });
-renderer.view.style.width = "800px";
-renderer.view.style.height = "600px";
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600, { resolution: window.devicePixelRatio || 1 });
+app.view.style.width = "800px";
+app.view.style.height = "600px";
+document.body.appendChild(app.view);
 
 // use empty array if you dont want to use detect feature
-var extensions = PIXI.compressedTextures.detectExtensions(renderer);
+var extensions = PIXI.compressedTextures.detectExtensions(app.renderer);
 
 var loader = new PIXI.loaders.Loader();
-loader.before(PIXI.compressedTextures.extensionChooser(extensions));
+loader.pre(PIXI.compressedTextures.extensionChooser(extensions));
 // use @2x texture if resolution is 2, use dds format if its windows
 var textureOptions1 = { metadata: {choice: ["@2x.png", ".dds", "@2x.dds"]} };
 // use dds format if its windows but dont care for retina
 var textureOptions2 = { metadata: {choice: [".dds"]} };
 // while loading atlas, choose resolution for atlas and choose format for image
 var atlasOptions = { metadata: { choice: ["@2x.json"], imageMetadata: { choice: [".dds"]} } };
-
-var stage = new PIXI.Container();
 
 loader.add('building1', 'required/assets/compressed/building1.png', textureOptions1)
     .add('building2', 'required/assets/compressed/building2.png', textureOptions2)
@@ -29,15 +27,8 @@ loader.add('building1', 'required/assets/compressed/building1.png', textureOptio
         spr2.position.y = spr4.position.y = 350;
         spr1.position.x = spr2.position.x = 250;
         spr3.position.x = spr4.position.x = 450;
-        stage.addChild(spr1);
-        stage.addChild(spr2);
-        stage.addChild(spr3);
-        stage.addChild(spr4);
+        app.stage.addChild(spr1);
+        app.stage.addChild(spr2);
+        app.stage.addChild(spr3);
+        app.stage.addChild(spr4);
     });
-
-animate();
-
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(stage);
-}

@@ -1,16 +1,15 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
+var app = new PIXI.Application();
 //var renderer = new PIXI.CanvasRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+document.body.appendChild(app.view);
 
 // create a new background sprite
 var background = new PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
-stage.addChild(background);
+background.width = 800;
+background.height = 600;
+app.stage.addChild(background);
 //speed up the process, because OVERLAY and HARD_LIGHT will use copyTex instead of readPixels
-stage.filters = [new PIXI.filters.VoidFilter()];
-stage.filterArea = new PIXI.Rectangle(0, 0, 800, 600);
+app.stage.filters = [new PIXI.filters.VoidFilter()];
+app.stage.filterArea = new PIXI.Rectangle(0, 0, 800, 600);
 
 // create an array to store a reference to the dudes
 var dudeArray = [];
@@ -28,8 +27,8 @@ for (var i = 0; i < totaldudes; i++)
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally let's set the dude to be at a random position...
-    dude.position.x = Math.floor(Math.random() * renderer.width);
-    dude.position.y = Math.floor(Math.random() * renderer.height);
+    dude.position.x = Math.floor(Math.random() * app.renderer.width);
+    dude.position.y = Math.floor(Math.random() * app.renderer.height);
 
     // The important bit of this example, this is how you change the default blend mode of the sprite
     dude.blendMode = Math.random()>0.5? PIXI.BLEND_MODES.OVERLAY:PIXI.BLEND_MODES.HARD_LIGHT;
@@ -46,7 +45,7 @@ for (var i = 0; i < totaldudes; i++)
     // finally we push the dude into the dudeArray so it it can be easily accessed later
     dudeArray.push(dude);
 
-    stage.addChild(dude);
+    app.stage.addChild(dude);
 }
 
 // create a bounding box box for the little dudes
@@ -54,15 +53,12 @@ var dudeBoundsPadding = 100;
 
 var dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
                                     -dudeBoundsPadding,
-                                    renderer.width + dudeBoundsPadding * 2,
-                                    renderer.height + dudeBoundsPadding * 2);
+                                    app.renderer.width + dudeBoundsPadding * 2,
+                                    app.renderer.height + dudeBoundsPadding * 2);
 
 var tick = 0;
 
-requestAnimationFrame(animate);
-
-
-function animate()
+app.ticker.add(function()
 {
     // iterate through the dudes and update the positions
     for (var i = 0; i < dudeArray.length; i++)
@@ -95,10 +91,4 @@ function animate()
 
     // increment the ticker
     tick += 0.1;
-
-    // time to render the stage !
-    renderer.render(stage);
-
-    // request another animation frame...
-    requestAnimationFrame(animate);
-}
+});

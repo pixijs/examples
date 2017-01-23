@@ -1,16 +1,18 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600);
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
-
-stage.interactive = true;
+app.stage.interactive = true;
 
 var container = new PIXI.Container();
-stage.addChild(container);
+app.stage.addChild(container);
 
 var padding = 100;
-var bounds = new PIXI.Rectangle(-padding, -padding, renderer.width + padding * 2, renderer.height + padding * 2);
+var bounds = new PIXI.Rectangle(
+    -padding,
+    -padding, 
+    app.renderer.width + padding * 2, 
+    app.renderer.height + padding * 2
+);
 var maggots = [];
 
 for (var i = 0; i < 20; i++)
@@ -36,7 +38,7 @@ for (var i = 0; i < 20; i++)
 var displacementSprite = PIXI.Sprite.fromImage('required/assets/displace.png');
 var displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
 
-stage.addChild(displacementSprite);
+app.stage.addChild(displacementSprite);
 
 container.filters = [displacementFilter];
 
@@ -49,17 +51,17 @@ ring.anchor.set(0.5);
 
 ring.visible = false;
 
-stage.addChild(ring);
+app.stage.addChild(ring);
 
 var bg = PIXI.Sprite.fromImage('required/assets/bkg-grass.jpg');
-bg.width = renderer.width;
-bg.height = renderer.height;
+bg.width = app.renderer.width;
+bg.height = app.renderer.height;
 
 bg.alpha = 0.4;
 
 container.addChild(bg);
 
-stage
+app.stage
     .on('mousemove', onPointerMove)
     .on('touchmove', onPointerMove);
 
@@ -76,9 +78,7 @@ function onPointerMove(eventData)
 
 var count = 0;
 
-animate();
-
-function animate()
+app.ticker.add(function()
 {
     count += 0.05;
 
@@ -113,7 +113,4 @@ function animate()
             maggot.position.y -= bounds.height;
         }
     }
-
-    renderer.render(stage);
-    requestAnimationFrame(animate);
-}
+});

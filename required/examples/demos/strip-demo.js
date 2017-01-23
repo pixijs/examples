@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 var count = 0;
 
@@ -25,14 +22,11 @@ snakeContainer.position.x = 400;
 snakeContainer.position.y = 300;
 
 snakeContainer.scale.set(800 / 1100);
-stage.addChild(snakeContainer);
+app.stage.addChild(snakeContainer);
 
 snakeContainer.addChild(strip);
 
-// start animating
-requestAnimationFrame(animate);
-
-function animate() {
+app.ticker.add(function() {
 
     count += 0.1;
 
@@ -42,11 +36,5 @@ function animate() {
         points[i].y = Math.sin((i * 0.5) + count) * 30;
 
         points[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * 20;
-
     }
-
-    // render the stage
-    renderer.render(stage);
-
-    requestAnimationFrame(animate);
-}
+});

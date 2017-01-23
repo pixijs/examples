@@ -1,14 +1,11 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
-
-stage.interactive = true;
+app.stage.interactive = true;
 
 var bg = PIXI.Sprite.fromImage('required/assets/bkg.jpg');
 
-stage.addChild(bg);
+app.stage.addChild(bg);
 
 var cells = PIXI.Sprite.fromImage('required/assets/cells.png');
 
@@ -21,10 +18,7 @@ mask.position.y = 190;
 
 cells.mask = mask;
 
-stage.addChild(mask);
-
-stage.addChild(cells);
-
+app.stage.addChild(mask, cells);
 
 var target = new PIXI.Point();
 
@@ -35,10 +29,7 @@ function reset () {
     target.y = Math.floor(Math.random() * 300);
 }
 
-requestAnimationFrame(animate);
-
-
-function animate() {
+app.ticker.add(function() {
 
     mask.position.x += (target.x - mask.x) * 0.1;
     mask.position.y += (target.y - mask.y) * 0.1;
@@ -47,8 +38,4 @@ function animate() {
     {
         reset();
     }
-
-    renderer.render(stage);
-    requestAnimationFrame(animate);
-}
-
+});

@@ -1,14 +1,11 @@
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
+document.body.appendChild(app.view);
 
 var basicText = new PIXI.Text('Basic text in pixi');
 basicText.x = 30;
 basicText.y = 90;
 
-stage.addChild(basicText);
+app.stage.addChild(basicText);
 
 var style = {
     fontFamily : 'Arial',
@@ -30,15 +27,4 @@ var richText = new PIXI.Text('Rich text with a lot of options and across multipl
 richText.x = 30;
 richText.y = 180;
 
-stage.addChild(richText);
-
-// start animating
-animate();
-
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    // render the root container
-    renderer.render(stage);
-}
+app.stage.addChild(richText);

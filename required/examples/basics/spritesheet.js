@@ -1,8 +1,7 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
+app.stop();
 
 PIXI.loader
     .add('required/assets/basics/fighter.json')
@@ -24,29 +23,22 @@ function onAssetsLoaded()
 
 
     // create a MovieClip (brings back memories from the days of Flash, right ?)
-    movie = new PIXI.extras.MovieClip(frames);
+    movie = new PIXI.extras.AnimatedSprite(frames);
 
     /*
      * A MovieClip inherits all the properties of a PIXI sprite
      * so you can change its position, its anchor, mask it, etc
      */
     movie.position.set(300);
-
     movie.anchor.set(0.5);
     movie.animationSpeed = 0.5;
-
     movie.play();
 
-    stage.addChild(movie);
+    app.stage.addChild(movie);
 
-    animate();
+    app.start();
 }
 
-function animate() {
+app.ticker.add(function() {
     movie.rotation += 0.01;
-
-    // render the stage container
-    renderer.render(stage);
-
-    requestAnimationFrame(animate);
-}
+});

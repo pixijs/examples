@@ -16,7 +16,7 @@ for (var j = 0; j < 5; j++) {
     };
 };
 
-var brt = new PIXI.BaseRenderTexture(300, 200, PIXI.SCALE_MODES.LINEAR, 1);
+var brt = new PIXI.BaseRenderTexture(300, 300, PIXI.SCALE_MODES.LINEAR, 1);
 var rt = new PIXI.RenderTexture(brt);
 
 var sprite = new PIXI.Sprite(rt);

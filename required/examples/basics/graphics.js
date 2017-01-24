@@ -1,8 +1,6 @@
 var app = new PIXI.Application(800, 600, { antialias: true });
 document.body.appendChild(app.view);
 
-app.stage.interactive = true;
-
 var graphics = new PIXI.Graphics();
 
 // set a fill and line style

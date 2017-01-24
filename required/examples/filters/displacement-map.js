@@ -25,8 +25,8 @@ for (var i = 0; i < 20; i++)
     maggot.speed = 1;
     maggot.turnSpeed = Math.random() - 0.8;
 
-    maggot.position.x = Math.random() * bounds.width;
-    maggot.position.y = Math.random() * bounds.height;
+    maggot.x = Math.random() * bounds.width;
+    maggot.y = Math.random() * bounds.height;
 
     maggot.scale.set(1 + Math.random() * 0.3);
     maggot.original = new PIXI.Point();
@@ -72,45 +72,39 @@ function onPointerMove(eventData)
     displacementSprite.x = eventData.data.global.x - 100;
     displacementSprite.y = eventData.data.global.y - displacementSprite.height /2;
 
-    ring.position.x = eventData.data.global.x - 25;
-    ring.position.y = eventData.data.global.y;
+    ring.x = eventData.data.global.x - 25;
+    ring.y = eventData.data.global.y;
 }
 
 var count = 0;
 
-app.ticker.add(function()
-{
+app.ticker.add(function() {
+    
     count += 0.05;
 
-    for (var i = 0; i < maggots.length; i++)
-    {
+    for (var i = 0; i < maggots.length; i++) {
         var maggot = maggots[i];
 
         maggot.direction += maggot.turnSpeed * 0.01;
-        maggot.position.x += Math.sin(maggot.direction) * maggot.speed;
-        maggot.position.y += Math.cos(maggot.direction) * maggot.speed;
+        maggot.x += Math.sin(maggot.direction) * maggot.speed;
+        maggot.y += Math.cos(maggot.direction) * maggot.speed;
 
         maggot.rotation = -maggot.direction - Math.PI/2;
-
         maggot.scale.x = maggot.original.x + Math.sin(count) * 0.2;
 
         // wrap the maggots around as the crawl
-        if (maggot.position.x < bounds.x)
-        {
-            maggot.position.x += bounds.width;
+        if (maggot.x < bounds.x) {
+            maggot.x += bounds.width;
         }
-        else if (maggot.position.x > bounds.x + bounds.width)
-        {
-            maggot.position.x -= bounds.width;
+        else if (maggot.x > bounds.x + bounds.width) {
+            maggot.x -= bounds.width;
         }
 
-        if (maggot.position.y < bounds.y)
-        {
-            maggot.position.y += bounds.height;
+        if (maggot.y < bounds.y) {
+            maggot.y += bounds.height;
         }
-        else if (maggot.position.y > bounds.y + bounds.height)
-        {
-            maggot.position.y -= bounds.height;
+        else if (maggot.y > bounds.y + bounds.height) {
+            maggot.y -= bounds.height;
         }
     }
 });

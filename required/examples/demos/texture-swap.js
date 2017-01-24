@@ -16,24 +16,20 @@ var dude = new PIXI.Sprite(texture);
 dude.anchor.set(0.5);
 
 // move the sprite to the center of the screen
-dude.position.x = app.renderer.width / 2;
-dude.position.y = app.renderer.height / 2;
+dude.x = app.renderer.width / 2;
+dude.y = app.renderer.height / 2;
 
 app.stage.addChild(dude);
 
 // make the sprite interactive
 dude.interactive = true;
 
-dude.on('click', function ()
-{
+dude.on('click', function() {
     bol = !bol;
-
-    if(bol)
-    {
+    if (bol) {
         dude.texture = secondTexture;
     }
-    else
-    {
+    else {
         dude.texture = texture;
     }
 });

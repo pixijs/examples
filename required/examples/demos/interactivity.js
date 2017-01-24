@@ -24,24 +24,21 @@ var buttonPositions = [
     685, 445
 ];
 
-var noop = function () {
+function noop() {
 	console.log('click');
-};
+}
 
-for (var i = 0; i < 5; i++)
-{
+for (var i = 0; i < 5; i++) {
+
     var button = new PIXI.Sprite(textureButton);
     button.buttonMode = true;
 
     button.anchor.set(0.5);
-
-    button.position.x = buttonPositions[i*2];
-    button.position.y = buttonPositions[i*2 + 1];
+    button.x = buttonPositions[i*2];
+    button.y = buttonPositions[i*2 + 1];
 
     // make the button interactive...
     button.interactive = true;
-	
-	
 
     button
         // set the mousedown and touchstart callback...
@@ -59,10 +56,6 @@ for (var i = 0; i < 5; i++)
 
         // set the mouseout callback...
         .on('mouseout', onButtonOut)
-
-
-        // you can also listen to click and tap events :
-        //.on('click', noop)
         
 	button.tap = noop;
 	button.click = noop;
@@ -75,55 +68,39 @@ for (var i = 0; i < 5; i++)
 
 // set some silly values...
 buttons[0].scale.set(1.2);
-
 buttons[2].rotation = Math.PI / 10;
-
 buttons[3].scale.set(0.8);
-
 buttons[4].scale.set(0.8,1.2);
 buttons[4].rotation = Math.PI;
 
-function onButtonDown()
-{
+function onButtonDown() {
     this.isdown = true;
     this.texture = textureButtonDown;
     this.alpha = 1;
 }
 
-function onButtonUp()
-{
+function onButtonUp() {
     this.isdown = false;
-
-    if (this.isOver)
-    {
+    if (this.isOver) {
         this.texture = textureButtonOver;
     }
-    else
-    {
+    else {
         this.texture = textureButton;
     }
 }
 
-function onButtonOver()
-{
+function onButtonOver() {
     this.isOver = true;
-
-    if (this.isdown)
-    {
+    if (this.isdown) {
         return;
     }
-
     this.texture = textureButtonOver;
 }
 
-function onButtonOut()
-{
+function onButtonOut() {
     this.isOver = false;
-
-    if (this.isdown)
-    {
+    if (this.isdown) {
         return;
     }
-
     this.texture = textureButton;
 }

@@ -32,8 +32,7 @@ function init()
         .add('desyrel', 'required/assets/desyrel.xml')
         .load(onAssetsLoaded);
 
-    function onAssetsLoaded()
-    {
+    function onAssetsLoaded() {
         var bitmapFontText = new PIXI.extras.BitmapText('bitmap fonts are\n now supported!', { font: '35px Desyrel', align: 'right' });
 
         bitmapFontText.position.x = 600 - bitmapFontText.textWidth;
@@ -83,8 +82,8 @@ function init()
         strokeThickness: 7
     });
 
-    countingText.position.x = 310;
-    countingText.position.y = 320;
+    countingText.x = 310;
+    countingText.y = 320;
     countingText.anchor.x = 0.5;
 
     app.stage.addChild(textSample);

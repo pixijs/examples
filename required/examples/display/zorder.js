@@ -11,13 +11,13 @@ app.stage.displayList = new PIXI.DisplayList();
 var greenLayer = new PIXI.DisplayGroup(0, true);
 greenLayer.on('add', function (sprite) {
     //green bunnies go down
-    sprite.zOrder = -sprite.position.y;
+    sprite.zOrder = -sprite.y;
 });
 
 // z-index = 1, sorting = true, we can provide zOrder function directly in constructor
 var blueLayer = new PIXI.DisplayGroup(1, function (sprite) {
     //blue bunnies go up
-    sprite.zOrder = +sprite.position.y;
+    sprite.zOrder = +sprite.y;
 });
 
 // Drag is the best layer, dragged element is above everything else
@@ -107,8 +107,8 @@ function onDragStart(event) {
         this.scale.x *= 1.1;
         this.scale.y *= 1.1;
         this.dragPoint = event.data.getLocalPosition(this.parent);
-        this.dragPoint.x -= this.position.x;
-        this.dragPoint.y -= this.position.y;
+        this.dragPoint.x -= this.x;
+        this.dragPoint.y -= this.y;
     }
 }
 
@@ -126,7 +126,7 @@ function onDragEnd() {
 function onDragMove() {
     if (this.dragging) {
         var newPosition = this.data.getLocalPosition(this.parent);
-        this.position.x = newPosition.x - this.dragPoint.x;
-        this.position.y = newPosition.y - this.dragPoint.y;
+        this.x = newPosition.x - this.dragPoint.x;
+        this.y = newPosition.y - this.dragPoint.y;
     }
 }

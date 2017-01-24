@@ -1,18 +1,27 @@
-var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
+var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
 var sprite = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
 
-sprite.position.set(230,264);
+// Scale mode for pixelation
+sprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+
+// Set the initial position
+sprite.x = 230
+sprite.y = 264;
+
+// Opt-in to interactivity
 sprite.interactive = true;
+
+// Shows hand cursor
 sprite.buttonMode = true;
-sprite.on('mousedown', onDown);
-sprite.on('touchstart', onDown);
+
+// Pointers normalize touch and mouse
+sprite.on('pointerdown', onClick);
 
 app.stage.addChild(sprite);
 
-function onDown (eventData) {
-
-    sprite.scale.x += 0.3;
-    sprite.scale.y += 0.3;
+function onClick () {
+    sprite.scale.x *= 1.25;
+    sprite.scale.y *= 1.25;
 }

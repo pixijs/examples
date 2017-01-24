@@ -6,14 +6,14 @@ app.stage.interactive = true;
 var bg = PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
 bg.anchor.set(0.5);
 
-bg.position.x = app.renderer.width / 2;
-bg.position.y = app.renderer.height / 2;
+bg.x = app.renderer.width / 2;
+bg.y = app.renderer.height / 2;
 
 var filter = new PIXI.filters.ColorMatrixFilter();
 
 var container = new PIXI.Container();
-container.position.x = app.renderer.width / 2;
-container.position.y = app.renderer.height / 2;
+container.x = app.renderer.width / 2;
+container.y = app.renderer.height / 2;
 
 var bgFront = PIXI.Sprite.fromImage('required/assets/SceneRotate.jpg');
 bgFront.anchor.set(0.5);
@@ -58,8 +58,8 @@ function onClick()
 }
 
 var help = new PIXI.Text('Click to turn filters on / off.', { fontFamily:'Arial', fontSize:'12pt', fontWeight:'bold', fill: 'white' });
-help.position.y = app.renderer.height - 25;
-help.position.x = 10;
+help.y = app.renderer.height - 25;
+help.x = 10;
 
 app.stage.addChild(help);
 

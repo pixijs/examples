@@ -7,13 +7,13 @@ bg.height = app.renderer.height;
 app.stage.addChild(bg);
 
 var littleDudes = PIXI.Sprite.fromImage('required/assets/depth_blur_dudes.jpg');
-littleDudes.position.x = (app.renderer.width / 2) - 315;
-littleDudes.position.y = 200;
+littleDudes.x = (app.renderer.width / 2) - 315;
+littleDudes.y = 200;
 app.stage.addChild(littleDudes);
 
 var littleRobot = PIXI.Sprite.fromImage('required/assets/depth_blur_moby.jpg');
-littleRobot.position.x = (app.renderer.width / 2) - 200;
-littleRobot.position.y = 100;
+littleRobot.x = (app.renderer.width / 2) - 200;
+littleRobot.y = 100;
 app.stage.addChild(littleRobot);
 
 var blurFilter1 = new PIXI.filters.BlurFilter();

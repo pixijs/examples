@@ -2,19 +2,17 @@ var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 
 var container = new PIXI.Container();
-
 app.stage.addChild(container);
 
-for (var j = 0; j < 5; j++) {
+var texture = PIXI.Texture.fromImage('required/assets/basics/bunny.png');
 
-    for (var i = 0; i < 5; i++) {
-        var bunny = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
-        bunny.x = 30 * i;
-        bunny.y = 30 * j;
-        bunny.rotation = Math.random() * (Math.PI * 2)
-        container.addChild(bunny);
-    };
-};
+for (var i = 0; i < 25; i++) {
+    var bunny = new PIXI.Sprite(texture);
+    bunny.x = (i % 5) * 30;
+    bunny.y = Math.floor(i / 5) * 30;
+    bunny.rotation = Math.random() * (Math.PI * 2)
+    container.addChild(bunny);
+}
 
 var brt = new PIXI.BaseRenderTexture(300, 300, PIXI.SCALE_MODES.LINEAR, 1);
 var rt = new PIXI.RenderTexture(brt);

@@ -4,13 +4,15 @@ document.body.appendChild(app.view);
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('required/assets/bunny.png');
 
-for (var i = 0; i < 10; i++)
-{
-    createBunny(Math.floor(Math.random() * 800) , Math.floor(Math.random() * 600));
+for (var i = 0; i < 10; i++) {
+    createBunny(
+        Math.floor(Math.random() * app.renderer.width), 
+        Math.floor(Math.random() * app.renderer.height)
+    );
 }
 
-function createBunny(x, y)
-{
+function createBunny(x, y) {
+
     // create our little bunny friend..
     var bunny = new PIXI.Sprite(texture);
 
@@ -48,8 +50,7 @@ function createBunny(x, y)
     app.stage.addChild(bunny);
 }
 
-function onDragStart(event)
-{
+function onDragStart(event) {
     // store a reference to the data
     // the reason for this is because of multitouch
     // we want to track the movement of this particular touch
@@ -58,20 +59,15 @@ function onDragStart(event)
     this.dragging = true;
 }
 
-function onDragEnd()
-{
+function onDragEnd() {
     this.alpha = 1;
-
     this.dragging = false;
-
     // set the interaction data to null
     this.data = null;
 }
 
-function onDragMove()
-{
-    if (this.dragging)
-    {
+function onDragMove() {
+    if (this.dragging) {
         var newPosition = this.data.getLocalPosition(this.parent);
         this.position.x = newPosition.x;
         this.position.y = newPosition.y;

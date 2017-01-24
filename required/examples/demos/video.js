@@ -11,12 +11,11 @@ moveSprite.width = app.renderer.width;
 moveSprite.height = app.renderer.height;
 
 // center the sprites anchor point
-moveSprite.anchor.x = 0.5;
-moveSprite.anchor.y = 0.5;
+moveSprite.anchor.set(0.5);
 
 // move the sprite to the center of the screen
-moveSprite.position.x = app.renderer.width / 2;
-moveSprite.position.y = app.renderer.height / 2;
+moveSprite.x = app.renderer.width / 2;
+moveSprite.y = app.renderer.height / 2;
 
 app.stage.addChild(moveSprite);
 

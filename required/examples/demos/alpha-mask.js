@@ -9,7 +9,7 @@ app.stage.addChild(bg);
 
 var cells = PIXI.Sprite.fromImage('required/assets/cells.png');
 
-cells.scale.set(1.5,1.5);
+cells.scale.set(1.5);
 
 var mask = PIXI.Sprite.fromImage('required/assets/flowerTop.png');
 mask.anchor.set(0.5);
@@ -34,8 +34,7 @@ app.ticker.add(function() {
     mask.position.x += (target.x - mask.x) * 0.1;
     mask.position.y += (target.y - mask.y) * 0.1;
 
-    if(Math.abs(mask.x - target.x) < 1)
-    {
+    if (Math.abs(mask.x - target.x) < 1) {
         reset();
     }
 });

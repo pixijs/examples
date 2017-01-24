@@ -1,45 +1,28 @@
 var app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-function CustomFilter(fragmentSource) {
+// Create background image
+var background = PIXI.Sprite.fromImage("required/assets/bkg-grass.jpg");
+background.width = app.renderer.width;
+background.height = app.renderer.height;
+app.stage.addChild(background);
 
-    PIXI.Filter.call(this,
-        // vertex shader
-        null,
-        // fragment shader
-        fragmentSource
-    );
-}
-
-CustomFilter.prototype = Object.create(PIXI.Filter.prototype);
-CustomFilter.prototype.constructor = CustomFilter;
-
-// Stop the renderer until finished loading
-app.stop();
-
-var bg = PIXI.Sprite.fromImage("required/assets/bkg-grass.jpg");
-bg.scale.set(1.3,1);
-app.stage.addChild(bg);
-
-PIXI.loader.add('shader', 'required/assets/basics/shader.frag');
-
-PIXI.loader.once('complete', onLoaded);
-
-PIXI.loader.load();
+PIXI.loader.add('shader', 'required/assets/basics/shader.frag')
+    .load(onLoaded);
 
 var filter;
 
+// Handle the load completed
 function onLoaded (loader,res) {
+    
+    // Create the new filter, arguments: (vertexShader, framentSource)
+    filter = new PIXI.Filter(null, res.shader.data);
 
-    var fragmentSrc = res.shader.data;
-
-    filter = new CustomFilter(fragmentSrc);
-
-    bg.filters = [filter];
-
-    app.start();
+    // Add the filter
+    background.filters = [filter];
 }
 
+// Animate the filter
 app.ticker.add(function() {
     filter.uniforms.customUniform += 0.04;
 });

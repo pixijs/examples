@@ -5,41 +5,31 @@ app.stage.interactive = true;
 
 var bg = PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
 
-bg.anchor.x = 0.5;
-bg.anchor.y = 0.5;
+bg.anchor.set(0.5);
 
-bg.position.x = app.renderer.width / 2;
-bg.position.y = app.renderer.height / 2;
+bg.x = app.renderer.width / 2;
+bg.y = app.renderer.height / 2;
 
 app.stage.addChild(bg);
 
 var container = new PIXI.Container();
-container.position.x = app.renderer.width / 2;
-container.position.y = app.renderer.height / 2;
+container.x = app.renderer.width / 2;
+container.y = app.renderer.height / 2;
 
 // add a bunch of sprites
-
 var bgFront = PIXI.Sprite.fromImage('required/assets/SceneRotate.jpg');
-bgFront.anchor.x = 0.5;
-bgFront.anchor.y = 0.5;
-
-container.addChild(bgFront);
+bgFront.anchor.set(0.5);
 
 var light2 = PIXI.Sprite.fromImage('required/assets/LightRotate2.png');
-light2.anchor.x = 0.5;
-light2.anchor.y = 0.5;
-container.addChild(light2);
+light2.anchor.set(0.5);
 
 var light1 = PIXI.Sprite.fromImage('required/assets/LightRotate1.png');
-light1.anchor.x = 0.5;
-light1.anchor.y = 0.5;
-container.addChild(light1);
+light1.anchor.set(0.5);
 
 var panda =  PIXI.Sprite.fromImage('required/assets/panda.png');
-panda.anchor.x = 0.5;
-panda.anchor.y = 0.5;
+panda.anchor.set(0.5);
 
-container.addChild(panda);
+container.addChild(bgFront, light2, light1, panda);
 
 app.stage.addChild(container);
 
@@ -50,7 +40,6 @@ thing.position.x = app.renderer.width / 2;
 thing.position.y = app.renderer.height / 2;
 thing.lineStyle(0);
 
-
 container.mask = thing;
 
 var count = 0;
@@ -58,14 +47,11 @@ var count = 0;
 app.stage.on('click', onClick);
 app.stage.on('tap', onClick);
 
-function onClick()
-{
-    if(!container.mask)
-    {
+function onClick() {
+    if (!container.mask) {
         container.mask = thing;
     }
-    else
-    {
+    else {
         container.mask = null;
     }
 }
@@ -75,8 +61,8 @@ help.position.y = app.renderer.height - 26;
 help.position.x = 10;
 app.stage.addChild(help);
 
-app.ticker.add(function()
-{
+app.ticker.add(function() {
+
     bg.rotation += 0.01;
     bgFront.rotation -= 0.01;
 

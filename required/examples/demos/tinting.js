@@ -6,8 +6,8 @@ var aliens = [];
 
 var totalDudes = 20;
 
-for (var i = 0; i < totalDudes; i++)
-{
+for (var i = 0; i < totalDudes; i++) {
+
     // create a new Sprite that uses the image name that we just generated as its source
     var dude =  PIXI.Sprite.fromImage('required/assets/eggHead.png');
 
@@ -18,8 +18,8 @@ for (var i = 0; i < totalDudes; i++)
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally lets set the dude to be at a random position..
-    dude.position.x = Math.random() * app.renderer.width;
-    dude.position.y = Math.random() * app.renderer.height;
+    dude.x = Math.random() * app.renderer.width;
+    dude.y = Math.random() * app.renderer.height;
 
     dude.tint = Math.random() * 0xFFFFFF;
 
@@ -49,31 +49,27 @@ var dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
 app.ticker.add(function() {
 
     // iterate through the dudes and update their position
-    for (var i = 0; i < aliens.length; i++)
-    {
+    for (var i = 0; i < aliens.length; i++) {
+
         var dude = aliens[i];
         dude.direction += dude.turningSpeed * 0.01;
-        dude.position.x += Math.sin(dude.direction) * dude.speed;
-        dude.position.y += Math.cos(dude.direction) * dude.speed;
+        dude.x += Math.sin(dude.direction) * dude.speed;
+        dude.y += Math.cos(dude.direction) * dude.speed;
         dude.rotation = -dude.direction - Math.PI / 2;
 
         // wrap the dudes by testing their bounds...
-        if (dude.position.x < dudeBounds.x)
-        {
-            dude.position.x += dudeBounds.width;
+        if (dude.x < dudeBounds.x) {
+            dude.x += dudeBounds.width;
         }
-        else if (dude.position.x > dudeBounds.x + dudeBounds.width)
-        {
-            dude.position.x -= dudeBounds.width;
+        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+            dude.x -= dudeBounds.width;
         }
 
-        if (dude.position.y < dudeBounds.y)
-        {
-            dude.position.y += dudeBounds.height;
+        if (dude.y < dudeBounds.y) {
+            dude.y += dudeBounds.height;
         }
-        else if (dude.position.y > dudeBounds.y + dudeBounds.height)
-        {
-            dude.position.y -= dudeBounds.height;
+        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+            dude.y -= dudeBounds.height;
         }
     }
 });

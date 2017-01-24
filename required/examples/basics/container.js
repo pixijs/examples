@@ -5,15 +5,17 @@ var container = new PIXI.Container();
 
 app.stage.addChild(container);
 
-for (var j = 0; j < 5; j++) {
+var texture = PIXI.Texture.fromImage('required/assets/basics/bunny.png');
 
-    for (var i = 0; i < 5; i++) {
-        var bunny = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
-        bunny.x = 40 * i;
-        bunny.y = 40 * j;
-        container.addChild(bunny);
-    };
-};
+// Create a 5x5 grid of bunnies
+for (var i = 0; i < 25; i++) {
+    var bunny = new PIXI.Sprite(texture);
+    bunny.anchor.set(0.5);
+    bunny.x = (i % 5) * 40;
+    bunny.y = Math.floor(i / 5) * 40;
+    container.addChild(bunny);
+}
+
 /*
  * All the bunnies are added to the container with the addChild method
  * when you do this, all the bunnies become children of the container, and when a container moves,

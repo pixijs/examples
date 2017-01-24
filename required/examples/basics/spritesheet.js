@@ -1,13 +1,9 @@
 var app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-app.stop();
-
 PIXI.loader
     .add('required/assets/basics/fighter.json')
     .load(onAssetsLoaded);
-
-var movie;
 
 function onAssetsLoaded()
 {
@@ -21,9 +17,8 @@ function onAssetsLoaded()
         frames.push(PIXI.Texture.fromFrame('rollSequence00' + val + '.png'));
     }
 
-
     // create a MovieClip (brings back memories from the days of Flash, right ?)
-    movie = new PIXI.extras.AnimatedSprite(frames);
+    var movie = new PIXI.extras.AnimatedSprite(frames);
 
     /*
      * A MovieClip inherits all the properties of a PIXI sprite
@@ -36,9 +31,8 @@ function onAssetsLoaded()
 
     app.stage.addChild(movie);
 
-    app.start();
+    // Animate the rotation of movie
+    app.ticker.add(function() {
+        movie.rotation += 0.01;
+    });
 }
-
-app.ticker.add(function() {
-    movie.rotation += 0.01;
-});

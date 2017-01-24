@@ -21,8 +21,8 @@ for (var i = 0; i < totaldudes; i++) {
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally let's set the dude to be at a random position...
-    dude.position.x = Math.floor(Math.random() * app.renderer.width);
-    dude.position.y = Math.floor(Math.random() * app.renderer.height);
+    dude.x = Math.floor(Math.random() * app.renderer.width);
+    dude.y = Math.floor(Math.random() * app.renderer.height);
 
     // The important bit of this example, this is how you change the default blend mode of the sprite
     dude.blendMode = PIXI.BLEND_MODES.ADD;
@@ -59,23 +59,23 @@ app.ticker.add(function() {
 
         var dude = dudeArray[i];
         dude.direction += dude.turningSpeed * 0.01;
-        dude.position.x += Math.sin(dude.direction) * dude.speed;
-        dude.position.y += Math.cos(dude.direction) * dude.speed;
+        dude.x += Math.sin(dude.direction) * dude.speed;
+        dude.y += Math.cos(dude.direction) * dude.speed;
         dude.rotation = -dude.direction - Math.PI / 2;
 
         // wrap the dudes by testing their bounds...
-        if (dude.position.x < dudeBounds.x) {
-            dude.position.x += dudeBounds.width;
+        if (dude.x < dudeBounds.x) {
+            dude.x += dudeBounds.width;
         }
-        else if (dude.position.x > dudeBounds.x + dudeBounds.width) {
-            dude.position.x -= dudeBounds.width;
+        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+            dude.x -= dudeBounds.width;
         }
 
-        if (dude.position.y < dudeBounds.y) {
-            dude.position.y += dudeBounds.height;
+        if (dude.y < dudeBounds.y) {
+            dude.y += dudeBounds.height;
         }
-        else if (dude.position.y > dudeBounds.y + dudeBounds.height) {
-            dude.position.y -= dudeBounds.height;
+        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+            dude.y -= dudeBounds.height;
         }
     }
 });

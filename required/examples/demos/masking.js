@@ -36,8 +36,8 @@ app.stage.addChild(container);
 // let's create a moving shape
 var thing = new PIXI.Graphics();
 app.stage.addChild(thing);
-thing.position.x = app.renderer.width / 2;
-thing.position.y = app.renderer.height / 2;
+thing.x = app.renderer.width / 2;
+thing.y = app.renderer.height / 2;
 thing.lineStyle(0);
 
 container.mask = thing;
@@ -57,8 +57,8 @@ function onClick() {
 }
 
 var help = new PIXI.Text('Click to turn masking on / off.', { fontFamily:'Arial', fontSize:'12pt', fontWeight:'bold', fill: 'white' });
-help.position.y = app.renderer.height - 26;
-help.position.x = 10;
+help.y = app.renderer.height - 26;
+help.x = 10;
 app.stage.addChild(help);
 
 app.ticker.add(function() {

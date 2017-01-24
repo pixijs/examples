@@ -23,10 +23,10 @@ loader.add('building1', 'required/assets/compressed/building1.png', textureOptio
         var spr2 = new PIXI.Sprite(resources.building2.texture);
         var spr3 = new PIXI.Sprite.fromImage('goldmine_10_5.png');
         var spr4 = new PIXI.Sprite.fromImage('wind_extractor_10.png');
-        spr1.position.y = spr3.position.y = 150;
-        spr2.position.y = spr4.position.y = 350;
-        spr1.position.x = spr2.position.x = 250;
-        spr3.position.x = spr4.position.x = 450;
+        spr1.y = spr3.y = 150;
+        spr2.y = spr4.y = 350;
+        spr1.x = spr2.x = 250;
+        spr3.x = spr4.x = 450;
         app.stage.addChild(spr1);
         app.stage.addChild(spr2);
         app.stage.addChild(spr3);

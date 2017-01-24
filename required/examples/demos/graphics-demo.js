@@ -52,8 +52,8 @@ app.stage.addChild(graphics);
 // let's create a moving shape
 var thing = new PIXI.Graphics();
 app.stage.addChild(thing);
-thing.position.x = 620/2;
-thing.position.y = 380/2;
+thing.x = 620/2;
+thing.y = 380/2;
 
 var count = 0;
 

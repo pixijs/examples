@@ -17,8 +17,8 @@ function onAssetsLoaded(loader, res)
     goblin.skeleton.setSlotsToSetupPose();
 
     // set the position
-    goblin.position.x = 400;
-    goblin.position.y = 600;
+    goblin.x = 400;
+    goblin.y = 600;
 
     goblin.scale.set(1.5);
 

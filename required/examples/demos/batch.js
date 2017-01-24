@@ -70,23 +70,23 @@ app.ticker.add(function() {
         var dude = maggots[i];
         dude.scale.y = 0.95 + Math.sin(tick + dude.offset) * 0.05;
         dude.direction += dude.turningSpeed * 0.01;
-        dude.position.x += Math.sin(dude.direction) * (dude.speed * dude.scale.y);
-        dude.position.y += Math.cos(dude.direction) * (dude.speed * dude.scale.y);
+        dude.x += Math.sin(dude.direction) * (dude.speed * dude.scale.y);
+        dude.y += Math.cos(dude.direction) * (dude.speed * dude.scale.y);
         dude.rotation = -dude.direction + Math.PI;
 
         // wrap the maggots
-        if (dude.position.x < dudeBounds.x) {
-            dude.position.x += dudeBounds.width;
+        if (dude.x < dudeBounds.x) {
+            dude.x += dudeBounds.width;
         }
-        else if (dude.position.x > dudeBounds.x + dudeBounds.width) {
-            dude.position.x -= dudeBounds.width;
+        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+            dude.x -= dudeBounds.width;
         }
 
-        if (dude.position.y < dudeBounds.y) {
-            dude.position.y += dudeBounds.height;
+        if (dude.y < dudeBounds.y) {
+            dude.y += dudeBounds.height;
         }
-        else if (dude.position.y > dudeBounds.y + dudeBounds.height) {
-            dude.position.y -= dudeBounds.height;
+        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+            dude.y -= dudeBounds.height;
         }
     }
 

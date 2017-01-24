@@ -46,12 +46,12 @@ function init() {
         dude.scale.x = 0.5;
         dude.scale.y = 0.5;
         // show it in grid
-        dude.position.x = offsetX + gridW * (i % 4);
-        dude.position.y = offsetY + gridH * (i / 4 | 0);
+        dude.x = offsetX + gridW * (i % 4);
+        dude.y = offsetY + gridH * (i / 4 | 0);
         app.stage.addChild(dude);
         var text = new PIXI.Text("rotate = "+dude.texture.rotate, { fontFamily:'Courier New', fontSize:'12px', fill: 'white', align: 'left' });
-        text.position.x = dude.position.x;
-        text.position.y = dude.position.y - 20;
+        text.x = dude.x;
+        text.y = dude.y - 20;
         app.stage.addChild(text);
     }
 }

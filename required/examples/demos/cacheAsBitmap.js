@@ -21,8 +21,8 @@ var count = 0;
 
 // create an empty container
 var alienContainer = new PIXI.Container();
-alienContainer.position.x = 400;
-alienContainer.position.y = 300;
+alienContainer.x = 400;
+alienContainer.y = 300;
 
 // make the stage interactive
 app.stage.interactive = true;
@@ -44,8 +44,8 @@ function onAssetsLoaded() {
          * var texture = PIXI.Texture.fromFrame(frameName);
          * var alien = new PIXI.Sprite(texture);
          */
-        alien.position.x = Math.random() * 800 - 400;
-        alien.position.y = Math.random() * 600 - 300;
+        alien.x = Math.random() * 800 - 400;
+        alien.y = Math.random() * 600 - 300;
         alien.anchor.x = 0.5;
         alien.anchor.y = 0.5;
         aliens.push(alien);
@@ -64,8 +64,8 @@ function onClick() {
     // feel free to play with what's below
     // var sprite = new PIXI.Sprite(alienContainer.generateTexture());
     // app.stage.addChild(sprite);
-    // sprite.position.x = Math.random() * 800;
-    // sprite.position.y = Math.random() * 600;
+    // sprite.x = Math.random() * 800;
+    // sprite.y = Math.random() * 600;
 }
 
 app.ticker.add(function() {

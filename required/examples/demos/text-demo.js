@@ -35,8 +35,8 @@ function init()
     function onAssetsLoaded() {
         var bitmapFontText = new PIXI.extras.BitmapText('bitmap fonts are\n now supported!', { font: '35px Desyrel', align: 'right' });
 
-        bitmapFontText.position.x = 600 - bitmapFontText.textWidth;
-        bitmapFontText.position.y = 20;
+        bitmapFontText.x = 600 - bitmapFontText.textWidth;
+        bitmapFontText.y = 20;
 
         app.stage.addChild(bitmapFontText);
     }
@@ -67,8 +67,8 @@ function init()
 
     // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
-    spinningText.position.x = 310;
-    spinningText.position.y = 200;
+    spinningText.x = 310;
+    spinningText.y = 200;
 
     // create a text object that will be updated...
     var countingText = new PIXI.Text('COUNT 4EVAR: 0', {

@@ -43,8 +43,8 @@ function createBunny(x, y) {
         .on('touchmove', onDragMove);
 
     // move the sprite to its designated position
-    bunny.position.x = x;
-    bunny.position.y = y;
+    bunny.x = x;
+    bunny.y = y;
 
     // add it to the stage
     app.stage.addChild(bunny);
@@ -69,7 +69,7 @@ function onDragEnd() {
 function onDragMove() {
     if (this.dragging) {
         var newPosition = this.data.getLocalPosition(this.parent);
-        this.position.x = newPosition.x;
-        this.position.y = newPosition.y;
+        this.x = newPosition.x;
+        this.y = newPosition.y;
     }
 }

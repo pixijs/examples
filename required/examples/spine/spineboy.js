@@ -14,8 +14,8 @@ function onAssetsLoaded(loader, res)
     var spineBoy = new PIXI.spine.Spine(res.spineboy.spineData);
 
     // set the position
-    spineBoy.position.x = app.renderer.width / 2;
-    spineBoy.position.y = app.renderer.height;
+    spineBoy.x = app.renderer.width / 2;
+    spineBoy.y = app.renderer.height;
 
     spineBoy.scale.set(1.5);
 

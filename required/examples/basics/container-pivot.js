@@ -17,13 +17,13 @@ for (var i = 0; i < 25; i++) {
     container.addChild(bunny);
 }
 
-// move container to the (200, 150) 
-container.x = 400;
-container.y = 300;
+// move container to the center
+container.x = app.renderer.width / 2;
+container.y = app.renderer.height / 2;
 
 // Center bunny sprite in local container coordinates
-container.pivot.x = container.width * 0.5;
-container.pivot.y = container.height * 0.5;
+container.pivot.x = container.width / 2;
+container.pivot.y = container.height / 2;
 
 // Listen for animate update
 app.ticker.add(function(delta) {

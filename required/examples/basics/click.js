@@ -7,8 +7,9 @@ var sprite = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
 sprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
 // Set the initial position
-sprite.x = 230
-sprite.y = 264;
+sprite.anchor.set(0.5);
+sprite.x = app.renderer.width / 2;
+sprite.y = app.renderer.height / 2;
 
 // Opt-in to interactivity
 sprite.interactive = true;

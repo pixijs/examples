@@ -51,12 +51,11 @@ function onAssetsLoaded() {
         aliens.push(alien);
         alienContainer.addChild(alien);
     }
-
     app.start();
 }
 
-app.stage.on('click', onClick);
-app.stage.on('tap', onClick);
+// Combines both mouse click + touch tap
+app.stage.on('pointertap', onClick);
 
 function onClick() {
     alienContainer.cacheAsBitmap = !alienContainer.cacheAsBitmap;

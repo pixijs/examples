@@ -19,7 +19,7 @@ function onAssetsLoaded() {
     }
 
     for (i = 0; i < 50; i++) {
-        // create an explosion MovieClip
+        // create an explosion AnimatedSprite
         var explosion = new PIXI.extras.AnimatedSprite(explosionTextures);
 
         explosion.x = Math.random() * app.renderer.width;

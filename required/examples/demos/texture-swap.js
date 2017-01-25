@@ -23,8 +23,9 @@ app.stage.addChild(dude);
 
 // make the sprite interactive
 dude.interactive = true;
+dude.buttonMode = true;
 
-dude.on('click', function() {
+dude.on('pointertap', function() {
     bol = !bol;
     if (bol) {
         dude.texture = secondTexture;

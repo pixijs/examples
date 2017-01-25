@@ -16,18 +16,16 @@ var postition = 0,
 
 app.stage.interactive = true;
 
-function onAssetsLoaded(loader,res)
-{
+function onAssetsLoaded(loader,res) {
+
     background = PIXI.Sprite.fromImage('required/assets/spine/iP4_BGtile.jpg');
     background2 = PIXI.Sprite.fromImage('required/assets/spine/iP4_BGtile.jpg');
-    app.stage.addChild(background);
-    app.stage.addChild(background2);
 
     foreground = PIXI.Sprite.fromImage('required/assets/spine/iP4_ground.png');
     foreground2 = PIXI.Sprite.fromImage('required/assets/spine/iP4_ground.png');
-    app.stage.addChild(foreground);
-    app.stage.addChild(foreground2);
     foreground.y = foreground2.y = 640 - foreground2.height;
+
+    app.stage.addChild(background, background2, foreground, foreground2);
 
     var pixie = new PIXI.spine.Spine(res.pixie.spineData);
 
@@ -45,11 +43,9 @@ function onAssetsLoaded(loader,res)
 
     pixie.state.setAnimationByName(0, 'running', true);
 
-    app.stage.on('mousedown', onTouchStart);
-    app.stage.on('touchstart', onTouchStart);
+    app.stage.on('pointerdown', onTouchStart);
 
-    function onTouchStart()
-    {
+    function onTouchStart() {
         pixie.state.setAnimationByName(0, 'jump', false);
         pixie.state.addAnimationByName(0, 'running', true, 0);
     }
@@ -57,8 +53,8 @@ function onAssetsLoaded(loader,res)
     app.start();
 }
 
-app.ticker.add(function()
-{
+app.ticker.add(function() {
+
     postition += 10;
 
     background.x = -(postition * 0.6);

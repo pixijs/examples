@@ -52,27 +52,25 @@ app.stage.addChild(graphics);
 // let's create a moving shape
 var thing = new PIXI.Graphics();
 app.stage.addChild(thing);
-thing.x = 620/2;
-thing.y = 380/2;
+thing.x = 800/2;
+thing.y = 600/2;
 
 var count = 0;
 
 // Just click on the stage to draw random lines
-app.stage.on('click', onClick);
-app.stage.on('tap', onClick);
+app.stage.on('pointertap', onClick);
 
-function onClick()
-{
+function onClick() {
     graphics.lineStyle(Math.random() * 30, Math.random() * 0xFFFFFF, 1);
-    graphics.moveTo(Math.random() * 620,Math.random() * 380);
-    graphics.bezierCurveTo(Math.random() * 620,Math.random() * 380,
-                            Math.random() * 620,Math.random() * 380,
-                            Math.random() * 620,Math.random() * 380);
+    graphics.moveTo(Math.random() * 800, Math.random() * 600);
+    graphics.bezierCurveTo(
+        Math.random() * 800, Math.random() * 600,
+        Math.random() * 800, Math.random() * 600,
+        Math.random() * 800, Math.random() * 600
+    );
 }
 
 app.ticker.add(function() {
-
-    thing.clear();
 
     count += 0.1;
 

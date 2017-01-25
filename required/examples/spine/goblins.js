@@ -7,6 +7,7 @@ PIXI.loader
     .load(onAssetsLoaded);
 
 app.stage.interactive = true;
+app.stage.buttonMode = true;
 
 function onAssetsLoaded(loader, res)
 {
@@ -27,8 +28,7 @@ function onAssetsLoaded(loader, res)
 
     app.stage.addChild(goblin);
 
-    app.stage.on('click', function ()
-    {
+    app.stage.on('pointertap', function() {
         // change current skin
         var currentSkinName = goblin.skeleton.skin.name;
         var newSkinName = (currentSkinName === 'goblin' ? 'goblingirl' : 'goblin');

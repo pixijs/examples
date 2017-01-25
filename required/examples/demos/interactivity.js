@@ -24,10 +24,6 @@ var buttonPositions = [
     685, 445
 ];
 
-function noop() {
-	console.log('click');
-}
-
 for (var i = 0; i < 5; i++) {
 
     var button = new PIXI.Sprite(textureButton);
@@ -39,26 +35,30 @@ for (var i = 0; i < 5; i++) {
 
     // make the button interactive...
     button.interactive = true;
+    button.buttonMode = true;
 
     button
-        // set the mousedown and touchstart callback...
-        .on('mousedown', onButtonDown)
-        .on('touchstart', onButtonDown)
+        // Mouse & touch events are normalized into
+        // the pointer* events for handling different
+        // button events.
+        .on('pointerdown', onButtonDown)
+        .on('pointerup', onButtonUp)
+        .on('pointerupoutside', onButtonUp)
+        .on('pointerover', onButtonOver)
+        .on('pointerout', onButtonOut);
 
-        // set the mouseup and touchend callback...
-        .on('mouseup', onButtonUp)
-        .on('touchend', onButtonUp)
-        .on('mouseupoutside', onButtonUp)
-        .on('touchendoutside', onButtonUp)
+        // Use mouse-only events
+        // .on('mousedown', onButtonDown)
+        // .on('mouseup', onButtonUp)
+        // .on('mouseupoutside', onButtonUp)
+        // .on('mouseover', onButtonOver)
+        // .on('mouseout', onButtonOut)
 
-        // set the mouseover callback...
-        .on('mouseover', onButtonOver)
+        // Use touch-only events
+        // .on('touchstart', onButtonDown)
+        // .on('touchend', onButtonUp)
+        // .on('touchendoutside', onButtonUp)
 
-        // set the mouseout callback...
-        .on('mouseout', onButtonOut)
-        
-	button.tap = noop;
-	button.click = noop;
     // add it to the stage
     app.stage.addChild(button);
 

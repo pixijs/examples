@@ -52,7 +52,7 @@
     "demos": [
         {
             "title": "AnimatedSprite",
-            "entry": "movieclip-demo.js"
+            "entry": "animatedsprite-demo.js"
         },
         {
             "title": "Interactivity",

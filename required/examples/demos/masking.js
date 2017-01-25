@@ -44,19 +44,21 @@ container.mask = thing;
 
 var count = 0;
 
-app.stage.on('click', onClick);
-app.stage.on('tap', onClick);
-
-function onClick() {
+app.stage.on('pointertap', function() {
     if (!container.mask) {
         container.mask = thing;
     }
     else {
         container.mask = null;
     }
-}
+});
 
-var help = new PIXI.Text('Click to turn masking on / off.', { fontFamily:'Arial', fontSize:'12pt', fontWeight:'bold', fill: 'white' });
+var help = new PIXI.Text('Click or tap to turn masking on / off.', { 
+    fontFamily: 'Arial',
+    fontSize: 12, 
+    fontWeight:'bold', 
+    fill: 'white'
+});
 help.y = app.renderer.height - 26;
 help.x = 10;
 app.stage.addChild(help);

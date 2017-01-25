@@ -28,8 +28,7 @@ function onAssetsLoaded(loader, res)
 
     app.stage.addChild(spineBoy);
 
-    app.stage.on('click', function ()
-    {
+    app.stage.on('pointerdown', function() {
         spineBoy.state.setAnimationByName(0, 'jump', false);
         spineBoy.state.addAnimationByName(0, 'walk', true, 0);
     });

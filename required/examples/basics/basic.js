@@ -14,7 +14,9 @@ bunny.y = 150;
 app.stage.addChild(bunny);
 
 // Listen for animate update
-app.ticker.add(function() {
+app.ticker.add(function(delta) {
     // just for fun, let's rotate mr rabbit a little
-    bunny.rotation += 0.1;
+    // delta is 1 if running at 100% performance
+    // creates frame-independent tranformation
+    bunny.rotation += 0.1 / delta;
 });

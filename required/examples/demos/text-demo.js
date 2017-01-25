@@ -86,9 +86,7 @@ function init()
     countingText.y = 320;
     countingText.anchor.x = 0.5;
 
-    app.stage.addChild(textSample);
-    app.stage.addChild(spinningText);
-    app.stage.addChild(countingText);
+    app.stage.addChild(textSample, spinningText, countingText);
 
     var count = 0;
 

@@ -27,8 +27,5 @@ loader.add('building1', 'required/assets/compressed/building1.png', textureOptio
         spr2.y = spr4.y = 350;
         spr1.x = spr2.x = 250;
         spr3.x = spr4.x = 450;
-        app.stage.addChild(spr1);
-        app.stage.addChild(spr2);
-        app.stage.addChild(spr3);
-        app.stage.addChild(spr4);
+        app.stage.addChild(spr1, spr2, spr3, spr4);
     });

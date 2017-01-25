@@ -17,22 +17,22 @@ function onAssetsLoaded()
         frames.push(PIXI.Texture.fromFrame('rollSequence00' + val + '.png'));
     }
 
-    // create a MovieClip (brings back memories from the days of Flash, right ?)
-    var movie = new PIXI.extras.AnimatedSprite(frames);
+    // create an AnimatedSprite (brings back memories from the days of Flash, right ?)
+    var anim = new PIXI.extras.AnimatedSprite(frames);
 
     /*
-     * A MovieClip inherits all the properties of a PIXI sprite
+     * An AnimatedSprite inherits all the properties of a PIXI sprite
      * so you can change its position, its anchor, mask it, etc
      */
-    movie.position.set(300);
-    movie.anchor.set(0.5);
-    movie.animationSpeed = 0.5;
-    movie.play();
+    anim.position.set(300);
+    anim.anchor.set(0.5);
+    anim.animationSpeed = 0.5;
+    anim.play();
 
-    app.stage.addChild(movie);
+    app.stage.addChild(anim);
 
-    // Animate the rotation of movie
+    // Animate the rotation
     app.ticker.add(function() {
-        movie.rotation += 0.01;
+        anim.rotation += 0.01;
     });
 }

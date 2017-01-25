@@ -38,35 +38,28 @@ app.stage.addChild(container);
 app.stage.filters = [filter];
 
 var count = 0;
-var switchy = false;
+var enabled = true;
 
-app.stage.on('click', onClick);
-app.stage.on('tap', onClick);
+app.stage.on('pointertap', function() {
+    enabled = !enabled;
+    app.stage.filters = enabled ? [filter] : null;
+});
 
-function onClick()
-{
-    switchy = !switchy;
-
-    if (!switchy)
-    {
-        app.stage.filters = [filter];
-    }
-    else
-    {
-        app.stage.filters = null;
-    }
-}
-
-var help = new PIXI.Text('Click to turn filters on / off.', { fontFamily:'Arial', fontSize:'12pt', fontWeight:'bold', fill: 'white' });
+var help = new PIXI.Text('Click or tap to turn filters on / off.', {
+    fontFamily: 'Arial',
+    fontSize: 12,
+    fontWeight:'bold', 
+    fill: 'white'
+});
 help.y = app.renderer.height - 25;
 help.x = 10;
 
 app.stage.addChild(help);
 
-app.ticker.add(function() {
+app.ticker.add(function(delta) {
+
     bg.rotation += 0.01;
     bgFront.rotation -= 0.01;
-
     light1.rotation += 0.02;
     light2.rotation += 0.01;
 

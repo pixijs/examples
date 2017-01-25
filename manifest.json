@@ -140,13 +140,6 @@
     ],
     "picture": [
         {
-            "title": "Border artifacts",
-            "entry": "border-artifacts.js",
-            "plugins": [
-                "pixi-picture"
-            ]
-        },
-        {
             "title": "Overlay blendMode",
             "entry": "overlay.js",
             "plugins": [

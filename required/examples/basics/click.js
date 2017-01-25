@@ -19,6 +19,10 @@ sprite.buttonMode = true;
 // Pointers normalize touch and mouse
 sprite.on('pointerdown', onClick);
 
+// Alternatively, use the mouse & touch events:
+// sprite.on('click', onClick); // mouse-only
+// sprite.on('tap', onClick); // touch-only
+
 app.stage.addChild(sprite);
 
 function onClick () {

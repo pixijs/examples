@@ -35,7 +35,7 @@ function init()
     function onAssetsLoaded() {
         var bitmapFontText = new PIXI.extras.BitmapText('bitmap fonts are\n now supported!', { font: '35px Desyrel', align: 'right' });
 
-        bitmapFontText.x = 600 - bitmapFontText.textWidth;
+        bitmapFontText.x = app.renderer.width - bitmapFontText.textWidth - 20;
         bitmapFontText.y = 20;
 
         app.stage.addChild(bitmapFontText);
@@ -43,6 +43,8 @@ function init()
 
     // add a shiny background...
     var background = PIXI.Sprite.fromImage('required/assets/textDemoBG.jpg');
+    background.width = app.renderer.width;
+    background.height = app.renderer.height;
     app.stage.addChild(background);
 
     // create some white text using the Snippet webfont
@@ -67,8 +69,8 @@ function init()
 
     // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
-    spinningText.x = 310;
-    spinningText.y = 200;
+    spinningText.x = app.renderer.width / 2;
+    spinningText.y = app.renderer.height / 2;
 
     // create a text object that will be updated...
     var countingText = new PIXI.Text('COUNT 4EVAR: 0', {
@@ -82,8 +84,8 @@ function init()
         strokeThickness: 7
     });
 
-    countingText.x = 310;
-    countingText.y = 320;
+    countingText.x = app.renderer.width / 2;
+    countingText.y = 500;
     countingText.anchor.x = 0.5;
 
     app.stage.addChild(textSample, spinningText, countingText);

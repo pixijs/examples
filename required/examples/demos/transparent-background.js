@@ -8,8 +8,8 @@ var bunny = PIXI.Sprite.fromImage('required/assets/bunny.png');
 bunny.anchor.set(0.5);
 
 // move the sprite to the center of the screen
-bunny.x = 200;
-bunny.y = 150;
+bunny.x = app.renderer.width / 2;
+bunny.y = app.renderer.height / 2;
 
 app.stage.addChild(bunny);
 

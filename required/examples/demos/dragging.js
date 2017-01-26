@@ -1,8 +1,11 @@
-var app = new PIXI.Application();
+var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('required/assets/bunny.png');
+
+// Scale mode for pixelation
+texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
 for (var i = 0; i < 10; i++) {
     createBunny(

@@ -12,7 +12,7 @@ var style = new PIXI.TextStyle({
     fontSize: 36,
     fontStyle: 'italic',
     fontWeight: 'bold',
-    fill: ['#ffffff', '#fff0b5'], // gradient
+    fill: ['#ffffff', '#00ff99'], // gradient
     stroke: '#4a1850',
     strokeThickness: 5,
     dropShadow: true,

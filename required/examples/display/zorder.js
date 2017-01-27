@@ -1,25 +1,23 @@
 // This is demo of pixi-display.js, https://github.com/gameofbombs/pixi-display
 // Drag the rabbits to understand what's going on
 
-var renderer = new PIXI.WebGLRenderer(800, 600, {backgroundColor: 0x1099bb});
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600, {backgroundColor: 0x1099bb});
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var root = new PIXI.Container();
 //specify display list component
-root.displayList = new PIXI.DisplayList();
+app.stage.displayList = new PIXI.DisplayList();
 
 // z-index = 0, sorting = true;
 var greenLayer = new PIXI.DisplayGroup(0, true);
 greenLayer.on('add', function (sprite) {
     //green bunnies go down
-    sprite.zOrder = -sprite.position.y;
+    sprite.zOrder = -sprite.y;
 });
 
 // z-index = 1, sorting = true, we can provide zOrder function directly in constructor
 var blueLayer = new PIXI.DisplayGroup(1, function (sprite) {
     //blue bunnies go up
-    sprite.zOrder = +sprite.position.y;
+    sprite.zOrder = +sprite.y;
 });
 
 // Drag is the best layer, dragged element is above everything else
@@ -39,9 +37,9 @@ var texture_blue = PIXI.Texture.fromImage('required/assets/bunnies/square_blue.p
 var bunniesOdd = new PIXI.Container();
 var bunniesEven = new PIXI.Container();
 var bunniesBlue = new PIXI.Container();
-root.addChild(bunniesOdd);
-root.addChild(bunniesBlue);
-root.addChild(bunniesEven);
+app.stage.addChild(bunniesOdd);
+app.stage.addChild(bunniesBlue);
+app.stage.addChild(bunniesEven);
 
 var ind = [];
 for (var i = 0; i < 15; i++) {
@@ -109,8 +107,8 @@ function onDragStart(event) {
         this.scale.x *= 1.1;
         this.scale.y *= 1.1;
         this.dragPoint = event.data.getLocalPosition(this.parent);
-        this.dragPoint.x -= this.position.x;
-        this.dragPoint.y -= this.position.y;
+        this.dragPoint.x -= this.x;
+        this.dragPoint.y -= this.y;
     }
 }
 
@@ -128,16 +126,7 @@ function onDragEnd() {
 function onDragMove() {
     if (this.dragging) {
         var newPosition = this.data.getLocalPosition(this.parent);
-        this.position.x = newPosition.x - this.dragPoint.x;
-        this.position.y = newPosition.y - this.dragPoint.y;
+        this.x = newPosition.x - this.dragPoint.x;
+        this.y = newPosition.y - this.dragPoint.y;
     }
 }
-
-// start animating
-var ticker = new PIXI.ticker.Ticker();
-
-ticker.add(function (deltaTime) {
-    renderer.render(root);
-});
-
-ticker.start();

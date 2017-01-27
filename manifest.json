@@ -37,10 +37,6 @@
             "entry": "video.js"
         },
         {
-            "title": "Render Texture [v3]",
-            "entry": "render-texture-v3.js"
-        },
-        {
             "title": "Render Texture",
             "entry": "render-texture.js"
         },
@@ -49,18 +45,14 @@
             "entry": "textured-mesh.js"
         },
         {
-            "title": "Custom Filter [v3]",
-            "entry": "custom-filter-v3.js"
-        },
-        {
             "title": "Custom Filter",
             "entry": "custom-filter.js"
         }
     ],
     "demos": [
         {
-            "title": "MovieClip",
-            "entry": "movieclip-demo.js"
+            "title": "AnimatedSprite",
+            "entry": "animatedsprite-demo.js"
         },
         {
             "title": "Interactivity",
@@ -97,10 +89,6 @@
         {
             "title": "Tinting",
             "entry": "tinting.js"
-        },
-        {
-            "title": "Particle Container [v3]",
-            "entry": "batch-v3.js"
         },
         {
             "title": "Particle Container",
@@ -151,13 +139,6 @@
         }
     ],
     "picture": [
-        {
-            "title": "Border artifacts",
-            "entry": "border-artifacts.js",
-            "plugins": [
-                "pixi-picture"
-            ]
-        },
         {
             "title": "Overlay blendMode",
             "entry": "overlay.js",

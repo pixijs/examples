@@ -1,30 +1,32 @@
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
+// Scale mode for all textures, will retain pixelation
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 var sprite = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
 
-sprite.position.set(230,264);
+// Set the initial position
+sprite.anchor.set(0.5);
+sprite.x = app.renderer.width / 2;
+sprite.y = app.renderer.height / 2;
+
+// Opt-in to interactivity
 sprite.interactive = true;
-sprite.on('mousedown', onDown);
-sprite.on('touchstart', onDown);
 
-stage.addChild(sprite);
+// Shows hand cursor
+sprite.buttonMode = true;
 
-function onDown (eventData) {
+// Pointers normalize touch and mouse
+sprite.on('pointerdown', onClick);
 
-    sprite.scale.x += 0.3;
-    sprite.scale.y += 0.3;
-}
-// start animating
-animate();
+// Alternatively, use the mouse & touch events:
+// sprite.on('click', onClick); // mouse-only
+// sprite.on('tap', onClick); // touch-only
 
-function animate() {
+app.stage.addChild(sprite);
 
-    requestAnimationFrame(animate);
-
-    // render the root container
-    renderer.render(stage);
+function onClick () {
+    sprite.scale.x *= 1.25;
+    sprite.scale.y *= 1.25;
 }

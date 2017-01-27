@@ -1,87 +1,70 @@
-var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600, { antialias: true });
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
-
-stage.interactive = true;
+app.stage.interactive = true;
 
 var bg = PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
 
-bg.anchor.x = 0.5;
-bg.anchor.y = 0.5;
+bg.anchor.set(0.5);
 
-bg.position.x = renderer.width / 2;
-bg.position.y = renderer.height / 2;
+bg.x = app.renderer.width / 2;
+bg.y = app.renderer.height / 2;
 
-stage.addChild(bg);
+app.stage.addChild(bg);
 
 var container = new PIXI.Container();
-container.position.x = renderer.width / 2;
-container.position.y = renderer.height / 2;
+container.x = app.renderer.width / 2;
+container.y = app.renderer.height / 2;
 
 // add a bunch of sprites
-
 var bgFront = PIXI.Sprite.fromImage('required/assets/SceneRotate.jpg');
-bgFront.anchor.x = 0.5;
-bgFront.anchor.y = 0.5;
-
-container.addChild(bgFront);
+bgFront.anchor.set(0.5);
 
 var light2 = PIXI.Sprite.fromImage('required/assets/LightRotate2.png');
-light2.anchor.x = 0.5;
-light2.anchor.y = 0.5;
-container.addChild(light2);
+light2.anchor.set(0.5);
 
 var light1 = PIXI.Sprite.fromImage('required/assets/LightRotate1.png');
-light1.anchor.x = 0.5;
-light1.anchor.y = 0.5;
-container.addChild(light1);
+light1.anchor.set(0.5);
 
 var panda =  PIXI.Sprite.fromImage('required/assets/panda.png');
-panda.anchor.x = 0.5;
-panda.anchor.y = 0.5;
+panda.anchor.set(0.5);
 
-container.addChild(panda);
+container.addChild(bgFront, light2, light1, panda);
 
-stage.addChild(container);
+app.stage.addChild(container);
 
 // let's create a moving shape
 var thing = new PIXI.Graphics();
-stage.addChild(thing);
-thing.position.x = renderer.width / 2;
-thing.position.y = renderer.height / 2;
+app.stage.addChild(thing);
+thing.x = app.renderer.width / 2;
+thing.y = app.renderer.height / 2;
 thing.lineStyle(0);
-
 
 container.mask = thing;
 
 var count = 0;
 
-stage.on('click', onClick);
-stage.on('tap', onClick);
-
-function onClick()
-{
-    if(!container.mask)
-    {
+app.stage.on('pointertap', function() {
+    if (!container.mask) {
         container.mask = thing;
     }
-    else
-    {
+    else {
         container.mask = null;
     }
-}
+});
 
-var help = new PIXI.Text('Click to turn masking on / off.', { fontFamily:'Arial', fontSize:'12pt', fontWeight:'bold', fill: 'white' });
-help.position.y = renderer.height - 26;
-help.position.x = 10;
-stage.addChild(help);
+var help = new PIXI.Text('Click or tap to turn masking on / off.', { 
+    fontFamily: 'Arial',
+    fontSize: 12, 
+    fontWeight:'bold', 
+    fill: 'white'
+});
+help.y = app.renderer.height - 26;
+help.x = 10;
+app.stage.addChild(help);
 
-animate();
+app.ticker.add(function() {
 
-function animate()
-{
     bg.rotation += 0.01;
     bgFront.rotation -= 0.01;
 
@@ -97,15 +80,8 @@ function animate()
 
     thing.beginFill(0x8bc5ff, 0.4);
     thing.moveTo(-120 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
-    thing.lineTo(-320 + Math.cos(count)* 20, 100 + Math.sin(count)* 20);
     thing.lineTo(120 + Math.cos(count) * 20, -100 + Math.sin(count)* 20);
     thing.lineTo(120 + Math.sin(count) * 20, 100 + Math.cos(count)* 20);
     thing.lineTo(-120 + Math.cos(count)* 20, 100 + Math.sin(count)* 20);
-    thing.lineTo(-120 + Math.sin(count) * 20, -300 + Math.cos(count)* 20);
-    thing.lineTo(-320 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
     thing.rotation = count * 0.1;
-
-
-    renderer.render(stage);
-    requestAnimationFrame(animate);
-}
+});

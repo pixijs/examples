@@ -1,7 +1,0 @@
-[
-	{
-        "title": "Z-order",
-        "entry": "zorder.js",
-		"plugins": ["pixi-display"]
-    }
-]

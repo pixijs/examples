@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('required/assets/p2.jpeg');
@@ -11,14 +8,16 @@ var texture = PIXI.Texture.fromImage('required/assets/p2.jpeg');
  * requires a texture, a width and a height
  * in WebGL the image size should preferably be a power of two
  */
-var tilingSprite = new PIXI.extras.TilingSprite(texture, renderer.width, renderer.height);
-stage.addChild(tilingSprite);
+var tilingSprite = new PIXI.extras.TilingSprite(
+    texture, 
+    app.renderer.width,
+    app.renderer.height
+);
+app.stage.addChild(tilingSprite);
 
 var count = 0;
 
-animate();
-
-function animate() {
+app.ticker.add(function() {
 
     count += 0.005;
 
@@ -27,9 +26,4 @@ function animate() {
 
     tilingSprite.tilePosition.x += 1;
     tilingSprite.tilePosition.y += 1;
-
-    // render the root container
-    renderer.render(stage);
-
-    requestAnimationFrame(animate);
-}
+});

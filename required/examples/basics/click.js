@@ -1,10 +1,10 @@
 var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
-var sprite = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
+// Scale mode for all textures, will retain pixelation
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-// Scale mode for pixelation
-sprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+var sprite = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
 
 // Set the initial position
 sprite.anchor.set(0.5);

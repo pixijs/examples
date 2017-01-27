@@ -80,11 +80,8 @@ app.ticker.add(function() {
 
     thing.beginFill(0x8bc5ff, 0.4);
     thing.moveTo(-120 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
-    thing.lineTo(-320 + Math.cos(count)* 20, 100 + Math.sin(count)* 20);
     thing.lineTo(120 + Math.cos(count) * 20, -100 + Math.sin(count)* 20);
     thing.lineTo(120 + Math.sin(count) * 20, 100 + Math.cos(count)* 20);
     thing.lineTo(-120 + Math.cos(count)* 20, 100 + Math.sin(count)* 20);
-    thing.lineTo(-120 + Math.sin(count) * 20, -300 + Math.cos(count)* 20);
-    thing.lineTo(-320 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
     thing.rotation = count * 0.1;
 });

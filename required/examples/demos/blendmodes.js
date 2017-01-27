@@ -3,6 +3,8 @@ document.body.appendChild(app.view);
 
 // create a new background sprite
 var background = new PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
+background.width = app.renderer.width;
+background.height = app.renderer.height;
 app.stage.addChild(background);
 
 // create an array to store a reference to the dudes

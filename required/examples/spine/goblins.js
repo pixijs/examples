@@ -24,7 +24,7 @@ function onAssetsLoaded(loader, res)
     goblin.scale.set(1.5);
 
     // play animation
-    goblin.state.setAnimationByName(0, 'walk', true);
+    goblin.state.setAnimation(0, 'walk', true);
 
     app.stage.addChild(goblin);
 

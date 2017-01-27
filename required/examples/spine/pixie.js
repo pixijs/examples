@@ -38,16 +38,16 @@ function onAssetsLoaded(loader,res) {
 
     app.stage.addChild(pixie);
 
-    pixie.stateData.setMixByName('running', 'jump', 0.2);
-    pixie.stateData.setMixByName('jump', 'running', 0.4);
+    pixie.stateData.setMix('running', 'jump', 0.2);
+    pixie.stateData.setMix('jump', 'running', 0.4);
 
-    pixie.state.setAnimationByName(0, 'running', true);
+    pixie.state.setAnimation(0, 'running', true);
 
     app.stage.on('pointerdown', onTouchStart);
 
     function onTouchStart() {
-        pixie.state.setAnimationByName(0, 'jump', false);
-        pixie.state.addAnimationByName(0, 'running', true, 0);
+        pixie.state.setAnimation(0, 'jump', false);
+        pixie.state.addAnimation(0, 'running', true, 0);
     }
 
     app.start();

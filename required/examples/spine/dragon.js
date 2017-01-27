@@ -41,7 +41,7 @@ function onAssetsLoaded(loader,res)
     app.stage.addChild(dragonCage);
 
     // once position and scaled, set the animation to play
-    dragon.state.setAnimationByName(0, 'flying', true);
+    dragon.state.setAnimation(0, 'flying', true);
 
     app.start();
 }

@@ -281,13 +281,21 @@ jQuery(document).ready(function($) {
         html += '<script src="' + pixiUrl + '"></script>';
 
         var plugins = bpc.plugins === '' ? [] : bpc.plugins.split(',');
-        for (i=0; i < plugins.length; i++) {
-			if (isLocal) {
-			    html += '<script src="dist/plugins/'+plugins[0]+'.js"></script>';
-			} else {
-                html += '<script src="required/plugins/'+plugins[0]+'.js"></script>';
+
+		if (!isLocal) {
+			if (bpc.version !== "release" && bpc.version !== "dev") {
+                html += '<script src="required/plugins/pixi-legacy.js"></script>';
 			}
-        }
+			for (i=0; i < plugins.length; i++) {
+                html += '<script src="required/plugins/'+plugins[0]+'.js"></script>';
+            }
+		} else {
+			for (i=0; i < plugins.length; i++) {
+				html += '<script src="dist/plugins/'+plugins[0]+'.js"></script>';
+			}
+		}
+ 
+
 
         html += '<script>window.onload = function(){'+js+'}</script></body></html>';
 

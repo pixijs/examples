@@ -20,7 +20,9 @@ var texture = PIXI.Texture.fromImage('required/assets/flowerTop.png');
 for (var i = 0; i < totaldudes; i++)
 {
     // create a new Sprite that uses the image name that we just generated as its source
-    var dude = new PIXI.extras.PictureSprite(texture);
+    var dude = new PIXI.Sprite(texture);
+	// setting renderer plugin 'picture', from pixi-picture
+	dude.pluginName = 'picture';
 
     dude.anchor.set(0.5);
 

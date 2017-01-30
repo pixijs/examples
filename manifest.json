@@ -147,6 +147,15 @@
             ]
         }
     ],
+    "layers": [
+        {
+            "title": "Lighting",
+            "entry": "lighting.js",
+            "plugins": [
+                "pixi-layers"
+            ]
+        }
+    ],
     "spine": [
         {
             "title": "Dragon",

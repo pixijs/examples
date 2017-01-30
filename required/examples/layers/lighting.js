@@ -1,3 +1,5 @@
+//THE PLUGIN IS HERE: https://github.com/pixijs/pixi-display/tree/layers, its WIP
+
 var WIDTH = 800, HEIGHT = 600, PAD = 80;
 
 var app = new PIXI.Application(WIDTH, HEIGHT);

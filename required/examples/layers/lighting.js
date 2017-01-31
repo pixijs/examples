@@ -24,7 +24,7 @@ lighting.on('display', function (element) {
 lighting.filters = [new PIXI.filters.VoidFilter()];
 lighting.filters[0].blendMode = PIXI.BLEND_MODES.MULTIPLY;
 
-lighting.filterArea = new PIXI.Rectnagle(0, 0, WIDTH, HEIGHT);
+lighting.filterArea = new PIXI.Rectangle(0, 0, WIDTH, HEIGHT);
 // try use this instead:
 // lighting.filterArea = new PIXI.Rectangle(100, 100, 600, 400);
 

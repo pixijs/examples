@@ -1,6 +1,6 @@
-//THE PLUGIN IS HERE: https://github.com/pixijs/pixi-display/tree/layers, its WIP
-
 var WIDTH = 800, HEIGHT = 600, PAD = 80;
+
+//the plugin is here: https://github.com/pixijs/pixi-display/tree/layers, its WIP
 
 var app = new PIXI.Application(WIDTH, HEIGHT);
 document.body.appendChild(app.view);
@@ -23,6 +23,11 @@ lighting.on('display', function (element) {
 });
 lighting.filters = [new PIXI.filters.VoidFilter()];
 lighting.filters[0].blendMode = PIXI.BLEND_MODES.MULTIPLY;
+
+lighting.filterArea = new PIXI.Rectnagle(0, 0, WIDTH, HEIGHT);
+// try use this instead:
+// lighting.filterArea = new PIXI.Rectangle(100, 100, 600, 400);
+
 app.stage.addChild(lighting);
 
 var ambient = new PIXI.Graphics();

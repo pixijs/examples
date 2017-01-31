@@ -25,8 +25,7 @@ lighting.filters = [new PIXI.filters.VoidFilter()];
 lighting.filters[0].blendMode = PIXI.BLEND_MODES.MULTIPLY;
 
 lighting.filterArea = new PIXI.Rectangle(0, 0, WIDTH, HEIGHT);
-// try use this instead:
-// lighting.filterArea = new PIXI.Rectangle(100, 100, 600, 400);
+// lighting.filterArea = new PIXI.Rectangle(100, 100, 600, 400); //<-- try uncomment it
 
 app.stage.addChild(lighting);
 
@@ -34,7 +33,7 @@ var ambient = new PIXI.Graphics();
 ambient.beginFill(0x808080, 1.0);
 ambient.drawRect(0, 0, WIDTH, HEIGHT);
 ambient.endFill();
-lighting.addChild(ambient);
+lighting.addChild(ambient); //<-- try comment it
 
 var bunnyTexture = PIXI.Texture.fromImage("required/assets/basics/bunny.png");
 function updateBunny(bunny) {
@@ -73,7 +72,7 @@ function createBunny() {
     lightbulb.beginFill((rr << 16) + (rg << 8) + rb, 1.0);
     lightbulb.drawCircle(0, 0, rad);
     lightbulb.endFill();
-    lightbulb.parentLayer = lighting;
+    lightbulb.parentLayer = lighting;//<-- try comment it
 
     bunny.addChild(lightbulb);
 

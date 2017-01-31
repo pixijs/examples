@@ -1,9 +1,3 @@
-PIXI.DISPLAY_FLAG = {
-    AUTO_CHILDREN: 0,
-    AUTO_CONTAINER: 1,
-    AUTO_OBJECT: 2,
-    MANUAL_CONTAINER: 3
-};
 var pixi_display;
 (function (pixi_display) {
     var Container = PIXI.Container;
@@ -79,11 +73,16 @@ var pixi_display;
             _this.zIndex = zIndex;
             _this.enableSort = !!sorting;
             if (typeof sorting === 'function') {
-                _this.on('add', sorting);
+                _this.on('sort', sorting);
             }
             return _this;
         }
         Group.prototype.doSort = function (layer, sorted) {
+            if (this.listeners('sort', true)) {
+                for (var i = 0; i < sorted.length; i++) {
+                    this.emit('sort', sorted[i]);
+                }
+            }
             if (this.useZeroOptimization) {
                 this.doSortWithZeroOptimization(layer, sorted);
             }
@@ -96,10 +95,10 @@ var pixi_display;
                 return a.zIndex - b.zIndex;
             }
             if (a.zOrder > b.zOrder) {
-                return 1;
+                return -1;
             }
             if (a.zOrder < b.zOrder) {
-                return -1;
+                return 1;
             }
             return a.updateOrder - b.updateOrder;
         };

@@ -44,8 +44,11 @@ Object.assign(PIXI.DisplayObject.prototype, {
     displayOrder: 0,
     layerableChildren: true
 });
-if (PIXI.particles.ParticleContainer) {
+if (PIXI.particles && PIXI.particles.ParticleContainer) {
     PIXI.particles.ParticleContainer.prototype.layerableChildren = false;
+}
+if (PIXI.ParticleContainer) {
+    PIXI.ParticleContainer.prototype.layerableChildren = false;
 }
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];

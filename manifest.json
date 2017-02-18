@@ -134,6 +134,13 @@
             "entry": "blur-filter.js"
         },
         {
+            "title": "Outline",
+            "entry": "outline-filter.js",
+            "plugins": [
+                "pixi-extra-filters"
+            ]
+        },
+        {
             "title": "Displacement Map",
             "entry": "displacement-map.js"
         }

@@ -1,6 +1,6 @@
 /*!
  * pixi-legacy - v1.0.0
- * Compiled Wed, 01 Feb 2017 21:17:35 UTC
+ * Compiled Sat, 18 Feb 2017 19:46:25 UTC
  *
  * pixi-legacy is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -304,7 +304,7 @@ if (!PIXI.Application) {
     PIXI.Application = _Application2.default;
 }
 
-if (PIXI.AbstractFilter) {
+if (!PIXI.filters.VoidFilter) {
     (0, _FilterPatcherV2.default)(PIXI);
 }
 

@@ -3,7 +3,7 @@
 var app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
-app.stage.position.set(app.screen.width / 2, app.screen.height / 2);
+app.stage.position.set(400, 300);
 
 var outlineFilterBlue = new PIXI.filters.OutlineFilter(2, 0x99ff99);
 var outlineFilterRed = new PIXI.filters.OutlineFilter(2, 0xff9999);

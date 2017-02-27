@@ -29,5 +29,5 @@ container.pivot.y = container.height / 2;
 app.ticker.add(function(delta) {
     // rotate the container!
     // use delta to create frame-independent tranform
-    container.rotation -= 0.01 / delta;
+    container.rotation -= 0.01 * delta;
 });

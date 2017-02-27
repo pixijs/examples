@@ -17,7 +17,7 @@ var filter;
 
 // Handle the load completed
 function onLoaded (loader,res) {
-    
+
     // Create the new filter, arguments: (vertexShader, framentSource)
     filter = new PIXI.Filter(null, res.shader.data);
 
@@ -30,5 +30,5 @@ function onLoaded (loader,res) {
 
 // Animate the filter
 app.ticker.add(function(delta) {
-    filter.uniforms.customUniform += 0.04 / delta;
+    filter.uniforms.customUniform += 0.04 * delta;
 });

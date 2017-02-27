@@ -18,5 +18,5 @@ app.ticker.add(function(delta) {
     // just for fun, let's rotate mr rabbit a little
     // delta is 1 if running at 100% performance
     // creates frame-independent tranformation
-    bunny.rotation += 0.1 / delta;
+    bunny.rotation += 0.1 * delta;
 });

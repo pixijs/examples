@@ -9,7 +9,7 @@ loader.pre(PIXI.compressedTextures.imageParser());
 
 // for PNG in videomemory, premultiplied=true, for DDS its false
 // what if we upload them, but change the flag after it?
-// sprites 2 and 3 are wrong
+// sprites 2 and 3 are wrong: 2 has wrong blending, and we see extruded colors on 3.
 
 var textStyle = { fill: 0xffffff };
 function createSprite(texture, text) {

@@ -44,6 +44,7 @@ container.filters = [displacementFilter];
 
 displacementFilter.scale.x = 110;
 displacementFilter.scale.y = 110;
+displacementSprite.anchor.set(0.5);
 
 var ring = PIXI.Sprite.fromImage('required/assets/ring.png');
 
@@ -69,11 +70,8 @@ function onPointerMove(eventData)
 {
     ring.visible = true;
 
-    displacementSprite.x = eventData.data.global.x - 100;
-    displacementSprite.y = eventData.data.global.y - displacementSprite.height /2;
-
-    ring.x = eventData.data.global.x - 25;
-    ring.y = eventData.data.global.y;
+    displacementSprite.position.set(eventData.data.global.x - 25, eventData.data.global.y);
+    ring.position.copy(displacementSprite.position);
 }
 
 var count = 0;

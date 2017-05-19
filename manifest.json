@@ -202,7 +202,14 @@
     ],
     "textures": [
         {
-            "title": "DirectDrawSurface (DDS)",
+            "title": "Not-premultiplied alpha",
+            "entry": "not-premultiplied-alpha.js",
+            "plugins": [
+                "pixi-compressed-textures"
+            ]
+        },
+        {
+            "title": "Extension chooser",
             "entry": "dds.js",
             "plugins": [
                 "pixi-compressed-textures"

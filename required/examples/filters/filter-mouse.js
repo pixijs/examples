@@ -8,17 +8,21 @@ background.height = app.screen.height;
 app.stage.addChild(background);
 
 var shaderFrag = `
- precision mediump float;
+precision mediump float;
   
-  uniform vec2 mouse;
-  uniform vec2 resolution;
-  uniform float time;
+uniform vec2 mouse;
+uniform vec2 resolution;
+uniform float time;
 
-  void main() {
-	// because of premultiplied blendModes, we have to multiply WHOLE VECTOR by alpha,
-	// instead of setting only alpha.
-    gl_FragColor = vec4( sin(time), mouse.x/resolution.x, mouse.y/resolution.y, 1) * 0.5;
+void main() {
+  //pixel coords are inverted in framebuffer
+  vec2 pixelPos = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y);
+  if (length(mouse - pixelPos) < 25.0) {
+      gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0) * 0.7; //yellow circle, alpha=0.7
+  } else {
+      gl_FragColor = vec4( sin(time), mouse.x/resolution.x, mouse.y/resolution.y, 1) * 0.5; // blend with underlying image, alpha=0.5
   }
+}
 `;
 
 var container = new PIXI.Container();

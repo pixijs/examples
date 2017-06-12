@@ -129,6 +129,10 @@
             "title": "Filter",
             "entry": "filter.js"
         },
+		{
+            "title": "Mouse blending",
+            "entry": "filter-mouse.js"
+        },
         {
             "title": "Blur",
             "entry": "blur-filter.js"

@@ -82,6 +82,10 @@
             "title": "Masking",
             "entry": "masking.js"
         },
+		{
+		    "title": "Mask + renderTexture",
+			"entry": "mask-render-texture.js"
+		},
         {
             "title": "BlendModes",
             "entry": "blendmodes.js"

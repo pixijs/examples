@@ -310,6 +310,7 @@ var pixi_projection;
     var t1 = new PIXI.Point();
     var t2 = new PIXI.Point();
     var tempZero = new PIXI.Point(0, 0);
+    var tempMat = new pixi_projection.Matrix2d();
     var Projection2d = (function () {
         function Projection2d(legacy, enable) {
             if (enable === void 0) { enable = true; }
@@ -366,50 +367,24 @@ var pixi_projection;
         };
         Projection2d.prototype.setFromQuad = function (p, anchor, sizeX, sizeY) {
             if (anchor === void 0) { anchor = tempZero; }
-            if (sizeX === void 0) { sizeX = 0; }
-            if (sizeY === void 0) { sizeY = 0; }
-            var pp = this.legacy.position;
-            pixi_projection.utils.getPositionFromQuad(p, anchor, pp);
+            if (sizeX === void 0) { sizeX = 1; }
+            if (sizeY === void 0) { sizeY = 1; }
             var mat3 = this.matrix.mat3;
-            var f0 = pixi_projection.utils.getIntersectionFactor(p[0], p[1], p[3], p[2], t0);
-            t0.x -= pp.x * f0;
-            t0.y -= pp.y * f0;
-            this.setAxisX(t0, f0);
-            var f1 = pixi_projection.utils.getIntersectionFactor(p[1], p[2], p[0], p[3], t1);
-            t1.x -= pp.x * f1;
-            t1.y -= pp.y * f1;
-            this.setAxisY(t1, f1);
-            t0.x = p[0].x - pp.x;
-            t0.y = p[0].y - pp.y;
-            this.matrix.applyInverse(t0, t0);
-            t1.x = p[1].x - pp.x;
-            t1.y = p[1].y - pp.y;
-            this.matrix.applyInverse(t1, t1);
-            t2.x = p[2].x - pp.x;
-            t2.y = p[2].y - pp.y;
-            this.matrix.applyInverse(t2, t2);
-            var scaleX = 1.0;
-            if (sizeX !== 0) {
-                scaleX = (t1.x - t0.x) / sizeX;
-            }
-            else {
-                if (t1.x < t0.x) {
-                    scaleX = -1;
-                }
-            }
-            mat3[0] *= scaleX;
-            mat3[1] *= scaleX;
-            var scaleY = 1.0;
-            if (sizeY !== 0) {
-                scaleY = (t2.y - t0.y) / sizeY;
-            }
-            else {
-                if (t2.y < t0.y) {
-                    scaleY = -1;
-                }
-            }
-            mat3[3] *= scaleY;
-            mat3[4] *= scaleY;
+            mat3[6] = 0;
+            mat3[7] = 0;
+            mat3[8] = 1;
+            var f1 = pixi_projection.utils.getIntersectionFactor(p[0], p[1], p[3], p[2], t1);
+            this.setAxisX(t1, f1);
+            var f2 = pixi_projection.utils.getIntersectionFactor(p[1], p[2], p[0], p[3], t2);
+            this.setAxisY(t2, f2);
+            this.matrix.applyInverse(p[0], t1);
+            this.matrix.applyInverse(p[2], t2);
+            var m3 = tempMat.mat3;
+            m3[0] = (t2.x - t1.x) / sizeX;
+            m3[6] = t1.x;
+            m3[4] = (t2.y - t1.y) / sizeY;
+            m3[7] = t1.y;
+            this.matrix.setToMult2d(this.matrix, tempMat);
         };
         Projection2d.prototype.clear = function () {
             this._currentMatrixID = -1;
@@ -921,7 +896,8 @@ var pixi_projection;
             var T = C1 * B2 - C2 * B1;
             out.x = p1.x + (T / D) * (p2.x - p1.x);
             out.y = p1.y + (T / D) * (p2.y - p1.y);
-            return 1;
+            var U = A1 * C2 - A2 * C1;
+            return T * U < 0 ? -1 : 1;
         }
         utils.getIntersectionFactor = getIntersectionFactor;
         function getPositionFromQuad(p, anchor, out) {

@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600, {backgroundColor: 0x103322});
+var app = new PIXI.Application(800, 600, {backgroundColor: 0x1099bb});
 document.body.appendChild(app.view);
 
 var w = app.screen.width/2, h = app.screen.height/2;
@@ -22,7 +22,7 @@ var squares = [
 var quad = squares.map(function(s) { return s.position });
 
 //add sprite itself
-var bunny = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage('required/assets/bunny.png'));
+var bunny = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage('required/assets/flowerTop.png'));
 
 app.stage.addChild(bunny);
 squares.forEach(function(s) { app.stage.addChild(s); });
@@ -37,10 +37,7 @@ squares.forEach(function(s) { addInteraction(s); });
 
 // === INTERACTION CODE  ===
 
-// changes axis factor
 function toggle(obj) {
-    obj.factor = 1.0 - obj.factor;
-    obj.tint = obj.factor ? 0xff0033 : 0x00ff00;
 }
 
 function addInteraction(obj) {

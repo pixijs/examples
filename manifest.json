@@ -178,6 +178,22 @@
             ]
         }
     ],
+    "projection": [
+        {
+            "title": "Basics",
+            "entry": "basic.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "Free transform",
+            "entry": "quad.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        }
+    ],
     "spine": [
         {
             "title": "Dragon",

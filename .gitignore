@@ -1,3 +1,7 @@
+# vscode and jetbrains
+.vscode
+.idea
+
 # Sublime Text files
 *.sublime*
 *.*~*.TMP

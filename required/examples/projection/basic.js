@@ -62,16 +62,18 @@ addInteraction(bunny);
 
 // changes axis factor
 function toggle(obj) {
-    obj.factor = 1.0 - obj.factor;
-    obj.tint = obj.factor ? 0xff0033 : 0x00ff00;
+    if (obj !== bunny) {
+        obj.factor = 1.0 - obj.factor;
+        obj.tint = obj.factor ? 0xff0033 : 0x00ff00;
+    }
 }
 
 function snap(obj) {
-    obj.position.x = Math.min(Math.max(obj.position.x, 0), app.screen.width);
-    obj.position.y = Math.min(Math.max(obj.position.y, 0), app.screen.height);
-
-    if (obj === bunny) {
+    if (obj == bunny) {
         obj.position.set(0);
+    } else {
+        obj.position.x = Math.min(Math.max(obj.position.x, 0), app.screen.width);
+        obj.position.y = Math.min(Math.max(obj.position.y, 0), app.screen.height);
     }
 }
 

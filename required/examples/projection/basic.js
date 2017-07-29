@@ -55,14 +55,27 @@ app.ticker.add(function (delta) {
 
 addInteraction(squareX);
 addInteraction(squareY);
+//move the bunny too!
+addInteraction(bunny);
 
-// === INTERACTION CODE  ===
+// === CLICKS AND SNAP ===
 
 // changes axis factor
 function toggle(obj) {
     obj.factor = 1.0 - obj.factor;
     obj.tint = obj.factor ? 0xff0033 : 0x00ff00;
 }
+
+function snap(obj) {
+    obj.position.x = Math.min(Math.max(obj.position.x, 0), app.screen.width);
+    obj.position.y = Math.min(Math.max(obj.position.y, 0), app.screen.height);
+
+    if (obj === bunny) {
+        obj.position.set(0);
+    }
+}
+
+// === INTERACTION CODE  ===
 
 function addInteraction(obj) {
     obj.interactive = true;
@@ -86,13 +99,13 @@ function onDragStart(event) {
 
 function onDragEnd(event) {
     var obj = event.currentTarget;
+    if (!obj.dragging) return;
     if (obj.dragging == 1) {
         //CLICK!
         toggle(obj);
+    } else {
+        snap(obj);
     }
-
-    obj.position.x = Math.min(Math.max(obj.position.x, 0), app.screen.width);
-    obj.position.y = Math.min(Math.max(obj.position.y, 0), app.screen.height);
 
     obj.dragging = 0;
     obj.dragData = null;

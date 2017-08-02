@@ -187,7 +187,7 @@
             ]
         },
         {
-            "title": "Quad homogeneous",
+            "title": "Quad projective",
             "entry": "quad-homo.js",
             "plugins": [
                 "pixi-projection"

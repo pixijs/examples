@@ -187,8 +187,15 @@
             ]
         },
         {
-            "title": "Free transform",
-            "entry": "quad.js",
+            "title": "Quad homogeneous",
+            "entry": "quad-homo.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+		{
+            "title": "Quad bilinear",
+            "entry": "quad-bi.js",
             "plugins": [
                 "pixi-projection"
             ]

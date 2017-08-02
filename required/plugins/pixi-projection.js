@@ -10,6 +10,861 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var pixi_projection;
 (function (pixi_projection) {
+    var Projection = (function () {
+        function Projection(legacy, enable) {
+            if (enable === void 0) { enable = true; }
+            this._enabled = false;
+            this.legacy = legacy;
+            if (enable) {
+                this.enabled = true;
+            }
+            this.legacy.proj = this;
+        }
+        Object.defineProperty(Projection.prototype, "enabled", {
+            get: function () {
+                return this._enabled;
+            },
+            set: function (value) {
+                this._enabled = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Projection.prototype.clear = function () {
+        };
+        return Projection;
+    }());
+    pixi_projection.Projection = Projection;
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var webgl;
+    (function (webgl) {
+        var BatchBuffer = (function () {
+            function BatchBuffer(size) {
+                this.vertices = new ArrayBuffer(size);
+                this.float32View = new Float32Array(this.vertices);
+                this.uint32View = new Uint32Array(this.vertices);
+            }
+            BatchBuffer.prototype.destroy = function () {
+                this.vertices = null;
+            };
+            return BatchBuffer;
+        }());
+        webgl.BatchBuffer = BatchBuffer;
+    })(webgl = pixi_projection.webgl || (pixi_projection.webgl = {}));
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var webgl;
+    (function (webgl) {
+        function generateMultiTextureShader(vertexSrc, fragmentSrc, gl, maxTextures) {
+            fragmentSrc = fragmentSrc.replace(/%count%/gi, maxTextures + '');
+            fragmentSrc = fragmentSrc.replace(/%forloop%/gi, generateSampleSrc(maxTextures));
+            var shader = new PIXI.Shader(gl, vertexSrc, fragmentSrc);
+            var sampleValues = new Int32Array(maxTextures);
+            for (var i = 0; i < maxTextures; i++) {
+                sampleValues[i] = i;
+            }
+            shader.bind();
+            shader.uniforms.uSamplers = sampleValues;
+            return shader;
+        }
+        webgl.generateMultiTextureShader = generateMultiTextureShader;
+        function generateSampleSrc(maxTextures) {
+            var src = '';
+            src += '\n';
+            src += '\n';
+            for (var i = 0; i < maxTextures; i++) {
+                if (i > 0) {
+                    src += '\nelse ';
+                }
+                if (i < maxTextures - 1) {
+                    src += "if(textureId == " + i + ".0)";
+                }
+                src += '\n{';
+                src += "\n\tcolor = texture2D(uSamplers[" + i + "], textureCoord);";
+                src += '\n}';
+            }
+            src += '\n';
+            src += '\n';
+            return src;
+        }
+    })(webgl = pixi_projection.webgl || (pixi_projection.webgl = {}));
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var webgl;
+    (function (webgl) {
+        var ObjectRenderer = PIXI.ObjectRenderer;
+        var settings = PIXI.settings;
+        var GLBuffer = PIXI.glCore.GLBuffer;
+        var premultiplyTint = PIXI.utils.premultiplyTint;
+        var premultiplyBlendMode = PIXI.utils.premultiplyBlendMode;
+        var TICK = 0;
+        var BatchGroup = (function () {
+            function BatchGroup() {
+                this.textures = [];
+                this.textureCount = 0;
+                this.ids = [];
+                this.size = 0;
+                this.start = 0;
+                this.blend = PIXI.BLEND_MODES.NORMAL;
+                this.uniforms = null;
+            }
+            return BatchGroup;
+        }());
+        webgl.BatchGroup = BatchGroup;
+        var MultiTextureSpriteRenderer = (function (_super) {
+            __extends(MultiTextureSpriteRenderer, _super);
+            function MultiTextureSpriteRenderer(renderer) {
+                var _this = _super.call(this, renderer) || this;
+                _this.shaderVert = '';
+                _this.shaderFrag = '';
+                _this.MAX_TEXTURES_LOCAL = 32;
+                _this.vertSize = 5;
+                _this.vertByteSize = _this.vertSize * 4;
+                _this.size = settings.SPRITE_BATCH_SIZE;
+                _this.currentIndex = 0;
+                _this.sprites = [];
+                _this.vertexBuffers = [];
+                _this.vaos = [];
+                _this.vaoMax = 2;
+                _this.vertexCount = 0;
+                _this.MAX_TEXTURES = 1;
+                _this.indices = pixi_projection.utils.createIndicesForQuads(_this.size);
+                _this.groups = [];
+                for (var k = 0; k < _this.size; k++) {
+                    _this.groups[k] = new BatchGroup();
+                }
+                _this.vaoMax = 2;
+                _this.vertexCount = 0;
+                _this.renderer.on('prerender', _this.onPrerender, _this);
+                return _this;
+            }
+            MultiTextureSpriteRenderer.prototype.getUniforms = function (spr) {
+                return null;
+            };
+            MultiTextureSpriteRenderer.prototype.syncUniforms = function (obj) {
+                if (!obj)
+                    return;
+                var sh = this.shader;
+                for (var key in obj) {
+                    sh.uniforms[key] = obj[key];
+                }
+            };
+            MultiTextureSpriteRenderer.prototype.onContextChange = function () {
+                var gl = this.renderer.gl;
+                this.MAX_TEXTURES = Math.min(this.MAX_TEXTURES_LOCAL, this.renderer.plugins['sprite'].MAX_TEXTURES);
+                this.shader = webgl.generateMultiTextureShader(this.shaderVert, this.shaderFrag, gl, this.MAX_TEXTURES);
+                this.indexBuffer = GLBuffer.createIndexBuffer(gl, this.indices, gl.STATIC_DRAW);
+                this.renderer.bindVao(null);
+                var attrs = this.shader.attributes;
+                for (var i = 0; i < this.vaoMax; i++) {
+                    var vertexBuffer = this.vertexBuffers[i] = GLBuffer.createVertexBuffer(gl, null, gl.STREAM_DRAW);
+                    this.vaos[i] = this.createVao(vertexBuffer);
+                }
+                if (!this.buffers) {
+                    this.buffers = [];
+                    for (var i = 1; i <= pixi_projection.utils.nextPow2(this.size); i *= 2) {
+                        this.buffers.push(new webgl.BatchBuffer(i * 4 * this.vertByteSize));
+                    }
+                }
+                this.vao = this.vaos[0];
+            };
+            MultiTextureSpriteRenderer.prototype.onPrerender = function () {
+                this.vertexCount = 0;
+            };
+            MultiTextureSpriteRenderer.prototype.render = function (sprite) {
+                if (this.currentIndex >= this.size) {
+                    this.flush();
+                }
+                if (!sprite._texture._uvs) {
+                    return;
+                }
+                if (!sprite._texture.baseTexture) {
+                    return;
+                }
+                this.sprites[this.currentIndex++] = sprite;
+            };
+            MultiTextureSpriteRenderer.prototype.flush = function () {
+                if (this.currentIndex === 0) {
+                    return;
+                }
+                var gl = this.renderer.gl;
+                var MAX_TEXTURES = this.MAX_TEXTURES;
+                var np2 = pixi_projection.utils.nextPow2(this.currentIndex);
+                var log2 = pixi_projection.utils.log2(np2);
+                var buffer = this.buffers[log2];
+                var sprites = this.sprites;
+                var groups = this.groups;
+                var float32View = buffer.float32View;
+                var uint32View = buffer.uint32View;
+                var index = 0;
+                var nextTexture;
+                var currentTexture;
+                var currentUniforms = null;
+                var groupCount = 1;
+                var textureCount = 0;
+                var currentGroup = groups[0];
+                var vertexData;
+                var uvs;
+                var blendMode = premultiplyBlendMode[sprites[0]._texture.baseTexture.premultipliedAlpha ? 1 : 0][sprites[0].blendMode];
+                currentGroup.textureCount = 0;
+                currentGroup.start = 0;
+                currentGroup.blend = blendMode;
+                TICK++;
+                var i;
+                for (i = 0; i < this.currentIndex; ++i) {
+                    var sprite = sprites[i];
+                    nextTexture = sprite._texture.baseTexture;
+                    var spriteBlendMode = premultiplyBlendMode[Number(nextTexture.premultipliedAlpha)][sprite.blendMode];
+                    if (blendMode !== spriteBlendMode) {
+                        blendMode = spriteBlendMode;
+                        currentTexture = null;
+                        textureCount = MAX_TEXTURES;
+                        TICK++;
+                    }
+                    var uniforms = this.getUniforms(sprite);
+                    if (currentUniforms !== uniforms) {
+                        currentUniforms = uniforms;
+                        currentTexture = null;
+                        textureCount = MAX_TEXTURES;
+                        TICK++;
+                    }
+                    if (currentTexture !== nextTexture) {
+                        currentTexture = nextTexture;
+                        if (nextTexture._enabled !== TICK) {
+                            if (textureCount === MAX_TEXTURES) {
+                                TICK++;
+                                textureCount = 0;
+                                currentGroup.size = i - currentGroup.start;
+                                currentGroup = groups[groupCount++];
+                                currentGroup.textureCount = 0;
+                                currentGroup.blend = blendMode;
+                                currentGroup.start = i;
+                                currentGroup.uniforms = currentUniforms;
+                            }
+                            nextTexture._enabled = TICK;
+                            nextTexture._virtalBoundId = textureCount;
+                            currentGroup.textures[currentGroup.textureCount++] = nextTexture;
+                            textureCount++;
+                        }
+                    }
+                    var alpha = Math.min(sprite.worldAlpha, 1.0);
+                    var argb = alpha < 1.0 && nextTexture.premultipliedAlpha ? premultiplyTint(sprite._tintRGB, alpha)
+                        : sprite._tintRGB + (alpha * 255 << 24);
+                    this.fillVertices(float32View, uint32View, index, sprite, argb, nextTexture._virtalBoundId);
+                    index += this.vertSize * 4;
+                }
+                currentGroup.size = i - currentGroup.start;
+                if (!settings.CAN_UPLOAD_SAME_BUFFER) {
+                    if (this.vaoMax <= this.vertexCount) {
+                        this.vaoMax++;
+                        var attrs = this.shader.attributes;
+                        var vertexBuffer = this.vertexBuffers[this.vertexCount] = GLBuffer.createVertexBuffer(gl, null, gl.STREAM_DRAW);
+                        this.vaos[this.vertexCount] = this.createVao(vertexBuffer);
+                    }
+                    this.renderer.bindVao(this.vaos[this.vertexCount]);
+                    this.vertexBuffers[this.vertexCount].upload(buffer.vertices, 0, false);
+                    this.vertexCount++;
+                }
+                else {
+                    this.vertexBuffers[this.vertexCount].upload(buffer.vertices, 0, true);
+                }
+                currentUniforms = null;
+                for (i = 0; i < groupCount; i++) {
+                    var group = groups[i];
+                    var groupTextureCount = group.textureCount;
+                    if (group.uniforms !== currentUniforms) {
+                        this.syncUniforms(group.uniforms);
+                    }
+                    for (var j = 0; j < groupTextureCount; j++) {
+                        this.renderer.bindTexture(group.textures[j], j, true);
+                        var v = this.shader.uniforms.samplerSize;
+                        if (v) {
+                            v[0] = group.textures[j].realWidth;
+                            v[1] = group.textures[j].realHeight;
+                            this.shader.uniforms.samplerSize = v;
+                        }
+                    }
+                    this.renderer.state.setBlendMode(group.blend);
+                    gl.drawElements(gl.TRIANGLES, group.size * 6, gl.UNSIGNED_SHORT, group.start * 6 * 2);
+                }
+                this.currentIndex = 0;
+            };
+            MultiTextureSpriteRenderer.prototype.start = function () {
+                this.renderer.bindShader(this.shader);
+                if (settings.CAN_UPLOAD_SAME_BUFFER) {
+                    this.renderer.bindVao(this.vaos[this.vertexCount]);
+                    this.vertexBuffers[this.vertexCount].bind();
+                }
+            };
+            MultiTextureSpriteRenderer.prototype.stop = function () {
+                this.flush();
+            };
+            MultiTextureSpriteRenderer.prototype.destroy = function () {
+                for (var i = 0; i < this.vaoMax; i++) {
+                    if (this.vertexBuffers[i]) {
+                        this.vertexBuffers[i].destroy();
+                    }
+                    if (this.vaos[i]) {
+                        this.vaos[i].destroy();
+                    }
+                }
+                if (this.indexBuffer) {
+                    this.indexBuffer.destroy();
+                }
+                this.renderer.off('prerender', this.onPrerender, this);
+                _super.prototype.destroy.call(this);
+                if (this.shader) {
+                    this.shader.destroy();
+                    this.shader = null;
+                }
+                this.vertexBuffers = null;
+                this.vaos = null;
+                this.indexBuffer = null;
+                this.indices = null;
+                this.sprites = null;
+                for (var i = 0; i < this.buffers.length; ++i) {
+                    this.buffers[i].destroy();
+                }
+            };
+            return MultiTextureSpriteRenderer;
+        }(ObjectRenderer));
+        webgl.MultiTextureSpriteRenderer = MultiTextureSpriteRenderer;
+    })(webgl = pixi_projection.webgl || (pixi_projection.webgl = {}));
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var tempPoint = new PIXI.Point();
+    var Surface = (function () {
+        function Surface() {
+            this.surfaceID = "default";
+            this._updateID = 0;
+            this.vertexSrc = "";
+            this.fragmentSrc = "";
+        }
+        Surface.prototype.fillUniforms = function (uniforms) {
+        };
+        Surface.prototype.boundsQuad = function (v, out, after) {
+            var minX = out[0], minY = out[1];
+            var maxX = out[0], maxY = out[1];
+            for (var i = 2; i < 8; i += 2) {
+                if (minX > out[i])
+                    minX = out[i];
+                if (maxX < out[i])
+                    maxX = out[i];
+                if (minY > out[i + 1])
+                    minY = out[i + 1];
+                if (maxY < out[i + 1])
+                    maxY = out[i + 1];
+            }
+            tempPoint.set(minX, minY);
+            this.apply(tempPoint, tempPoint);
+            if (after) {
+                after.apply(tempPoint, tempPoint);
+            }
+            out[0] = tempPoint.x;
+            out[1] = tempPoint.y;
+            tempPoint.set(maxX, minY);
+            this.apply(tempPoint, tempPoint);
+            if (after) {
+                after.apply(tempPoint, tempPoint);
+            }
+            out[2] = tempPoint.x;
+            out[3] = tempPoint.y;
+            tempPoint.set(maxX, maxY);
+            this.apply(tempPoint, tempPoint);
+            if (after) {
+                after.apply(tempPoint, tempPoint);
+            }
+            out[4] = tempPoint.x;
+            out[5] = tempPoint.y;
+            tempPoint.set(minX, maxY);
+            this.apply(tempPoint, tempPoint);
+            if (after) {
+                after.apply(tempPoint, tempPoint);
+            }
+            out[6] = tempPoint.x;
+            out[7] = tempPoint.y;
+        };
+        return Surface;
+    }());
+    pixi_projection.Surface = Surface;
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var tempMat = new PIXI.Matrix();
+    var tempRect = new PIXI.Rectangle();
+    var tempPoint = new PIXI.Point();
+    var BilinearSurface = (function (_super) {
+        __extends(BilinearSurface, _super);
+        function BilinearSurface() {
+            var _this = _super.call(this) || this;
+            _this.distortion = new PIXI.Point();
+            return _this;
+        }
+        BilinearSurface.prototype.apply = function (pos, newPos) {
+            newPos = newPos || new PIXI.Point();
+            var d = this.distortion;
+            var m = pos.x * pos.y;
+            newPos.x = pos.x + d.x * m;
+            newPos.y = pos.y + d.y * m;
+            return newPos;
+        };
+        BilinearSurface.prototype.applyInverse = function (pos, newPos) {
+            newPos = newPos || new PIXI.Point();
+            var px = pos.x, py = pos.y;
+            var dx = this.distortion.x, dy = this.distortion.y;
+            newPos.x = px * (dx + 1) / (dx + 1 + py * dy);
+            newPos.y = py * (dy + 1) / (dy + 1 + px * dx);
+            return newPos;
+        };
+        BilinearSurface.prototype.mapSprite = function (sprite, quad, outTransform) {
+            var tex = sprite.texture;
+            tempRect.x = -sprite.anchor.x * tex.orig.width;
+            tempRect.y = -sprite.anchor.y * tex.orig.height;
+            tempRect.width = tex.orig.width;
+            tempRect.height = tex.orig.height;
+            return this.mapQuad(tempRect, quad, outTransform || sprite.transform);
+        };
+        BilinearSurface.prototype.mapQuad = function (rect, quad, outTransform) {
+            var ax = -rect.x / rect.width;
+            var ay = -rect.y / rect.height;
+            var ax2 = (1.0 - rect.x) / rect.width;
+            var ay2 = (1.0 - rect.y) / rect.height;
+            var up1x = (quad[0].x * (1.0 - ax) + quad[1].x * ax);
+            var up1y = (quad[0].y * (1.0 - ax) + quad[1].y * ax);
+            var up2x = (quad[0].x * (1.0 - ax2) + quad[1].x * ax2);
+            var up2y = (quad[0].y * (1.0 - ax2) + quad[1].y * ax2);
+            var down1x = (quad[3].x * (1.0 - ax) + quad[2].x * ax);
+            var down1y = (quad[3].y * (1.0 - ax) + quad[2].y * ax);
+            var down2x = (quad[3].x * (1.0 - ax2) + quad[2].x * ax2);
+            var down2y = (quad[3].y * (1.0 - ax2) + quad[2].y * ax2);
+            var x00 = up1x * (1.0 - ay) + down1x * ay;
+            var y00 = up1y * (1.0 - ay) + down1y * ay;
+            var x10 = up2x * (1.0 - ay) + down2x * ay;
+            var y10 = up2y * (1.0 - ay) + down2y * ay;
+            var x01 = up1x * (1.0 - ay2) + down1x * ay2;
+            var y01 = up1y * (1.0 - ay2) + down1y * ay2;
+            var x11 = up2x * (1.0 - ay2) + down2x * ay2;
+            var y11 = up2y * (1.0 - ay2) + down2y * ay2;
+            var mat = tempMat;
+            mat.tx = x00;
+            mat.ty = y00;
+            mat.a = x10 - x00;
+            mat.b = y10 - y00;
+            mat.c = x01 - x00;
+            mat.d = y01 - y00;
+            tempPoint.set(x11, y11);
+            mat.applyInverse(tempPoint, tempPoint);
+            this.distortion.set(tempPoint.x - 1, tempPoint.y - 1);
+            outTransform.setFromMatrix(mat);
+            return this;
+        };
+        BilinearSurface.prototype.fillUniforms = function (uniforms) {
+            uniforms.distortion = uniforms.distortion || new Float32Array([0, 0]);
+            var ax = Math.abs(this.distortion.x);
+            var ay = Math.abs(this.distortion.y);
+            uniforms.distortion[0] = ax * 10000 <= ay ? 0 : this.distortion.x;
+            uniforms.distortion[1] = ay * 10000 <= ax ? 0 : this.distortion.y;
+        };
+        return BilinearSurface;
+    }(pixi_projection.Surface));
+    pixi_projection.BilinearSurface = BilinearSurface;
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var fun = PIXI.TransformStatic.prototype.updateTransform;
+    function transformHack(parentTransform) {
+        var proj = this.proj;
+        var pp = parentTransform.proj;
+        var ta = this;
+        if (!pp) {
+            fun.call(this, parentTransform);
+            proj._activeProjection = null;
+            return;
+        }
+        if (pp._surface) {
+            proj._activeProjection = pp;
+            this.updateLocalTransform();
+            this.localTransform.copy(this.worldTransform);
+            if (ta._parentID < 0) {
+                ++ta._worldID;
+            }
+            return;
+        }
+        fun.call(this, parentTransform);
+        proj._activeProjection = pp._activeProjection;
+    }
+    var ProjectionSurface = (function (_super) {
+        __extends(ProjectionSurface, _super);
+        function ProjectionSurface(legacy, enable) {
+            var _this = _super.call(this, legacy, enable) || this;
+            _this._surface = null;
+            _this._activeProjection = null;
+            _this._currentSurfaceID = -1;
+            _this._currentLegacyID = -1;
+            _this._lastUniforms = null;
+            return _this;
+        }
+        Object.defineProperty(ProjectionSurface.prototype, "enabled", {
+            set: function (value) {
+                if (value === this._enabled) {
+                    return;
+                }
+                this._enabled = value;
+                if (value) {
+                    this.legacy.updateTransform = transformHack;
+                    this.legacy._parentID = -1;
+                }
+                else {
+                    this.legacy.updateTransform = PIXI.TransformStatic.prototype.updateTransform;
+                    this.legacy._parentID = -1;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ProjectionSurface.prototype, "surface", {
+            get: function () {
+                return this._surface;
+            },
+            set: function (value) {
+                if (this._surface == value) {
+                    return;
+                }
+                this._surface = value || null;
+                this.legacy._parentID = -1;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ProjectionSurface.prototype.applyPartial = function (pos, newPos) {
+            if (this._activeProjection !== null) {
+                newPos = this.legacy.worldTransform.apply(pos, newPos);
+                return this._activeProjection.surface.apply(newPos, newPos);
+            }
+            if (this._surface !== null) {
+                return this.surface.apply(pos, newPos);
+            }
+            return this.legacy.worldTransform.apply(pos, newPos);
+        };
+        ProjectionSurface.prototype.apply = function (pos, newPos) {
+            if (this._activeProjection !== null) {
+                newPos = this.legacy.worldTransform.apply(pos, newPos);
+                this._activeProjection.surface.apply(newPos, newPos);
+                return this._activeProjection.legacy.worldTransform.apply(newPos, newPos);
+            }
+            if (this._surface !== null) {
+                newPos = this.surface.apply(pos, newPos);
+                return this.legacy.worldTransform.apply(newPos, newPos);
+            }
+            return this.legacy.worldTransform.apply(pos, newPos);
+        };
+        ProjectionSurface.prototype.applyInverse = function (pos, newPos) {
+            if (this._activeProjection !== null) {
+                newPos = this._activeProjection.legacy.worldTransform.applyInverse(pos, newPos);
+                this._activeProjection._surface.applyInverse(newPos, newPos);
+                return this.legacy.worldTransform.applyInverse(newPos, newPos);
+            }
+            if (this._surface !== null) {
+                newPos = this.legacy.worldTransform.apply(pos, newPos);
+                return this._surface.applyInverse(newPos, newPos);
+            }
+            return this.legacy.worldTransform.applyInverse(pos, newPos);
+        };
+        ProjectionSurface.prototype.mapBilinearSprite = function (sprite, quad) {
+            if (!(this._surface instanceof pixi_projection.BilinearSurface)) {
+                this.surface = new pixi_projection.BilinearSurface();
+            }
+            this.surface.mapSprite(sprite, quad, this.legacy);
+        };
+        Object.defineProperty(ProjectionSurface.prototype, "uniforms", {
+            get: function () {
+                if (this._currentLegacyID === this.legacy._worldID &&
+                    this._currentSurfaceID === this.surface._updateID) {
+                    return this._lastUniforms;
+                }
+                this._lastUniforms = this._lastUniforms || {};
+                this._lastUniforms.worldTransform = this.legacy.worldTransform.toArray(true);
+                this._surface.fillUniforms(this._lastUniforms);
+                return this._lastUniforms;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ProjectionSurface;
+    }(pixi_projection.Projection));
+    pixi_projection.ProjectionSurface = ProjectionSurface;
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var MultiTextureSpriteRenderer = pixi_projection.webgl.MultiTextureSpriteRenderer;
+    var SpriteBilinearRenderer = (function (_super) {
+        __extends(SpriteBilinearRenderer, _super);
+        function SpriteBilinearRenderer() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.size = 100;
+            _this.MAX_TEXTURES = 1;
+            _this.shaderVert = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec3 aTrans1;\nattribute vec3 aTrans2;\nattribute vec4 aFrame;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\nuniform mat3 worldTransform;\n\nvarying vec2 vTextureCoord;\nvarying vec3 vTrans1;\nvarying vec3 vTrans2;\nvarying vec4 vFrame;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position.xyw = projectionMatrix * worldTransform * vec3(aVertexPosition, 1.0);\n    gl_Position.z = 0.0;\n    \n    vTextureCoord = aVertexPosition;\n    vTrans1 = aTrans1;\n    vTrans2 = aTrans2;\n    vTextureId = aTextureId;\n    vColor = aColor;\n    vFrame = aFrame;\n}\n";
+            _this.shaderFrag = "precision highp float;\nvarying vec2 vTextureCoord;\nvarying vec3 vTrans1;\nvarying vec3 vTrans2;\nvarying vec4 vFrame;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nuniform sampler2D uSamplers[%count%];\nuniform vec2 samplerSize[%count%]; \nuniform vec2 distortion;\n\nvoid main(void){\nvec2 surface;\n\nfloat vx = vTextureCoord.x;\nfloat vy = vTextureCoord.y;\nfloat dx = distortion.x;\nfloat dy = distortion.y;\n\nif (distortion.x == 0.0) {\n    surface.x = vx;\n    surface.y = vy / (1.0 + dy * vx);\n} else\nif (distortion.y == 0.0) {\n    surface.y = vy;\n    surface.x = vx/ (1.0 + dx * vy);\n} else {\n    float b = (vy * dx - vx * dy + 1.0) * 0.5 / dy;\n    float d = b * b + vx / dy;\n\n    if (d <= 0.00001) {\n        discard;\n    }\n    if (dy > 0.0) {\n    \tsurface.x = - b + sqrt(d);\n    } else {\n    \tsurface.x = - b - sqrt(d);\n    }\n    surface.y = (vx / surface.x - 1.0) / dx;\n}\n\nvec2 uv;\nuv.x = vTrans1.x * surface.x + vTrans1.y * surface.y + vTrans1.z;\nuv.y = vTrans2.x * surface.x + vTrans2.y * surface.y + vTrans2.z;\n\nvec4 edge;\nedge.xy = clamp(uv - vFrame.xy + 0.5, vec2(0.0, 0.0), vec2(1.0, 1.0));\nedge.zw = clamp(vFrame.zw - uv + 0.5, vec2(0.0, 0.0), vec2(1.0, 1.0));\n\nfloat alpha = 1.0; //edge.x * edge.y * edge.z * edge.w;\nvec4 rColor = vColor * alpha;\n\nfloat textureId = floor(vTextureId+0.5);\nvec4 color;\nvec2 textureCoord = uv;\n%forloop%\ngl_FragColor = color * rColor;\n}";
+            _this.defUniforms = {
+                worldTransform: new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]),
+                distortion: new Float32Array([0, 0])
+            };
+            return _this;
+        }
+        SpriteBilinearRenderer.prototype.getUniforms = function (sprite) {
+            var proj = sprite.proj;
+            var shader = this.shader;
+            if (proj.surface !== null) {
+                return proj.uniforms;
+            }
+            if (proj._activeProjection !== null) {
+                return proj._activeProjection.uniforms;
+            }
+            return this.defUniforms;
+        };
+        SpriteBilinearRenderer.prototype.createVao = function (vertexBuffer) {
+            var attrs = this.shader.attributes;
+            this.vertSize = 14;
+            this.vertByteSize = this.vertSize * 4;
+            var gl = this.renderer.gl;
+            var vao = this.renderer.createVao()
+                .addIndex(this.indexBuffer)
+                .addAttribute(vertexBuffer, attrs.aVertexPosition, gl.FLOAT, false, this.vertByteSize, 0)
+                .addAttribute(vertexBuffer, attrs.aTrans1, gl.FLOAT, false, this.vertByteSize, 2 * 4)
+                .addAttribute(vertexBuffer, attrs.aTrans2, gl.FLOAT, false, this.vertByteSize, 5 * 4)
+                .addAttribute(vertexBuffer, attrs.aFrame, gl.FLOAT, false, this.vertByteSize, 8 * 4)
+                .addAttribute(vertexBuffer, attrs.aColor, gl.UNSIGNED_BYTE, true, this.vertByteSize, 12 * 4);
+            if (attrs.aTextureId) {
+                vao.addAttribute(vertexBuffer, attrs.aTextureId, gl.FLOAT, false, this.vertByteSize, 13 * 4);
+            }
+            return vao;
+        };
+        SpriteBilinearRenderer.prototype.fillVertices = function (float32View, uint32View, index, sprite, argb, textureId) {
+            var vertexData = sprite.vertexData;
+            var tex = sprite._texture;
+            var w = tex.orig.width;
+            var h = tex.orig.height;
+            var ax = sprite._anchor._x;
+            var ay = sprite._anchor._y;
+            var uvs = tex._uvs;
+            var aTrans = sprite.aTrans;
+            for (var i = 0; i < 4; i++) {
+                float32View[index] = vertexData[i * 2];
+                float32View[index + 1] = vertexData[i * 2 + 1];
+                float32View[index + 2] = aTrans.a;
+                float32View[index + 3] = aTrans.c;
+                float32View[index + 4] = aTrans.tx;
+                float32View[index + 5] = aTrans.b;
+                float32View[index + 6] = aTrans.d;
+                float32View[index + 7] = aTrans.ty;
+                float32View[index + 8] = uvs.x0;
+                float32View[index + 9] = uvs.y0;
+                float32View[index + 10] = uvs.x1;
+                float32View[index + 11] = uvs.y1;
+                uint32View[index + 12] = argb;
+                float32View[index + 13] = textureId;
+                index += 14;
+            }
+        };
+        return SpriteBilinearRenderer;
+    }(MultiTextureSpriteRenderer));
+    PIXI.WebGLRenderer.registerPlugin('sprite_bilinear', SpriteBilinearRenderer);
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    PIXI.Sprite.prototype.convertTo2s = function () {
+        if (this.proj)
+            return;
+        this.pluginName = 'sprite_bilinear';
+        this.aTrans = new PIXI.Matrix();
+        this.calculateVertices = pixi_projection.Sprite2s.prototype.calculateVertices;
+        this.calculateTrimmedVertices = pixi_projection.Sprite2s.prototype.calculateTrimmedVertices;
+        PIXI.Container.prototype.convertTo2s.call(this);
+    };
+    PIXI.Container.prototype.convertTo2s = function () {
+        if (this.proj)
+            return;
+        this.proj = new pixi_projection.Projection2d(this.transform);
+        Object.defineProperty(this, "worldTransform", {
+            get: function () {
+                return this.proj;
+            },
+            enumerable: true,
+            configurable: true
+        });
+    };
+    PIXI.Container.prototype.convertSubtreeTo2s = function () {
+        this.convertTo2s();
+        for (var i = 0; i < this.children.length; i++) {
+            this.children[i].convertSubtreeTo2s();
+        }
+    };
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var Sprite2s = (function (_super) {
+        __extends(Sprite2s, _super);
+        function Sprite2s(texture) {
+            var _this = _super.call(this, texture) || this;
+            _this.aTrans = new PIXI.Matrix();
+            _this.proj = new pixi_projection.ProjectionSurface(_this.transform);
+            _this.pluginName = 'sprite_bilinear';
+            return _this;
+        }
+        Sprite2s.prototype.calculateVertices = function () {
+            var wid = this.transform._worldID;
+            var tuid = this._texture._updateID;
+            if (this._transformID === wid && this._textureID === tuid) {
+                return;
+            }
+            this._transformID = wid;
+            this._textureID = tuid;
+            var texture = this._texture;
+            var vertexData = this.vertexData;
+            var trim = texture.trim;
+            var orig = texture.orig;
+            var anchor = this._anchor;
+            var w0 = 0;
+            var w1 = 0;
+            var h0 = 0;
+            var h1 = 0;
+            if (trim) {
+                w1 = trim.x - (anchor._x * orig.width);
+                w0 = w1 + trim.width;
+                h1 = trim.y - (anchor._y * orig.height);
+                h0 = h1 + trim.height;
+            }
+            else {
+                w1 = -anchor._x * orig.width;
+                w0 = w1 + orig.width;
+                h1 = -anchor._y * orig.height;
+                h0 = h1 + orig.height;
+            }
+            if (this.proj._surface) {
+                vertexData[0] = w1;
+                vertexData[1] = h1;
+                vertexData[2] = w0;
+                vertexData[3] = h1;
+                vertexData[4] = w0;
+                vertexData[5] = h0;
+                vertexData[6] = w1;
+                vertexData[7] = h0;
+                this.proj._surface.boundsQuad(vertexData, vertexData);
+            }
+            else {
+                var wt = this.transform.worldTransform;
+                var a = wt.a;
+                var b = wt.b;
+                var c = wt.c;
+                var d = wt.d;
+                var tx = wt.tx;
+                var ty = wt.ty;
+                vertexData[0] = (a * w1) + (c * h1) + tx;
+                vertexData[1] = (d * h1) + (b * w1) + ty;
+                vertexData[2] = (a * w0) + (c * h1) + tx;
+                vertexData[3] = (d * h1) + (b * w0) + ty;
+                vertexData[4] = (a * w0) + (c * h0) + tx;
+                vertexData[5] = (d * h0) + (b * w0) + ty;
+                vertexData[6] = (a * w1) + (c * h0) + tx;
+                vertexData[7] = (d * h0) + (b * w1) + ty;
+                if (this.proj._activeProjection) {
+                    this.proj._activeProjection.surface.boundsQuad(vertexData, vertexData);
+                }
+            }
+            if (!texture.transform) {
+                texture.transform = new PIXI.extras.TextureTransform(texture);
+            }
+            texture.transform.update();
+            var aTrans = this.aTrans;
+            aTrans.set(orig.width, 0, 0, orig.height, w1, h1);
+            if (this.proj._surface === null) {
+                aTrans.prepend(this.transform.worldTransform);
+            }
+            aTrans.invert();
+            aTrans.prepend(texture.transform.mapCoord);
+        };
+        Sprite2s.prototype.calculateTrimmedVertices = function () {
+            var wid = this.transform._worldID;
+            var tuid = this._texture._updateID;
+            if (!this.vertexTrimmedData) {
+                this.vertexTrimmedData = new Float32Array(8);
+            }
+            else if (this._transformTrimmedID === wid && this._textureTrimmedID === tuid) {
+                return;
+            }
+            this._transformTrimmedID = wid;
+            this._textureTrimmedID = tuid;
+            var texture = this._texture;
+            var vertexData = this.vertexTrimmedData;
+            var orig = texture.orig;
+            var anchor = this._anchor;
+            var w1 = -anchor._x * orig.width;
+            var w0 = w1 + orig.width;
+            var h1 = -anchor._y * orig.height;
+            var h0 = h1 + orig.height;
+            if (this.proj._surface) {
+                vertexData[0] = w1;
+                vertexData[1] = h1;
+                vertexData[2] = w0;
+                vertexData[3] = h1;
+                vertexData[4] = w0;
+                vertexData[5] = h0;
+                vertexData[6] = w1;
+                vertexData[7] = h0;
+                this.proj._surface.boundsQuad(vertexData, vertexData, this.transform.worldTransform);
+            }
+            else {
+                var wt = this.transform.worldTransform;
+                var a = wt.a;
+                var b = wt.b;
+                var c = wt.c;
+                var d = wt.d;
+                var tx = wt.tx;
+                var ty = wt.ty;
+                vertexData[0] = (a * w1) + (c * h1) + tx;
+                vertexData[1] = (d * h1) + (b * w1) + ty;
+                vertexData[2] = (a * w0) + (c * h1) + tx;
+                vertexData[3] = (d * h1) + (b * w0) + ty;
+                vertexData[4] = (a * w0) + (c * h0) + tx;
+                vertexData[5] = (d * h0) + (b * w0) + ty;
+                vertexData[6] = (a * w1) + (c * h0) + tx;
+                vertexData[7] = (d * h0) + (b * w1) + ty;
+                if (this.proj._activeProjection) {
+                    this.proj._activeProjection.surface.boundsQuad(vertexData, vertexData, this.proj._activeProjection.legacy.worldTransform);
+                }
+            }
+        };
+        Object.defineProperty(Sprite2s.prototype, "worldTransform", {
+            get: function () {
+                return this.proj;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Sprite2s;
+    }(PIXI.Sprite));
+    pixi_projection.Sprite2s = Sprite2s;
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var Text2s = (function (_super) {
+        __extends(Text2s, _super);
+        function Text2s(text, style, canvas) {
+            var _this = _super.call(this, text, style, canvas) || this;
+            _this.aTrans = new PIXI.Matrix();
+            _this.proj = new pixi_projection.ProjectionSurface(_this.transform);
+            _this.pluginName = 'sprite_bilinear';
+            return _this;
+        }
+        Object.defineProperty(Text2s.prototype, "worldTransform", {
+            get: function () {
+                return this.proj;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Text2s;
+    }(PIXI.Text));
+    pixi_projection.Text2s = Text2s;
+    Text2s.prototype.calculateVertices = pixi_projection.Sprite2s.prototype.calculateVertices;
+    Text2s.prototype.calculateTrimmedVertices = pixi_projection.Sprite2s.prototype.calculateTrimmedVertices;
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
     var Container2d = (function (_super) {
         __extends(Container2d, _super);
         function Container2d(texture) {
@@ -280,11 +1135,11 @@ var pixi_projection;
             lt.tx = ta.position._x - ((ta.pivot._x * lt.a) + (ta.pivot._y * lt.c));
             lt.ty = ta.position._y - ((ta.pivot._x * lt.b) + (ta.pivot._y * lt.d));
             ta._currentLocalID = ta._localID;
-            proj._currentMatrixID = -1;
+            proj._currentProjID = -1;
         }
-        var _matrixID = proj._matrixID;
-        if (proj._currentMatrixID !== _matrixID) {
-            proj._currentMatrixID = _matrixID;
+        var _matrixID = proj._projID;
+        if (proj._currentProjID !== _matrixID) {
+            proj._currentProjID = _matrixID;
             if (_matrixID !== 0) {
                 proj.local.setToMultLegacy(lt, proj.matrix);
             }
@@ -311,25 +1166,18 @@ var pixi_projection;
     var t2 = new PIXI.Point();
     var tempZero = new PIXI.Point(0, 0);
     var tempMat = new pixi_projection.Matrix2d();
-    var Projection2d = (function () {
+    var Projection2d = (function (_super) {
+        __extends(Projection2d, _super);
         function Projection2d(legacy, enable) {
-            if (enable === void 0) { enable = true; }
-            this.matrix = new pixi_projection.Matrix2d();
-            this.local = new pixi_projection.Matrix2d();
-            this.world = new pixi_projection.Matrix2d();
-            this._matrixID = 0;
-            this._currentMatrixID = -1;
-            this._enabled = false;
-            this.legacy = legacy;
-            if (enable) {
-                this.enabled = true;
-            }
-            this.legacy.proj = this;
+            var _this = _super.call(this, legacy, enable) || this;
+            _this.matrix = new pixi_projection.Matrix2d();
+            _this.local = new pixi_projection.Matrix2d();
+            _this.world = new pixi_projection.Matrix2d();
+            _this._projID = 0;
+            _this._currentProjID = -1;
+            return _this;
         }
         Object.defineProperty(Projection2d.prototype, "enabled", {
-            get: function () {
-                return this._enabled;
-            },
             set: function (value) {
                 if (value === this._enabled) {
                     return;
@@ -337,9 +1185,11 @@ var pixi_projection;
                 this._enabled = value;
                 if (value) {
                     this.legacy.updateTransform = transformHack;
+                    this.legacy._parentID = -1;
                 }
                 else {
                     this.legacy.updateTransform = PIXI.TransformStatic.prototype.updateTransform;
+                    this.legacy._parentID = -1;
                 }
             },
             enumerable: true,
@@ -353,7 +1203,7 @@ var pixi_projection;
             mat3[0] = x / d;
             mat3[1] = y / d;
             mat3[2] = factor / d;
-            this._matrixID++;
+            this._projID++;
         };
         Projection2d.prototype.setAxisY = function (p, factor) {
             if (factor === void 0) { factor = 1; }
@@ -363,7 +1213,7 @@ var pixi_projection;
             mat3[3] = x / d;
             mat3[4] = y / d;
             mat3[5] = factor / d;
-            this._matrixID++;
+            this._projID++;
         };
         Projection2d.prototype.setFromQuad = function (p, anchor, sizeX, sizeY) {
             if (anchor === void 0) { anchor = tempZero; }
@@ -387,13 +1237,50 @@ var pixi_projection;
             this.matrix.setToMult2d(this.matrix, tempMat);
         };
         Projection2d.prototype.clear = function () {
-            this._currentMatrixID = -1;
-            this._matrixID = 0;
+            this._currentProjID = -1;
+            this._projID = 0;
             this.matrix.identity();
         };
         return Projection2d;
-    }());
+    }(pixi_projection.Projection));
     pixi_projection.Projection2d = Projection2d;
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    PIXI.Sprite.prototype.convertTo2d = function () {
+        if (this.proj)
+            return;
+        this.calculateVertices = pixi_projection.Sprite2d.prototype.calculateVertices;
+        this.calculateTrimmedVertices = pixi_projection.Sprite2d.prototype.calculateTrimmedVertices;
+        this.proj = new pixi_projection.Projection2d(this.transform);
+        this.pluginName = 'sprite2d';
+        this.vertexData = new Float32Array(12);
+        Object.defineProperty(this, "worldTransform", {
+            get: function () {
+                return this.proj.world;
+            },
+            enumerable: true,
+            configurable: true
+        });
+    };
+    PIXI.Container.prototype.convertTo2d = function () {
+        if (this.proj)
+            return;
+        this.proj = new pixi_projection.Projection2d(this.transform);
+        this.pluginName = 'sprite2d';
+        Object.defineProperty(this, "worldTransform", {
+            get: function () {
+                return this.proj.world;
+            },
+            enumerable: true,
+            configurable: true
+        });
+    };
+    PIXI.Container.prototype.convertSubtreeTo2d = function () {
+        this.convertTo2d();
+        for (var i = 0; i < this.children.length; i++) {
+            this.children[i].convertSubtreeTo2d();
+        }
+    };
 })(pixi_projection || (pixi_projection = {}));
 (function (pixi_projection) {
     var Sprite2d = (function (_super) {
@@ -493,348 +1380,111 @@ var pixi_projection;
     pixi_projection.Sprite2d = Sprite2d;
 })(pixi_projection || (pixi_projection = {}));
 (function (pixi_projection) {
-    var webgl;
-    (function (webgl) {
-        var BatchBuffer = (function () {
-            function BatchBuffer(size) {
-                this.vertices = new ArrayBuffer(size);
-                this.float32View = new Float32Array(this.vertices);
-                this.uint32View = new Uint32Array(this.vertices);
-            }
-            BatchBuffer.prototype.destroy = function () {
-                this.vertices = null;
-            };
-            return BatchBuffer;
-        }());
-        webgl.BatchBuffer = BatchBuffer;
-    })(webgl = pixi_projection.webgl || (pixi_projection.webgl = {}));
-})(pixi_projection || (pixi_projection = {}));
-(function (pixi_projection) {
-    var webgl;
-    (function (webgl) {
-        webgl.defaultTextureVertex = "precision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position.xyw = projectionMatrix * aVertexPosition;\n    gl_Position.z = 0.0;\n    \n    vTextureCoord = aTextureCoord;\n    vTextureId = aTextureId;\n    vColor = aColor;\n}\n";
-        var fragTemplate = [
-            'varying vec2 vTextureCoord;',
-            'varying vec4 vColor;',
-            'varying float vTextureId;',
-            'uniform sampler2D uSamplers[%count%];',
-            'void main(void){',
-            'vec4 color;',
-            'float textureId = floor(vTextureId+0.5);',
-            '%forloop%',
-            'gl_FragColor = color * vColor;',
-            '}',
-        ].join('\n');
-        function generateMultiTextureShader(gl, maxTextures) {
-            var fragmentSrc = fragTemplate;
-            fragmentSrc = fragmentSrc.replace(/%count%/gi, maxTextures + '');
-            fragmentSrc = fragmentSrc.replace(/%forloop%/gi, generateSampleSrc(maxTextures));
-            var shader = new PIXI.Shader(gl, webgl.defaultTextureVertex, fragmentSrc);
-            var sampleValues = new Int32Array(maxTextures);
-            for (var i = 0; i < maxTextures; i++) {
-                sampleValues[i] = i;
-            }
-            shader.bind();
-            shader.uniforms.uSamplers = sampleValues;
-            return shader;
+    var MultiTextureSpriteRenderer = pixi_projection.webgl.MultiTextureSpriteRenderer;
+    var Sprite2dRenderer = (function (_super) {
+        __extends(Sprite2dRenderer, _super);
+        function Sprite2dRenderer() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.shaderVert = "precision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position.xyw = projectionMatrix * aVertexPosition;\n    gl_Position.z = 0.0;\n    \n    vTextureCoord = aTextureCoord;\n    vTextureId = aTextureId;\n    vColor = aColor;\n}\n";
+            _this.shaderFrag = "\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\nuniform sampler2D uSamplers[%count%];\n\nvoid main(void){\nvec4 color;\nvec2 textureCoord = vTextureCoord;\nfloat textureId = floor(vTextureId+0.5);\n%forloop%\ngl_FragColor = color * vColor;\n}";
+            return _this;
         }
-        webgl.generateMultiTextureShader = generateMultiTextureShader;
-        function generateSampleSrc(maxTextures) {
-            var src = '';
-            src += '\n';
-            src += '\n';
-            for (var i = 0; i < maxTextures; i++) {
-                if (i > 0) {
-                    src += '\nelse ';
-                }
-                if (i < maxTextures - 1) {
-                    src += "if(textureId == " + i + ".0)";
-                }
-                src += '\n{';
-                src += "\n\tcolor = texture2D(uSamplers[" + i + "], vTextureCoord);";
-                src += '\n}';
+        Sprite2dRenderer.prototype.createVao = function (vertexBuffer) {
+            var attrs = this.shader.attributes;
+            this.vertSize = 6;
+            this.vertByteSize = this.vertSize * 4;
+            var gl = this.renderer.gl;
+            var vao = this.renderer.createVao()
+                .addIndex(this.indexBuffer)
+                .addAttribute(vertexBuffer, attrs.aVertexPosition, gl.FLOAT, false, this.vertByteSize, 0)
+                .addAttribute(vertexBuffer, attrs.aTextureCoord, gl.UNSIGNED_SHORT, true, this.vertByteSize, 3 * 4)
+                .addAttribute(vertexBuffer, attrs.aColor, gl.UNSIGNED_BYTE, true, this.vertByteSize, 4 * 4);
+            if (attrs.aTextureId) {
+                vao.addAttribute(vertexBuffer, attrs.aTextureId, gl.FLOAT, false, this.vertByteSize, 5 * 4);
             }
-            src += '\n';
-            src += '\n';
-            return src;
-        }
-    })(webgl = pixi_projection.webgl || (pixi_projection.webgl = {}));
-})(pixi_projection || (pixi_projection = {}));
-(function (pixi_projection) {
-    var webgl;
-    (function (webgl) {
-        var ObjectRenderer = PIXI.ObjectRenderer;
-        var settings = PIXI.settings;
-        var GLBuffer = PIXI.glCore.GLBuffer;
-        var WebGLRenderer = PIXI.WebGLRenderer;
-        var premultiplyTint = PIXI.utils.premultiplyTint;
-        var premultiplyBlendMode = PIXI.utils.premultiplyBlendMode;
-        var TICK = 0;
-        var BatchGroup = (function () {
-            function BatchGroup() {
-                this.textures = [];
-                this.textureCount = 0;
-                this.ids = [];
-                this.size = 0;
-                this.start = 0;
-                this.blend = PIXI.BLEND_MODES.NORMAL;
-            }
-            return BatchGroup;
-        }());
-        webgl.BatchGroup = BatchGroup;
-        var SpriteRenderer = (function (_super) {
-            __extends(SpriteRenderer, _super);
-            function SpriteRenderer(renderer) {
-                var _this = _super.call(this, renderer) || this;
-                _this.vertSize = 6;
-                _this.vertByteSize = _this.vertSize * 4;
-                _this.size = settings.SPRITE_BATCH_SIZE;
-                _this.currentIndex = 0;
-                _this.sprites = [];
-                _this.vertexBuffers = [];
-                _this.vaos = [];
-                _this.vaoMax = 2;
-                _this.vertexCount = 0;
-                _this.MAX_TEXTURES = 1;
-                _this.indices = pixi_projection.utils.createIndicesForQuads(_this.size);
-                _this.groups = [];
-                for (var k = 0; k < _this.size; k++) {
-                    _this.groups[k] = new BatchGroup();
-                }
-                _this.buffers = [];
-                for (var i = 1; i <= pixi_projection.utils.nextPow2(_this.size); i *= 2) {
-                    _this.buffers.push(new webgl.BatchBuffer(i * 4 * _this.vertByteSize));
-                }
-                _this.vaoMax = 2;
-                _this.vertexCount = 0;
-                _this.renderer.on('prerender', _this.onPrerender, _this);
-                return _this;
-            }
-            SpriteRenderer.prototype.onContextChange = function () {
-                var gl = this.renderer.gl;
-                this.MAX_TEXTURES = this.renderer.plugins['sprite'].MAX_TEXTURES;
-                this.shader = webgl.generateMultiTextureShader(gl, this.MAX_TEXTURES);
-                this.indexBuffer = GLBuffer.createIndexBuffer(gl, this.indices, gl.STATIC_DRAW);
-                this.renderer.bindVao(null);
-                var attrs = this.shader.attributes;
-                for (var i = 0; i < this.vaoMax; i++) {
-                    var vertexBuffer = this.vertexBuffers[i] = GLBuffer.createVertexBuffer(gl, null, gl.STREAM_DRAW);
-                    var vao = this.renderer.createVao()
-                        .addIndex(this.indexBuffer)
-                        .addAttribute(vertexBuffer, attrs.aVertexPosition, gl.FLOAT, false, this.vertByteSize, 0)
-                        .addAttribute(vertexBuffer, attrs.aTextureCoord, gl.UNSIGNED_SHORT, true, this.vertByteSize, 3 * 4)
-                        .addAttribute(vertexBuffer, attrs.aColor, gl.UNSIGNED_BYTE, true, this.vertByteSize, 4 * 4);
-                    if (attrs.aTextureId) {
-                        vao.addAttribute(vertexBuffer, attrs.aTextureId, gl.FLOAT, false, this.vertByteSize, 5 * 4);
-                    }
-                    this.vaos[i] = vao;
-                }
-                this.vao = this.vaos[0];
-            };
-            SpriteRenderer.prototype.onPrerender = function () {
-                this.vertexCount = 0;
-            };
-            SpriteRenderer.prototype.render = function (sprite) {
-                if (this.currentIndex >= this.size) {
-                    this.flush();
-                }
-                if (!sprite._texture._uvs) {
-                    return;
-                }
-                this.sprites[this.currentIndex++] = sprite;
-            };
-            SpriteRenderer.prototype.flush = function () {
-                if (this.currentIndex === 0) {
-                    return;
-                }
-                var gl = this.renderer.gl;
-                var MAX_TEXTURES = this.MAX_TEXTURES;
-                var np2 = pixi_projection.utils.nextPow2(this.currentIndex);
-                var log2 = pixi_projection.utils.log2(np2);
-                var buffer = this.buffers[log2];
-                var sprites = this.sprites;
-                var groups = this.groups;
-                var float32View = buffer.float32View;
-                var uint32View = buffer.uint32View;
-                var index = 0;
-                var nextTexture;
-                var currentTexture;
-                var groupCount = 1;
-                var textureId = 0;
-                var textureCount = 0;
-                var currentGroup = groups[0];
-                var vertexData;
-                var uvs;
-                var blendMode = premultiplyBlendMode[sprites[0]._texture.baseTexture.premultipliedAlpha ? 1 : 0][sprites[0].blendMode];
-                currentGroup.textureCount = 0;
-                currentGroup.start = 0;
-                currentGroup.blend = blendMode;
-                TICK++;
-                var i;
-                for (i = 0; i < this.currentIndex; ++i) {
-                    var sprite = sprites[i];
-                    nextTexture = sprite._texture.baseTexture;
-                    textureId = nextTexture._virtalBoundId;
-                    var spriteBlendMode = premultiplyBlendMode[Number(nextTexture.premultipliedAlpha)][sprite.blendMode];
-                    if (blendMode !== spriteBlendMode) {
-                        blendMode = spriteBlendMode;
-                        currentTexture = null;
-                        textureCount = MAX_TEXTURES;
-                        TICK++;
-                    }
-                    if (currentTexture !== nextTexture) {
-                        currentTexture = nextTexture;
-                        if (nextTexture._enabled !== TICK) {
-                            if (textureCount === MAX_TEXTURES) {
-                                TICK++;
-                                textureCount = 0;
-                                currentGroup.size = i - currentGroup.start;
-                                currentGroup = groups[groupCount++];
-                                currentGroup.textureCount = 0;
-                                currentGroup.blend = blendMode;
-                                currentGroup.start = i;
-                            }
-                            nextTexture._enabled = TICK;
-                            nextTexture._virtalBoundId = textureCount;
-                            currentGroup.textures[currentGroup.textureCount++] = nextTexture;
-                            textureCount++;
-                        }
-                    }
-                    vertexData = sprite.vertexData;
-                    uvs = sprite._texture._uvs.uvsUint32;
-                    textureId = nextTexture._batchId;
-                    if (vertexData.length === 8) {
-                        if (this.renderer.roundPixels) {
-                            var resolution = this.renderer.resolution;
-                            float32View[index] = ((vertexData[0] * resolution) | 0) / resolution;
-                            float32View[index + 1] = ((vertexData[1] * resolution) | 0) / resolution;
-                            float32View[index + 2] = 1.0;
-                            float32View[index + 6] = ((vertexData[2] * resolution) | 0) / resolution;
-                            float32View[index + 7] = ((vertexData[3] * resolution) | 0) / resolution;
-                            float32View[index + 8] = 1.0;
-                            float32View[index + 12] = ((vertexData[4] * resolution) | 0) / resolution;
-                            float32View[index + 13] = ((vertexData[5] * resolution) | 0) / resolution;
-                            float32View[index + 14] = 1.0;
-                            float32View[index + 18] = ((vertexData[6] * resolution) | 0) / resolution;
-                            float32View[index + 19] = ((vertexData[7] * resolution) | 0) / resolution;
-                            float32View[index + 20] = 1.0;
-                        }
-                        else {
-                            float32View[index] = vertexData[0];
-                            float32View[index + 1] = vertexData[1];
-                            float32View[index + 2] = 1.0;
-                            float32View[index + 6] = vertexData[2];
-                            float32View[index + 7] = vertexData[3];
-                            float32View[index + 8] = 1.0;
-                            float32View[index + 12] = vertexData[4];
-                            float32View[index + 13] = vertexData[5];
-                            float32View[index + 14] = 1.0;
-                            float32View[index + 18] = vertexData[6];
-                            float32View[index + 19] = vertexData[7];
-                            float32View[index + 20] = 1.0;
-                        }
-                    }
-                    else {
-                        float32View[index] = vertexData[0];
-                        float32View[index + 1] = vertexData[1];
-                        float32View[index + 2] = vertexData[2];
-                        float32View[index + 6] = vertexData[3];
-                        float32View[index + 7] = vertexData[4];
-                        float32View[index + 8] = vertexData[5];
-                        float32View[index + 12] = vertexData[6];
-                        float32View[index + 13] = vertexData[7];
-                        float32View[index + 14] = vertexData[8];
-                        float32View[index + 18] = vertexData[9];
-                        float32View[index + 19] = vertexData[10];
-                        float32View[index + 20] = vertexData[11];
-                    }
-                    uint32View[index + 3] = uvs[0];
-                    uint32View[index + 9] = uvs[1];
-                    uint32View[index + 15] = uvs[2];
-                    uint32View[index + 21] = uvs[3];
-                    var alpha = Math.min(sprite.worldAlpha, 1.0);
-                    var argb = alpha < 1.0 && nextTexture.premultipliedAlpha ? premultiplyTint(sprite._tintRGB, alpha)
-                        : sprite._tintRGB + (alpha * 255 << 24);
-                    uint32View[index + 4] = uint32View[index + 10] = uint32View[index + 16] = uint32View[index + 22] = argb;
-                    float32View[index + 5] = float32View[index + 11] = float32View[index + 17] = float32View[index + 23] = nextTexture._virtalBoundId;
-                    index += 24;
-                }
-                currentGroup.size = i - currentGroup.start;
-                if (!settings.CAN_UPLOAD_SAME_BUFFER) {
-                    if (this.vaoMax <= this.vertexCount) {
-                        this.vaoMax++;
-                        var attrs = this.shader.attributes;
-                        var vertexBuffer = this.vertexBuffers[this.vertexCount] = GLBuffer.createVertexBuffer(gl, null, gl.STREAM_DRAW);
-                        var vao = this.renderer.createVao()
-                            .addIndex(this.indexBuffer)
-                            .addAttribute(vertexBuffer, attrs.aVertexPosition, gl.FLOAT, false, this.vertByteSize, 0)
-                            .addAttribute(vertexBuffer, attrs.aTextureCoord, gl.UNSIGNED_SHORT, true, this.vertByteSize, 3 * 4)
-                            .addAttribute(vertexBuffer, attrs.aColor, gl.UNSIGNED_BYTE, true, this.vertByteSize, 4 * 4);
-                        if (attrs.aTextureId) {
-                            vao.addAttribute(vertexBuffer, attrs.aTextureId, gl.FLOAT, false, this.vertByteSize, 5 * 4);
-                        }
-                        this.vaos[this.vertexCount] = vao;
-                    }
-                    this.renderer.bindVao(this.vaos[this.vertexCount]);
-                    this.vertexBuffers[this.vertexCount].upload(buffer.vertices, 0, false);
-                    this.vertexCount++;
+            return vao;
+        };
+        Sprite2dRenderer.prototype.fillVertices = function (float32View, uint32View, index, sprite, argb, textureId) {
+            var vertexData = sprite.vertexData;
+            var uvs = sprite._texture._uvs.uvsUint32;
+            if (vertexData.length === 8) {
+                if (this.renderer.roundPixels) {
+                    var resolution = this.renderer.resolution;
+                    float32View[index] = ((vertexData[0] * resolution) | 0) / resolution;
+                    float32View[index + 1] = ((vertexData[1] * resolution) | 0) / resolution;
+                    float32View[index + 2] = 1.0;
+                    float32View[index + 6] = ((vertexData[2] * resolution) | 0) / resolution;
+                    float32View[index + 7] = ((vertexData[3] * resolution) | 0) / resolution;
+                    float32View[index + 8] = 1.0;
+                    float32View[index + 12] = ((vertexData[4] * resolution) | 0) / resolution;
+                    float32View[index + 13] = ((vertexData[5] * resolution) | 0) / resolution;
+                    float32View[index + 14] = 1.0;
+                    float32View[index + 18] = ((vertexData[6] * resolution) | 0) / resolution;
+                    float32View[index + 19] = ((vertexData[7] * resolution) | 0) / resolution;
+                    float32View[index + 20] = 1.0;
                 }
                 else {
-                    this.vertexBuffers[this.vertexCount].upload(buffer.vertices, 0, true);
+                    float32View[index] = vertexData[0];
+                    float32View[index + 1] = vertexData[1];
+                    float32View[index + 2] = 1.0;
+                    float32View[index + 6] = vertexData[2];
+                    float32View[index + 7] = vertexData[3];
+                    float32View[index + 8] = 1.0;
+                    float32View[index + 12] = vertexData[4];
+                    float32View[index + 13] = vertexData[5];
+                    float32View[index + 14] = 1.0;
+                    float32View[index + 18] = vertexData[6];
+                    float32View[index + 19] = vertexData[7];
+                    float32View[index + 20] = 1.0;
                 }
-                for (i = 0; i < groupCount; i++) {
-                    var group = groups[i];
-                    var groupTextureCount = group.textureCount;
-                    for (var j = 0; j < groupTextureCount; j++) {
-                        this.renderer.bindTexture(group.textures[j], j, true);
-                    }
-                    this.renderer.state.setBlendMode(group.blend);
-                    gl.drawElements(gl.TRIANGLES, group.size * 6, gl.UNSIGNED_SHORT, group.start * 6 * 2);
-                }
-                this.currentIndex = 0;
-            };
-            SpriteRenderer.prototype.start = function () {
-                this.renderer.bindShader(this.shader);
-                if (settings.CAN_UPLOAD_SAME_BUFFER) {
-                    this.renderer.bindVao(this.vaos[this.vertexCount]);
-                    this.vertexBuffers[this.vertexCount].bind();
-                }
-            };
-            SpriteRenderer.prototype.stop = function () {
-                this.flush();
-            };
-            SpriteRenderer.prototype.destroy = function () {
-                for (var i = 0; i < this.vaoMax; i++) {
-                    if (this.vertexBuffers[i]) {
-                        this.vertexBuffers[i].destroy();
-                    }
-                    if (this.vaos[i]) {
-                        this.vaos[i].destroy();
-                    }
-                }
-                if (this.indexBuffer) {
-                    this.indexBuffer.destroy();
-                }
-                this.renderer.off('prerender', this.onPrerender, this);
-                _super.prototype.destroy.call(this);
-                if (this.shader) {
-                    this.shader.destroy();
-                    this.shader = null;
-                }
-                this.vertexBuffers = null;
-                this.vaos = null;
-                this.indexBuffer = null;
-                this.indices = null;
-                this.sprites = null;
-                for (var i = 0; i < this.buffers.length; ++i) {
-                    this.buffers[i].destroy();
-                }
-            };
-            return SpriteRenderer;
-        }(ObjectRenderer));
-        webgl.SpriteRenderer = SpriteRenderer;
-        WebGLRenderer.registerPlugin('sprite2d', SpriteRenderer);
-    })(webgl = pixi_projection.webgl || (pixi_projection.webgl = {}));
+            }
+            else {
+                float32View[index] = vertexData[0];
+                float32View[index + 1] = vertexData[1];
+                float32View[index + 2] = vertexData[2];
+                float32View[index + 6] = vertexData[3];
+                float32View[index + 7] = vertexData[4];
+                float32View[index + 8] = vertexData[5];
+                float32View[index + 12] = vertexData[6];
+                float32View[index + 13] = vertexData[7];
+                float32View[index + 14] = vertexData[8];
+                float32View[index + 18] = vertexData[9];
+                float32View[index + 19] = vertexData[10];
+                float32View[index + 20] = vertexData[11];
+            }
+            uint32View[index + 3] = uvs[0];
+            uint32View[index + 9] = uvs[1];
+            uint32View[index + 15] = uvs[2];
+            uint32View[index + 21] = uvs[3];
+            uint32View[index + 4] = uint32View[index + 10] = uint32View[index + 16] = uint32View[index + 22] = argb;
+            float32View[index + 5] = float32View[index + 11] = float32View[index + 17] = float32View[index + 23] = textureId;
+        };
+        return Sprite2dRenderer;
+    }(MultiTextureSpriteRenderer));
+    PIXI.WebGLRenderer.registerPlugin('sprite2d', Sprite2dRenderer);
+})(pixi_projection || (pixi_projection = {}));
+(function (pixi_projection) {
+    var Text2d = (function (_super) {
+        __extends(Text2d, _super);
+        function Text2d(text, style, canvas) {
+            var _this = _super.call(this, text, style, canvas) || this;
+            _this.proj = new pixi_projection.Projection2d(_this.transform);
+            _this.pluginName = 'sprite2d';
+            _this.vertexData = new Float32Array(12);
+            return _this;
+        }
+        Object.defineProperty(Text2d.prototype, "worldTransform", {
+            get: function () {
+                return this.proj.world;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Text2d;
+    }(PIXI.Text));
+    pixi_projection.Text2d = Text2d;
+    Text2d.prototype.calculateVertices = pixi_projection.Sprite2d.prototype.calculateVertices;
+    Text2d.prototype.calculateTrimmedVertices = pixi_projection.Sprite2d.prototype.calculateTrimmedVertices;
 })(pixi_projection || (pixi_projection = {}));
 (function (pixi_projection) {
     var utils;

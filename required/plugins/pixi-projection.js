@@ -1162,9 +1162,8 @@ var pixi_projection;
         }
     }
     var t0 = new PIXI.Point();
-    var t1 = new PIXI.Point();
-    var t2 = new PIXI.Point();
-    var tempZero = new PIXI.Point(0, 0);
+    var tt = [new PIXI.Point(), new PIXI.Point(), new PIXI.Point(), new PIXI.Point()];
+    var tempRect = new PIXI.Rectangle();
     var tempMat = new pixi_projection.Matrix2d();
     var Projection2d = (function (_super) {
         __extends(Projection2d, _super);
@@ -1215,26 +1214,59 @@ var pixi_projection;
             mat3[5] = factor / d;
             this._projID++;
         };
-        Projection2d.prototype.setFromQuad = function (p, anchor, sizeX, sizeY) {
-            if (anchor === void 0) { anchor = tempZero; }
-            if (sizeX === void 0) { sizeX = 1; }
-            if (sizeY === void 0) { sizeY = 1; }
+        Projection2d.prototype.mapSprite = function (sprite, quad) {
+            var tex = sprite.texture;
+            tempRect.x = -sprite.anchor.x * tex.orig.width;
+            tempRect.y = -sprite.anchor.y * tex.orig.height;
+            tempRect.width = tex.orig.width;
+            tempRect.height = tex.orig.height;
+            return this.mapQuad(tempRect, quad);
+        };
+        Projection2d.prototype.mapQuad = function (rect, p) {
+            tt[0].set(rect.x, rect.y);
+            tt[1].set(rect.x + rect.width, rect.y);
+            tt[2].set(rect.x + rect.width, rect.y + rect.height);
+            tt[3].set(rect.x, rect.y + rect.height);
+            var k1 = 1, k2 = 2, k3 = 3;
+            var f = pixi_projection.utils.getIntersectionFactor(p[0], p[2], p[1], p[3], t0);
+            if (f !== 0) {
+                k1 = 1;
+                k2 = 3;
+                k3 = 2;
+            }
+            else {
+                return;
+            }
+            var d0 = Math.sqrt((p[0].x - t0.x) * (p[0].x - t0.x) + (p[0].y - t0.y) * (p[0].y - t0.y));
+            var d1 = Math.sqrt((p[k1].x - t0.x) * (p[k1].x - t0.x) + (p[k1].y - t0.y) * (p[k1].y - t0.y));
+            var d2 = Math.sqrt((p[k2].x - t0.x) * (p[k2].x - t0.x) + (p[k2].y - t0.y) * (p[k2].y - t0.y));
+            var d3 = Math.sqrt((p[k3].x - t0.x) * (p[k3].x - t0.x) + (p[k3].y - t0.y) * (p[k3].y - t0.y));
+            var q0 = (d0 + d3) / d0;
+            var q1 = (d1 + d2) / d1;
+            var q2 = (d1 + d2) / d2;
             var mat3 = this.matrix.mat3;
-            mat3[6] = 0;
-            mat3[7] = 0;
+            mat3[0] = tt[0].x;
+            mat3[1] = tt[0].y;
+            mat3[2] = 1;
+            mat3[3] = tt[k1].x;
+            mat3[4] = tt[k1].y;
+            mat3[5] = 1;
+            mat3[6] = tt[k2].x;
+            mat3[7] = tt[k2].y;
             mat3[8] = 1;
-            var f1 = pixi_projection.utils.getIntersectionFactor(p[0], p[1], p[3], p[2], t1);
-            this.setAxisX(t1, f1);
-            var f2 = pixi_projection.utils.getIntersectionFactor(p[1], p[2], p[0], p[3], t2);
-            this.setAxisY(t2, f2);
-            this.matrix.applyInverse(p[0], t1);
-            this.matrix.applyInverse(p[2], t2);
-            var m3 = tempMat.mat3;
-            m3[0] = (t2.x - t1.x) / sizeX;
-            m3[6] = t1.x;
-            m3[4] = (t2.y - t1.y) / sizeY;
-            m3[7] = t1.y;
-            this.matrix.setToMult2d(this.matrix, tempMat);
+            this.matrix.invert();
+            mat3 = tempMat.mat3;
+            mat3[0] = p[0].x * q0;
+            mat3[1] = p[0].y * q0;
+            mat3[2] = q0;
+            mat3[3] = p[k1].x * q1;
+            mat3[4] = p[k1].y * q1;
+            mat3[5] = q1;
+            mat3[6] = p[k2].x * q2;
+            mat3[7] = p[k2].y * q2;
+            mat3[8] = q2;
+            this.matrix.setToMult2d(tempMat, this.matrix);
+            this._projID++;
         };
         Projection2d.prototype.clear = function () {
             this._currentProjID = -1;
@@ -1544,10 +1576,14 @@ var pixi_projection;
                 return 0;
             }
             var T = C1 * B2 - C2 * B1;
-            out.x = p1.x + (T / D) * (p2.x - p1.x);
-            out.y = p1.y + (T / D) * (p2.y - p1.y);
             var U = A1 * C2 - A2 * C1;
-            return T * U < 0 ? -1 : 1;
+            var t = T / D, u = U / D;
+            if (u < (1e-6) || u - 1 > -1e-6) {
+                return -1;
+            }
+            out.x = p1.x + t * (p2.x - p1.x);
+            out.y = p1.y + t * (p2.y - p1.y);
+            return 1;
         }
         utils.getIntersectionFactor = getIntersectionFactor;
         function getPositionFromQuad(p, anchor, out) {

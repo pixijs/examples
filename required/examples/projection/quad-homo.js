@@ -29,8 +29,7 @@ squares.forEach(function(s) { app.stage.addChild(s); });
 
 // Listen for animate update
 app.ticker.add(function (delta) {
-    var orig = bunny.texture.orig;
-    bunny.proj.setFromQuad(quad, bunny.anchor, orig.width, orig.height);
+    bunny.proj.mapSprite(bunny, quad);
 });
 
 squares.forEach(function(s) { addInteraction(s); });

@@ -410,10 +410,31 @@ var pixi_projection;
         };
         BilinearSurface.prototype.applyInverse = function (pos, newPos) {
             newPos = newPos || new PIXI.Point();
-            var px = pos.x, py = pos.y;
+            var vx = pos.x, vy = pos.y;
             var dx = this.distortion.x, dy = this.distortion.y;
-            newPos.x = px * (dx + 1) / (dx + 1 + py * dy);
-            newPos.y = py * (dy + 1) / (dy + 1 + px * dx);
+            if (dx == 0.0) {
+                newPos.x = vx;
+                newPos.y = vy / (1.0 + dy * vx);
+            }
+            else if (dy == 0.0) {
+                newPos.y = vy;
+                newPos.x = vx / (1.0 + dx * vy);
+            }
+            else {
+                var b = (vy * dx - vx * dy + 1.0) * 0.5 / dy;
+                var d = b * b + vx / dy;
+                if (d <= 0.00001) {
+                    newPos.set(NaN, NaN);
+                    return;
+                }
+                if (dy > 0.0) {
+                    newPos.x = -b + Math.sqrt(d);
+                }
+                else {
+                    newPos.x = -b - Math.sqrt(d);
+                }
+                newPos.y = (vx / newPos.x - 1.0) / dx;
+            }
             return newPos;
         };
         BilinearSurface.prototype.mapSprite = function (sprite, quad, outTransform) {
@@ -564,7 +585,7 @@ var pixi_projection;
                 return this.legacy.worldTransform.applyInverse(newPos, newPos);
             }
             if (this._surface !== null) {
-                newPos = this.legacy.worldTransform.apply(pos, newPos);
+                newPos = this.legacy.worldTransform.applyInverse(pos, newPos);
                 return this._surface.applyInverse(newPos, newPos);
             }
             return this.legacy.worldTransform.applyInverse(pos, newPos);

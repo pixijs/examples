@@ -13,30 +13,48 @@ function createSquare(x, y) {
 }
 
 var squares = [
-    createSquare(w-100, h-100),
-    createSquare(w+100, h-100),
-    createSquare(w+100, h+100),
-    createSquare(w-100, h+100)
+    createSquare(w-150, h-150),
+    createSquare(w+150, h-150),
+    createSquare(w+150, h+150),
+    createSquare(w-150, h+150)
 ];
 
 var quad = squares.map(function(s) { return s.position });
 
 //add sprite itself
-var bunny = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage('required/assets/flowerTop.png'));
+var containerSprite = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage('required/assets/SceneRotate.jpg'));
+containerSprite.anchor.set(0.5);
 
-app.stage.addChild(bunny);
+app.stage.addChild(containerSprite);
 squares.forEach(function(s) { app.stage.addChild(s); });
 
 // Listen for animate update
 app.ticker.add(function (delta) {
-    bunny.proj.mapSprite(bunny, quad);
+    containerSprite.proj.mapSprite(containerSprite, quad);
 });
 
 squares.forEach(function(s) { addInteraction(s); });
 
+// let us add sprite to make it more funny
+
+var bunny = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage('required/assets/flowerTop.png'));
+bunny.anchor.set(0.5);
+containerSprite.addChild(bunny);
+
+addInteraction(bunny);
+
 // === INTERACTION CODE  ===
 
 function toggle(obj) {
+}
+
+function snap(obj) {
+    if (obj == bunny) {
+        obj.position.set(0);
+    } else {
+        obj.position.x = Math.min(Math.max(obj.position.x, 0), app.screen.width);
+        obj.position.y = Math.min(Math.max(obj.position.y, 0), app.screen.height);
+    }
 }
 
 function addInteraction(obj) {
@@ -62,8 +80,9 @@ function onDragStart(event) {
 function onDragEnd(event) {
     var obj = event.currentTarget;
     if (obj.dragging == 1) {
-        //CLICK!
         toggle(obj);
+    } else {
+        snap(obj);
     }
     obj.dragging = 0;
     obj.dragData = null;

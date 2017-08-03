@@ -103,7 +103,6 @@ function onDragEnd(event) {
     var obj = event.currentTarget;
     if (!obj.dragging) return;
     if (obj.dragging == 1) {
-        //CLICK!
         toggle(obj);
     } else {
         snap(obj);

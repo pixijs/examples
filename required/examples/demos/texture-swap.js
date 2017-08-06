@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 var bol = false;
 
@@ -19,36 +16,26 @@ var dude = new PIXI.Sprite(texture);
 dude.anchor.set(0.5);
 
 // move the sprite to the center of the screen
-dude.position.x = renderer.width / 2;
-dude.position.y = renderer.height / 2;
+dude.x = app.renderer.width / 2;
+dude.y = app.renderer.height / 2;
 
-stage.addChild(dude);
+app.stage.addChild(dude);
 
 // make the sprite interactive
 dude.interactive = true;
+dude.buttonMode = true;
 
-dude.on('click', function ()
-{
+dude.on('pointertap', function() {
     bol = !bol;
-
-    if(bol)
-    {
+    if (bol) {
         dude.texture = secondTexture;
     }
-    else
-    {
+    else {
         dude.texture = texture;
     }
 });
 
-animate();
-
-function animate() {
-    requestAnimationFrame(animate);
-
+app.ticker.add(function() {
     // just for fun, let's rotate mr rabbit a little
     dude.rotation += 0.1;
-
-    // render the stage
-    renderer.render(stage);
-}
+});

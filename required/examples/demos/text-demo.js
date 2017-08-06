@@ -1,8 +1,5 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 // // Load them google fonts before starting...!
 window.WebFontConfig = {
@@ -35,50 +32,67 @@ function init()
         .add('desyrel', 'required/assets/desyrel.xml')
         .load(onAssetsLoaded);
 
-    function onAssetsLoaded()
-    {
+    function onAssetsLoaded() {
         var bitmapFontText = new PIXI.extras.BitmapText('bitmap fonts are\n now supported!', { font: '35px Desyrel', align: 'right' });
 
-        bitmapFontText.position.x = 600 - bitmapFontText.textWidth;
-        bitmapFontText.position.y = 20;
+        bitmapFontText.x = app.renderer.width - bitmapFontText.textWidth - 20;
+        bitmapFontText.y = 20;
 
-        stage.addChild(bitmapFontText);
+        app.stage.addChild(bitmapFontText);
     }
 
     // add a shiny background...
     var background = PIXI.Sprite.fromImage('required/assets/textDemoBG.jpg');
-    stage.addChild(background);
+    background.width = app.renderer.width;
+    background.height = app.renderer.height;
+    app.stage.addChild(background);
 
     // create some white text using the Snippet webfont
-    var textSample = new PIXI.Text('Pixi.js can has\n multiline text!', { font: '35px Snippet', fill: 'white', align: 'left' });
+    var textSample = new PIXI.Text('Pixi.js can has\n multiline text!', {
+        fontFamily: 'Snippet',
+        fontSize: 35,
+        fill: 'white', 
+        align: 'left' 
+    });
     textSample.position.set(20);
 
     // create a text object with a nice stroke
-    var spinningText = new PIXI.Text('I\'m fun!', { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
+    var spinningText = new PIXI.Text('I\'m fun!', {
+        fontWeight: 'bold',
+        fontSize: 60,
+        fontFamily: 'Arial',
+        fill: '#cc00ff',
+        align: 'center',
+        stroke: '#FFFFFF',
+        strokeThickness: 6
+    });
 
     // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
-    spinningText.position.x = 310;
-    spinningText.position.y = 200;
+    spinningText.x = app.renderer.width / 2;
+    spinningText.y = app.renderer.height / 2;
 
     // create a text object that will be updated...
-    var countingText = new PIXI.Text('COUNT 4EVAR: 0', { font: 'bold italic 60px Arvo', fill: '#3e1707', align: 'center', stroke: '#a4410e', strokeThickness: 7 });
+    var countingText = new PIXI.Text('COUNT 4EVAR: 0', {
+        fontWeight: 'bold',
+        fontStyle: 'italic',
+        fontSize: 60,
+        fontFamily: 'Arvo',
+        fill: '#3e1707',
+        align: 'center',
+        stroke: '#a4410e',
+        strokeThickness: 7
+    });
 
-    countingText.position.x = 310;
-    countingText.position.y = 320;
+    countingText.x = app.renderer.width / 2;
+    countingText.y = 500;
     countingText.anchor.x = 0.5;
 
-    stage.addChild(textSample);
-    stage.addChild(spinningText);
-    stage.addChild(countingText);
+    app.stage.addChild(textSample, spinningText, countingText);
 
     var count = 0;
 
-    requestAnimationFrame(animate);
-
-    function animate() {
-
-        renderer.render(stage);
+    app.ticker.add(function() {
 
         count += 0.05;
         // update the text with a new string
@@ -86,7 +100,5 @@ function init()
 
         // let's spin the spinning text
         spinningText.rotation += 0.03;
-
-        requestAnimationFrame(animate);
-    }
+    });
 }

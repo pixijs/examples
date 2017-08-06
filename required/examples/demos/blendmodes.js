@@ -1,20 +1,19 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 // create a new background sprite
 var background = new PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
-stage.addChild(background);
+background.width = app.renderer.width;
+background.height = app.renderer.height;
+app.stage.addChild(background);
 
 // create an array to store a reference to the dudes
 var dudeArray = [];
 
 var totaldudes = 20;
 
-for (var i = 0; i < totaldudes; i++)
-{
+for (var i = 0; i < totaldudes; i++) {
+
     // create a new Sprite that uses the image name that we just generated as its source
     var dude = PIXI.Sprite.fromImage('required/assets/flowerTop.png');
 
@@ -24,8 +23,8 @@ for (var i = 0; i < totaldudes; i++)
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally let's set the dude to be at a random position...
-    dude.position.x = Math.floor(Math.random() * renderer.width);
-    dude.position.y = Math.floor(Math.random() * renderer.height);
+    dude.x = Math.floor(Math.random() * app.renderer.width);
+    dude.y = Math.floor(Math.random() * app.renderer.height);
 
     // The important bit of this example, this is how you change the default blend mode of the sprite
     dude.blendMode = PIXI.BLEND_MODES.ADD;
@@ -42,59 +41,43 @@ for (var i = 0; i < totaldudes; i++)
     // finally we push the dude into the dudeArray so it it can be easily accessed later
     dudeArray.push(dude);
 
-    stage.addChild(dude);
+    app.stage.addChild(dude);
 }
 
-// create a bounding box box for the little dudes
+// create a bounding box for the little dudes
 var dudeBoundsPadding = 100;
 
-var dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
-                                    -dudeBoundsPadding,
-                                    renderer.width + dudeBoundsPadding * 2,
-                                    renderer.height + dudeBoundsPadding * 2);
+var dudeBounds = new PIXI.Rectangle(
+    -dudeBoundsPadding,
+    -dudeBoundsPadding,
+    app.renderer.width + dudeBoundsPadding * 2,
+    app.renderer.height + dudeBoundsPadding * 2
+);
 
-var tick = 0;
+app.ticker.add(function() {
 
-requestAnimationFrame(animate);
-
-
-function animate()
-{
     // iterate through the dudes and update the positions
-    for (var i = 0; i < dudeArray.length; i++)
-    {
+    for (var i = 0; i < dudeArray.length; i++) {
+
         var dude = dudeArray[i];
         dude.direction += dude.turningSpeed * 0.01;
-        dude.position.x += Math.sin(dude.direction) * dude.speed;
-        dude.position.y += Math.cos(dude.direction) * dude.speed;
+        dude.x += Math.sin(dude.direction) * dude.speed;
+        dude.y += Math.cos(dude.direction) * dude.speed;
         dude.rotation = -dude.direction - Math.PI / 2;
 
         // wrap the dudes by testing their bounds...
-        if (dude.position.x < dudeBounds.x)
-        {
-            dude.position.x += dudeBounds.width;
+        if (dude.x < dudeBounds.x) {
+            dude.x += dudeBounds.width;
         }
-        else if (dude.position.x > dudeBounds.x + dudeBounds.width)
-        {
-            dude.position.x -= dudeBounds.width;
+        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+            dude.x -= dudeBounds.width;
         }
 
-        if (dude.position.y < dudeBounds.y)
-        {
-            dude.position.y += dudeBounds.height;
+        if (dude.y < dudeBounds.y) {
+            dude.y += dudeBounds.height;
         }
-        else if (dude.position.y > dudeBounds.y + dudeBounds.height)
-        {
-            dude.position.y -= dudeBounds.height;
+        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+            dude.y -= dudeBounds.height;
         }
     }
-
-    // increment the ticker
-    tick += 0.1;
-
-    // time to render the stage !
-    renderer.render(stage);
-
-    // request another animation frame...
-    requestAnimationFrame(animate);
-}
+});

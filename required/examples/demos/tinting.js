@@ -1,16 +1,13 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 // holder to store the aliens
 var aliens = [];
 
 var totalDudes = 20;
 
-for (var i = 0; i < totalDudes; i++)
-{
+for (var i = 0; i < totalDudes; i++) {
+
     // create a new Sprite that uses the image name that we just generated as its source
     var dude =  PIXI.Sprite.fromImage('required/assets/eggHead.png');
 
@@ -21,8 +18,8 @@ for (var i = 0; i < totalDudes; i++)
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally lets set the dude to be at a random position..
-    dude.position.x = Math.random() * renderer.width;
-    dude.position.y = Math.random() * renderer.height;
+    dude.x = Math.random() * app.renderer.width;
+    dude.y = Math.random() * app.renderer.height;
 
     dude.tint = Math.random() * 0xFFFFFF;
 
@@ -39,57 +36,40 @@ for (var i = 0; i < totalDudes; i++)
     // finally we push the dude into the aliens array so it it can be easily accessed later
     aliens.push(dude);
 
-    stage.addChild(dude);
+    app.stage.addChild(dude);
 }
 
 // create a bounding box for the little dudes
 var dudeBoundsPadding = 100;
 var dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
                                     -dudeBoundsPadding,
-                                    renderer.width + dudeBoundsPadding * 2,
-                                    renderer.height + dudeBoundsPadding * 2);
+                                    app.renderer.width + dudeBoundsPadding * 2,
+                                    app.renderer.height + dudeBoundsPadding * 2);
 
-var tick = 0;
-
-requestAnimationFrame(animate);
-
-function animate() {
+app.ticker.add(function() {
 
     // iterate through the dudes and update their position
-    for (var i = 0; i < aliens.length; i++)
-    {
+    for (var i = 0; i < aliens.length; i++) {
+
         var dude = aliens[i];
         dude.direction += dude.turningSpeed * 0.01;
-        dude.position.x += Math.sin(dude.direction) * dude.speed;
-        dude.position.y += Math.cos(dude.direction) * dude.speed;
+        dude.x += Math.sin(dude.direction) * dude.speed;
+        dude.y += Math.cos(dude.direction) * dude.speed;
         dude.rotation = -dude.direction - Math.PI / 2;
 
         // wrap the dudes by testing their bounds...
-        if (dude.position.x < dudeBounds.x)
-        {
-            dude.position.x += dudeBounds.width;
+        if (dude.x < dudeBounds.x) {
+            dude.x += dudeBounds.width;
         }
-        else if (dude.position.x > dudeBounds.x + dudeBounds.width)
-        {
-            dude.position.x -= dudeBounds.width;
+        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+            dude.x -= dudeBounds.width;
         }
 
-        if (dude.position.y < dudeBounds.y)
-        {
-            dude.position.y += dudeBounds.height;
+        if (dude.y < dudeBounds.y) {
+            dude.y += dudeBounds.height;
         }
-        else if (dude.position.y > dudeBounds.y + dudeBounds.height)
-        {
-            dude.position.y -= dudeBounds.height;
+        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+            dude.y -= dudeBounds.height;
         }
     }
-
-    // increment the ticker
-    tick += 0.1;
-
-    // time to render the stage!
-    renderer.render(stage);
-
-    // request another animation frame...
-    requestAnimationFrame(animate);
-}
+});

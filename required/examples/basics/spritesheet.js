@@ -1,14 +1,9 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
 PIXI.loader
     .add('required/assets/basics/fighter.json')
     .load(onAssetsLoaded);
-
-var movie;
 
 function onAssetsLoaded()
 {
@@ -22,31 +17,23 @@ function onAssetsLoaded()
         frames.push(PIXI.Texture.fromFrame('rollSequence00' + val + '.png'));
     }
 
-
-    // create a MovieClip (brings back memories from the days of Flash, right ?)
-    movie = new PIXI.extras.MovieClip(frames);
+    // create an AnimatedSprite (brings back memories from the days of Flash, right ?)
+    var anim = new PIXI.extras.AnimatedSprite(frames);
 
     /*
-     * A MovieClip inherits all the properties of a PIXI sprite
+     * An AnimatedSprite inherits all the properties of a PIXI sprite
      * so you can change its position, its anchor, mask it, etc
      */
-    movie.position.set(300);
+    anim.x = app.renderer.width / 2;
+    anim.y = app.renderer.height / 2;
+    anim.anchor.set(0.5);
+    anim.animationSpeed = 0.5;
+    anim.play();
 
-    movie.anchor.set(0.5);
-    movie.animationSpeed = 0.5;
+    app.stage.addChild(anim);
 
-    movie.play();
-
-    stage.addChild(movie);
-
-    animate();
-}
-
-function animate() {
-    movie.rotation += 0.01;
-
-    // render the stage container
-    renderer.render(stage);
-
-    requestAnimationFrame(animate);
+    // Animate the rotation
+    app.ticker.add(function() {
+        anim.rotation += 0.01;
+    });
 }

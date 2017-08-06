@@ -1,52 +1,34 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
+// Create background image
+var background = PIXI.Sprite.fromImage("required/assets/bkg-grass.jpg");
+background.width = app.renderer.width;
+background.height = app.renderer.height;
+app.stage.addChild(background);
 
+// Stop application wait for load to finish
+app.stop();
 
-function CustomFilter(fragmentSource)
-{
-
-    PIXI.Filter.call(this,
-        // vertex shader
-        null,
-        // fragment shader
-        fragmentSource
-    );
-}
-
-CustomFilter.prototype = Object.create(PIXI.Filter.prototype);
-CustomFilter.prototype.constructor = CustomFilter;
-
-
-var bg = PIXI.Sprite.fromImage("required/assets/bkg-grass.jpg");
-bg.scale.set(1.3,1);
-stage.addChild(bg);
-
-PIXI.loader.add('shader','required/assets/basics/shader.frag');
-
-PIXI.loader.once('complete',onLoaded);
-
-PIXI.loader.load();
+PIXI.loader.add('shader', 'required/assets/basics/shader.frag')
+    .load(onLoaded);
 
 var filter;
 
+// Handle the load completed
 function onLoaded (loader,res) {
 
-    var fragmentSrc = res.shader.data;
+    // Create the new filter, arguments: (vertexShader, framentSource)
+    filter = new PIXI.Filter(null, res.shader.data);
 
-    filter = new CustomFilter(fragmentSrc);
+    // Add the filter
+    background.filters = [filter];
 
-    bg.filters = [filter];
-
-    animate();
+    // Resume application update
+    app.start();
 }
 
-function animate() {
-
-    filter.uniforms.customUniform += 0.04;
-
-    renderer.render(stage);
-    requestAnimationFrame( animate );
-}
+// Animate the filter
+app.ticker.add(function(delta) {
+    filter.uniforms.customUniform += 0.04 * delta;
+});

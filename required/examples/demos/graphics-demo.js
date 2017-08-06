@@ -1,10 +1,7 @@
-var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
-document.body.appendChild(renderer.view);
+var app = new PIXI.Application(800, 600, { antialias: true });
+document.body.appendChild(app.view);
 
-// create the root of the scene graph
-var stage = new PIXI.Container();
-
-stage.interactive = true;
+app.stage.interactive = true;
 
 var graphics = new PIXI.Graphics();
 
@@ -50,34 +47,30 @@ graphics.moveTo(30,30);
 graphics.lineTo(600, 300);
 
 
-stage.addChild(graphics);
+app.stage.addChild(graphics);
 
 // let's create a moving shape
 var thing = new PIXI.Graphics();
-stage.addChild(thing);
-thing.position.x = 620/2;
-thing.position.y = 380/2;
+app.stage.addChild(thing);
+thing.x = 800/2;
+thing.y = 600/2;
 
 var count = 0;
 
 // Just click on the stage to draw random lines
-stage.on('click', onClick);
-stage.on('tap', onClick);
+app.stage.on('pointertap', onClick);
 
-function onClick()
-{
+function onClick() {
     graphics.lineStyle(Math.random() * 30, Math.random() * 0xFFFFFF, 1);
-    graphics.moveTo(Math.random() * 620,Math.random() * 380);
-    graphics.bezierCurveTo(Math.random() * 620,Math.random() * 380,
-                            Math.random() * 620,Math.random() * 380,
-                            Math.random() * 620,Math.random() * 380);
+    graphics.moveTo(Math.random() * 800, Math.random() * 600);
+    graphics.bezierCurveTo(
+        Math.random() * 800, Math.random() * 600,
+        Math.random() * 800, Math.random() * 600,
+        Math.random() * 800, Math.random() * 600
+    );
 }
-// run the render loop
-animate();
 
-function animate() {
-
-    thing.clear();
+app.ticker.add(function() {
 
     count += 0.1;
 
@@ -92,6 +85,4 @@ function animate() {
     thing.lineTo( -120 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
 
     thing.rotation = count * 0.1;
-    renderer.render(stage);
-    requestAnimationFrame( animate );
-}
+});

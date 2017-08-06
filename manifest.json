@@ -37,10 +37,6 @@
             "entry": "video.js"
         },
         {
-            "title": "Render Texture [v3]",
-            "entry": "render-texture-v3.js"
-        },
-        {
             "title": "Render Texture",
             "entry": "render-texture.js"
         },
@@ -49,18 +45,14 @@
             "entry": "textured-mesh.js"
         },
         {
-            "title": "Custom Filter [v3]",
-            "entry": "custom-filter-v3.js"
-        },
-        {
             "title": "Custom Filter",
             "entry": "custom-filter.js"
         }
     ],
     "demos": [
         {
-            "title": "MovieClip",
-            "entry": "movieclip-demo.js"
+            "title": "AnimatedSprite",
+            "entry": "animatedsprite-demo.js"
         },
         {
             "title": "Interactivity",
@@ -90,6 +82,10 @@
             "title": "Masking",
             "entry": "masking.js"
         },
+		{
+		    "title": "Mask + renderTexture",
+			"entry": "mask-render-texture.js"
+		},
         {
             "title": "BlendModes",
             "entry": "blendmodes.js"
@@ -97,10 +93,6 @@
         {
             "title": "Tinting",
             "entry": "tinting.js"
-        },
-        {
-            "title": "Particle Container [v3]",
-            "entry": "batch-v3.js"
         },
         {
             "title": "Particle Container",
@@ -141,9 +133,20 @@
             "title": "Filter",
             "entry": "filter.js"
         },
+		{
+            "title": "Mouse blending",
+            "entry": "filter-mouse.js"
+        },
         {
             "title": "Blur",
             "entry": "blur-filter.js"
+        },
+        {
+            "title": "Outline",
+            "entry": "outline-filter.js",
+            "plugins": [
+                "pixi-extra-filters"
+            ]
         },
         {
             "title": "Displacement Map",
@@ -152,17 +155,49 @@
     ],
     "picture": [
         {
-            "title": "Border artifacts",
-            "entry": "border-artifacts.js",
-            "plugins": [
-                "pixi-picture"
-            ]
-        },
-        {
             "title": "Overlay blendMode",
             "entry": "overlay.js",
             "plugins": [
                 "pixi-picture"
+            ]
+        }
+    ],
+    "layers": [
+        {
+            "title": "Lighting",
+            "entry": "lighting.js",
+            "plugins": [
+                "pixi-layers"
+            ]
+        },
+		{
+            "title": "Z-order",
+            "entry": "zorder.js",
+            "plugins": [
+                "pixi-layers"
+            ]
+        }
+    ],
+    "projection": [
+        {
+            "title": "Basics",
+            "entry": "basic.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "Quad projective",
+            "entry": "quad-homo.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+		{
+            "title": "Quad bilinear",
+            "entry": "quad-bi.js",
+            "plugins": [
+                "pixi-projection"
             ]
         }
     ],
@@ -198,7 +233,14 @@
     ],
     "textures": [
         {
-            "title": "DirectDrawSurface (DDS)",
+            "title": "Not-premultiplied alpha",
+            "entry": "not-premultiplied-alpha.js",
+            "plugins": [
+                "pixi-compressed-textures"
+            ]
+        },
+        {
+            "title": "Extension chooser",
             "entry": "dds.js",
             "plugins": [
                 "pixi-compressed-textures"

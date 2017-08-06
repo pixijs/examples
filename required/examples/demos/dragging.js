@@ -1,19 +1,21 @@
-var renderer = PIXI.autoDetectRenderer(800, 600);
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
+var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
+document.body.appendChild(app.view);
 
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('required/assets/bunny.png');
 
-for (var i = 0; i < 10; i++)
-{
-    createBunny(Math.floor(Math.random() * 800) , Math.floor(Math.random() * 600));
+// Scale mode for pixelation
+texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+
+for (var i = 0; i < 10; i++) {
+    createBunny(
+        Math.floor(Math.random() * app.renderer.width), 
+        Math.floor(Math.random() * app.renderer.height)
+    );
 }
 
-function createBunny(x, y)
-{
+function createBunny(x, y) {
+
     // create our little bunny friend..
     var bunny = new PIXI.Sprite(texture);
 
@@ -29,40 +31,35 @@ function createBunny(x, y)
     // make it a bit bigger, so it's easier to grab
     bunny.scale.set(3);
 
-    // setup events
+    // setup events for mouse + touch using
+    // the pointer events
     bunny
-        // events for drag start
-        .on('mousedown', onDragStart)
-        .on('touchstart', onDragStart)
-        // events for drag end
-        .on('mouseup', onDragEnd)
-        .on('mouseupoutside', onDragEnd)
-        .on('touchend', onDragEnd)
-        .on('touchendoutside', onDragEnd)
-        // events for drag move
-        .on('mousemove', onDragMove)
-        .on('touchmove', onDragMove);
+        .on('pointerdown', onDragStart)
+        .on('pointerup', onDragEnd)
+        .on('pointerupoutside', onDragEnd)
+        .on('pointermove', onDragMove);
+
+        // For mouse-only events
+        // .on('mousedown', onDragStart)
+        // .on('mouseup', onDragEnd)
+        // .on('mouseupoutside', onDragEnd)
+        // .on('mousemove', onDragMove);
+
+        // For touch-only events
+        // .on('touchstart', onDragStart)
+        // .on('touchend', onDragEnd)
+        // .on('touchendoutside', onDragEnd)
+        // .on('touchmove', onDragMove);
 
     // move the sprite to its designated position
-    bunny.position.x = x;
-    bunny.position.y = y;
+    bunny.x = x;
+    bunny.y = y;
 
     // add it to the stage
-    stage.addChild(bunny);
+    app.stage.addChild(bunny);
 }
 
-requestAnimationFrame( animate );
-
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    // render the stage
-    renderer.render(stage);
-}
-
-function onDragStart(event)
-{
+function onDragStart(event) {
     // store a reference to the data
     // the reason for this is because of multitouch
     // we want to track the movement of this particular touch
@@ -71,22 +68,17 @@ function onDragStart(event)
     this.dragging = true;
 }
 
-function onDragEnd()
-{
+function onDragEnd() {
     this.alpha = 1;
-
     this.dragging = false;
-
     // set the interaction data to null
     this.data = null;
 }
 
-function onDragMove()
-{
-    if (this.dragging)
-    {
+function onDragMove() {
+    if (this.dragging) {
         var newPosition = this.data.getLocalPosition(this.parent);
-        this.position.x = newPosition.x;
-        this.position.y = newPosition.y;
+        this.x = newPosition.x;
+        this.y = newPosition.y;
     }
 }

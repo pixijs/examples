@@ -141,9 +141,15 @@ jQuery(document).ready(function($) {
                 // load data
                 bpc.closeMobileNav();
                 $('.main-content h1').text($(this).text());
-                window.location.hash = '/'+$(this).parent().attr('data-section')+'/'+$(this).attr('data-src');
+                var page = '/'+$(this).parent().attr('data-section')+'/'+$(this).attr('data-src');
+                var title = $(this).text();
 
-                document.title = $(this).text() + ' - PixiJS Examples';
+                window.location.hash = page;
+                document.title = title + ' - PixiJS Examples';
+
+                // Track page change in analytics
+                ga('set', { page: page, title: title });
+                ga('send', 'pageview');
 
                 bpc.currentSource = 'required/examples/'+$(this).parent().attr('data-section')+'/'+$(this).attr('data-src');
                 bpc.currentFilename = $(this).attr('data-src');

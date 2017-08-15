@@ -69,8 +69,8 @@ function snap(obj) {
         obj.position.set(0);
     } else if (obj == squarePlane) {
         //plane bounds
-        obj.position.x = Math.min(Math.max(obj.position.x, -app.screen.width/2), app.screen.width/2);
-        obj.position.y = Math.min(Math.max(obj.position.y, -app.screen.height), 0);
+        obj.position.x = Math.min(Math.max(obj.position.x, -app.screen.width / 2 + 10), app.screen.width / 2 - 10);
+        obj.position.y = Math.min(Math.max(obj.position.y, -app.screen.height + 10), 10);
     } else {
         //far
         obj.position.x = Math.min(Math.max(obj.position.x, 0), app.screen.width);

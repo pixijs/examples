@@ -187,6 +187,13 @@
             ]
         },
         {
+            "title": "Plane",
+            "entry": "plane.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
             "title": "Quad projective",
             "entry": "quad-homo.js",
             "plugins": [

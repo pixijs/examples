@@ -1,6 +1,6 @@
 /*!
- * pixi-legacy - v1.0.0
- * Compiled Sat, 18 Feb 2017 19:46:25 UTC
+ * pixi-legacy - v1.0.1
+ * Compiled Thu, 07 Sep 2017 12:33:07 UTC
  *
  * pixi-legacy is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -306,6 +306,14 @@ if (!PIXI.Application) {
 
 if (!PIXI.filters.VoidFilter) {
     (0, _FilterPatcherV2.default)(PIXI);
+}
+
+if (!PIXI.particles) {
+    PIXI.particles = {
+        ParticleContainer: PIXI.ParticleContainer
+    };
+} else {
+    PIXI.ParticleContainer = PIXI.particles.ParticleContainer;
 }
 
 module.exports = PIXI;

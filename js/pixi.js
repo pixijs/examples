@@ -293,14 +293,14 @@ jQuery(document).ready(function($) {
                 html += '<script src="required/plugins/pixi-legacy.js"></script>';
 			}
 			for (i=0; i < plugins.length; i++) {
-                html += '<script src="required/plugins/'+plugins[0]+'.js"></script>';
+                html += '<script src="required/plugins/'+plugins[i]+'.js"></script>';
             }
 		} else {
 			for (i=0; i < plugins.length; i++) {
-				html += '<script src="dist/plugins/'+plugins[0]+'.js"></script>';
+				html += '<script src="dist/plugins/'+plugins[i]+'.js"></script>';
 			}
 		}
- 
+
 
 
         html += '<script>window.onload = function(){'+js+'}</script></body></html>';

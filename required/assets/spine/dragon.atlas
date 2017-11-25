@@ -1,5 +1,6 @@
 
 dragon.png
+size: 1024,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -152,6 +153,7 @@ tail03
   index: -1
 
 dragon2.png
+size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none

@@ -17,7 +17,7 @@ for (var i = 0; i < 25; i++) {
     container.addChild(bunny);
 }
 
-// move container to the center
+// Move container to the center
 container.x = app.renderer.width / 2;
 container.y = app.renderer.height / 2;
 
@@ -28,6 +28,6 @@ container.pivot.y = container.height / 2;
 // Listen for animate update
 app.ticker.add(function(delta) {
     // rotate the container!
-    // use delta to create frame-independent tranform
+    // use delta to create frame-independent transform
     container.rotation -= 0.01 * delta;
 });

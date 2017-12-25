@@ -9,9 +9,9 @@ app.stage.addChild(container);
 var padding = 100;
 var bounds = new PIXI.Rectangle(
     -padding,
-    -padding, 
-    app.renderer.width + padding * 2, 
-    app.renderer.height + padding * 2
+    -padding,
+    app.screen.width + padding * 2,
+    app.screen.height + padding * 2
 );
 var maggots = [];
 
@@ -55,8 +55,8 @@ ring.visible = false;
 app.stage.addChild(ring);
 
 var bg = PIXI.Sprite.fromImage('required/assets/bkg-grass.jpg');
-bg.width = app.renderer.width;
-bg.height = app.renderer.height;
+bg.width = app.screen.width;
+bg.height = app.screen.height;
 
 bg.alpha = 0.4;
 
@@ -77,7 +77,7 @@ function onPointerMove(eventData)
 var count = 0;
 
 app.ticker.add(function() {
-    
+
     count += 0.05;
 
     for (var i = 0; i < maggots.length; i++) {

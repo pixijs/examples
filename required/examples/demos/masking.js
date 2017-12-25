@@ -7,14 +7,14 @@ var bg = PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
 
 bg.anchor.set(0.5);
 
-bg.x = app.renderer.width / 2;
-bg.y = app.renderer.height / 2;
+bg.x = app.screen.width / 2;
+bg.y = app.screen.height / 2;
 
 app.stage.addChild(bg);
 
 var container = new PIXI.Container();
-container.x = app.renderer.width / 2;
-container.y = app.renderer.height / 2;
+container.x = app.screen.width / 2;
+container.y = app.screen.height / 2;
 
 // add a bunch of sprites
 var bgFront = PIXI.Sprite.fromImage('required/assets/SceneRotate.jpg');
@@ -36,8 +36,8 @@ app.stage.addChild(container);
 // let's create a moving shape
 var thing = new PIXI.Graphics();
 app.stage.addChild(thing);
-thing.x = app.renderer.width / 2;
-thing.y = app.renderer.height / 2;
+thing.x = app.screen.width / 2;
+thing.y = app.screen.height / 2;
 thing.lineStyle(0);
 
 container.mask = thing;
@@ -53,13 +53,13 @@ app.stage.on('pointertap', function() {
     }
 });
 
-var help = new PIXI.Text('Click or tap to turn masking on / off.', { 
+var help = new PIXI.Text('Click or tap to turn masking on / off.', {
     fontFamily: 'Arial',
-    fontSize: 12, 
-    fontWeight:'bold', 
+    fontSize: 12,
+    fontWeight:'bold',
     fill: 'white'
 });
-help.y = app.renderer.height - 26;
+help.y = app.screen.height - 26;
 help.x = 10;
 app.stage.addChild(help);
 

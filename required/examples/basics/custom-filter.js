@@ -3,8 +3,8 @@ document.body.appendChild(app.view);
 
 // Create background image
 var background = PIXI.Sprite.fromImage("required/assets/bkg-grass.jpg");
-background.width = app.renderer.width;
-background.height = app.renderer.height;
+background.width = app.screen.width;
+background.height = app.screen.height;
 app.stage.addChild(background);
 
 // Stop application wait for load to finish

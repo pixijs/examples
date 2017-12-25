@@ -18,8 +18,8 @@ for (var i = 0; i < totalDudes; i++) {
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally lets set the dude to be at a random position..
-    dude.x = Math.random() * app.renderer.width;
-    dude.y = Math.random() * app.renderer.height;
+    dude.x = Math.random() * app.screen.width;
+    dude.y = Math.random() * app.screen.height;
 
     dude.tint = Math.random() * 0xFFFFFF;
 
@@ -43,8 +43,8 @@ for (var i = 0; i < totalDudes; i++) {
 var dudeBoundsPadding = 100;
 var dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
                                     -dudeBoundsPadding,
-                                    app.renderer.width + dudeBoundsPadding * 2,
-                                    app.renderer.height + dudeBoundsPadding * 2);
+                                    app.screen.width + dudeBoundsPadding * 2,
+                                    app.screen.height + dudeBoundsPadding * 2);
 
 app.ticker.add(function() {
 

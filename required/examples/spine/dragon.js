@@ -28,13 +28,13 @@ function onAssetsLoaded(loader,res)
 
     // now we can scale, position and rotate the container as any other display object
     var scale = Math.min(
-        (app.renderer.width * 0.7) / dragonCage.width, 
-        (app.renderer.height * 0.7) / dragonCage.height
+        (app.screen.width * 0.7) / dragonCage.width,
+        (app.screen.height * 0.7) / dragonCage.height
     );
     dragonCage.scale.set(scale, scale);
     dragonCage.position.set(
-        (app.renderer.width - dragonCage.width) * 0.5,
-        (app.renderer.height - dragonCage.height) * 0.5
+        (app.screen.width - dragonCage.width) * 0.5,
+        (app.screen.height - dragonCage.height) * 0.5
     );
 
     // add the container to the stage

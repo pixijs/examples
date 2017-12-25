@@ -17,5 +17,5 @@ for (var i = 0; i < 25; i++) {
 }
 
 // Center on the screen
-container.x = (app.renderer.width - container.width) / 2;
-container.y = (app.renderer.height - container.height) / 2;
+container.x = (app.screen.width - container.width) / 2;
+container.y = (app.screen.height - container.height) / 2;

@@ -3,8 +3,8 @@ document.body.appendChild(app.view);
 
 // create a new background sprite
 var background = new PIXI.Sprite.fromImage('required/assets/BGrotate.jpg');
-background.width = app.renderer.width;
-background.height = app.renderer.height;
+background.width = app.screen.width;
+background.height = app.screen.height;
 app.stage.addChild(background);
 
 // create an array to store a reference to the dudes
@@ -23,8 +23,8 @@ for (var i = 0; i < totaldudes; i++) {
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally let's set the dude to be at a random position...
-    dude.x = Math.floor(Math.random() * app.renderer.width);
-    dude.y = Math.floor(Math.random() * app.renderer.height);
+    dude.x = Math.floor(Math.random() * app.screen.width);
+    dude.y = Math.floor(Math.random() * app.screen.height);
 
     // The important bit of this example, this is how you change the default blend mode of the sprite
     dude.blendMode = PIXI.BLEND_MODES.ADD;
@@ -50,8 +50,8 @@ var dudeBoundsPadding = 100;
 var dudeBounds = new PIXI.Rectangle(
     -dudeBoundsPadding,
     -dudeBoundsPadding,
-    app.renderer.width + dudeBoundsPadding * 2,
-    app.renderer.height + dudeBoundsPadding * 2
+    app.screen.width + dudeBoundsPadding * 2,
+    app.screen.height + dudeBoundsPadding * 2
 );
 
 app.ticker.add(function() {

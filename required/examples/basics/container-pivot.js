@@ -18,8 +18,8 @@ for (var i = 0; i < 25; i++) {
 }
 
 // move container to the center
-container.x = app.renderer.width / 2;
-container.y = app.renderer.height / 2;
+container.x = app.screen.width / 2;
+container.y = app.screen.height / 2;
 
 // Center bunny sprite in local container coordinates
 container.pivot.x = container.width / 2;

@@ -2,17 +2,17 @@ var app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 var bg = PIXI.Sprite.fromImage('required/assets/depth_blur_BG.jpg');
-bg.width = app.renderer.width;
-bg.height = app.renderer.height;
+bg.width = app.screen.width;
+bg.height = app.screen.height;
 app.stage.addChild(bg);
 
 var littleDudes = PIXI.Sprite.fromImage('required/assets/depth_blur_dudes.jpg');
-littleDudes.x = (app.renderer.width / 2) - 315;
+littleDudes.x = (app.screen.width / 2) - 315;
 littleDudes.y = 200;
 app.stage.addChild(littleDudes);
 
 var littleRobot = PIXI.Sprite.fromImage('required/assets/depth_blur_moby.jpg');
-littleRobot.x = (app.renderer.width / 2) - 200;
+littleRobot.x = (app.screen.width / 2) - 200;
 littleRobot.y = 100;
 app.stage.addChild(littleRobot);
 

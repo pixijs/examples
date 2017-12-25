@@ -8,8 +8,8 @@ background.height = 600;
 app.stage.addChild(background);
 
 //speed up the process, because OVERLAY and HARD_LIGHT will use copyTex instead of readPixels
-app.stage.filters = [new PIXI.filters.VoidFilter()];
-app.stage.filterArea = new PIXI.Rectangle(0, 0, 800, 600);
+app.stage.filters = [new PIXI.filters.AlphaFilter()];
+app.stage.filterArea = app.screen;
 
 // create an array to store a reference to the dudes
 var dudeArray = [];
@@ -30,11 +30,11 @@ for (var i = 0; i < totaldudes; i++)
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // finally let's set the dude to be at a random position...
-    dude.x = Math.floor(Math.random() * app.renderer.width);
-    dude.y = Math.floor(Math.random() * app.renderer.height);
+    dude.x = Math.floor(Math.random() * app.screen.width);
+    dude.y = Math.floor(Math.random() * app.screen.height);
 
     // The important bit of this example, this is how you change the default blend mode of the sprite
-    dude.blendMode = Math.random() > 0.5 ? 
+    dude.blendMode = Math.random() > 0.5 ?
         PIXI.BLEND_MODES.OVERLAY:
         PIXI.BLEND_MODES.HARD_LIGHT;
 
@@ -59,8 +59,8 @@ var dudeBoundsPadding = 100;
 var dudeBounds = new PIXI.Rectangle(
     -dudeBoundsPadding,
     -dudeBoundsPadding,
-    app.renderer.width + dudeBoundsPadding * 2,
-    app.renderer.height + dudeBoundsPadding * 2
+    app.screen.width + dudeBoundsPadding * 2,
+    app.screen.height + dudeBoundsPadding * 2
 );
 
 var tick = 0;

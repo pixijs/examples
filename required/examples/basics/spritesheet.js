@@ -24,8 +24,8 @@ function onAssetsLoaded()
      * An AnimatedSprite inherits all the properties of a PIXI sprite
      * so you can change its position, its anchor, mask it, etc
      */
-    anim.x = app.renderer.width / 2;
-    anim.y = app.renderer.height / 2;
+    anim.x = app.screen.width / 2;
+    anim.y = app.screen.height / 2;
     anim.anchor.set(0.5);
     anim.animationSpeed = 0.5;
     anim.play();

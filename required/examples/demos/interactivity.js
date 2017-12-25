@@ -3,8 +3,8 @@ document.body.appendChild(app.view);
 
 // create a background...
 var background = PIXI.Sprite.fromImage('required/assets/button_test_BG.jpg');
-background.width = app.renderer.width;
-background.height = app.renderer.height;
+background.width = app.screen.width;
+background.height = app.screen.height;
 
 // add background to stage...
 app.stage.addChild(background);

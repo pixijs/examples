@@ -3,12 +3,12 @@ document.body.appendChild(app.view);
 
 // create two render textures... these dynamic textures will be used to draw the scene into itself
 var renderTexture = PIXI.RenderTexture.create(
-    app.renderer.width,
-    app.renderer.height
+    app.screen.width,
+    app.screen.height
 );
 var renderTexture2 = PIXI.RenderTexture.create(
-    app.renderer.width,
-    app.renderer.height
+    app.screen.width,
+    app.screen.height
 );
 var currentTexture = renderTexture;
 
@@ -59,7 +59,7 @@ for (var i = 0; i < 20; i++) {
 var count = 0;
 
 app.ticker.add(function() {
-    
+
     for (var i = 0; i < items.length; i++) {
         // rotate each item
         var item = items[i];

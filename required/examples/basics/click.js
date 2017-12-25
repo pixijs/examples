@@ -8,8 +8,8 @@ var sprite = PIXI.Sprite.fromImage('required/assets/basics/bunny.png');
 
 // Set the initial position
 sprite.anchor.set(0.5);
-sprite.x = app.renderer.width / 2;
-sprite.y = app.renderer.height / 2;
+sprite.x = app.screen.width / 2;
+sprite.y = app.screen.height / 2;
 
 // Opt-in to interactivity
 sprite.interactive = true;

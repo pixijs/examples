@@ -22,8 +22,8 @@ function onAssetsLoaded() {
         // create an explosion AnimatedSprite
         var explosion = new PIXI.extras.AnimatedSprite(explosionTextures);
 
-        explosion.x = Math.random() * app.renderer.width;
-        explosion.y = Math.random() * app.renderer.height;
+        explosion.x = Math.random() * app.screen.width;
+        explosion.y = Math.random() * app.screen.height;
         explosion.anchor.set(0.5);
         explosion.rotation = Math.random() * Math.PI;
         explosion.scale.set(0.75 + Math.random() * 0.5);

@@ -119,15 +119,6 @@
             "entry": "alpha-mask.js"
         }
     ],
-    "display": [
-        {
-            "title": "Z-order",
-            "entry": "zorder.js",
-            "plugins": [
-                "pixi-display"
-            ]
-        }
-    ],
     "filters": [
         {
             "title": "Filter",

@@ -4,7 +4,6 @@ document.body.appendChild(app.view);
 var count = 0;
 
 // build a rope!
-var ropeLength = 918 / 20;
 var ropeLength = 45;
 
 var points = [];

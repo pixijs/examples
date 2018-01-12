@@ -77,7 +77,7 @@ jQuery(document).ready(function($) {
             bpc.initNav();
         });
 
-            $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/tags', function (data) {
+        $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/tags', function (data) {
             // filters the tags to only include v3 and above
             data = data.filter(function (tag) {
                 return tag.ref.indexOf('refs/tags/v3.0.11') === 0 ||
@@ -89,10 +89,24 @@ jQuery(document).ready(function($) {
             for (var i = 0; i < data.length; i++) {
                 $('.select-group .select ul').append('<li data-val="'+data[i]+'">'+data[i]+'</li>');
             }
+            
+            $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/heads', function (data) {
+                // For pixi-v5 NEXT development
+                var data = data.filter(function (tag) {
+                    return tag.ref.indexOf('refs/heads/next') == 0;
+                }).map(function (tag) {
+                    return tag.ref.replace('refs/heads/', '');
+                });
+                
+                for (var i = 0; i < data.length; i++) {
+                    $('.select-group .select ul').append('<li data-val="'+data[i]+'">'+data[i]+'</li>');
+                }
 
-            var $selected = $('.select-group .select li[data-val="' + bpc.version + '"]');
-            $selected.addClass('selected');
-            $('.select-group .select .current').text($selected.text());
+                var $selected = $('.select-group .select li[data-val="' + bpc.version + '"]');
+                $selected.addClass('selected');
+                $('.select-group .select .current').text($selected.text());
+            });
+
         });
     };
 
@@ -269,11 +283,11 @@ jQuery(document).ready(function($) {
         var js = bpc.jsSource;
         var pixiUrl = '';
 
-		var isLocal = bpc.version.substr(0, 5) === 'local';
+        var isLocal = bpc.version.substr(0, 5) === 'local';
         // pull v3 from github cdn
-		if (isLocal) {
-			pixiUrl = "dist/pixi.js"
-		} else
+        if (isLocal) {
+            pixiUrl = "dist/pixi.js"
+        } else
         if (bpc.version.substr(0, 2) === 'v3') {
             pixiUrl = 'https://cdn.rawgit.com/GoodBoyDigital/pixi.js/' + bpc.version + '/bin/pixi.js';
         }
@@ -288,18 +302,18 @@ jQuery(document).ready(function($) {
 
         var plugins = bpc.plugins === '' ? [] : bpc.plugins.split(',');
 
-		if (!isLocal) {
-			if (bpc.version !== "release" && bpc.version !== "dev") {
+        if (!isLocal) {
+            if (bpc.version !== "release" && bpc.version !== "dev" && bpc.version.substring(0, 4) !== "next") {
                 html += '<script src="required/plugins/pixi-legacy.js"></script>';
-			}
-			for (i=0; i < plugins.length; i++) {
+            }
+            for (i=0; i < plugins.length; i++) {
                 html += '<script src="required/plugins/'+plugins[i]+'.js"></script>';
             }
-		} else {
-			for (i=0; i < plugins.length; i++) {
-				html += '<script src="dist/plugins/'+plugins[i]+'.js"></script>';
-			}
-		}
+        } else {
+            for (i=0; i < plugins.length; i++) {
+                html += '<script src="dist/plugins/'+plugins[i]+'.js"></script>';
+            }
+        }
 
 
 

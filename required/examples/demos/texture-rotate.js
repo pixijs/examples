@@ -17,27 +17,28 @@ function init() {
     var textures = [texture];
     var D8 = PIXI.GroupD8;
     for (var rotate = 1; rotate < 16; rotate++) {
-        var h = D8.isSwapWidthHeight(rotate) ? texture.frame.width : texture.frame.height;
-        var w = D8.isSwapWidthHeight(rotate) ? texture.frame.height : texture.frame.width;
+        var h = D8.isVertical(rotate) ? texture.frame.width : texture.frame.height;
+        var w = D8.isVertical(rotate) ? texture.frame.height : texture.frame.width;
 
       	var frame = texture.frame;
         var crop = new PIXI.Rectangle(texture.frame.x, texture.frame.y, w, h);
         var trim = crop;
+        var rotatedTexture;
         if (rotate%2==0) {
-        	var rotatedTexture = new PIXI.Texture(texture.baseTexture, frame, crop, trim, rotate);
+        	rotatedTexture = new PIXI.Texture(texture.baseTexture, frame, crop, trim, rotate);
         } else {
             //HACK to avoid exception
 			//PIXI doesnt like diamond-shaped UVs, because they are different in canvas and webgl
-          	var rotatedTexture = new PIXI.Texture(texture.baseTexture, frame, crop, trim, rotate-1);
+          	rotatedTexture = new PIXI.Texture(texture.baseTexture, frame, crop, trim, rotate-1);
           	rotatedTexture.rotate++;
         }
         textures.push(rotatedTexture);
     }
 
-    var offsetX = app.renderer.width / 16 | 0;
-    var offsetY = app.renderer.height / 8 | 0;
-    var gridW = app.renderer.width / 4 | 0;
-    var gridH = app.renderer.height / 5 | 0;
+    var offsetX = app.screen.width / 16 | 0;
+    var offsetY = app.screen.height / 8 | 0;
+    var gridW = app.screen.width / 4 | 0;
+    var gridH = app.screen.height / 5 | 0;
 
     //normal rotations and mirrors
     for (var i = 0; i < 16; i++) {

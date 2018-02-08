@@ -9,8 +9,8 @@ texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
 for (var i = 0; i < 10; i++) {
     createBunny(
-        Math.floor(Math.random() * app.renderer.width), 
-        Math.floor(Math.random() * app.renderer.height)
+        Math.floor(Math.random() * app.screen.width),
+        Math.floor(Math.random() * app.screen.height)
     );
 }
 

@@ -117,15 +117,10 @@
         {
             "title": "Alpha Mask",
             "entry": "alpha-mask.js"
-        }
-    ],
-    "display": [
-        {
-            "title": "Z-order",
-            "entry": "zorder.js",
-            "plugins": [
-                "pixi-display"
-            ]
+        },
+		{
+            "title": "Mouse trail",
+            "entry": "mouse-trail.js"
         }
     ],
     "filters": [
@@ -189,6 +184,13 @@
         {
             "title": "Plane",
             "entry": "plane.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "Plane Tiling",
+            "entry": "plane-tiling.js",
             "plugins": [
                 "pixi-projection"
             ]

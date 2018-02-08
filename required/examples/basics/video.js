@@ -12,8 +12,8 @@ var button = new PIXI.Graphics()
     .lineTo(70, 50);
 
 // Position the button
-button.x = (app.renderer.width - button.width) / 2;
-button.y = (app.renderer.height - button.height) / 2;
+button.x = (app.screen.width - button.width) / 2;
+button.y = (app.screen.height - button.height) / 2;
 
 // Enable interactivity on the button
 button.interactive = true;
@@ -24,10 +24,10 @@ app.stage.addChild(button);
 
 // Listen for a click/tap event to start playing the video
 // this is useful for some mobile platforms. For example:
-// ios9 and under cannot render videos in PIXI without a 
+// ios9 and under cannot render videos in PIXI without a
 // polyfill - https://github.com/bfred-it/iphone-inline-video
-// ios10 and above require a click/tap event to render videos 
-// that contain audio in PIXI. Videos with no audio track do 
+// ios10 and above require a click/tap event to render videos
+// that contain audio in PIXI. Videos with no audio track do
 // not have this requirement
 button.on('pointertap', onPlayVideo);
 
@@ -43,8 +43,8 @@ function onPlayVideo() {
     var videoSprite = new PIXI.Sprite(texture);
 
     // Stetch the fullscreen
-    videoSprite.width = app.renderer.width;
-    videoSprite.height = app.renderer.height;
+    videoSprite.width = app.screen.width;
+    videoSprite.height = app.screen.height;
 
-    app.stage.addChild(videoSprite); 
+    app.stage.addChild(videoSprite);
 }

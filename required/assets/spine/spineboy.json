@@ -1,4 +1,5 @@
 {
+"skeleton":{"spine":"3.3.07","images":"./image/"},
 "bones": [
     { "name": "root" },
     { "name": "hip", "parent": "root", "x": 0.64, "y": 114.41 },

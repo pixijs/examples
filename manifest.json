@@ -117,6 +117,10 @@
         {
             "title": "Alpha Mask",
             "entry": "alpha-mask.js"
+        },
+		{
+            "title": "Mouse trail",
+            "entry": "mouse-trail.js"
         }
     ],
     "filters": [

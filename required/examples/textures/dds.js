@@ -1,6 +1,4 @@
 var app = new PIXI.Application(800, 600, { resolution: window.devicePixelRatio || 1 });
-app.view.style.width = "800px";
-app.view.style.height = "600px";
 document.body.appendChild(app.view);
 
 // use empty array if you dont want to use detect feature

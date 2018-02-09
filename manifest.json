@@ -59,6 +59,10 @@
             "entry": "animatedsprite-animationspeed.js"
         },
         {
+            "title": "AnimationSpeed",
+            "entry": "animatedsprite-animationspeed.js"
+        },
+        {
             "title": "Interactivity",
             "entry": "interactivity.js"
         },

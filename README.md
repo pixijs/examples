@@ -20,6 +20,6 @@ Every sub-folder in the examples folder corresponds to a sub-menu in the website
 
 ## How to create an example ##
 
-You can use the basic example as a template, it is located in ``` required/examples/basics/basic.html ```.
+You can use the basic example as a template, it is located in [``` required/examples/basics/basic.js ```] ("./required/examples/basics/basic.js").
 All you need to do is copy and paste this file to where you think your example belongs.
 You can then come back to the browser and navigate to your file and start changing it.

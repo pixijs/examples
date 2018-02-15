@@ -1,3 +1,10 @@
+/**
+ * This demo contains platform-dependant bug. If you dont use vTextureCoord, it'll be removed by glsl compiler
+ * FilterManager will be upset about it. Consider using renderer plugin for it.
+ *
+ * https://github.com/pixijs/pixi.js/wiki/v4-Creating-Filters#cannot-read-property-location-of-undefined
+ */
+
 var app = new PIXI.Application();
 document.body.appendChild(app.view);
 
@@ -37,7 +44,7 @@ app.ticker.add(function(delta) {
     var global = app.renderer.plugins.interaction.mouse.global;
     v2[0] = global.x; v2[1] = global.y;
     filter.uniforms.mouse = v2;
-  
+
     v2 = filter.uniforms.resolution;
     v2[0] = app.screen.width;
     v2[1] = app.screen.height;

@@ -125,7 +125,11 @@
 		{
             "title": "Mouse trail",
             "entry": "mouse-trail.js"
-        }
+        },
+		{
+			"title": "Custom mouse icon",
+			"entry": "custom-mouse-icon.js"
+		}
     ],
     "filters": [
         {

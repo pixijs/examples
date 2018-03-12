@@ -132,7 +132,7 @@
 		},
 		{
 			"title": "Slots demo",
-			"entry": "Slots-demo.js"
+			"entry": "slots-demo.js"
 		}
     ],
     "filters": [

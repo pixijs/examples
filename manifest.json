@@ -129,6 +129,10 @@
 		{
 			"title": "Custom mouse icon",
 			"entry": "custom-mouse-icon.js"
+		},
+		{
+			"title": "Slots demo",
+			"entry": "Slots-demo.js"
 		}
     ],
     "filters": [

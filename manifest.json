@@ -160,7 +160,7 @@
             "entry": "displacement-map.js"
         }
     ],
-	"next": [
+	"mesh": [
         {
             "title": "Triangle",
             "entry": "triangle.js"

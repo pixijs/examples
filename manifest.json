@@ -160,6 +160,40 @@
             "entry": "displacement-map.js"
         }
     ],
+	"next": [
+        {
+            "title": "Triangle",
+            "entry": "triangle.js"
+        },
+        {
+            "title": "Colored Triangle",
+            "entry": "triangle-color.js"
+        },
+        {
+            "title": "Textured Triangle",
+            "entry": "triangle-textured.js"
+        },
+        {
+            "title": "Uniforms",
+            "entry": "uniforms.js"
+        },
+        {
+            "title": "Sharing Geometry",
+            "entry": "sharing-geometry.js"
+        },
+        {
+            "title": "Sharing Shader",
+            "entry": "shared-shader.js"
+        },
+        {
+            "title": "Merging Geometry",
+            "entry": "merging-geometry.js"
+        },
+        {
+            "title": "Interleaving Geometry",
+            "entry": "interleaving-geometry.js"
+        }
+	],
     "picture": [
         {
             "title": "Overlay blendMode",

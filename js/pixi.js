@@ -7,7 +7,7 @@ function getParameterByName(name) {
 
 jQuery(document).ready(function($) {
     window.onpopstate = function (event) {
-        bpc.version = event.state || 'release';
+        bpc.version = getParameterByName('v') || 'release';
         bpc.generateIFrameContent();
 
         $('.select-group .select li.selected').removeClass('selected');
@@ -89,7 +89,7 @@ jQuery(document).ready(function($) {
             for (var i = 0; i < data.length; i++) {
                 $('.select-group .select ul').append('<li data-val="'+data[i]+'">'+data[i]+'</li>');
             }
-            
+
             $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/heads', function (data) {
                 // For pixi-v5 NEXT development
                 var data = data.filter(function (tag) {
@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
                 }).map(function (tag) {
                     return tag.ref.replace('refs/heads/', '');
                 });
-                
+
                 for (var i = 0; i < data.length; i++) {
                     $('.select-group .select ul').append('<li data-val="'+data[i]+'">'+data[i]+'</li>');
                 }

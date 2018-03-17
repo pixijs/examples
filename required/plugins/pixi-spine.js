@@ -6612,6 +6612,10 @@ var pixi_spine;
 var pixi_spine;
 (function (pixi_spine) {
     PIXI.spine = pixi_spine;
+    var TextureProto = PIXI.Texture.prototype;
+    if (!TextureProto._updateUvs) {
+        TextureProto._updateUvs = TextureProto.updateUvs;
+    }
 })(pixi_spine || (pixi_spine = {}));
 var pixi_spine;
 (function (pixi_spine) {

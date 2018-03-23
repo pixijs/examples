@@ -22,6 +22,7 @@ lighting.on('display', function (element) {
     element.blendMode = PIXI.BLEND_MODES.ADD
 });
 lighting.useRenderTexture = true;
+lighting.clearColor = [0.5, 0.5, 0.5, 1]; // ambient gray
 
 app.stage.addChild(lighting);
 
@@ -29,12 +30,6 @@ var lightingSprite = new PIXI.Sprite(lighting.getRenderTexture());
 lightingSprite.blendMode = PIXI.BLEND_MODES.MULTIPLY;
 
 app.stage.addChild(lightingSprite);
-
-var ambient = new PIXI.Graphics();
-ambient.beginFill(0x808080, 1.0);
-ambient.drawRect(0, 0, WIDTH, HEIGHT);
-ambient.endFill();
-lighting.addChild(ambient); //<-- try comment it
 
 var bunnyTexture = PIXI.Texture.fromImage("required/assets/basics/bunny.png");
 function updateBunny(bunny) {

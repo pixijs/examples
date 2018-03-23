@@ -21,13 +21,14 @@ var lighting = new PIXI.display.Layer();
 lighting.on('display', function (element) {
     element.blendMode = PIXI.BLEND_MODES.ADD
 });
-lighting.filters = [new PIXI.filters.VoidFilter()];
-lighting.filters[0].blendMode = PIXI.BLEND_MODES.MULTIPLY;
-
-lighting.filterArea = app.screen;
-// lighting.filterArea = new PIXI.Rectangle(100, 100, 600, 400); //<-- try uncomment it
+lighting.useRenderTexture = true;
 
 app.stage.addChild(lighting);
+
+var lightingSprite = new PIXI.Sprite(lighting.getRenderTexture());
+lightingSprite.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+
+app.stage.addChild(lightingSprite);
 
 var ambient = new PIXI.Graphics();
 ambient.beginFill(0x808080, 1.0);

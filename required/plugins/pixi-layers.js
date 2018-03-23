@@ -47,7 +47,7 @@ Object.assign(PIXI.DisplayObject.prototype, {
 if (PIXI.particles && PIXI.particles.ParticleContainer) {
     PIXI.particles.ParticleContainer.prototype.layerableChildren = false;
 }
-if (PIXI.ParticleContainer) {
+else if (PIXI.ParticleContainer) {
     PIXI.ParticleContainer.prototype.layerableChildren = false;
 }
 var __extends = (this && this.__extends) || function (d, b) {
@@ -66,6 +66,8 @@ var pixi_display;
             _this._activeStage = null;
             _this._activeChildren = [];
             _this._lastUpdateId = -1;
+            _this.useRenderTexture = false;
+            _this.clearColor = new Float32Array([0, 0, 0, 1]);
             _this.canDrawWithoutLayer = false;
             _this.canDrawInParentStage = true;
             _this.zIndex = 0;
@@ -171,7 +173,7 @@ var pixi_display;
     var InteractionManager = PIXI.interaction.InteractionManager;
     Object.assign(InteractionManager.prototype, {
         _queue: [[], []],
-        _displayProcessInteractive: function (point, displayObject, hitTestOrder, interactive) {
+        _displayProcessInteractive: function (point, displayObject, hitTestOrder, interactive, outOfMask) {
             if (!displayObject || !displayObject.visible) {
                 return 0;
             }
@@ -179,22 +181,25 @@ var pixi_display;
             if (displayObject.hitArea) {
                 interactiveParent = false;
             }
+            if (displayObject._activeParentLayer) {
+                outOfMask = false;
+            }
             var mask = displayObject._mask;
             if (hitTestOrder < Infinity && mask) {
                 if (!mask.containsPoint(point)) {
-                    hitTestOrder = Infinity;
+                    outOfMask = true;
                 }
             }
             if (hitTestOrder < Infinity && displayObject.filterArea) {
                 if (!displayObject.filterArea.contains(point.x, point.y)) {
-                    hitTestOrder = Infinity;
+                    outOfMask = true;
                 }
             }
             var children = displayObject.children;
             if (displayObject.interactiveChildren && children) {
                 for (var i = children.length - 1; i >= 0; i--) {
                     var child = children[i];
-                    var hitChild = this._displayProcessInteractive(point, child, hitTestOrder, interactiveParent);
+                    var hitChild = this._displayProcessInteractive(point, child, hitTestOrder, interactiveParent, outOfMask);
                     if (hitChild) {
                         if (!child.parent) {
                             continue;
@@ -205,21 +210,28 @@ var pixi_display;
                 }
             }
             if (interactive) {
-                if (hitTestOrder < displayObject.displayOrder) {
-                    if (displayObject.hitArea) {
-                        displayObject.worldTransform.applyInverse(point, this._tempPoint);
-                        if (displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y)) {
-                            hit = displayObject.displayOrder;
+                if (!outOfMask) {
+                    if (hitTestOrder < displayObject.displayOrder) {
+                        if (displayObject.hitArea) {
+                            displayObject.worldTransform.applyInverse(point, this._tempPoint);
+                            if (displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y)) {
+                                hit = displayObject.displayOrder;
+                            }
+                        }
+                        else if (displayObject.containsPoint) {
+                            if (displayObject.containsPoint(point)) {
+                                hit = displayObject.displayOrder;
+                            }
                         }
                     }
-                    else if (displayObject.containsPoint) {
-                        if (displayObject.containsPoint(point)) {
-                            hit = displayObject.displayOrder;
-                        }
+                    if (displayObject.interactive) {
+                        this._queueAdd(displayObject, hit === Infinity ? 0 : hit);
                     }
                 }
-                if (displayObject.interactive) {
-                    this._queueAdd(displayObject, hit);
+                else {
+                    if (displayObject.interactive) {
+                        this._queueAdd(displayObject, 0);
+                    }
                 }
             }
             return hit;
@@ -270,7 +282,9 @@ var pixi_display;
             var i = 0;
             for (; i < q.length; i++) {
                 if (event) {
-                    func(event, q[i], false);
+                    if (func) {
+                        func(event, q[i], false);
+                    }
                 }
                 else {
                     func(q[i], false);
@@ -282,7 +296,9 @@ var pixi_display;
                     if (!event.target) {
                         event.target = q[i];
                     }
-                    func(event, q[i], true);
+                    if (func) {
+                        func(event, q[i], true);
+                    }
                 }
                 else {
                     func(q[i], true);
@@ -306,6 +322,8 @@ var pixi_display;
             _this._activeStageParent = null;
             _this._sortedChildren = [];
             _this._tempLayerParent = null;
+            _this._thisRenderTexture = null;
+            _this._tempRenderTarget = null;
             _this.insertChildrenBeforeActive = true;
             _this.insertChildrenAfterActive = true;
             if (group != null) {
@@ -356,6 +374,32 @@ var pixi_display;
                 this.doSort();
             }
         };
+        Object.defineProperty(Layer.prototype, "useRenderTexture", {
+            get: function () {
+                return this.group.useRenderTexture;
+            },
+            set: function (value) {
+                this.group.useRenderTexture = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Layer.prototype, "clearColor", {
+            get: function () {
+                return this.group.clearColor;
+            },
+            set: function (value) {
+                this.group.clearColor = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Layer.prototype.getRenderTexture = function () {
+            if (!this._thisRenderTexture) {
+                this._thisRenderTexture = PIXI.RenderTexture.create(100, 100);
+            }
+            return this._thisRenderTexture;
+        };
         Layer.prototype.updateDisplayLayers = function () {
         };
         Layer.prototype.doSort = function () {
@@ -388,10 +432,40 @@ var pixi_display;
             renderer._activeLayer = this._tempLayerParent;
             this._tempLayerParent = null;
         };
+        Layer.prototype._pushTexture = function (renderer) {
+            var screen = renderer.screen;
+            if (!this._thisRenderTexture) {
+                this._thisRenderTexture = PIXI.RenderTexture.create(screen.width, screen.height, null, renderer.resolution);
+            }
+            var rt = this._thisRenderTexture;
+            if (rt.width !== screen.width ||
+                rt.height !== screen.height ||
+                rt.baseTexture.resolution !== renderer.resolution) {
+                rt.baseTexture.resolution = renderer.resolution;
+                rt.resize(screen.width, screen.height);
+            }
+            this._tempRenderTarget = renderer._activeRenderTarget;
+            renderer.currentRenderer.flush();
+            renderer.bindRenderTexture(rt, undefined);
+            if (this.group.clearColor) {
+                renderer.clear(this.group.clearColor);
+            }
+        };
+        Layer.prototype._popTexture = function (renderer) {
+            renderer.bindRenderTarget(this._tempRenderTarget);
+            this._tempRenderTarget = null;
+        };
         Layer.prototype.renderWebGL = function (renderer) {
-            if (this._preRender(renderer)) {
-                this.containerRenderWebGL(renderer);
-                this._postRender(renderer);
+            if (!this._preRender(renderer)) {
+                return;
+            }
+            if (this.group.useRenderTexture) {
+                this._pushTexture(renderer);
+            }
+            this.containerRenderWebGL(renderer);
+            this._postRender(renderer);
+            if (this.group.useRenderTexture) {
+                this._popTexture(renderer);
             }
         };
         Layer.prototype.renderCanvas = function (renderer) {
@@ -399,6 +473,12 @@ var pixi_display;
                 this.containerRenderCanvas(renderer);
                 this._postRender(renderer);
             }
+        };
+        Layer.prototype.destroy = function (options) {
+            if (this._thisRenderTexture) {
+                this._thisRenderTexture.destroy(true);
+            }
+            _super.prototype.destroy.call(this, options);
         };
         return Layer;
     }(Container));
@@ -461,8 +541,9 @@ var pixi_display;
             this._activeLayers.length = 0;
             this._tempGroups.length = 0;
         };
-        Stage.prototype.destroy = function () {
+        Stage.prototype.destroy = function (options) {
             this.clear();
+            _super.prototype.destroy.call(this, options);
         };
         Stage.prototype._addRecursive = function (displayObject) {
             if (!displayObject.visible) {

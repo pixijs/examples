@@ -205,6 +205,14 @@
     ],
     "layers": [
         {
+            "title": "Normals",
+            "entry": "normals.js",
+            "plugins": [
+                "pixi-layers",
+                "pixi-lights"
+            ]
+        },
+        {
             "title": "Lighting",
             "entry": "lighting.js",
             "plugins": [

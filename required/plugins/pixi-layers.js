@@ -1,7 +1,6 @@
 var pixi_display;
 (function (pixi_display) {
-    var Container = PIXI.Container;
-    Object.assign(Container.prototype, {
+    Object.assign(PIXI.Container.prototype, {
         renderWebGL: function (renderer) {
             if (this._activeParentLayer && this._activeParentLayer != renderer._activeLayer) {
                 return;
@@ -72,7 +71,7 @@ var pixi_display;
             _this._activeChildren = [];
             _this._lastUpdateId = -1;
             _this.useRenderTexture = false;
-            _this.clearColor = new Float32Array([0, 0, 0, 1]);
+            _this.clearColor = new Float32Array([0, 0, 0, 0]);
             _this.canDrawWithoutLayer = false;
             _this.canDrawInParentStage = true;
             _this.zIndex = 0;
@@ -167,10 +166,10 @@ var pixi_display;
                 console.log("PIXI-display plugin found two layers with the same group in one stage - that's not healthy. Please place a breakpoint here and debug it");
             }
         };
+        Group._layerUpdateId = 0;
+        Group._lastLayerConflict = 0;
         return Group;
     }(utils.EventEmitter));
-    Group._layerUpdateId = 0;
-    Group._lastLayerConflict = 0;
     pixi_display.Group = Group;
 })(pixi_display || (pixi_display = {}));
 var pixi_display;
@@ -314,7 +313,6 @@ var pixi_display;
 })(pixi_display || (pixi_display = {}));
 var pixi_display;
 (function (pixi_display) {
-    var Container = PIXI.Container;
     var Layer = (function (_super) {
         __extends(Layer, _super);
         function Layer(group) {
@@ -487,20 +485,18 @@ var pixi_display;
             _super.prototype.destroy.call(this, options);
         };
         return Layer;
-    }(Container));
+    }(PIXI.Container));
     pixi_display.Layer = Layer;
 })(pixi_display || (pixi_display = {}));
 var pixi_display;
 (function (pixi_display) {
-    var WebGLRenderer = PIXI.WebGLRenderer;
-    var CanvasRenderer = PIXI.CanvasRenderer;
-    Object.assign(WebGLRenderer.prototype, {
+    Object.assign(PIXI.WebGLRenderer.prototype, {
         _lastDisplayOrder: 0,
         _activeLayer: null,
         incDisplayOrder: function () {
             return ++this._lastDisplayOrder;
         },
-        _oldRender: WebGLRenderer.prototype.render,
+        _oldRender: PIXI.WebGLRenderer.prototype.render,
         render: function (displayObject, renderTexture, clear, transform, skipUpdateTransform) {
             if (!renderTexture) {
                 this._lastDisplayOrder = 0;
@@ -512,13 +508,13 @@ var pixi_display;
             this._oldRender(displayObject, renderTexture, clear, transform, skipUpdateTransform);
         }
     });
-    Object.assign(CanvasRenderer.prototype, {
+    Object.assign(PIXI.CanvasRenderer.prototype, {
         _lastDisplayOrder: 0,
         _activeLayer: null,
         incDisplayOrder: function () {
             return ++this._lastDisplayOrder;
         },
-        _oldRender: CanvasRenderer.prototype.render,
+        _oldRender: PIXI.CanvasRenderer.prototype.render,
         render: function (displayObject, renderTexture, clear, transform, skipUpdateTransform) {
             if (!renderTexture) {
                 this._lastDisplayOrder = 0;
@@ -603,12 +599,13 @@ var pixi_display;
             this._updateStageInner();
         };
         ;
+        Stage._updateOrderCounter = 0;
         return Stage;
     }(pixi_display.Layer));
-    Stage._updateOrderCounter = 0;
     pixi_display.Stage = Stage;
 })(pixi_display || (pixi_display = {}));
-Object.assign(PIXI, {
-    display: pixi_display
-});
+var pixi_display;
+(function (pixi_display) {
+    PIXI.display = pixi_display;
+})(pixi_display || (pixi_display = {}));
 //# sourceMappingURL=pixi-layers.js.map

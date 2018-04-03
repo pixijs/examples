@@ -69,8 +69,10 @@ function createBlock(x, y) {
     container.position.set(x, y);
     var diffuseSprite = new PIXI.Sprite(lightLoader.resources.block_diffuse.texture);
     diffuseSprite.parentGroup = PIXI.lights.diffuseGroup;
+    diffuseSprite.anchor.set(0.5);
     var normalSprite = new PIXI.Sprite(lightLoader.resources.block_normal.texture);
     normalSprite.parentGroup = PIXI.lights.normalGroup;
+    normalSprite.anchor.set(0.5);
     container.addChild(diffuseSprite);
     container.addChild(normalSprite);
 

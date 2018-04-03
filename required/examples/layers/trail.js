@@ -10,7 +10,7 @@ layer.useRenderTexture = true;
 layer.useDoubleBuffer = true;
 
 var trailSprite = new PIXI.Sprite(layer.getRenderTexture());
-trailSprite.alpha = 0.9;
+trailSprite.alpha = 0.6;
 
 layer.addChild(trailSprite);
 

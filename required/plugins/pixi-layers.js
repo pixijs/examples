@@ -72,6 +72,7 @@ var pixi_display;
             _this._lastUpdateId = -1;
             _this.useRenderTexture = false;
             _this.useDoubleBuffer = false;
+            _this.sortPriority = 0;
             _this.clearColor = new Float32Array([0, 0, 0, 0]);
             _this.canDrawWithoutLayer = false;
             _this.canDrawInParentStage = true;
@@ -493,6 +494,16 @@ var pixi_display;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Layer.prototype, "sortPriority", {
+            get: function () {
+                return this.group.sortPriority;
+            },
+            set: function (value) {
+                this.group.sortPriority = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Layer.prototype.getRenderTexture = function () {
             if (!this.textureCache) {
                 this.textureCache = new LayerTextureCache(this);
@@ -599,15 +610,30 @@ var pixi_display;
                 return;
             }
             var group = displayObject.parentGroup;
-            if (group != null) {
-                displayObject.parentGroup.addDisplayObject(this, displayObject);
+            if (group !== null) {
+                group.addDisplayObject(this, displayObject);
             }
             var layer = displayObject.parentLayer;
-            if (layer != null) {
-                layer.group.addDisplayObject(this, displayObject);
+            if (layer !== null) {
+                group = layer.group;
+                group.addDisplayObject(this, displayObject);
             }
             displayObject.updateOrder = ++Stage._updateOrderCounter;
-            if (displayObject.alpha <= 0 || !displayObject.renderable || !displayObject.layerableChildren) {
+            if (displayObject.alpha <= 0 || !displayObject.renderable
+                || !displayObject.layerableChildren
+                || group && group.sortPriority) {
+                return;
+            }
+            var children = displayObject.children;
+            if (children && children.length) {
+                for (var i = 0; i < children.length; i++) {
+                    this._addRecursive(children[i]);
+                }
+            }
+        };
+        Stage.prototype._addRecursiveChildren = function (displayObject) {
+            if (displayObject.alpha <= 0 || !displayObject.renderable
+                || !displayObject.layerableChildren) {
                 return;
             }
             var children = displayObject.children;
@@ -622,7 +648,20 @@ var pixi_display;
             this._addRecursive(this);
             var layers = this._activeLayers;
             for (var i = 0; i < layers.length; i++) {
-                layers[i].endWork();
+                var layer = layers[i];
+                if (layer.group.sortPriority) {
+                    layer.endWork();
+                    var sorted = layer._sortedChildren;
+                    for (var j = 0; j < sorted.length; j++) {
+                        this._addRecursiveChildren(sorted[j]);
+                    }
+                }
+            }
+            for (var i = 0; i < layers.length; i++) {
+                var layer = layers[i];
+                if (!layer.group.sortPriority) {
+                    layer.endWork();
+                }
             }
         };
         Stage.prototype.updateAsChildStage = function (stage) {

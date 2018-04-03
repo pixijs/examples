@@ -227,6 +227,14 @@
             ]
         },
         {
+            "title": "Drag, Sort, Light",
+            "entry": "normals-drag.js",
+            "plugins": [
+                "pixi-layers",
+                "pixi-lights"
+            ]
+        },
+        {
             "title": "trail",
             "entry": "trail.js",
             "plugins": [

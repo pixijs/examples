@@ -225,6 +225,13 @@
             "plugins": [
                 "pixi-layers"
             ]
+        },
+        {
+            "title": "trail",
+            "entry": "trail.js",
+            "plugins": [
+                "pixi-layers"
+            ]
         }
     ],
     "projection": [

@@ -1,3 +1,5 @@
+// please switch to `next-compressed` version to see this demo
+
 var app = new PIXI.Application(800, 600, {backgroundColor: 0x308030});
 document.body.appendChild(app.view);
 

@@ -28,9 +28,12 @@ loader.add('house_png', 'required/assets/compressed/dracula_house_4.png')
 
         resources.house_png.texture.baseTexture.premultiplyAlpha = true;
         resources.house_dds.texture.baseTexture.premultiplyAlpha = true;
-        resources.house_png_2.texture.baseTexture.premultiplyAlpha = false;
         resources.house_dds_2.texture.baseTexture.premultiplyAlpha = false;
 
+        // just a hack to actually show the consequences of wrong value of the flag
+        app.ticker.add(() => {
+            resources.house_png_2.texture.baseTexture.premultiplyAlpha = false;
+        });
 
         spr1.position.set(250, 250);
         spr1.scale.set(0.6);

@@ -312,10 +312,7 @@
     "textures": [
         {
             "title": "pixi-V5 Not-premultiplied alpha",
-            "entry": "not-premultiplied-alpha.js",
-            "plugins": [
-                "pixi-compressed-textures"
-            ]
+            "entry": "not-premultiplied-alpha.js"
         },
         {
             "title": "pixi-V4 Extension chooser",

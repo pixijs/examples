@@ -311,14 +311,14 @@
     ],
     "textures": [
         {
-            "title": "Not-premultiplied alpha",
+            "title": "pixi-V5 Not-premultiplied alpha",
             "entry": "not-premultiplied-alpha.js",
             "plugins": [
                 "pixi-compressed-textures"
             ]
         },
         {
-            "title": "Extension chooser",
+            "title": "pixi-V4 Extension chooser",
             "entry": "dds.js",
             "plugins": [
                 "pixi-compressed-textures"

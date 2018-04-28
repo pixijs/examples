@@ -244,37 +244,54 @@
     ],
     "projection": [
         {
-            "title": "Basics",
+            "title": "2D Basics",
             "entry": "basic.js",
             "plugins": [
                 "pixi-projection"
             ]
         },
         {
-            "title": "Plane",
+            "title": "2D Plane",
             "entry": "plane.js",
             "plugins": [
                 "pixi-projection"
             ]
         },
         {
-            "title": "Plane Tiling",
+            "title": "2D Plane Tiling",
             "entry": "plane-tiling.js",
             "plugins": [
                 "pixi-projection"
             ]
         },
         {
-            "title": "Quad projective",
+            "title": "2D Quad projective",
             "entry": "quad-homo.js",
             "plugins": [
                 "pixi-projection"
             ]
         },
 		{
-            "title": "Quad bilinear",
+            "title": "2D Quad bilinear",
             "entry": "quad-bi.js",
             "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "3D Camera Spine Layers",
+            "entry": "camera-spine-layers.js",
+            "plugins": [
+                "pixi-spine",
+                "pixi-layers",
+                "pixi-projection-spine"
+            ]
+        },
+        {
+            "title": "3D Poker",
+            "entry": "poker.js",
+            "plugins": [
+                "pixi-layers",
                 "pixi-projection"
             ]
         }

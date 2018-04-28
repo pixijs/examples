@@ -35,11 +35,7 @@ squarePlane.addChild(bunny);
 
 // Listen for animate update
 app.ticker.add(function (delta) {
-    // clear the projection
-    container.proj.clear();
-    container.updateTransform();
-    // now we can get local coords for points of perspective
-    let pos = container.toLocal(squareFar.position);
+    let pos = container.toLocal(squareFar.position, undefined, undefined, undefined, PIXI.projection.TRANSFORM_STEP.BEFORE_PROJ);
     //need to invert this thing, otherwise we'll have to use scale.y=-1 which is not good
     pos.y = -pos.y;
     pos.x = -pos.x;

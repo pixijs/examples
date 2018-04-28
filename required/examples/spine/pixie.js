@@ -23,7 +23,10 @@ function onAssetsLoaded(loader,res) {
 
     foreground = PIXI.Sprite.fromImage('required/assets/spine/iP4_ground.png');
     foreground2 = PIXI.Sprite.fromImage('required/assets/spine/iP4_ground.png');
-    foreground.y = foreground2.y = 640 - foreground2.height;
+    foreground.anchor.set(0, 0.7);
+    foreground.position.y = app.screen.height;
+    foreground2.anchor.set(0, 0.7);
+    foreground2.position.y = app.screen.height;
 
     app.stage.addChild(background, background2, foreground, foreground2);
 

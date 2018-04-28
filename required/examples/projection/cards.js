@@ -1,3 +1,8 @@
+// This examples is hard
+// To understand it, you have to carefully read all readme`s and other examples of respective plugins
+// Be ready to study the plugins code. Please use latest version of those libs
+// Used plugins: pixi-projection, pixi-display
+
 var app = new PIXI.Application(800, 600, {resolution: 1, autoStart: false, antialias: true });
 document.body.appendChild(app.view);
 app.stage = new PIXI.display.Stage();
@@ -30,7 +35,7 @@ camera.addChild(new PIXI.display.Layer(cardsGroup));
 
 // load assets
 loader.add('cards', 'casino/cards.json');
-loader.add('table', 'casino/table.jpg');
+loader.add('table', 'casino/table.png');
 loader.load(onAssetsLoaded);
 
 // blur for shadow. Do not use it in production, bake shadow into the texture!
@@ -216,4 +221,9 @@ app.ticker.add(function(deltaTime) {
     for (var i=0; i<cards.children.length; i++) {
         cards.children[i].update(deltaTime / 60.0);
     }
+
+    // We are gonna sort and show correct side of card,
+    // so we need updateTransform BEFORE the sorting will be called.
+    // otherwise this part will be tardy by one frame
+    camera.updateTransform();
 });

@@ -288,10 +288,18 @@
             ]
         },
         {
-            "title": "3D Poker",
-            "entry": "poker.js",
+            "title": "3D Cards",
+            "entry": "cards.js",
             "plugins": [
                 "pixi-layers",
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "3D Runner",
+            "entry": "runner.js",
+            "plugins": [
+                "pixi-spine",
                 "pixi-projection"
             ]
         }

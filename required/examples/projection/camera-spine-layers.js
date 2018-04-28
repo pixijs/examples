@@ -1,3 +1,8 @@
+// This examples is hard
+// To understand it, you have to carefully read all readme`s and other examples of respective plugins
+// Be ready to study the plugins code. Please use latest version of those libs
+// Used plugins: pixi-spine, pixi-projection (+spine), pixi-display
+
 var app = new PIXI.Application(800, 600, {resolution: 1, autoStart: false });
 document.body.appendChild(app.view);
 app.stage = new PIXI.display.Stage();
@@ -14,8 +19,6 @@ loader.load(onAssetsLoaded);
 // holder to store aliens
 var aliens = [];
 var alienFrames = ["eggHead.png", "flowerTop.png", "helmlok.png", "skully.png"];
-
-var count = 0;
 
 // create an empty container
 var camera = new PIXI.projection.Camera3d();
@@ -97,8 +100,6 @@ function onAssetsLoaded() {
 var ang = 0;
 
 app.ticker.add(() => {
-    count += 0.04;
-
     debugGraphics.clear();
     debugGraphics.lineStyle(2, 0xffffff, 1.0);
     alienContainer.children.forEach(function (alien) {
@@ -127,4 +128,8 @@ app.ticker.add(() => {
             plane.euler.y = ang;
         }
     });
+    // We are gonna sort and show correct side of card,
+    // so we need updateTransform BEFORE the sorting will be called.
+    // otherwise this part will be tardy by one frame
+    camera.updateTransform();
 });

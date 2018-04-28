@@ -3907,4 +3907,60 @@ var pixi_projection;
         }
     };
 })(pixi_projection || (pixi_projection = {}));
-//# sourceMappingURL=pixi-projection.js.map
+var pixi_projection;
+(function (pixi_projection) {
+    var Spine2d = (function (_super) {
+        __extends(Spine2d, _super);
+        function Spine2d(spineData) {
+            var _this = _super.call(this, spineData) || this;
+            _this.convertTo2d();
+            return _this;
+        }
+        Spine2d.prototype.newContainer = function () {
+            return new pixi_projection.Container2d();
+        };
+        Spine2d.prototype.newSprite = function (tex) {
+            return new pixi_projection.Sprite2d(tex);
+        };
+        Spine2d.prototype.newGraphics = function () {
+            return new PIXI.Graphics();
+        };
+        Spine2d.prototype.newMesh = function (texture, vertices, uvs, indices, drawMode) {
+            return new pixi_projection.Mesh2d(texture, vertices, uvs, indices, drawMode);
+        };
+        Spine2d.prototype.transformHack = function () {
+            return 2;
+        };
+        return Spine2d;
+    }(PIXI.spine.Spine));
+    pixi_projection.Spine2d = Spine2d;
+})(pixi_projection || (pixi_projection = {}));
+var pixi_projection;
+(function (pixi_projection) {
+    var Spine3d = (function (_super) {
+        __extends(Spine3d, _super);
+        function Spine3d(spineData) {
+            var _this = _super.call(this, spineData) || this;
+            _this.convertTo3d();
+            return _this;
+        }
+        Spine3d.prototype.newContainer = function () {
+            return new pixi_projection.Container3d();
+        };
+        Spine3d.prototype.newSprite = function (tex) {
+            return new pixi_projection.Sprite3d(tex);
+        };
+        Spine3d.prototype.newGraphics = function () {
+            return new PIXI.Graphics();
+        };
+        Spine3d.prototype.newMesh = function (texture, vertices, uvs, indices, drawMode) {
+            return new pixi_projection.Mesh3d(texture, vertices, uvs, indices, drawMode);
+        };
+        Spine3d.prototype.transformHack = function () {
+            return 3;
+        };
+        return Spine3d;
+    }(PIXI.spine.Spine));
+    pixi_projection.Spine3d = Spine3d;
+})(pixi_projection || (pixi_projection = {}));
+//# sourceMappingURL=pixi-projection-spine.js.map

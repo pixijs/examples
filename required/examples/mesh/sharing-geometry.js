@@ -48,15 +48,15 @@ var program = new PIXI.Program.from(`
 
 `)
 
-var triangle = new PIXI.RawMesh(geometry, new PIXI.Shader(program, {
+var triangle = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
   uSamplerTexture:PIXI.Texture.from('required/assets/SceneRotate.jpg')
 }));
 
-var triangle2 = new PIXI.RawMesh(geometry, new PIXI.Shader(program, {
+var triangle2 = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
   uSamplerTexture:PIXI.Texture.from('required/assets/BGrotate.jpg')
 }));
 
-var triangle3 = new PIXI.RawMesh(geometry, new PIXI.Shader(program, {
+var triangle3 = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
   uSamplerTexture:PIXI.Texture.from('required/assets/displacement_BG.jpg')
 }));
 

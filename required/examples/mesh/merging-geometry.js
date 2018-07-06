@@ -68,7 +68,7 @@ var shader = new PIXI.Shader.from(`
   uSampler2:PIXI.Texture.from('required/assets/SceneRotate.jpg')
 })
 
-var quad = new PIXI.RawMesh(geometry3, shader);
+var quad = new PIXI.Mesh(geometry3, shader);
 
 quad.position.set(400, 300);
 quad.scale.set(2);

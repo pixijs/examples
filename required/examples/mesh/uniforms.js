@@ -68,7 +68,7 @@ quad.scale.set(2);
 app.stage.addChild(quad);
 
 // start the animation..
-requestAnimationFrame(animate);
+//requestAnimationFrame(animate);
 
 app.ticker.add(function(delta) {
     quad.rotation += 0.01;

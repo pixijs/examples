@@ -133,6 +133,10 @@
 		{
 			"title": "Slots demo",
 			"entry": "slots-demo.js"
+		},
+		{
+			"title": "Star warp - sprites",
+			"entry": "star-warp-sprites.js"
 		}
     ],
     "filters": [
@@ -159,7 +163,7 @@
             "title": "Displacement Map",
             "entry": "displacement-map.js"
         }
-    ],
+	],
 	"mesh": [
         {
             "title": "Triangle",

@@ -7,10 +7,12 @@ var starTexture = PIXI.Texture.fromImage('required/assets/star.png')
 var starAmount = 1000;
 var cameraZ = 0;
 var fov = 20;
+var baseSpeed = 0.025;
 var speed = 0;
-var speedTarget = 0;
+var warpSpeed = 0;
 var starStretch = 5;
 var starBaseSize = 0.05;
+
 
 //Create the stars
 var stars = [];
@@ -42,14 +44,14 @@ function randomizeStar(star,initial)
 
 //Change flight speed every 5 seconds
 setInterval(function(){
-	speedTarget = speedTarget > 0 ? 0 : 1;
+	warpSpeed = warpSpeed > 0 ? 0 : 1;
 },5000)
 
 // Listen for animate update
 app.ticker.add(function(delta) {
-	cameraZ += delta*10*speed;
 	//Simple easing. This should be changed to proper easing function when used for real.
-	speed += (speedTarget-speed)/20;
+	speed += (warpSpeed-speed)/20;
+	cameraZ += delta*10*(speed+baseSpeed);
 	for(var i = 0; i < starAmount; i++)
 	{
 		var star = stars[i];

@@ -162,7 +162,11 @@
         {
             "title": "Displacement Map",
             "entry": "displacement-map.js"
-        }
+        },
+		{
+			"title": "Displacement map, flag",
+			"entry": "displacement-map-flag.js"
+		}
 	],
 	"mesh": [
         {

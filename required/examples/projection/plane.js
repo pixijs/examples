@@ -1,7 +1,11 @@
 var app = new PIXI.Application(800, 600, {backgroundColor: 0x103322});
 document.body.appendChild(app.view);
 
-var squareFar = new PIXI.Sprite(PIXI.Texture.WHITE);
+var bigWhiteTexture = new PIXI.Texture(PIXI.Texture.WHITE.baseTexture);
+bigWhiteTexture.orig.width = 30;
+bigWhiteTexture.orig.height = 30;
+
+var squareFar = new PIXI.Sprite(bigWhiteTexture);
 squareFar.tint = 0xff0000;
 squareFar.factor = 1;
 squareFar.anchor.set(0.5);
@@ -17,7 +21,7 @@ surface.anchor.set(0.5, 1.0);
 surface.width = app.screen.width;
 surface.height = app.screen.height;
 //var squarePlane = new PIXI.projection.Sprite2d(PIXI.Texture.fromImage('required/assets/flowerTop.png'));
-var squarePlane = new PIXI.projection.Sprite2d(PIXI.Texture.WHITE);
+var squarePlane = new PIXI.projection.Sprite2d(bigWhiteTexture);
 squarePlane.tint = 0xff0000;
 squarePlane.factor = 1;
 squarePlane.proj.affine = PIXI.projection.AFFINE.AXIS_X;
@@ -43,6 +47,7 @@ app.ticker.add(function (delta) {
 
     squarePlane.proj.affine = squarePlane.factor ?
         PIXI.projection.AFFINE.AXIS_X : PIXI.projection.AFFINE.NONE;
+    squarePlane.rotation += 0.1;
 });
 
 addInteraction(squareFar);

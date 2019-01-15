@@ -79,6 +79,14 @@ var pixi_projection;
     })(utils = pixi_projection.utils || (pixi_projection.utils = {}));
 })(pixi_projection || (pixi_projection = {}));
 PIXI.projection = pixi_projection;
+var pixi_heaven;
+(function (pixi_heaven) {
+    if (!PIXI.spine) {
+        PIXI.spine = {
+            Spine: function () { }
+        };
+    }
+})(pixi_heaven || (pixi_heaven = {}));
 var pixi_projection;
 (function (pixi_projection) {
     var AbstractProjection = (function () {
@@ -130,12 +138,21 @@ var pixi_projection;
         var proj = this.proj;
         var ta = this;
         var pwid = parentTransform._worldID;
+        var scaleAfter = proj._affine >= 1;
         var lt = ta.localTransform;
         if (ta._localID !== ta._currentLocalID) {
-            lt.a = ta._cx * ta.scale._x;
-            lt.b = ta._sx * ta.scale._x;
-            lt.c = ta._cy * ta.scale._y;
-            lt.d = ta._sy * ta.scale._y;
+            if (!scaleAfter) {
+                lt.a = ta._cx * ta.scale._x;
+                lt.b = ta._sx * ta.scale._x;
+                lt.c = ta._cy * ta.scale._y;
+                lt.d = ta._sy * ta.scale._y;
+            }
+            else {
+                lt.a = ta._cx;
+                lt.b = ta._sx;
+                lt.c = ta._cy;
+                lt.d = ta._sy;
+            }
             lt.tx = ta.position._x - ((ta.pivot._x * lt.a) + (ta.pivot._y * lt.c));
             lt.ty = ta.position._y - ((ta.pivot._x * lt.b) + (ta.pivot._y * lt.d));
             ta._currentLocalID = ta._localID;
@@ -155,7 +172,14 @@ var pixi_projection;
             else {
                 proj.world.setToMultLegacy(parentTransform.worldTransform, proj.local);
             }
-            proj.world.copy(ta.worldTransform, proj._affine);
+            var wa = ta.worldTransform;
+            proj.world.copy(wa, proj._affine, proj.affinePreserveOrientation);
+            if (scaleAfter) {
+                wa.a *= ta.scale._x;
+                wa.b *= ta.scale._x;
+                wa.c *= ta.scale._y;
+                wa.d *= ta.scale._y;
+            }
             ta._parentID = pwid;
             ta._worldID++;
         }
@@ -167,6 +191,7 @@ var pixi_projection;
             _this._projID = 0;
             _this._currentProjID = -1;
             _this._affine = pixi_projection.AFFINE.NONE;
+            _this.affinePreserveOrientation = false;
             return _this;
         }
         LinearProjection.prototype.updateLocalTransform = function (lt) {
@@ -237,7 +262,7 @@ var pixi_projection;
         var GLBuffer = PIXI.glCore.GLBuffer;
         var premultiplyTint = PIXI.utils.premultiplyTint;
         var premultiplyBlendMode = PIXI.utils.premultiplyBlendMode;
-        var TICK = 0;
+        var TICK = 1 << 21;
         var BatchGroup = (function () {
             function BatchGroup() {
                 this.textures = [];
@@ -353,6 +378,7 @@ var pixi_projection;
                 var i;
                 for (i = 0; i < this.currentIndex; ++i) {
                     var sprite = sprites[i];
+                    sprites[i] = null;
                     nextTexture = sprite._texture.baseTexture;
                     var spriteBlendMode = premultiplyBlendMode[Number(nextTexture.premultipliedAlpha)][sprite.blendMode];
                     if (blendMode !== spriteBlendMode) {
@@ -1413,9 +1439,9 @@ var pixi_projection;
                     this.displayObjectUpdateTransform();
                 }
                 if (this.proj.affine) {
-                    return this.transform.worldTransform.applyInverse(point, point);
+                    return this.transform.worldTransform.applyInverse(position, point);
                 }
-                return this.proj.world.applyInverse(point, point);
+                return this.proj.world.applyInverse(position, point);
             }
             if (this.parent) {
                 point = this.parent.worldTransform.applyInverse(position, point);
@@ -1661,7 +1687,7 @@ var pixi_projection;
             ar2[8] = mat3[8];
             return matrix;
         };
-        Matrix2d.prototype.copy = function (matrix, affine) {
+        Matrix2d.prototype.copy = function (matrix, affine, preserveOrientation) {
             var mat3 = this.mat3;
             var d = 1.0 / mat3[8];
             var tx = mat3[6] * d, ty = mat3[7] * d;
@@ -1672,19 +1698,30 @@ var pixi_projection;
             matrix.tx = tx;
             matrix.ty = ty;
             if (affine >= 2) {
+                var D = matrix.a * matrix.d - matrix.b * matrix.c;
+                if (!preserveOrientation) {
+                    D = Math.abs(D);
+                }
                 if (affine === AFFINE.POINT) {
-                    matrix.a = 1;
+                    if (D > 0) {
+                        D = 1;
+                    }
+                    else
+                        D = -1;
+                    matrix.a = D;
                     matrix.b = 0;
                     matrix.c = 0;
-                    matrix.d = 1;
+                    matrix.d = D;
                 }
                 else if (affine === AFFINE.AXIS_X) {
-                    matrix.c = -matrix.b;
-                    matrix.d = matrix.a;
+                    D /= Math.sqrt(matrix.b * matrix.b + matrix.d * matrix.d);
+                    matrix.c = 0;
+                    matrix.d = D;
                 }
                 else if (affine === AFFINE.AXIS_Y) {
-                    matrix.a = matrix.d;
-                    matrix.c = -matrix.b;
+                    D /= Math.sqrt(matrix.a * matrix.a + matrix.c * matrix.c);
+                    matrix.a = D;
+                    matrix.c = 0;
                 }
             }
         };
@@ -2496,6 +2533,8 @@ var pixi_projection;
     }(PIXI.Container));
     pixi_projection.Container3d = Container3d;
     pixi_projection.container3dToLocal = Container3d.prototype.toLocal;
+    pixi_projection.container3dGetDepth = Container3d.prototype.getDepth;
+    pixi_projection.container3dIsFrontFace = Container3d.prototype.isFrontFace;
 })(pixi_projection || (pixi_projection = {}));
 var pixi_projection;
 (function (pixi_projection) {
@@ -3017,7 +3056,7 @@ var pixi_projection;
             ar2[8] = mat3[8];
             return matrix;
         };
-        Matrix3d.prototype.copy = function (matrix, affine) {
+        Matrix3d.prototype.copy = function (matrix, affine, preserveOrientation) {
             var mat3 = this.mat4;
             var d = 1.0 / mat3[15];
             var tx = mat3[12] * d, ty = mat3[13] * d;
@@ -3028,19 +3067,30 @@ var pixi_projection;
             matrix.tx = tx;
             matrix.ty = ty;
             if (affine >= 2) {
+                var D = matrix.a * matrix.d - matrix.b * matrix.c;
+                if (!preserveOrientation) {
+                    D = Math.abs(D);
+                }
                 if (affine === pixi_projection.AFFINE.POINT) {
-                    matrix.a = 1;
+                    if (D > 0) {
+                        D = 1;
+                    }
+                    else
+                        D = -1;
+                    matrix.a = D;
                     matrix.b = 0;
                     matrix.c = 0;
-                    matrix.d = 1;
+                    matrix.d = D;
                 }
                 else if (affine === pixi_projection.AFFINE.AXIS_X) {
-                    matrix.c = -matrix.b;
-                    matrix.d = matrix.a;
+                    D /= Math.sqrt(matrix.b * matrix.b + matrix.d * matrix.d);
+                    matrix.c = 0;
+                    matrix.d = D;
                 }
                 else if (affine === pixi_projection.AFFINE.AXIS_Y) {
-                    matrix.a = matrix.d;
-                    matrix.c = -matrix.b;
+                    D /= Math.sqrt(matrix.a * matrix.a + matrix.c * matrix.c);
+                    matrix.a = D;
+                    matrix.c = 0;
                 }
             }
         };
@@ -3531,6 +3581,12 @@ var pixi_projection;
             if (step === void 0) { step = pixi_projection.TRANSFORM_STEP.ALL; }
             return pixi_projection.container3dToLocal.call(this, position, from, point, skipUpdate, step);
         };
+        Mesh3d.prototype.isFrontFace = function (forceUpdate) {
+            return pixi_projection.container3dIsFrontFace.call(this, forceUpdate);
+        };
+        Mesh3d.prototype.getDepth = function (forceUpdate) {
+            return pixi_projection.container3dGetDepth.call(this, forceUpdate);
+        };
         Object.defineProperty(Mesh3d.prototype, "position3d", {
             get: function () {
                 return this.proj.position;
@@ -3734,6 +3790,12 @@ var pixi_projection;
             if (step === void 0) { step = pixi_projection.TRANSFORM_STEP.ALL; }
             return pixi_projection.container3dToLocal.call(this, position, from, point, skipUpdate, step);
         };
+        Sprite3d.prototype.isFrontFace = function (forceUpdate) {
+            return pixi_projection.container3dIsFrontFace.call(this, forceUpdate);
+        };
+        Sprite3d.prototype.getDepth = function (forceUpdate) {
+            return pixi_projection.container3dGetDepth.call(this, forceUpdate);
+        };
         Object.defineProperty(Sprite3d.prototype, "position3d", {
             get: function () {
                 return this.proj.position;
@@ -3799,6 +3861,12 @@ var pixi_projection;
         Text3d.prototype.toLocal = function (position, from, point, skipUpdate, step) {
             if (step === void 0) { step = pixi_projection.TRANSFORM_STEP.ALL; }
             return pixi_projection.container3dToLocal.call(this, position, from, point, skipUpdate, step);
+        };
+        Text3d.prototype.isFrontFace = function (forceUpdate) {
+            return pixi_projection.container3dIsFrontFace.call(this, forceUpdate);
+        };
+        Text3d.prototype.getDepth = function (forceUpdate) {
+            return pixi_projection.container3dGetDepth.call(this, forceUpdate);
         };
         Object.defineProperty(Text3d.prototype, "position3d", {
             get: function () {
@@ -3880,6 +3948,7 @@ var pixi_projection;
         this.proj = new pixi_projection.Projection3d(this.transform);
         this.toLocal = pixi_projection.Container3d.prototype.toLocal;
         this.isFrontFace = pixi_projection.Container3d.prototype.isFrontFace;
+        this.getDepth = pixi_projection.Container3d.prototype.getDepth;
         Object.defineProperties(this, containerProps);
     }
     PIXI.Container.prototype.convertTo3d = convertTo3d;

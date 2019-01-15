@@ -252,6 +252,13 @@
     ],
     "projection": [
         {
+            "title": "Isometry basics",
+            "entry": "iso-basic.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
             "title": "2D Basics",
             "entry": "basic.js",
             "plugins": [

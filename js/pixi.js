@@ -32,7 +32,7 @@ jQuery(document).ready(function($) {
     };
 
     // async script loading
-    bpc.scriptsToLoad = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js'];
+    bpc.scriptsToLoad = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js'];
     bpc.scriptsLoaded = 0;
 
     if (bpc.clickType === 'tap') {
@@ -297,7 +297,7 @@ jQuery(document).ready(function($) {
         }
 
         var html = '<!DOCTYPE html><html><head><style>body,html{margin:0px;height:100%;overflow:hidden;}canvas{width:100%;height:100%;}</style></head><body>';
-        html += '<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>';
+        html += '<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>';
         html += '<script src="' + pixiUrl + '"></script>';
 
         var plugins = bpc.plugins === '' ? [] : bpc.plugins.split(',');

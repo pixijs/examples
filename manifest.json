@@ -156,7 +156,7 @@
             "title": "Outline",
             "entry": "outline-filter.js",
             "plugins": [
-                "pixi-extra-filters"
+                "pixi-filters"
             ]
         },
         {

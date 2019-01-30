@@ -13,7 +13,7 @@
     "url": "https://github.com/pixijs/examples/issues"
   },
   "scripts": {
-    "build": "cd js && uglifyjs pixi.js -c -m -o pixi.min.js --source-map"
+    "build": "cd js && uglifyjs pixi-examples.js -c -m -o pixi-examples.min.js --source-map"
   },
   "devDependencies": {
     "uglify-js": "^3.4.9"

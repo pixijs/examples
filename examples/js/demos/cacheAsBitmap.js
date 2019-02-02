@@ -5,7 +5,7 @@ app.stop();
 
 // load resources
 PIXI.loader
-    .add('spritesheet','examples/assets/monsters.json')
+    .add('spritesheet','examples/assets/spritesheet/monsters.json')
     .load(onAssetsLoaded);
 
 // holder to store aliens

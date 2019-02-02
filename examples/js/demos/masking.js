@@ -3,7 +3,7 @@ document.body.appendChild(app.view);
 
 app.stage.interactive = true;
 
-var bg = PIXI.Sprite.fromImage('examples/assets/BGrotate.jpg');
+var bg = PIXI.Sprite.fromImage('examples/assets/bg_rotate.jpg');
 
 bg.anchor.set(0.5);
 
@@ -17,13 +17,13 @@ container.x = app.screen.width / 2;
 container.y = app.screen.height / 2;
 
 // add a bunch of sprites
-var bgFront = PIXI.Sprite.fromImage('examples/assets/SceneRotate.jpg');
+var bgFront = PIXI.Sprite.fromImage('examples/assets/bg_scene_rotate.jpg');
 bgFront.anchor.set(0.5);
 
-var light2 = PIXI.Sprite.fromImage('examples/assets/LightRotate2.png');
+var light2 = PIXI.Sprite.fromImage('examples/assets/light_rotate_2.png');
 light2.anchor.set(0.5);
 
-var light1 = PIXI.Sprite.fromImage('examples/assets/LightRotate1.png');
+var light1 = PIXI.Sprite.fromImage('examples/assets/light_rotate_1.png');
 light1.anchor.set(0.5);
 
 var panda =  PIXI.Sprite.fromImage('examples/assets/panda.png');

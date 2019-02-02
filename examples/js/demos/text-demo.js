@@ -29,7 +29,7 @@ window.WebFontConfig = {
 function init()
 {
     PIXI.loader
-        .add('desyrel', 'examples/assets/desyrel.xml')
+        .add('desyrel', 'examples/assets/bitmap-font/desyrel.xml')
         .load(onAssetsLoaded);
 
     function onAssetsLoaded() {
@@ -42,7 +42,7 @@ function init()
     }
 
     // add a shiny background...
-    var background = PIXI.Sprite.fromImage('examples/assets/textDemoBG.jpg');
+    var background = PIXI.Sprite.fromImage('examples/assets/bg_text.jpg');
     background.width = app.screen.width;
     background.height = app.screen.height;
     app.stage.addChild(background);

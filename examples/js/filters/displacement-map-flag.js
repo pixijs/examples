@@ -6,12 +6,12 @@ app.stage.interactive = true;
 var container = new PIXI.Container();
 app.stage.addChild(container);
 
-var flag = PIXI.Sprite.fromImage("examples/assets/flag.png");
+var flag = PIXI.Sprite.fromImage("examples/assets/pixi-filters/flag.png");
 container.addChild(flag);
 flag.x = 100;
 flag.y = 100;
 
-var displacementSprite = PIXI.Sprite.fromImage('examples/assets/displacement_map_repeat.jpg');
+var displacementSprite = PIXI.Sprite.fromImage('examples/assets/pixi-filters/displacement_map_repeat.jpg');
 //Make sure the sprite is wrapping.
 displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
 var displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);

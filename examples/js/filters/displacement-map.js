@@ -35,7 +35,7 @@ for (var i = 0; i < 20; i++)
 
 }
 
-var displacementSprite = PIXI.Sprite.fromImage('examples/assets/displace.png');
+var displacementSprite = PIXI.Sprite.fromImage('examples/assets/pixi-filters/displace.png');
 var displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
 
 app.stage.addChild(displacementSprite);
@@ -46,7 +46,7 @@ displacementFilter.scale.x = 110;
 displacementFilter.scale.y = 110;
 displacementSprite.anchor.set(0.5);
 
-var ring = PIXI.Sprite.fromImage('examples/assets/ring.png');
+var ring = PIXI.Sprite.fromImage('examples/assets/pixi-filters/ring.png');
 
 ring.anchor.set(0.5);
 
@@ -54,7 +54,7 @@ ring.visible = false;
 
 app.stage.addChild(ring);
 
-var bg = PIXI.Sprite.fromImage('examples/assets/bkg-grass.jpg');
+var bg = PIXI.Sprite.fromImage('examples/assets/bg_grass.jpg');
 bg.width = app.screen.width;
 bg.height = app.screen.height;
 

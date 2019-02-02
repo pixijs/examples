@@ -13,9 +13,9 @@ var textureOptions2 = { metadata: {choice: [".dds"]} };
 // while loading atlas, choose resolution for atlas and choose format for image
 var atlasOptions = { metadata: { choice: ["@2x.json", "@1x.json"], imageMetadata: { choice: [".dds"]} } };
 
-loader.add('building1', 'examples/assets/compressed/building1.png', textureOptions1)
-    .add('building2', 'examples/assets/compressed/building2.png', textureOptions2)
-    .add('atlas1', 'examples/assets/compressed/buildings.json', atlasOptions )
+loader.add('building1', 'examples/assets/pixi-compressed-textures/building1.png', textureOptions1)
+    .add('building2', 'examples/assets/pixi-compressed-textures/building2.png', textureOptions2)
+    .add('atlas1', 'examples/assets/pixi-compressed-textures/buildings.json', atlasOptions )
     .load(function(loader, resources) {
         var spr1 = new PIXI.Sprite(resources.building1.texture);
         var spr2 = new PIXI.Sprite(resources.building2.texture);

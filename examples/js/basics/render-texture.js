@@ -4,7 +4,7 @@ document.body.appendChild(app.view);
 var container = new PIXI.Container();
 app.stage.addChild(container);
 
-var texture = PIXI.Texture.fromImage('examples/assets/basics/bunny.png');
+var texture = PIXI.Texture.fromImage('examples/assets/bunny.png');
 
 for (var i = 0; i < 25; i++) {
     var bunny = new PIXI.Sprite(texture);

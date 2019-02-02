@@ -9,14 +9,14 @@ var app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // Create background image
-var background = PIXI.Sprite.fromImage("examples/assets/bkg-grass.jpg");
+var background = PIXI.Sprite.fromImage("examples/assets/bg_grass.jpg");
 background.width = app.screen.width;
 background.height = app.screen.height;
 app.stage.addChild(background);
 
 var shaderFrag = `
 precision mediump float;
-  
+
 uniform vec2 mouse;
 uniform vec2 resolution;
 uniform float time;

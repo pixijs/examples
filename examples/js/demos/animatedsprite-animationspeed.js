@@ -4,7 +4,7 @@ document.body.appendChild(app.view);
 app.stop();
 
 PIXI.loader
-    .add('spritesheet', 'examples/assets/0123456789.json')
+    .add('spritesheet', 'examples/assets/spritesheet/0123456789.json')
     .load(onAssetsLoaded);
 
 function onAssetsLoaded(loader, resources) {

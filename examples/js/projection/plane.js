@@ -15,7 +15,7 @@ squareFar.position.set(app.screen.width / 2, 50);
 var container = new PIXI.projection.Container2d();
 container.position.set(app.screen.width / 2, app.screen.height);
 
-var surface = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage("examples/assets/bkg.jpg"));
+var surface = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage("examples/assets/bg_plane.jpg"));
 surface.anchor.set(0.5, 1.0);
 //surface.scale.y = -1; //sorry, have to do that to make a correct projection
 surface.width = app.screen.width;

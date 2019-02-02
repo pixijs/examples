@@ -18,7 +18,7 @@ app.stage.addChild(layer);
 var showLayer = new PIXI.Sprite(layer.getRenderTexture());
 app.stage.addChild(showLayer);
 
-var bunnyTex = PIXI.Texture.fromImage('examples/assets/basics/bunny.png');
+var bunnyTex = PIXI.Texture.fromImage('examples/assets/bunny.png');
 var bunnies = [];
 for (var i=0;i<5;i++) {
     bunnies[i] = new PIXI.Container();

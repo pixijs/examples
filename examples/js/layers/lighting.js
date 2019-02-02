@@ -31,7 +31,7 @@ lightingSprite.blendMode = PIXI.BLEND_MODES.MULTIPLY;
 
 app.stage.addChild(lightingSprite);
 
-var bunnyTexture = PIXI.Texture.fromImage("examples/assets/basics/bunny.png");
+var bunnyTexture = PIXI.Texture.fromImage('examples/assets/bunny.png');
 function updateBunny(bunny) {
     bunny.x += bunny.vx;
     bunny.y += bunny.vy;

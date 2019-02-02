@@ -37,7 +37,7 @@ function onPlayVideo() {
     button.destroy();
 
     // create a video texture from a path
-    var texture = PIXI.Texture.fromVideo('examples/assets/testVideo.mp4');
+    var texture = PIXI.Texture.fromVideo('examples/assets/video.mp4');
 
     // create a new Sprite using the video texture (yes it's that easy)
     var videoSprite = new PIXI.Sprite(texture);

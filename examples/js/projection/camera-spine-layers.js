@@ -8,11 +8,11 @@ document.body.appendChild(app.view);
 app.stage = new PIXI.display.Stage();
 
 var loader = app.loader;
-loader.baseUrl = 'examples/assets/';
+
 // create a new loader
-loader.add('spriteSheet', 'proj/dudes/SpriteSheet.json');
-loader.add('back', 'proj/flip/back2.png');
-loader.add('pixie', 'spine/Pixie.json');
+loader.add('spritesheet', 'examples/assets/pixi-projection/dudes.json');
+loader.add('back', 'examples/assets/pixi-projection/back.png');
+loader.add('pixie', 'examples/assets/pixi-spine/pixie.json');
 //begin load
 loader.load(onAssetsLoaded);
 

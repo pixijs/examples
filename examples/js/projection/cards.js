@@ -8,7 +8,6 @@ document.body.appendChild(app.view);
 app.stage = new PIXI.display.Stage();
 
 var loader = app.loader;
-loader.baseUrl = 'examples/assets/proj';
 
 var camera = new PIXI.projection.Camera3d();
 camera.position.set(app.screen.width / 2, app.screen.height / 2);
@@ -34,8 +33,8 @@ camera.addChild(new PIXI.display.Layer(cardsGroup));
 //we could also add layers in the stage, but then we'll need extra layer for the text
 
 // load assets
-loader.add('cards', 'casino/cards.json');
-loader.add('table', 'casino/table.png');
+loader.add('cards', 'examples/assets/pixi-projection/cards.json');
+loader.add('table', 'examples/assets/pixi-projection/table.png');
 loader.load(onAssetsLoaded);
 
 // blur for shadow. Do not use it in production, bake shadow into the texture!

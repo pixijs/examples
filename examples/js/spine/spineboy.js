@@ -3,7 +3,7 @@ document.body.appendChild(app.view);
 
 // load spine data
 PIXI.loader
-    .add('spineboy', 'examples/assets/spine/spineboy.json')
+    .add('spineboy', 'examples/assets/pixi-spine/spineboy.json')
     .load(onAssetsLoaded);
 
 app.stage.interactive = true;

@@ -2,7 +2,7 @@ var app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // create a background...
-var background = PIXI.Sprite.fromImage('examples/assets/button_test_BG.jpg');
+var background = PIXI.Sprite.fromImage('examples/assets/bg_button.jpg');
 background.width = app.screen.width;
 background.height = app.screen.height;
 
@@ -11,8 +11,8 @@ app.stage.addChild(background);
 
 // create some textures from an image path
 var textureButton = PIXI.Texture.fromImage('examples/assets/button.png');
-var textureButtonDown = PIXI.Texture.fromImage('examples/assets/buttonDown.png');
-var textureButtonOver = PIXI.Texture.fromImage('examples/assets/buttonOver.png');
+var textureButtonDown = PIXI.Texture.fromImage('examples/assets/button_down.png');
+var textureButtonOver = PIXI.Texture.fromImage('examples/assets/button_over.png');
 
 var buttons = [];
 

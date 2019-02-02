@@ -18,10 +18,10 @@ function createSprite(texture, text) {
     return sprite;
 }
 
-loader.add('house_png', 'examples/assets/compressed/dracula_house_4.png')
-    .add('house_png_2', 'examples/assets/compressed/dracula_house_4.png?v=2')
-    .add('house_dds', 'examples/assets/compressed/dracula_house_4.dds', { crossOrigin: true })
-    .add('house_dds_2', 'examples/assets/compressed/dracula_house_4.dds?v=2', { crossOrigin: true  })
+loader.add('house_png', 'examples/assets/pixi-compressed-textures/dracula_house_4.png')
+    .add('house_png_2', 'examples/assets/pixi-compressed-textures/dracula_house_4.png?v=2')
+    .add('house_dds', 'examples/assets/pixi-compressed-textures/dracula_house_4.dds', { crossOrigin: true })
+    .add('house_dds_2', 'examples/assets/pixi-compressed-textures/dracula_house_4.dds?v=2', { crossOrigin: true  })
     .load(function(loader, resources) {
         var spr1 = createSprite(resources.house_png.texture, "PNG premultiplied=true, good");
         var spr2 = createSprite(resources.house_png_2.texture, "PNG premultiplied=false, bad");

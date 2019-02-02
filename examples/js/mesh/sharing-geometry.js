@@ -53,11 +53,11 @@ var triangle = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
 }));
 
 var triangle2 = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
-  uSamplerTexture:PIXI.Texture.from('examples/assets/BGrotate.jpg')
+  uSamplerTexture:PIXI.Texture.from('examples/assets/bg_rotate.jpg')
 }));
 
 var triangle3 = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
-  uSamplerTexture:PIXI.Texture.from('examples/assets/displacement_BG.jpg')
+  uSamplerTexture:PIXI.Texture.from('examples/assets/bg_displacement.jpg')
 }));
 
 triangle.position.set(400, 300);

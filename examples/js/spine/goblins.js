@@ -3,7 +3,7 @@ document.body.appendChild(app.view);
 
 // load spine data
 PIXI.loader
-    .add('goblins', 'examples/assets/spine/goblins.json')
+    .add('goblins', 'examples/assets/pixi-spine/goblins.json')
     .load(onAssetsLoaded);
 
 app.stage.interactive = true;

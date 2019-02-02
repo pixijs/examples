@@ -18,7 +18,7 @@ var totalSprites = app.renderer instanceof PIXI.WebGLRenderer ? 10000 : 100;
 for (var i = 0; i < totalSprites; i++) {
 
     // create a new Sprite
-    var dude = PIXI.Sprite.fromImage('examples/assets/tinyMaggot.png');
+    var dude = PIXI.Sprite.fromImage('examples/assets/maggot_tiny.png');
 
     dude.tint = Math.random() * 0xE8D4CD;
 

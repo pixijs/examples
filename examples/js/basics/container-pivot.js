@@ -6,7 +6,7 @@ var container = new PIXI.Container();
 app.stage.addChild(container);
 
 // Create a new texture
-var texture = PIXI.Texture.fromImage('examples/assets/basics/bunny.png');
+var texture = PIXI.Texture.fromImage('examples/assets/bunny.png');
 
 // Create a 5x5 grid of bunnies
 for (var i = 0; i < 25; i++) {

@@ -13,12 +13,12 @@ container.position.set(app.screen.width / 2, app.screen.height);
 
 // tiling - takes whole screen, anchor and position are the same as of sprite surface
 // different tint, to see the black part
-var tiling = new PIXI.projection.TilingSprite2d(new PIXI.Texture.fromImage("examples/assets/bkg.jpg"), app.screen.width, app.screen.height);
+var tiling = new PIXI.projection.TilingSprite2d(new PIXI.Texture.fromImage("examples/assets/bg_plane.jpg"), app.screen.width, app.screen.height);
 tiling.position.set(app.screen.width / 2, app.screen.height);
 tiling.anchor.set(0.5, 1.0);
 tiling.tint = 0x808080;
 
-var surface = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage("examples/assets/bkg.jpg"));
+var surface = new PIXI.projection.Sprite2d(new PIXI.Texture.fromImage("examples/assets/bg_plane.jpg"));
 surface.anchor.set(0.5, 1.0);
 //surface.scale.y = -1; //sorry, have to do that to make a correct projection
 surface.width = app.screen.width;

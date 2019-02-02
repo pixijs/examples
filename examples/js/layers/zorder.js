@@ -38,8 +38,8 @@ var blurFilter = new PIXI.filters.BlurFilter();
 blurFilter.blur = 0.5;
 
 // create a texture from an image path
-var texture_green = PIXI.Texture.fromImage('examples/assets/bunnies/square_green.png');
-var texture_blue = PIXI.Texture.fromImage('examples/assets/bunnies/square_blue.png');
+var texture_green = PIXI.Texture.fromImage('examples/assets/bunny_green.png');
+var texture_blue = PIXI.Texture.fromImage('examples/assets/bunny_blue.png');
 
 // make obsolete containers. Why do we need them?
 // Just to show that we can do everything without caring of actual parent container

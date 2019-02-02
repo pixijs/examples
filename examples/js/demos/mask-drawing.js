@@ -10,8 +10,8 @@ brush.beginFill(0xffffff);
 brush.drawCircle(0, 0, 50);
 brush.endFill();
 
-PIXI.loader.add("t1", "examples/assets/bkg-grass.jpg")
-PIXI.loader.add("t2", "examples/assets/BGrotate.jpg")
+PIXI.loader.add("t1", "examples/assets/bg_grass.jpg")
+PIXI.loader.add("t2", "examples/assets/bg_rotate.jpg")
 PIXI.loader.load(setup);
 
 function setup(loader, resources) {

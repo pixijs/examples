@@ -2,7 +2,7 @@ var app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // create a new background sprite
-var background = new PIXI.Sprite.fromImage('examples/assets/BGrotate.jpg');
+var background = new PIXI.Sprite.fromImage('examples/assets/bg_rotate.jpg');
 background.width = app.screen.width;
 background.height = app.screen.height;
 app.stage.addChild(background);

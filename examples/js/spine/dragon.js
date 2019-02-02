@@ -5,7 +5,7 @@ app.stop();
 
 // load spine data
 PIXI.loader
-    .add('dragon', 'examples/assets/spine/dragon.json')
+    .add('dragon', 'examples/assets/pixi-spine/dragon.json')
     .load(onAssetsLoaded);
 
 var dragon = null;

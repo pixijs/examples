@@ -7,13 +7,12 @@ document.body.appendChild(app.view);
 app.stop();
 
 var loader = app.loader;
-loader.baseUrl = 'examples/assets/';
 
 // load spine data
 loader
-    .add('pixie', 'spine/Pixie.json')
-    .add('bg', 'spine/iP4_BGtile.jpg')
-    .add('fg', 'spine/iP4_ground.png')
+    .add('pixie', 'examples/assets/pixi-spine/pixie.json')
+    .add('bg', 'examples/assets/pixi-spine/iP4_BGtile.jpg')
+    .add('fg', 'examples/assets/pixi-spine/iP4_ground.png')
     .load(onAssetsLoaded);
 
 var objs = [], pixie;

@@ -173,7 +173,7 @@ jQuery(document).ready(function($) {
                     dataType: "text",
                     success: function(data) {
                         if (bpc.plugins) {
-                            $('#code-header').text("Example Code   (plugins used: " + bpc.plugins.replace(/,/g, ', ') + ")");
+                            $('#code-header').text("Example Code (plugins used: " + bpc.plugins.replace(/,/g, ', ') + ")");
                         } else {
                             $('#code-header').text("Example Code");
                         }

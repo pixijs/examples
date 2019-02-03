@@ -1,7 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:300,400,300italic,400italic,500,500italic,700,700italic);
 
-@aniIn:			0.25s;
-@aniOut:		0.3s;
+@anim:          0.2s;
 
 @blue50:		#ecedf1;
 @blue100:		#cfd4db;
@@ -29,9 +28,9 @@
 @facebook: 		#5974ac;
 
 * {
-	-webkit-box-sizing: border-box; 
-	-moz-box-sizing:	border-box; 
-	box-sizing:			border-box; 
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing:	border-box;
+	box-sizing:			border-box;
 }
 
 .antialiased {
@@ -83,8 +82,8 @@
 	border-bottom-left-radius:			@bottomleft;
 	border-top-left-radius:				@topleft;
 	-webkit-background-clip:			padding-box;
-	-moz-background-clip:				padding;  
-	background-clip:					padding-box; 
+	-moz-background-clip:				padding;
+	background-clip:					padding-box;
 }
 
 .origin(@x, @y) {
@@ -146,25 +145,25 @@
 .boxShadow(@x: 0, @y: 0, @radius: 4px, @spread: 0, @color: rgba(0,0,0,0.5)) {
 	-webkit-box-shadow:	@x @y @radius @spread @color;
 	-moz-box-shadow:	@x @y @radius @spread @color;
-	box-shadow:			@x @y @radius @spread @color; 
+	box-shadow:			@x @y @radius @spread @color;
 }
 
 .boxShadow(@x: none) when (iskeyword(@x)) {
 	-webkit-box-shadow: @x;
 	   -moz-box-shadow: @x;
-			box-shadow: @x; 
+			box-shadow: @x;
 }
 
 .innerShadow(@x: 0, @y: 0, @radius: 4px, @spread: 0, @color: rgba(0,0,0,0.5)) {
 	-webkit-box-shadow:	inset @x @y @radius @spread @color;
 	-moz-box-shadow:	inset @x @y @radius @spread @color;
-	box-shadow:			inset @x @y @radius @spread @color; 
+	box-shadow:			inset @x @y @radius @spread @color;
 }
 
 .innerShadow(@x: none) when (iskeyword(@x)) {
 	-webkit-box-shadow: @x;
 	   -moz-box-shadow: @x;
-			box-shadow: @x; 
+			box-shadow: @x;
 }
 
 

@@ -172,6 +172,12 @@ jQuery(document).ready(function($) {
                     url: 'examples/js/' + $(this).parent().attr('data-section') + '/' + $(this).attr('data-src'),
                     dataType: "text",
                     success: function(data) {
+                        if (bpc.plugins) {
+                            $('#code-header').text("Example Code   (plugins used: " + bpc.plugins.replace(/,/g, ', ') + ")");
+                        } else {
+                            $('#code-header').text("Example Code");
+                        }
+
                         bpc.jsSource = data;
                         var html = data;
                         $('.CodeMirror').remove();

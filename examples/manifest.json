@@ -353,7 +353,7 @@
         {
             "title": "pixi-V5 Not-premultiplied alpha",
             "entry": "not-premultiplied-alpha.js",
-            "invalidVersions": [3, 4]
+            "validVersions": [5]
         },
         {
             "title": "pixi-V4 Extension chooser",
@@ -361,7 +361,7 @@
             "plugins": [
                 "pixi-compressed-textures"
             ],
-            "invalidVersions": [3, 5]
+            "validVersions": [4]
         }
     ]
 }

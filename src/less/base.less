@@ -140,6 +140,10 @@ a {
 				.innerShadow(0, 0, 0, 0, @pink400);
 				.transition(all, @anim);
 
+                &.invalid {
+                    color: #6C747F;
+                }
+
 				&:hover {
 					color: #fff;
 				}
@@ -148,7 +152,7 @@ a {
 					color: #fff;
 					.innerShadow(2px, 0, 0, 0, @pink400);
 					.transition(all, @anim);
-				}
+                }
 			}
 		}
 	}

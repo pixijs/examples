@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
     bpc.exampleFilename = '';
     bpc.exampleSourceCode = '';
     bpc.exampleRequiredPlugins = [];
-    bpc.exampleAllowedVersions = [];
+    bpc.exampleInvalidVersions = [];
 
     bpc.editorOptions = {
         mode: 'javascript',
@@ -97,8 +97,8 @@ jQuery(document).ready(function($) {
 
                 for (var j = 0; j < items.length; j++) {
                     var plugins = typeof items[j].plugins !== 'undefined' ? items[j].plugins.join(',') : '';
-                    var versions = typeof items[j].versions !== 'undefined' ? items[j].versions.join(',') : '';
-                    html += '<li data-src="' + items[j].entry + '" data-plugins="' + plugins  + '" data-versions="' + versions + '">' + items[j].title + '</li>';
+                    var invalidVersions = typeof items[j].invalidVersions !== 'undefined' ? items[j].invalidVersions.join(',') : '';
+                    html += '<li data-src="' + items[j].entry + '" data-plugins="' + plugins  + '" data-invalidVersions="' + invalidVersions + '">' + items[j].title + '</li>';
                 }
                 html += '</ul>';
 
@@ -170,8 +170,8 @@ jQuery(document).ready(function($) {
                 var plugins = $(this).attr('data-plugins');
                 bpc.exampleRequiredPlugins = plugins === '' ? [] : plugins.split(',');
 
-                var versions = $(this).attr('data-versions');
-                bpc.exampleAllowedVersions = versions === '' ? [3, 4, 5] : versions.split(',').map(function(v) {return parseInt(v, 10)});
+                var invalidVersions = $(this).attr('data-invalidVersions');
+                bpc.exampleInvalidVersions = invalidVersions === '' ? [] : invalidVersions.split(',').map(function(v) {return parseInt(v, 10)});
 
                 $.ajax({
                     url: 'examples/js/' + $(this).parent().attr('data-section') + '/' + $(this).attr('data-src'),
@@ -217,14 +217,14 @@ jQuery(document).ready(function($) {
                 html += '<script src="pixi-plugins/' + bpc.exampleRequiredPlugins[i] + '.js"></script>';
             }
 
-            if (bpc.exampleAllowedVersions.indexOf(bpc.majorPixiVersion) > -1) {
+            if (bpc.exampleInvalidVersions.indexOf(bpc.majorPixiVersion) === -1) {
                 html += '<script>window.onload = function(){' + exampleJS + '}</script></body></html>';
             }
 
             $('.CodeMirror').remove();
             $('.main-content #code').html(bpc.exampleSourceCode);
 
-            if (bpc.exampleAllowedVersions.indexOf(bpc.majorPixiVersion) > -1) {
+            if (bpc.exampleInvalidVersions.indexOf(bpc.majorPixiVersion) === -1) {
                 bpc.editor = CodeMirror.fromTextArea(document.getElementById('code'), bpc.editorOptions);
 
                 if (bpc.exampleRequiredPlugins.length) {
@@ -235,8 +235,7 @@ jQuery(document).ready(function($) {
 
                 $('.example-frame').show();
             } else {
-                var versionText = bpc.exampleAllowedVersions.length === 1 ? "version" : "versions";
-                $('#code-header').text("Example only works on PixiJS " + versionText + ": " + bpc.exampleAllowedVersions.toString());
+                $('#code-header').text("Example does not work on this version of PixiJS");
                 $('.example-frame').hide();
             }
 

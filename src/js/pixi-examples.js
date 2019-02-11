@@ -109,20 +109,31 @@ jQuery(document).ready(function($) {
         });
 
         $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/tags', function(data) {
-            // filters the tags to only include v3 and above
-            data = data.filter(function(tag) {
-                return tag.ref.indexOf('refs/tags/v3.0.11') === 0 ||
-                    tag.ref.indexOf('refs/tags/v4') === 0;
-            }).map(function(tag) {
+            // Filters the tags to only include v4 and above.
+            // Only use the last 5 tags per major version
+            var allowedVersions = [4, 5];
+            var maxTagsPerVersion = 3;
+            var taggedVersions = [];
+            allowedVersions.forEach( function(version) {
+                var filtered = data.filter(function(tag) {
+                    return tag.ref.indexOf('refs/tags/v' + version) === 0;
+                });
+                if (filtered.length > maxTagsPerVersion) {
+                    filtered = filtered.slice(-maxTagsPerVersion);
+                }
+                taggedVersions = taggedVersions.concat(filtered);
+            })
+
+            taggedVersions = taggedVersions.map(function(tag) {
                 return tag.ref.replace('refs/tags/', '');
             });
 
-            for (var i = 0; i < data.length; i++) {
-                $('.select-group .select ul').append('<li data-val="' + data[i] + '">' + data[i] + '</li>');
+            for (var i = 0; i < taggedVersions.length; i++) {
+                $('.select-group .select ul').append('<li data-val="' + taggedVersions[i] + '">' + taggedVersions[i] + '</li>');
             }
 
             $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/heads', function(data) {
-                // For pixi-v5 NEXT development
+                // For NEXT version development
                 var data = data.filter(function(tag) {
                     return tag.ref.indexOf('refs/heads/next') == 0;
                 }).map(function(tag) {
@@ -171,7 +182,7 @@ jQuery(document).ready(function($) {
                 bpc.exampleRequiredPlugins = plugins === '' ? [] : plugins.split(',');
 
                 var validVersions = $(this).attr('data-validVersions');
-                bpc.exampleValidVersions = validVersions === '' ? [3, 4, 5] : validVersions.split(',').map(function(v) {return parseInt(v, 10)});
+                bpc.exampleValidVersions = validVersions === '' ? [4, 5] : validVersions.split(',').map(function(v) {return parseInt(v, 10)});
 
                 $.ajax({
                     url: 'examples/js/' + $(this).parent().attr('data-section') + '/' + $(this).attr('data-src'),
@@ -269,7 +280,7 @@ jQuery(document).ready(function($) {
         bpc.updateMenu = function() {
             $('.main-nav .main-menu ul li').each(function(){
                 var validVersions = $(this).attr('data-validVersions')
-                var exampleValidVersions = validVersions === '' ? [3, 4, 5] : validVersions.split(',').map(function(v) {return parseInt(v, 10)});
+                var exampleValidVersions = validVersions === '' ? [4, 5] : validVersions.split(',').map(function(v) {return parseInt(v, 10)});
                 if (exampleValidVersions.indexOf(bpc.majorPixiVersion) === -1){
                     $(this).addClass('invalid');
                 } else {

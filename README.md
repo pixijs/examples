@@ -21,5 +21,4 @@ Every sub-folder in the examples folder corresponds to a sub-menu in the website
 ## How to create an example ##
 
 You can use the basic example as a template, it is located in [```examples/js/basics/basic.js```](examples/js/basics/basic.js).
-All you need to do is copy and paste this file to where you think your example belongs.
-You can then come back to the browser and navigate to your file and start changing it.
+All you need to do is copy and paste this file to where you think your example belongs within the examples/js folder structure, and change the contents to make a new example. You will then also need to update the examples/manifest.json to allow the menu to point to your new example.

@@ -2,11 +2,21 @@
 @import "mixins.less";
 @import "base.less";
 
-
 @media only screen and (min-width: 768px) {
 	@import "768up.less";
 }
 
 @media only screen and (min-width: 980px) {
 	@import "980up.less";
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+    padding:2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #647086;
+    border-radius: 4px;
 }

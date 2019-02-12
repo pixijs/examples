@@ -171,35 +171,43 @@
 	"mesh": [
         {
             "title": "Triangle",
-            "entry": "triangle.js"
+            "entry": "triangle.js",
+            "validVersions": [5]
         },
         {
             "title": "Colored Triangle",
-            "entry": "triangle-color.js"
+            "entry": "triangle-color.js",
+            "validVersions": [5]
         },
         {
             "title": "Textured Triangle",
-            "entry": "triangle-textured.js"
+            "entry": "triangle-textured.js",
+            "validVersions": [5]
         },
         {
             "title": "Uniforms",
-            "entry": "uniforms.js"
+            "entry": "uniforms.js",
+            "validVersions": [5]
         },
         {
             "title": "Sharing Geometry",
-            "entry": "sharing-geometry.js"
+            "entry": "sharing-geometry.js",
+            "validVersions": [5]
         },
         {
             "title": "Sharing Shader",
-            "entry": "shared-shader.js"
+            "entry": "shared-shader.js",
+            "validVersions": [5]
         },
         {
             "title": "Merging Geometry",
-            "entry": "merging-geometry.js"
+            "entry": "merging-geometry.js",
+            "validVersions": [5]
         },
         {
             "title": "Interleaving Geometry",
-            "entry": "interleaving-geometry.js"
+            "entry": "interleaving-geometry.js",
+            "validVersions": [5]
         }
 	],
     "picture": [

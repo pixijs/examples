@@ -33,6 +33,10 @@
             "entry": "graphics.js"
         },
         {
+            "title": "Advanced Graphics",
+            "entry": "advanced-graphics.js"
+        },
+        {
             "title": "Video",
             "entry": "video.js"
         },

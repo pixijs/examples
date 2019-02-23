@@ -1,9 +1,10 @@
-var WIDTH = 800, HEIGHT = 600;
+var W = 800, H = 600, PAD = 80, resolution = 2;
+var WIDTH = W / resolution, HEIGHT  = H / resolution;
 
 // LAYERS plugin is here: https://github.com/pixijs/pixi-display/tree/layers
 // LIGHTS plugin is here: https://github.com/pixijs/pixi-lights/tree/v4.x
 
-var app = new PIXI.Application(WIDTH, HEIGHT);
+var app = new PIXI.Application({width: WIDTH, height: HEIGHT, resolution});
 document.body.appendChild(app.view);
 
 var stage = app.stage = new PIXI.display.Stage();

@@ -13,7 +13,9 @@ var pixi_display;
             if (this.worldAlpha <= 0 || !this.renderable) {
                 return;
             }
+            renderer._activeLayer = null;
             this.containerRenderWebGL(renderer);
+            renderer._activeLayer = this._activeParentLayer;
         },
         renderCanvas: function (renderer) {
             if (this._activeParentLayer && this._activeParentLayer != renderer._activeLayer) {
@@ -27,7 +29,9 @@ var pixi_display;
             if (this.worldAlpha <= 0 || !this.renderable) {
                 return;
             }
+            renderer._activeLayer = null;
             this.containerRenderCanvas(renderer);
+            renderer._activeLayer = this._activeParentLayer;
         },
         containerRenderWebGL: PIXI.Container.prototype.renderWebGL,
         containerRenderCanvas: PIXI.Container.prototype.renderCanvas
@@ -274,7 +278,7 @@ var pixi_display;
                 if (order > this._eventDisplayOrder) {
                     this._eventDisplayOrder = order;
                     var q = queue[1];
-                    for (var i = 0; i < q.length; i++) {
+                    for (var i = 0, l = q.length; i < l; i++) {
                         queue[0].push(q[i]);
                     }
                     queue[1].length = 0;
@@ -285,8 +289,7 @@ var pixi_display;
         _finishInteractionProcess: function (event, func) {
             var queue = this._queue;
             var q = queue[0];
-            var i = 0;
-            for (; i < q.length; i++) {
+            for (var i = 0, l = q.length; i < l; i++) {
                 if (event) {
                     if (func) {
                         func(event, q[i], false);
@@ -297,7 +300,7 @@ var pixi_display;
                 }
             }
             q = queue[1];
-            for (i = 0; i < q.length; i++) {
+            for (var i = 0, l = q.length; i < l; i++) {
                 if (event) {
                     if (!event.target) {
                         event.target = q[i];
@@ -327,11 +330,11 @@ var pixi_display;
             var width = renderer ? renderer.screen.width : 100;
             var height = renderer ? renderer.screen.height : 100;
             var resolution = renderer ? renderer.resolution : PIXI.settings.RESOLUTION;
-            this.renderTexture = PIXI.RenderTexture.create(width, height, resolution);
+            this.renderTexture = PIXI.RenderTexture.create(width, height, undefined, resolution);
             if (this.layer.group.useDoubleBuffer) {
                 this.doubleBuffer = [
-                    PIXI.RenderTexture.create(width, height, resolution),
-                    PIXI.RenderTexture.create(width, height, resolution)
+                    PIXI.RenderTexture.create(width, height, undefined, resolution),
+                    PIXI.RenderTexture.create(width, height, undefined, resolution)
                 ];
             }
         };
@@ -374,8 +377,7 @@ var pixi_display;
                 renderer.unbindTexture(rt);
                 rt.baseTexture._glTextures = buffer.baseTexture._glTextures;
                 rt.baseTexture._glRenderTargets = buffer.baseTexture._glRenderTargets;
-                this.currentBufferIndex = 1 - this.currentBufferIndex;
-                buffer = db[this.currentBufferIndex];
+                buffer = db[1 - this.currentBufferIndex];
                 renderer.bindRenderTexture(buffer, null);
             }
             else {
@@ -384,11 +386,29 @@ var pixi_display;
             if (group.clearColor) {
                 renderer.clear(group.clearColor);
             }
+            var filterData = renderer.filterManager.filterData;
+            if (filterData) {
+                filterData.stack[filterData.index].renderTarget = renderer._activeRenderTarget;
+            }
         };
         LayerTextureCache.prototype.popTexture = function (renderer) {
             renderer.currentRenderer.flush();
+            var filterData = renderer.filterManager.filterData;
+            if (filterData) {
+                filterData.stack[filterData.index].renderTarget = this._tempRenderTarget;
+            }
             renderer.bindRenderTarget(this._tempRenderTarget);
             this._tempRenderTarget = null;
+            var rt = this.renderTexture;
+            var group = this.layer.group;
+            var db = this.doubleBuffer;
+            if (group.useDoubleBuffer) {
+                renderer.unbindTexture(rt);
+                this.currentBufferIndex = 1 - this.currentBufferIndex;
+                var buffer = db[this.currentBufferIndex];
+                rt.baseTexture._glTextures = buffer.baseTexture._glTextures;
+                rt.baseTexture._glRenderTargets = buffer.baseTexture._glRenderTargets;
+            }
         };
         LayerTextureCache.prototype.destroy = function () {
             if (this.renderTexture) {
@@ -577,6 +597,45 @@ var pixi_display;
 })(pixi_display || (pixi_display = {}));
 var pixi_display;
 (function (pixi_display) {
+    Object.assign(PIXI.WebGLRenderer.prototype, {
+        _lastDisplayOrder: 0,
+        _activeLayer: null,
+        incDisplayOrder: function () {
+            return ++this._lastDisplayOrder;
+        },
+        _oldRender: PIXI.WebGLRenderer.prototype.render,
+        render: function (displayObject, renderTexture, clear, transform, skipUpdateTransform) {
+            if (!renderTexture) {
+                this._lastDisplayOrder = 0;
+            }
+            this._activeLayer = null;
+            if (displayObject.isStage) {
+                displayObject.updateStage();
+            }
+            this._oldRender(displayObject, renderTexture, clear, transform, skipUpdateTransform);
+        }
+    });
+    Object.assign(PIXI.CanvasRenderer.prototype, {
+        _lastDisplayOrder: 0,
+        _activeLayer: null,
+        incDisplayOrder: function () {
+            return ++this._lastDisplayOrder;
+        },
+        _oldRender: PIXI.CanvasRenderer.prototype.render,
+        render: function (displayObject, renderTexture, clear, transform, skipUpdateTransform) {
+            if (!renderTexture) {
+                this._lastDisplayOrder = 0;
+            }
+            this._activeLayer = null;
+            if (displayObject.isStage) {
+                displayObject.updateStage();
+            }
+            this._oldRender(displayObject, renderTexture, clear, transform, skipUpdateTransform);
+        }
+    });
+})(pixi_display || (pixi_display = {}));
+var pixi_display;
+(function (pixi_display) {
     var Stage = (function (_super) {
         __extends(Stage, _super);
         function Stage() {
@@ -610,11 +669,11 @@ var pixi_display;
                 return;
             }
             var group = displayObject.parentGroup;
-            if (group !== null) {
+            if (group != null) {
                 group.addDisplayObject(this, displayObject);
             }
             var layer = displayObject.parentLayer;
-            if (layer !== null) {
+            if (layer != null) {
                 group = layer.group;
                 group.addDisplayObject(this, displayObject);
             }
@@ -679,45 +738,6 @@ var pixi_display;
         return Stage;
     }(pixi_display.Layer));
     pixi_display.Stage = Stage;
-})(pixi_display || (pixi_display = {}));
-var pixi_display;
-(function (pixi_display) {
-    Object.assign(PIXI.WebGLRenderer.prototype, {
-        _lastDisplayOrder: 0,
-        _activeLayer: null,
-        incDisplayOrder: function () {
-            return ++this._lastDisplayOrder;
-        },
-        _oldRender: PIXI.WebGLRenderer.prototype.render,
-        render: function (displayObject, renderTexture, clear, transform, skipUpdateTransform) {
-            if (!renderTexture) {
-                this._lastDisplayOrder = 0;
-            }
-            this._activeLayer = null;
-            if (displayObject.isStage) {
-                displayObject.updateStage();
-            }
-            this._oldRender(displayObject, renderTexture, clear, transform, skipUpdateTransform);
-        }
-    });
-    Object.assign(PIXI.CanvasRenderer.prototype, {
-        _lastDisplayOrder: 0,
-        _activeLayer: null,
-        incDisplayOrder: function () {
-            return ++this._lastDisplayOrder;
-        },
-        _oldRender: PIXI.CanvasRenderer.prototype.render,
-        render: function (displayObject, renderTexture, clear, transform, skipUpdateTransform) {
-            if (!renderTexture) {
-                this._lastDisplayOrder = 0;
-            }
-            this._activeLayer = null;
-            if (displayObject.isStage) {
-                displayObject.updateStage();
-            }
-            this._oldRender(displayObject, renderTexture, clear, transform, skipUpdateTransform);
-        }
-    });
 })(pixi_display || (pixi_display = {}));
 var pixi_display;
 (function (pixi_display) {

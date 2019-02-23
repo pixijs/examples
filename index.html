@@ -31,7 +31,7 @@
 			</div>
 		</nav>
 		<article class="main-content">
-			<h1>Loading&hellip;</h1>
+			<h1 id="example-title">Loading&hellip;</h1>
 			<div class="example-frame">
 				<div class="sizer" id="example">
 					<iframe id="preview" src="blank.html"></iframe>
@@ -80,8 +80,36 @@
 		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 		ga('create', 'UA-103772589-4', 'auto');
-		ga('send', 'pageview');
-		</script>
-		<script src="dest/js/pixi-examples.min.js?v=1.1.0"></script>
+        ga('send', 'pageview');
+
+        function supportsES6() {
+            "use strict";
+            try {
+                eval("var foo = (x) => x + 1");
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
+
+        if (supportsES6()) {
+            var script = document.createElement('script');
+            script.src = "dest/js/pixi-examples.min.js?v=1.1.0";
+            document.write(script.outerHTML)
+        } else {
+            var title = document.getElementById('example-title');
+            title.innerText = "PixiJS Examples requires a browser that supports ES6";
+
+            var divsToHide = document.getElementsByClassName('code');
+            for(var i = 0; i < divsToHide.length; ++i){
+                divsToHide[i].style.display = "none";
+            }
+
+            divsToHide = document.getElementsByClassName('example-frame');
+            for(var i = 0; i < divsToHide.length; ++i){
+                divsToHide[i].style.display = "none";
+            }
+        }
+        </script>
 	</body>
 </html>

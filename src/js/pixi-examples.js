@@ -39,6 +39,7 @@ jQuery(document).ready(function($) {
 
     bpc.exampleUrl = '';
     bpc.exampleFilename = '';
+    bpc.exampleTitle = '';
     bpc.exampleSourceCode = '';
     bpc.exampleRequiredPlugins = [];
     bpc.exampleValidVersions = [];
@@ -164,15 +165,15 @@ jQuery(document).ready(function($) {
                 $(this).addClass('selected');
                 // load data
                 bpc.closeMobileNav();
-                $('.main-content h1').text($(this).text());
+
                 var page = '/' + $(this).parent().attr('data-section') + '/' + $(this).attr('data-src');
-                var title = $(this).text();
+                bpc.exampleTitle = $(this).text();
 
                 window.location.hash = page;
-                document.title = title + ' - PixiJS Examples';
+                document.title = bpc.exampleTitle + ' - PixiJS Examples';
 
                 // Track page change in analytics
-                ga('set', { page: page, title: title });
+                ga('set', { page: page, title: bpc.exampleTitle });
                 ga('send', 'pageview');
 
                 bpc.exampleUrl = 'examples/js/' + $(this).parent().attr('data-section') + '/' + $(this).attr('data-src');
@@ -230,20 +231,31 @@ jQuery(document).ready(function($) {
                 html += '<script src="pixi-plugins/' + bpc.exampleRequiredPlugins[i] + '.js"></script>';
             }
 
+            bpc.editor = CodeMirror.fromTextArea(document.getElementById('code'), bpc.editorOptions);
+
+            if (bpc.exampleRequiredPlugins.length) {
+                $('#code-header').text("Example Code (plugins used: " + bpc.exampleRequiredPlugins.toString() + ")");
+            } else {
+                $('#code-header').text("Example Code");
+            }
+
             if (bpc.exampleValidVersions.indexOf(bpc.majorPixiVersion) > -1) {
+                $('#example-title').html(bpc.exampleTitle);
                 html += '<script>window.onload = function(){' + bpc.exampleSourceCode + '}</script></body></html>';
-
-                bpc.editor = CodeMirror.fromTextArea(document.getElementById('code'), bpc.editorOptions);
-
-                if (bpc.exampleRequiredPlugins.length) {
-                    $('#code-header').text("Example Code (plugins used: " + bpc.exampleRequiredPlugins.toString() + ")");
-                } else {
-                    $('#code-header').text("Example Code");
-                }
 
                 $('.example-frame').show();
             } else {
-                $('#code-header').text("Example does not work on this version of PixiJS. Valid major version(s) are: " + bpc.exampleValidVersions.toString());
+                $('#example-title').html(
+                    bpc.exampleTitle
+                    + "<br><br><br><br><br><br><br>"
+                    + "The selected version of PixiJS does not work with this example."
+                    + "<br><br>"
+                    + "Selected version: v" + bpc.majorPixiVersion
+                    + "<br><br>"
+                    + "Required version: v" + bpc.exampleValidVersions.toString()
+                    + "<br><br><br><br><br>"
+                )
+
                 $('.example-frame').hide();
             }
 

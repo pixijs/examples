@@ -1,4 +1,4 @@
-var W = 800, H = 600, PAD = 80, resolution = 2;
+var W = 800, H = 600, PAD = 80, resolution = 1;
 var WIDTH = W / resolution, HEIGHT  = H / resolution;
 
 //the plugin is here: https://github.com/pixijs/pixi-display/tree/layers, its WIP

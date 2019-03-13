@@ -52,11 +52,11 @@ var fragmentSrc = `
     }`
 
 var uniforms = {
-    uSampler2:PIXI.Texture.from('examples/assets/SceneRotate.jpg'),
+    uSampler2:PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg'),
     time:0
 }
 
-var uniforms = { uSampler2:PIXI.Texture.from('examples/assets/SceneRotate.jpg') };
+var uniforms = { uSampler2:PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg') };
 
 var shader = new PIXI.Shader.from(vertexSrc, fragmentSrc, uniforms);
 

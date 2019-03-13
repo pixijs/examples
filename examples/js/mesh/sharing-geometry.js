@@ -49,7 +49,7 @@ var program = new PIXI.Program.from(`
 `)
 
 var triangle = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
-  uSamplerTexture:PIXI.Texture.from('examples/assets/SceneRotate.jpg')
+  uSamplerTexture:PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg')
 }));
 
 var triangle2 = new PIXI.Mesh(geometry, new PIXI.Shader(program, {

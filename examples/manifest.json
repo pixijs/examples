@@ -363,6 +363,10 @@
     ],
     "textures": [
         {
+            "title": "Gradient Basic",
+            "entry": "gradient-basic.js"
+        },
+        {
             "title": "pixi-V5 Not-premultiplied alpha",
             "entry": "not-premultiplied-alpha.js",
             "validVersions": [5]

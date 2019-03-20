@@ -1,3 +1,7 @@
+// This demo uses canvas2d gradient API
+// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
+// You can use `rgba(255,255,255,0.5)` notation in color stops
+
 var app = new PIXI.Application(800, 600, { antialias: true });
 document.body.appendChild(app.view);
 

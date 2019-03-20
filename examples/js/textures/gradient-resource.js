@@ -1,4 +1,4 @@
-// PixiJS V5 Texture-Resource API + canvas2d gradient API
+// PixiJS V5 Texture-Resource API + canvas2d gradient API + WebGL texImage2D
 // Look here for advanced upload function:
 // https://github.com/pixijs/pixi.js/blob/dev/packages/core/src/textures/resources/BaseImageResource.js#L54
 
@@ -13,7 +13,7 @@ class GradientResource extends PIXI.resources.Resource {
         var width = this.width; // default size or from baseTexture?
         var height = this.height; // your choice.
 
-        //temporary canvas, we dont need it after texture is uploaded to GPU
+        // temporary canvas, we dont need it after texture is uploaded to GPU
         var canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
@@ -29,8 +29,13 @@ class GradientResource extends PIXI.resources.Resource {
         ctx.fillStyle = grd;
         ctx.fillRect(0, 0, width, height);
 
+        // This info ios usseful if upload happens second time
+        // Some people use that to track used memory
         glTexture.width = width;
         glTexture.height = height;
+
+        // PURE WEBGL CALLS - that's what its all about
+        // PixiJS cant fully replicate that API
         var gl = renderer.gl;
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.premultiplyAlpha);
         gl.texImage2D(baseTexture.target, 0, baseTexture.format, baseTexture.format, baseTexture.type, canvas);

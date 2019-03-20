@@ -367,6 +367,11 @@
             "entry": "gradient-basic.js"
         },
         {
+            "title": "Gradient Resource",
+            "entry": "gradient-resource.js",
+            "validVersions": [5]
+        },
+        {
             "title": "pixi-V5 Not-premultiplied alpha",
             "entry": "not-premultiplied-alpha.js",
             "validVersions": [5]

@@ -1,6 +1,5 @@
 // This demo uses canvas2d gradient API
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
-// You can use `rgba(255,255,255,0.5)` notation in color stops
 
 var app = new PIXI.Application(800, 600, { antialias: true });
 document.body.appendChild(app.view);
@@ -16,8 +15,10 @@ function createGradTexture() {
 
     // use canvas2d API to create gradient
     var grd = ctx.createLinearGradient(0, 0, quality, 0);
-    grd.addColorStop(0, 'red');
-    grd.addColorStop(1, 'white');
+    grd.addColorStop(0, 'rgba(255, 255, 255, 0.0)');
+    grd.addColorStop(.3, 'cyan');
+    grd.addColorStop(0.7, 'red');
+    grd.addColorStop(1, 'green');
 
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, quality, 1);
@@ -30,6 +31,6 @@ var gradTexture = createGradTexture();
 var sprite = new PIXI.Sprite(gradTexture);
 sprite.position.set(100, 100);
 sprite.rotation = Math.PI / 8;
-sprite.width = 300;
+sprite.width = 500;
 sprite.height = 50;
 app.stage.addChild(sprite);

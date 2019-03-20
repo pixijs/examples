@@ -34,8 +34,8 @@ class GradientResource extends PIXI.resources.Resource {
         glTexture.width = width;
         glTexture.height = height;
 
-        // PURE WEBGL CALLS - that's what its all about
-        // PixiJS cant fully replicate that API
+        // PURE WEBGL CALLS - that's what its all about.
+        // PixiJS cant wrap all that API, we give you acceess to it!
         var gl = renderer.gl;
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.premultiplyAlpha);
         gl.texImage2D(baseTexture.target, 0, baseTexture.format, baseTexture.format, baseTexture.type, canvas);

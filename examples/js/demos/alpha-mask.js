@@ -3,7 +3,7 @@ document.body.appendChild(app.view);
 
 app.stage.interactive = true;
 
-var bg = PIXI.Sprite.fromImage('examples/assets/bg_plane.jpg.jpg');
+var bg = PIXI.Sprite.fromImage('examples/assets/bg_plane.jpg');
 
 app.stage.addChild(bg);
 

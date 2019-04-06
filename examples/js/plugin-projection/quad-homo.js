@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600, {backgroundColor: 0x1099bb});
+var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
 var w = app.screen.width/2, h = app.screen.height/2;

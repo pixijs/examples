@@ -80,6 +80,6 @@ for (var i = 0; i < 40; i++) {
     bunnyWorld.addChild(createBunny());
 }
 
-app.ticker.add(function () {
+app.ticker.add(function() {
     bunnyWorld.children.forEach(updateBunny);
 });

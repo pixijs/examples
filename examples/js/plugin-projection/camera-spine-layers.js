@@ -3,7 +3,7 @@
 // Be ready to study the plugins code. Please use latest version of those libs
 // Used plugins: pixi-spine, pixi-projection (+spine), pixi-display
 
-var app = new PIXI.Application(800, 600, {resolution: 1, autoStart: false });
+var app = new PIXI.Application(800, 600, { autoStart: false });
 document.body.appendChild(app.view);
 app.stage = new PIXI.display.Stage();
 

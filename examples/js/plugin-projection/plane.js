@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600, {backgroundColor: 0x103322});
+var app = new PIXI.Application(800, 600, { backgroundColor: 0x103322 });
 document.body.appendChild(app.view);
 
 var bigWhiteTexture = new PIXI.Texture(PIXI.Texture.WHITE.baseTexture);

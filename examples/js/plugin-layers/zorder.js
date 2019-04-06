@@ -1,7 +1,7 @@
 // This is demo of pixi-display.js, https://github.com/gameofbombs/pixi-display
 // Drag the rabbits to understand what's going on
 
-var app = new PIXI.Application(800, 600, {backgroundColor: 0x1099bb});
+var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
 //META STUFF, groups exist without stage just fine

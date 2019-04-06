@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600, {backgroundColor : 0x0});
+var app = new PIXI.Application(800, 600, { backgroundColor : 0x000000 });
 document.body.appendChild(app.view);
 
 //Get the texture for rope.
@@ -34,7 +34,7 @@ for(var i = 0; i < starAmount; i++)
 function randomizeStar(star,initial)
 {
 	star.z = initial ? Math.random()*2000 : cameraZ + Math.random()*1000+2000;
-	
+
 	//Calculate star positions with radial random coordinate so no star hits the camera.
 	var deg = Math.random()*Math.PI*2;
 	var distance = Math.random()*50+1;
@@ -57,12 +57,12 @@ app.ticker.add(function(delta) {
 		var star = stars[i];
 		if(star.z < cameraZ)
 			randomizeStar(star);
-		
+
 		//Map star 3d position to 2d with really simple projection
 		var z = star.z - cameraZ;
 		star.sprite.x = star.x * (fov / z)*app.renderer.screen.width+app.renderer.screen.width/2;
 		star.sprite.y = star.y * (fov / z)*app.renderer.screen.width+app.renderer.screen.height/2;
-		
+
 		//Calculate star scale & rotation.
 		var dxCenter = star.sprite.x - app.renderer.screen.width/2;
 		var dyCenter = star.sprite.y - app.renderer.screen.height/2;
@@ -73,6 +73,6 @@ app.ticker.add(function(delta) {
 		//Scale the star depending on how fast we are moving, what the stretchfactor is and depending on how far away it is from the center.
 		star.sprite.scale.y = distanceScale*starBaseSize + distanceScale*speed*starStretch*distanceCenter/app.renderer.screen.width;
 		star.sprite.rotation = Math.atan2(dyCenter, dxCenter)+Math.PI/2;
-		
+
 	}
 });

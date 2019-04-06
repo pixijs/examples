@@ -3,7 +3,7 @@
 // Be ready to study the plugins code. Please use latest version of those libs
 // Used plugins: pixi-projection, pixi-display
 
-var app = new PIXI.Application(800, 600, {resolution: 1, autoStart: false, antialias: true });
+var app = new PIXI.Application(800, 600, { autoStart: false, antialias: true });
 document.body.appendChild(app.view);
 app.stage = new PIXI.display.Stage();
 

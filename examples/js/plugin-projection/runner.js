@@ -1,7 +1,7 @@
 // this example uses both pixi-spine and pixi-projection
 // it doesnt use projection-spine bridge because it uses only 2d version of spine object
 
-var app = new PIXI.Application(800, 600, {resolution: 1, autoStart: false });
+var app = new PIXI.Application(800, 600, { autoStart: false });
 document.body.appendChild(app.view);
 
 app.stop();

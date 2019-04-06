@@ -1,5 +1,3 @@
-// this example uses plugin https://github.com/pixijs/pixi-extra-filters/
-
 var app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 

@@ -58,9 +58,10 @@ thing.y = 600/2;
 var count = 0;
 
 // Just click on the stage to draw random lines
-app.stage.on('pointertap', onClick);
+window.app = app;
+app.renderer.plugins.interaction.on('pointerdown', onPointerDown);
 
-function onClick() {
+function onPointerDown() {
     graphics.lineStyle(Math.random() * 30, Math.random() * 0xFFFFFF, 1);
     graphics.moveTo(Math.random() * 800, Math.random() * 600);
     graphics.bezierCurveTo(

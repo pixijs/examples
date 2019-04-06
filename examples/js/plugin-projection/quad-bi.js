@@ -22,7 +22,7 @@ var squares = [
 var quad = squares.map(function(s) { return s.position });
 
 //add sprite itself
-var containerSprite = new PIXI.projection.Sprite2s(new PIXI.Texture.fromImage('examples/assets/SceneRotate.jpg'));
+var containerSprite = new PIXI.projection.Sprite2s(new PIXI.Texture.fromImage('examples/assets/bg_scene_rotate.jpg'));
 containerSprite.anchor.set(0.5);
 
 app.stage.addChild(containerSprite);

@@ -1,5 +1,3 @@
-// please switch to `next` version to see this demo
-
 var app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
@@ -58,7 +56,7 @@ var fragmentSrc = `
         gl_FragColor = texture2D(uSampler2, vUvs) * vec4(vColor, 1.0);
     }`
 
-var uniforms = { uSampler2:PIXI.Texture.from('examples/assets/SceneRotate.jpg') };
+var uniforms = { uSampler2:PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg') };
 
 var shader = new PIXI.Shader.from(vertexSrc, fragmentSrc, uniforms);
 

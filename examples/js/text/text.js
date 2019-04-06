@@ -1,9 +1,9 @@
-var app = new PIXI.Application(800, 600, {backgroundColor: 0x1099bb});
+var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb } );
 document.body.appendChild(app.view);
 
 var basicText = new PIXI.Text('Basic text in pixi');
-basicText.x = 30;
-basicText.y = 90;
+basicText.x = 50;
+basicText.y = 100;
 
 app.stage.addChild(basicText);
 
@@ -25,7 +25,7 @@ var style = new PIXI.TextStyle({
 });
 
 var richText = new PIXI.Text('Rich text with a lot of options and across multiple lines', style);
-richText.x = 30;
-richText.y = 180;
+richText.x = 50;
+richText.y = 250;
 
 app.stage.addChild(richText);

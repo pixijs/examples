@@ -239,7 +239,7 @@ jQuery(document).ready(function($) {
                 $('#code-header').text("Example Code");
             }
 
-            if (bpc.exampleValidVersions.indexOf(bpc.majorPixiVersion) > -1) {
+            if (!bpc.exampleValidVersions.length || bpc.exampleValidVersions.indexOf(bpc.majorPixiVersion) > -1) {
                 $('#example-title').html(bpc.exampleTitle);
                 html += '<script>window.onload = function(){' + bpc.exampleSourceCode + '}</script></body></html>';
 

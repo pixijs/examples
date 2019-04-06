@@ -118,7 +118,7 @@ function onAssetsLoaded()
 		{
 			var r = reels[i];
 			var extra = Math.floor(Math.random()*3);
-			tweenTo(r, "position", r.position + 10+i*5+extra, 2500+i*600+extra*600, backout(0.6), null, i == reels.length-1 ? reelsComplete : null);
+			tweenTo(r, "position", r.position + 10+i*5+extra, 2500+i*600+extra*600, backout(0.5), null, i == reels.length-1 ? reelsComplete : null);
 		}
 	}
 	

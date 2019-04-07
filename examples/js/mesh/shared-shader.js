@@ -1,5 +1,3 @@
-// please switch to `next` version to see this demo
-
 var app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 

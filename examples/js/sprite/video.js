@@ -1,4 +1,4 @@
-const app = new PIXI.Application(800, 600, { transparent: true });
+const app = new PIXI.Application({ transparent: true });
 document.body.appendChild(app.view);
 
 // Create play button that can be used to trigger the video

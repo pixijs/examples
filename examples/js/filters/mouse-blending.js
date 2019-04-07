@@ -5,7 +5,7 @@
  * https://github.com/pixijs/pixi.js/wiki/v4-Creating-Filters#cannot-read-property-location-of-undefined
  */
 
-const app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // Create background image

@@ -1,4 +1,4 @@
-const app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 const sprites = new PIXI.particles.ParticleContainer(10000, {

@@ -1,4 +1,4 @@
-const app = new PIXI.Application(800, 600, { backgroundColor: 0x000000 });
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // Get the texture for rope.

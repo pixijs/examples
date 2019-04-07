@@ -1,6 +1,6 @@
 // please switch to `next-compressed` version to see this demo
 
-const app = new PIXI.Application(800, 600, { backgroundColor: 0x308030 });
+const app = new PIXI.Application({ backgroundColor: 0x308030 });
 document.body.appendChild(app.view);
 
 // compressed textures setup

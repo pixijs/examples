@@ -44,7 +44,7 @@ class GradientResource extends PIXI.resources.Resource {
     }
 }
 
-const app = new PIXI.Application(800, 600, { antialias: true });
+const app = new PIXI.Application({ antialias: true });
 document.body.appendChild(app.view);
 
 const gradBaseTexture = new PIXI.BaseTexture(new GradientResource());

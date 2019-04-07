@@ -1,4 +1,4 @@
-const app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // create two render textures... these dynamic textures will be used to draw the scene into itself

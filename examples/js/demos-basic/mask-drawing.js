@@ -1,6 +1,6 @@
 // for this example you have to use mouse or touchscreen
 
-const app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 const { stage } = app;
 

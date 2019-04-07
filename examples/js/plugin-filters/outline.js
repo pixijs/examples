@@ -1,4 +1,4 @@
-const app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 app.stage.position.set(400, 300);

@@ -1,4 +1,4 @@
-const app = new PIXI.Application(800, 600, { resolution: window.devicePixelRatio || 1 });
+const app = new PIXI.Application({ resolution: window.devicePixelRatio || 1 });
 document.body.appendChild(app.view);
 
 // use empty array if you dont want to use detect feature

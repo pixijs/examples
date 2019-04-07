@@ -1,7 +1,7 @@
 // This demo uses canvas2d gradient API
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createLinearGradient
 
-const app = new PIXI.Application(800, 600, { antialias: true });
+const app = new PIXI.Application({ antialias: true });
 document.body.appendChild(app.view);
 
 function createGradTexture() {

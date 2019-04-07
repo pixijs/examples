@@ -1,7 +1,7 @@
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-const sprites = new PIXI.particles.ParticleContainer(10000, {
+const sprites = new PIXI.ParticleContainer(10000, {
     scale: true,
     position: true,
     rotation: true,
@@ -13,11 +13,11 @@ app.stage.addChild(sprites);
 // create an array to store all the sprites
 const maggots = [];
 
-const totalSprites = app.renderer instanceof PIXI.WebGLRenderer ? 10000 : 100;
+const totalSprites = app.renderer instanceof PIXI.Renderer ? 10000 : 100;
 
 for (let i = 0; i < totalSprites; i++) {
     // create a new Sprite
-    const dude = PIXI.Sprite.fromImage('examples/assets/maggot_tiny.png');
+    const dude = PIXI.Sprite.from('examples/assets/maggot_tiny.png');
 
     dude.tint = Math.random() * 0xE8D4CD;
 

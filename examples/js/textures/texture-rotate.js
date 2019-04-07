@@ -4,8 +4,8 @@ document.body.appendChild(app.view);
 // create a texture from an image path
 let texture;
 
-PIXI.loader.add('flowerTop', 'examples/assets/flowerTop.png');
-PIXI.loader.load((loader, resources) => {
+PIXI.Loader.shared.add('flowerTop', 'examples/assets/flowerTop.png');
+PIXI.Loader.shared.load((loader, resources) => {
     texture = resources.flowerTop.texture;
     init();
 });

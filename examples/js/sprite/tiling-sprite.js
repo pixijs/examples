@@ -8,7 +8,7 @@ const texture = PIXI.Texture.from('examples/assets/p2.jpeg');
  * requires a texture, a width and a height
  * in WebGL the image size should preferably be a power of two
  */
-const tilingSprite = new PIXI.extras.TilingSprite(
+const tilingSprite = new PIXI.TilingSprite(
     texture,
     app.screen.width,
     app.screen.height,

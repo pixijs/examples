@@ -1,7 +1,7 @@
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-PIXI.loader
+PIXI.Loader.shared
     .add('examples/assets/spritesheet/fighter.json')
     .load(onAssetsLoaded);
 
@@ -17,7 +17,7 @@ function onAssetsLoaded() {
     }
 
     // create an AnimatedSprite (brings back memories from the days of Flash, right ?)
-    const anim = new PIXI.extras.AnimatedSprite(frames);
+    const anim = new PIXI.AnimatedSprite(frames);
 
     /*
      * An AnimatedSprite inherits all the properties of a PIXI sprite

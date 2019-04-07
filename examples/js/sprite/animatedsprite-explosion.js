@@ -3,7 +3,7 @@ document.body.appendChild(app.view);
 
 app.stop();
 
-PIXI.loader
+PIXI.Loader.shared
     .add('spritesheet', 'examples/assets/spritesheet/mc.json')
     .load(onAssetsLoaded);
 
@@ -19,7 +19,7 @@ function onAssetsLoaded() {
 
     for (i = 0; i < 50; i++) {
     // create an explosion AnimatedSprite
-        const explosion = new PIXI.extras.AnimatedSprite(explosionTextures);
+        const explosion = new PIXI.AnimatedSprite(explosionTextures);
 
         explosion.x = Math.random() * app.screen.width;
         explosion.y = Math.random() * app.screen.height;

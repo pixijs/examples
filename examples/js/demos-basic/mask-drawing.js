@@ -10,9 +10,9 @@ brush.beginFill(0xffffff);
 brush.drawCircle(0, 0, 50);
 brush.endFill();
 
-PIXI.loader.add('t1', 'examples/assets/bg_grass.jpg');
-PIXI.loader.add('t2', 'examples/assets/bg_rotate.jpg');
-PIXI.loader.load(setup);
+PIXI.Loader.shared.add('t1', 'examples/assets/bg_grass.jpg');
+PIXI.Loader.shared.add('t2', 'examples/assets/bg_rotate.jpg');
+PIXI.Loader.shared.load(setup);
 
 function setup(loader, resources) {
     const background = new PIXI.Sprite(resources.t1.texture);
@@ -40,7 +40,7 @@ function setup(loader, resources) {
 
     function pointerMove(event) {
         if (dragging) {
-            brush.position.copy(event.data.global);
+            brush.position.copyFrom(event.data.global);
             app.renderer.render(brush, renderTexture, false, null, false);
         }
     }

@@ -13,7 +13,7 @@ document.body.appendChild(app.view);
 const stage = app.stage = new PIXI.display.Stage();
 
 // bg is first, its not lighted
-const bg = new PIXI.extras.TilingSprite(PIXI.Texture.from('examples/assets/p2.jpeg'), WIDTH, HEIGHT);
+const bg = new PIXI.TilingSprite(PIXI.Texture.from('examples/assets/p2.jpeg'), WIDTH, HEIGHT);
 bg.tint = 0x808080;
 stage.addChild(bg);
 
@@ -47,10 +47,10 @@ const light = new PIXI.lights.PointLight(0xffffff, 1);
 light.position.set(525, 160);
 stage.addChild(light);
 app.ticker.add(() => {
-    light.position.copy(app.renderer.plugins.interaction.mouse.global);
+    light.position.copyFrom(app.renderer.plugins.interaction.mouse.global);
 });
 
-const lightLoader = new PIXI.loaders.Loader();
+const lightLoader = new PIXI.Loader.shareds.Loader();
 lightLoader.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
 lightLoader
     .add('block_diffuse', 'test/block.png')

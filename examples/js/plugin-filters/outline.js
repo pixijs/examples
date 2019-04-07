@@ -15,8 +15,7 @@ function filterOff() {
 }
 
 for (let i = 0; i < 20; i++) {
-    const bunny = PIXI.Sprite.fromImage('examples/assets/bunny.png');
-    // bunny.anchor.set(0.5);
+    const bunny = PIXI.Sprite.from('examples/assets/bunny.png');
     bunny.interactive = true;
     bunny.position.set((Math.random() * 2 - 1) * 300 | 0, (Math.random() * 2 - 1) * 200 | 0);
     bunny.scale.x = (Math.random() * 3 | 0 * 0.1) + 1;

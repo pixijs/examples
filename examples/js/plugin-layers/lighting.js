@@ -11,7 +11,7 @@ document.body.appendChild(app.view);
 // create the stage instead of container
 app.stage = new PIXI.display.Stage();
 
-const background = new PIXI.extras.TilingSprite(
+const background = new PIXI.TilingSprite(
     PIXI.Texture.from('examples/assets/p2.jpeg'),
     WIDTH,
     HEIGHT,

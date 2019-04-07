@@ -1,5 +1,7 @@
 /* Brett Meyer - Broken Pony Club */
 
+const bpc = {};
+
 function getParameterByName(name) {
     const match = RegExp(`[?&]${name}=([^&]*)`).exec(window.location.search);
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
@@ -29,8 +31,6 @@ jQuery(document).ready(($) => {
 
         $('.main-content').animate({ scrollTop: 0 }, 200);
     };
-
-    const bpc = bpc || {};
 
     bpc.pixiVersionString = getParameterByName('v') || 'release';
     bpc.majorPixiVersion = getMajorPixiVersion(bpc.pixiVersionString);
@@ -208,7 +208,7 @@ jQuery(document).ready(($) => {
                 pixiUrl = `https://d157l7jdn8e5sf.cloudfront.net/${bpc.pixiVersionString}/pixi.js`;
             }
 
-            let html = '<!DOCTYPE html><html><head><style></style></head><body>';
+            let html = '<!DOCTYPE html><html><head><style>';
             html += 'body,html{margin:0px;height:100%;overflow:hidden;}canvas{width:100%;height:100%;}';
             html += '</style></head><body>';
             html += '<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>';

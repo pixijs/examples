@@ -1,6 +1,6 @@
 {
   "name": "pixi-examples",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "The examples site for pixi",
   "author": "Pixi Team",
   "license": "MIT",
@@ -14,12 +14,12 @@
   },
   "scripts": {
     "less": "lessc src/less/pixi-examples.less dest/css/pixi-examples.min.css --clean-css --source-map",
-    "js": "uglifyjs src/js/pixi-examples.js -c -m -o dest/js/pixi-examples.min.js --source-map",
+    "js": "terser src/js/pixi-examples.js -c -m -o dest/js/pixi-examples.min.js --source-map",
     "less-dev": "lessc src/less/pixi-examples.less dest/css/pixi-examples.min.css",
-    "js-dev": "uglifyjs src/js/pixi-examples.js -o dest/js/pixi-examples.min.js",
-    "build": "npm run less && npm run js",
+    "js-dev": "terser src/js/pixi-examples.js -o dest/js/pixi-examples.min.js",
+    "build": "npm run lint && npm run less && npm run js",
     "watch": "watch \"npm run less-dev && npm run js-dev\" src --wait 0.1 --interval 0.1",
-    "lint": "./node_modules/.bin/eslint {examples,src}/**/*.js --max-warnings 0",
+    "lint": "eslint {examples,src}/**/*.js --max-warnings 0",
     "lintfix": "npm run lint -- --fix"
   },
   "devDependencies": {
@@ -28,7 +28,7 @@
     "eslint-plugin-import": "^2.16.0",
     "less": "^3.9.0",
     "less-plugin-clean-css": "^1.5.1",
-    "uglify-js": "^3.4.9",
+    "terser": "^3.17.0",
     "watch": "^1.0.2"
   },
   "dependencies": {}

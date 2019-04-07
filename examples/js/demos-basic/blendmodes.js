@@ -14,7 +14,7 @@ const totaldudes = 20;
 
 for (let i = 0; i < totaldudes; i++) {
     // create a new Sprite that uses the image name that we just generated as its source
-    const dude = PIXI.Sprite.fromImage('examples/assets/flowerTop.png');
+    const dude = PIXI.Sprite.from('examples/assets/flowerTop.png');
 
     dude.anchor.set(0.5);
 

@@ -47,7 +47,7 @@ const items = [];
 
 // now create some items and randomly position them in the stuff container
 for (let i = 0; i < 20; i++) {
-    const item = PIXI.Sprite.fromImage(fruits[i % fruits.length]);
+    const item = PIXI.Sprite.from(fruits[i % fruits.length]);
     item.x = Math.random() * 400 - 200;
     item.y = Math.random() * 400 - 200;
     item.anchor.set(0.5);

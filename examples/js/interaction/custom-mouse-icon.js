@@ -10,7 +10,7 @@ app.renderer.plugins.interaction.cursorStyles.default = defaultIcon;
 app.renderer.plugins.interaction.cursorStyles.hover = hoverIcon;
 
 // create a background...
-const background = PIXI.Sprite.fromImage('examples/assets/bg_button.jpg');
+const background = PIXI.Sprite.from('examples/assets/bg_button.jpg');
 background.width = app.screen.width;
 background.height = app.screen.height;
 // add background to stage...

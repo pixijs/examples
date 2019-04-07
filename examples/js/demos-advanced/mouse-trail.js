@@ -22,7 +22,7 @@ for (let i = 0; i < ropeSize; i++) {
 }
 
 // Create the rope
-const rope = new PIXI.mesh.Rope(trailTexture, points);
+const rope = new PIXI.SimpleRope(trailTexture, points);
 
 // Set the blendmode
 rope.blendmode = PIXI.BLEND_MODES.ADD;
@@ -67,7 +67,7 @@ function getTangent(k, factor, array) {
 }
 
 function cubicInterpolation(array, t, tangentFactor) {
-    if (tangentFactor === null) tangentFactor = 1;
+    if (tangentFactor == null) tangentFactor = 1;
 
     const k = Math.floor(t);
     const m = [getTangent(k, tangentFactor, array), getTangent(k + 1, tangentFactor, array)];

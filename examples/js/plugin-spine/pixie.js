@@ -4,7 +4,7 @@ document.body.appendChild(app.view);
 app.stop();
 
 // load spine data
-PIXI.loader
+PIXI.Loader.shared
     .add('pixie', 'examples/assets/pixi-spine/pixie.json')
     .load(onAssetsLoaded);
 
@@ -17,11 +17,11 @@ let foreground2;
 app.stage.interactive = true;
 
 function onAssetsLoaded(loader, res) {
-    background = PIXI.Sprite.fromImage('examples/assets/pixi-spine/iP4_BGtile.jpg');
-    background2 = PIXI.Sprite.fromImage('examples/assets/pixi-spine/iP4_BGtile.jpg');
+    background = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_BGtile.jpg');
+    background2 = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_BGtile.jpg');
 
-    foreground = PIXI.Sprite.fromImage('examples/assets/pixi-spine/iP4_ground.png');
-    foreground2 = PIXI.Sprite.fromImage('examples/assets/pixi-spine/iP4_ground.png');
+    foreground = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_ground.png');
+    foreground2 = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_ground.png');
     foreground.anchor.set(0, 0.7);
     foreground.position.y = app.screen.height;
     foreground2.anchor.set(0, 0.7);

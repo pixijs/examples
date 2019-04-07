@@ -2,7 +2,7 @@ const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // Create background image
-const background = PIXI.Sprite.fromImage('examples/assets/bg_grass.jpg');
+const background = PIXI.Sprite.from('examples/assets/bg_grass.jpg');
 background.width = app.screen.width;
 background.height = app.screen.height;
 app.stage.addChild(background);
@@ -10,7 +10,7 @@ app.stage.addChild(background);
 // Stop application wait for load to finish
 app.stop();
 
-PIXI.loader.add('shader', 'examples/assets/pixi-filters/shader.frag')
+PIXI.Loader.shared.add('shader', 'examples/assets/pixi-filters/shader.frag')
     .load(onLoaded);
 
 let filter;

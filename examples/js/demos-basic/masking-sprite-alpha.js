@@ -3,15 +3,15 @@ document.body.appendChild(app.view);
 
 app.stage.interactive = true;
 
-const bg = PIXI.Sprite.fromImage('examples/assets/bg_plane.jpg');
+const bg = PIXI.Sprite.from('examples/assets/bg_plane.jpg');
 
 app.stage.addChild(bg);
 
-const cells = PIXI.Sprite.fromImage('examples/assets/cells.png');
+const cells = PIXI.Sprite.from('examples/assets/cells.png');
 
 cells.scale.set(1.5);
 
-const mask = PIXI.Sprite.fromImage('examples/assets/flowerTop.png');
+const mask = PIXI.Sprite.from('examples/assets/flowerTop.png');
 mask.anchor.set(0.5);
 mask.x = 310;
 mask.y = 190;

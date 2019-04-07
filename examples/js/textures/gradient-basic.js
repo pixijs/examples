@@ -23,7 +23,7 @@ function createGradTexture() {
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, quality, 1);
 
-    return PIXI.Texture.fromCanvas(canvas);
+    return PIXI.Texture.from(canvas);
 }
 
 const gradTexture = createGradTexture();

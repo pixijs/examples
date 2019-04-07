@@ -4,7 +4,7 @@ document.body.appendChild(app.view);
 app.stop();
 
 // load resources
-PIXI.loader
+PIXI.Loader.shared
     .add('spritesheet', 'examples/assets/spritesheet/monsters.json')
     .load(onAssetsLoaded);
 

@@ -3,7 +3,7 @@ document.body.appendChild(app.view);
 
 app.stop();
 
-PIXI.loader
+PIXI.Loader.shared
     .add('spritesheet', 'examples/assets/spritesheet/0123456789.json')
     .load(onAssetsLoaded);
 
@@ -22,7 +22,7 @@ function onAssetsLoaded(loader, resources) {
     const scaling = 4;
 
     // create a slow AnimatedSprite
-    const slow = new PIXI.extras.AnimatedSprite(textures);
+    const slow = new PIXI.AnimatedSprite(textures);
     slow.anchor.set(0.5);
     slow.scale.set(scaling);
     slow.animationSpeed = 0.5;
@@ -32,7 +32,7 @@ function onAssetsLoaded(loader, resources) {
     app.stage.addChild(slow);
 
     // create a fast AnimatedSprite
-    const fast = new PIXI.extras.AnimatedSprite(textures);
+    const fast = new PIXI.AnimatedSprite(textures);
     fast.anchor.set(0.5);
     fast.scale.set(scaling);
     fast.x = (app.screen.width + fast.width) / 2;

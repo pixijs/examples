@@ -2,7 +2,7 @@ const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // load spine data
-PIXI.loader
+PIXI.Loader.shared
     .add('spineboy', 'examples/assets/pixi-spine/spineboy.json')
     .load(onAssetsLoaded);
 

@@ -2,7 +2,7 @@ const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // create a background...
-const background = PIXI.Sprite.fromImage('examples/assets/bg_button.jpg');
+const background = PIXI.Sprite.from('examples/assets/bg_button.jpg');
 background.width = app.screen.width;
 background.height = app.screen.height;
 

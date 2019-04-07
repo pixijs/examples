@@ -1,7 +1,7 @@
 const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
-PIXI.loader
+PIXI.Loader.shared
     .add('examples/assets/eggHead.png', 'examples/assets/eggHead.png')
     .add('examples/assets/flowerTop.png', 'examples/assets/flowerTop.png')
     .add('examples/assets/helmlok.png', 'examples/assets/helmlok.png')

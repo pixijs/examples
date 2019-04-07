@@ -12,9 +12,9 @@ stage.addChild(new PIXI.display.Layer(PIXI.lights.diffuseGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.normalGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.lightGroup));
 
-PIXI.loader.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
+PIXI.Loader.shared.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
 
-PIXI.loader
+PIXI.Loader.shared
     .add('bg_diffuse', 'test/BGTextureTest.jpg')
     .add('bg_normal', 'test/BGTextureNORM.jpg')
     .add('block_diffuse', 'test/block.png')
@@ -54,12 +54,12 @@ function onAssetsLoaded(loader, res) {
 
     bg.interactive = true;
     bg.on('mousemove', (event) => {
-        light.position.copy(event.data.global);
+        light.position.copyFrom(event.data.global);
     });
 
     bg.on('pointerdown', (event) => {
         const clickLight = new PIXI.lights.PointLight(0xffffff);
-        clickLight.position.copy(event.data.global);
+        clickLight.position.copyFrom(event.data.global);
         stage.addChild(clickLight);
     });
 }

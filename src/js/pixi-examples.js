@@ -53,7 +53,7 @@ jQuery(document).ready(function($) {
         lineWrapping: true
     };
 
-    bpc.clickType = Modernizr.touchevents ? 'tap' : 'click';
+    bpc.clickType = 'click';
     bpc.animTime = 0.15;
 
     bpc.resize = function() {};
@@ -61,10 +61,6 @@ jQuery(document).ready(function($) {
     // async script loading
     bpc.scriptsToLoad = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js'];
     bpc.scriptsLoaded = 0;
-
-    if (bpc.clickType === 'tap') {
-        bpc.scriptsToLoad.push('vendor/jquery.mobile.custom.min.js');
-    }
 
     bpc.loadScriptsAsync = function() {
         for (var i = 0; i < bpc.scriptsToLoad.length; i++) {

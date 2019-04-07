@@ -19,7 +19,7 @@
     "js-dev": "uglifyjs src/js/pixi-examples.js -o dest/js/pixi-examples.min.js",
     "build": "npm run less && npm run js",
     "watch": "watch \"npm run less-dev && npm run js-dev\" src --wait 0.1 --interval 0.1",
-    "lint": "./node_modules/.bin/eslint examples/**/*.js --max-warnings 0",
+    "lint": "./node_modules/.bin/eslint {examples,src}/**/*.js --max-warnings 0",
     "lintfix": "npm run lint -- --fix"
   },
   "devDependencies": {

@@ -7,7 +7,14 @@
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
-        "PIXI": "readonly"
+        "PIXI": "readonly",
+        "jQuery": "readonly",
+        "TweenMax": "readonly",
+        "Linear": "readonly",
+        "Quart": "readonly",
+        "Modernizr": "readonly",
+        "CodeMirror": "readonly",
+        "ga": "readonly"
     },
     "parserOptions": {
         "ecmaVersion": 2018,

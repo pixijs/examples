@@ -14,7 +14,7 @@ window.WebFontConfig = {
 
 /* eslint-disable */
 // include the web-font loader script
-(function () {
+(function() {
     const wf = document.createElement('script');
     wf.src = `${document.location.protocol === 'https:' ? 'https' : 'http'
     }://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js`;

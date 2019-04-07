@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 // load spine data
@@ -9,9 +9,8 @@ PIXI.loader
 app.stage.interactive = true;
 app.stage.buttonMode = true;
 
-function onAssetsLoaded(loader, res)
-{
-    var goblin = new PIXI.spine.Spine(res.goblins.spineData);
+function onAssetsLoaded(loader, res) {
+    const goblin = new PIXI.spine.Spine(res.goblins.spineData);
 
     // set current skin
     goblin.skeleton.setSkinByName('goblin');
@@ -28,10 +27,10 @@ function onAssetsLoaded(loader, res)
 
     app.stage.addChild(goblin);
 
-    app.stage.on('pointertap', function() {
-        // change current skin
-        var currentSkinName = goblin.skeleton.skin.name;
-        var newSkinName = (currentSkinName === 'goblin' ? 'goblingirl' : 'goblin');
+    app.stage.on('pointertap', () => {
+    // change current skin
+        const currentSkinName = goblin.skeleton.skin.name;
+        const newSkinName = (currentSkinName === 'goblin' ? 'goblingirl' : 'goblin');
         goblin.skeleton.setSkinByName(newSkinName);
         goblin.skeleton.setSlotsToSetupPose();
     });

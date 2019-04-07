@@ -1,18 +1,18 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
-var geometry = new PIXI.Geometry()
-.addAttribute('aVertexPosition',  // the attribute name
-              [-100, -100,   // x, y
-                100, -100,   // x, y
-                100 , 100]) // x, y
+const geometry = new PIXI.Geometry()
+    .addAttribute('aVertexPosition', // the attribute name
+        [-100, -100, // x, y
+            100, -100, // x, y
+            100, 100]) // x, y
 
-.addAttribute('aUvs',  // the attribute name
-              [0, 0,  // u, v
-               1, 0,  // u, v
-               1, 1]) // u, v
+    .addAttribute('aUvs', // the attribute name
+        [0, 0, // u, v
+            1, 0, // u, v
+            1, 1]); // u, v
 
-var shader = new PIXI.Shader.from(`
+const shader = PIXI.Shader.from(`
 
     precision mediump float;
 
@@ -31,7 +31,7 @@ var shader = new PIXI.Shader.from(`
 
     }`,
 
-    `precision mediump float;
+`precision mediump float;
 
     varying vec2 vUvs;
 
@@ -44,10 +44,10 @@ var shader = new PIXI.Shader.from(`
 
 `,
 {
-    uSampler2:PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg')
-})
+    uSampler2: PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg'),
+});
 
-var shader2 = new PIXI.Shader.from(`
+const shader2 = PIXI.Shader.from(`
 
     precision mediump float;
 
@@ -66,7 +66,7 @@ var shader2 = new PIXI.Shader.from(`
 
     }`,
 
-    `precision mediump float;
+`precision mediump float;
 
     varying vec2 vUvs;
 
@@ -81,14 +81,14 @@ var shader2 = new PIXI.Shader.from(`
 
 `,
 {
-  uSampler2:PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg')
-})
+    uSampler2: PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg'),
+});
 
 
-var triangle = new PIXI.Mesh(geometry, shader);
+const triangle = new PIXI.Mesh(geometry, shader);
 
 
-var triangle2 = new PIXI.Mesh(geometry, shader2);
+const triangle2 = new PIXI.Mesh(geometry, shader2);
 
 triangle.position.set(400, 300);
 triangle.scale.set(2);
@@ -98,7 +98,7 @@ triangle2.scale.set(3);
 
 app.stage.addChild(triangle2, triangle);
 
-app.ticker.add(function(delta) {
+app.ticker.add((delta) => {
     triangle.rotation += 0.01;
     triangle2.rotation -= 0.005;
 });

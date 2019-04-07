@@ -1,19 +1,19 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 // create two render textures... these dynamic textures will be used to draw the scene into itself
-var renderTexture = PIXI.RenderTexture.create(
+let renderTexture = PIXI.RenderTexture.create(
     app.screen.width,
-    app.screen.height
+    app.screen.height,
 );
-var renderTexture2 = PIXI.RenderTexture.create(
+let renderTexture2 = PIXI.RenderTexture.create(
     app.screen.width,
-    app.screen.height
+    app.screen.height,
 );
-var currentTexture = renderTexture;
+const currentTexture = renderTexture;
 
 // create a new sprite that uses the render texture we created above
-var outputSprite = new PIXI.Sprite(currentTexture);
+const outputSprite = new PIXI.Sprite(currentTexture);
 
 // align the sprite
 outputSprite.x = 400;
@@ -23,7 +23,7 @@ outputSprite.anchor.set(0.5);
 // add to stage
 app.stage.addChild(outputSprite);
 
-var stuffContainer = new PIXI.Container();
+const stuffContainer = new PIXI.Container();
 
 stuffContainer.x = 400;
 stuffContainer.y = 300;
@@ -31,7 +31,7 @@ stuffContainer.y = 300;
 app.stage.addChild(stuffContainer);
 
 // create an array of image ids..
-var fruits = [
+const fruits = [
     'examples/assets/rt_object_01.png',
     'examples/assets/rt_object_02.png',
     'examples/assets/rt_object_03.png',
@@ -39,15 +39,15 @@ var fruits = [
     'examples/assets/rt_object_05.png',
     'examples/assets/rt_object_06.png',
     'examples/assets/rt_object_07.png',
-    'examples/assets/rt_object_08.png'
+    'examples/assets/rt_object_08.png',
 ];
 
 // create an array of items
-var items = [];
+const items = [];
 
 // now create some items and randomly position them in the stuff container
-for (var i = 0; i < 20; i++) {
-    var item = PIXI.Sprite.fromImage(fruits[i % fruits.length]);
+for (let i = 0; i < 20; i++) {
+    const item = PIXI.Sprite.fromImage(fruits[i % fruits.length]);
     item.x = Math.random() * 400 - 200;
     item.y = Math.random() * 400 - 200;
     item.anchor.set(0.5);
@@ -56,20 +56,19 @@ for (var i = 0; i < 20; i++) {
 }
 
 // used for spinning!
-var count = 0;
+let count = 0;
 
-app.ticker.add(function() {
-
-    for (var i = 0; i < items.length; i++) {
-        // rotate each item
-        var item = items[i];
+app.ticker.add(() => {
+    for (let i = 0; i < items.length; i++) {
+    // rotate each item
+        const item = items[i];
         item.rotation += 0.1;
     }
 
     count += 0.01;
 
     // swap the buffers ...
-    var temp = renderTexture;
+    const temp = renderTexture;
     renderTexture = renderTexture2;
     renderTexture2 = temp;
 

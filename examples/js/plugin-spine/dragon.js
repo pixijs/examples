@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 app.stop();
@@ -8,10 +8,9 @@ PIXI.loader
     .add('dragon', 'examples/assets/pixi-spine/dragon.json')
     .load(onAssetsLoaded);
 
-var dragon = null;
+let dragon = null;
 
-function onAssetsLoaded(loader,res)
-{
+function onAssetsLoaded(loader, res) {
     // instantiate the spine animation
     dragon = new PIXI.spine.Spine(res.dragon.spineData);
     dragon.skeleton.setToSetupPose();
@@ -19,22 +18,22 @@ function onAssetsLoaded(loader,res)
     dragon.autoUpdate = false;
 
     // create a container for the spine animation and add the animation to it
-    var dragonCage = new PIXI.Container();
+    const dragonCage = new PIXI.Container();
     dragonCage.addChild(dragon);
 
     // measure the spine animation and position it inside its container to align it to the origin
-    var localRect = dragon.getLocalBounds();
+    const localRect = dragon.getLocalBounds();
     dragon.position.set(-localRect.x, -localRect.y);
 
     // now we can scale, position and rotate the container as any other display object
-    var scale = Math.min(
+    const scale = Math.min(
         (app.screen.width * 0.7) / dragonCage.width,
-        (app.screen.height * 0.7) / dragonCage.height
+        (app.screen.height * 0.7) / dragonCage.height,
     );
     dragonCage.scale.set(scale, scale);
     dragonCage.position.set(
         (app.screen.width - dragonCage.width) * 0.5,
-        (app.screen.height - dragonCage.height) * 0.5
+        (app.screen.height - dragonCage.height) * 0.5,
     );
 
     // add the container to the stage
@@ -46,7 +45,7 @@ function onAssetsLoaded(loader,res)
     app.start();
 }
 
-app.ticker.add(function() {
+app.ticker.add(() => {
     // update the spine animation, only needed if dragon.autoupdate is set to false
     dragon.update(0.01666666666667); // HARDCODED FRAMERATE!
 });

@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 // load spine data
@@ -8,10 +8,9 @@ PIXI.loader
 
 app.stage.interactive = true;
 
-function onAssetsLoaded(loader, res)
-{
+function onAssetsLoaded(loader, res) {
     // create a spine boy
-    var spineBoy = new PIXI.spine.Spine(res.spineboy.spineData);
+    const spineBoy = new PIXI.spine.Spine(res.spineboy.spineData);
 
     // set the position
     spineBoy.x = app.screen.width / 2;
@@ -28,7 +27,7 @@ function onAssetsLoaded(loader, res)
 
     app.stage.addChild(spineBoy);
 
-    app.stage.on('pointerdown', function() {
+    app.stage.on('pointerdown', () => {
         spineBoy.state.setAnimation(0, 'jump', false);
         spineBoy.state.addAnimation(0, 'walk', true, 0);
     });

@@ -1,12 +1,12 @@
 // this example uses both pixi-spine and pixi-projection
 // it doesnt use projection-spine bridge because it uses only 2d version of spine object
 
-var app = new PIXI.Application(800, 600, { autoStart: false });
+const app = new PIXI.Application(800, 600, { autoStart: false });
 document.body.appendChild(app.view);
 
 app.stop();
 
-var loader = app.loader;
+const { loader } = app;
 
 // load spine data
 loader
@@ -15,50 +15,50 @@ loader
     .add('fg', 'examples/assets/pixi-spine/iP4_ground.png')
     .load(onAssetsLoaded);
 
-var objs = [], pixie;
+const objs = []; let
+    pixie;
 
 app.stage.interactive = true;
 
 // 1 earth and 2 parallax layers
 
-var camera = new PIXI.projection.Camera3d();
+const camera = new PIXI.projection.Camera3d();
 camera.setPlanes(300, 10, 1000, false);
 camera.position.set(app.screen.width / 2, 0);
 camera.position3d.y = -500; // camera is above the ground
 app.stage.addChild(camera);
 
-var groundLayer = new PIXI.projection.Container3d();
+const groundLayer = new PIXI.projection.Container3d();
 groundLayer.euler.x = Math.PI / 2;
 camera.addChild(groundLayer);
 
 // Those two layers can have 2d objects inside
 // because they return everything to affine space
 
-var bgLayer = new PIXI.projection.Container3d();
+const bgLayer = new PIXI.projection.Container3d();
 bgLayer.proj.affine = PIXI.projection.AFFINE.AXIS_X;
 camera.addChild(bgLayer);
 bgLayer.position3d.z = 80;
 
-var mainLayer = new PIXI.projection.Container3d();
+const mainLayer = new PIXI.projection.Container3d();
 mainLayer.proj.affine = PIXI.projection.AFFINE.AXIS_X;
 camera.addChild(mainLayer);
 
-var repeats = 3;
+const repeats = 3;
 
-function onAssetsLoaded(loader,res) {
-
-    for (var i=0; i<repeats; i++) {
-        // simple 2d sprite on back
-        var bg = new PIXI.Sprite(res['bg'].texture);
+function onAssetsLoaded(loaderInstance, res) {
+    for (let i = 0; i < repeats; i++) {
+    // simple 2d sprite on back
+        const bg = new PIXI.Sprite(res.bg.texture);
         bgLayer.addChild(bg);
         bg.position.x = bg.texture.width * i;
         bg.anchor.y = 1;
         objs.push(bg);
     }
 
-    for (var i=0; i<repeats; i++) {
-        // 3d sprite on floor
-        var fg = new PIXI.projection.Sprite3d(res['fg'].texture);
+    for (let i = 0; i < repeats; i++) {
+    // 3d sprite on floor
+        const fg = new PIXI.projection.Sprite3d(res.fg.texture);
         groundLayer.addChild(fg);
         fg.anchor.set(0, 0.5);
         // use position or position3d here, its not important,
@@ -67,7 +67,7 @@ function onAssetsLoaded(loader,res) {
         objs.push(fg);
     }
 
-    pixie = new PIXI.spine.Spine(res['pixie'].spineData);
+    pixie = new PIXI.spine.Spine(res.pixie.spineData);
     pixie.position.set(300, 0);
     pixie.scale.set(0.3);
 

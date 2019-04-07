@@ -1,17 +1,17 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 app.stage.interactive = true;
 
-var bg = PIXI.Sprite.fromImage('examples/assets/bg_plane.jpg');
+const bg = PIXI.Sprite.fromImage('examples/assets/bg_plane.jpg');
 
 app.stage.addChild(bg);
 
-var cells = PIXI.Sprite.fromImage('examples/assets/cells.png');
+const cells = PIXI.Sprite.fromImage('examples/assets/cells.png');
 
 cells.scale.set(1.5);
 
-var mask = PIXI.Sprite.fromImage('examples/assets/flowerTop.png');
+const mask = PIXI.Sprite.fromImage('examples/assets/flowerTop.png');
 mask.anchor.set(0.5);
 mask.x = 310;
 mask.y = 190;
@@ -20,17 +20,16 @@ cells.mask = mask;
 
 app.stage.addChild(mask, cells);
 
-var target = new PIXI.Point();
+const target = new PIXI.Point();
 
 reset();
 
-function reset () {
+function reset() {
     target.x = Math.floor(Math.random() * 550);
     target.y = Math.floor(Math.random() * 300);
 }
 
-app.ticker.add(function() {
-
+app.ticker.add(() => {
     mask.x += (target.x - mask.x) * 0.1;
     mask.y += (target.y - mask.y) * 0.1;
 

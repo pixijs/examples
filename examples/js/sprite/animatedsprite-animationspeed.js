@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 app.stop();
@@ -8,22 +8,21 @@ PIXI.loader
     .load(onAssetsLoaded);
 
 function onAssetsLoaded(loader, resources) {
-
     // create an array to store the textures
-    var textures = [],
-        i;
+    const textures = [];
+    let i;
 
     for (i = 0; i < 10; i++) {
-         var framekey = '0123456789 ' + i + '.ase';
-         var texture = PIXI.Texture.fromFrame(framekey);
-         var time = resources.spritesheet.data.frames[framekey].duration;
-         textures.push({ texture, time });
+        const framekey = `0123456789 ${i}.ase`;
+        const texture = PIXI.Texture.from(framekey);
+        const time = resources.spritesheet.data.frames[framekey].duration;
+        textures.push({ texture, time });
     }
 
-    var scaling = 4;
+    const scaling = 4;
 
     // create a slow AnimatedSprite
-    var slow = new PIXI.extras.AnimatedSprite(textures);
+    const slow = new PIXI.extras.AnimatedSprite(textures);
     slow.anchor.set(0.5);
     slow.scale.set(scaling);
     slow.animationSpeed = 0.5;
@@ -33,7 +32,7 @@ function onAssetsLoaded(loader, resources) {
     app.stage.addChild(slow);
 
     // create a fast AnimatedSprite
-    var fast = new PIXI.extras.AnimatedSprite(textures);
+    const fast = new PIXI.extras.AnimatedSprite(textures);
     fast.anchor.set(0.5);
     fast.scale.set(scaling);
     fast.x = (app.screen.width + fast.width) / 2;

@@ -1,8 +1,8 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 // Create background image
-var background = PIXI.Sprite.fromImage("examples/assets/bg_grass.jpg");
+const background = PIXI.Sprite.fromImage('examples/assets/bg_grass.jpg');
 background.width = app.screen.width;
 background.height = app.screen.height;
 app.stage.addChild(background);
@@ -13,11 +13,10 @@ app.stop();
 PIXI.loader.add('shader', 'examples/assets/pixi-filters/shader.frag')
     .load(onLoaded);
 
-var filter;
+let filter;
 
 // Handle the load completed
-function onLoaded (loader,res) {
-
+function onLoaded(loader, res) {
     // Create the new filter, arguments: (vertexShader, framentSource)
     filter = new PIXI.Filter(null, res.shader.data);
 
@@ -29,6 +28,6 @@ function onLoaded (loader,res) {
 }
 
 // Animate the filter
-app.ticker.add(function(delta) {
+app.ticker.add((delta) => {
     filter.uniforms.customUniform += 0.04 * delta;
 });

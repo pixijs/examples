@@ -1,26 +1,26 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
-var geometry = new PIXI.Geometry()
-.addAttribute('aVertexPosition',  // the attribute name
-              [-100, -100,   // x, y
-                100, -100,   // x, y
-                100 , 100], // x, y
-               2)           // the size of the attribute
+const geometry = new PIXI.Geometry()
+    .addAttribute('aVertexPosition', // the attribute name
+        [-100, -100, // x, y
+            100, -100, // x, y
+            100, 100], // x, y
+        2) // the size of the attribute
 
-.addAttribute('aColor',  // the attribute name
-              [1, 0, 0,  // r, g, b
-               0, 1, 0,  // r, g, b
-               0, 0, 1], // r, g, b
-               3)        // the size of the attribute
+    .addAttribute('aColor', // the attribute name
+        [1, 0, 0, // r, g, b
+            0, 1, 0, // r, g, b
+            0, 0, 1], // r, g, b
+        3) // the size of the attribute
 
-.addAttribute('aUvs',  // the attribute name
-              [0, 0,  // u, v
-               1, 0,  // u, v
-               1, 1], // u, v
-               2)        // the size of the attribute
+    .addAttribute('aUvs', // the attribute name
+        [0, 0, // u, v
+            1, 0, // u, v
+            1, 1], // u, v
+        2); // the size of the attribute
 
-var vertexSrc = `
+const vertexSrc = `
 
     precision mediump float;
 
@@ -40,9 +40,9 @@ var vertexSrc = `
         vColor = aColor;
         gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
 
-    }`
+    }`;
 
-var fragmentSrc = `
+const fragmentSrc = `
 
     precision mediump float;
 
@@ -54,19 +54,19 @@ var fragmentSrc = `
     void main() {
 
         gl_FragColor = texture2D(uSampler2, vUvs) * vec4(vColor, 1.0);
-    }`
+    }`;
 
-var uniforms = { uSampler2:PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg') };
+const uniforms = { uSampler2: PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg') };
 
-var shader = new PIXI.Shader.from(vertexSrc, fragmentSrc, uniforms);
+const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniforms);
 
-var triangle = new PIXI.Mesh(geometry, shader);
+const triangle = new PIXI.Mesh(geometry, shader);
 
 triangle.position.set(400, 300);
 triangle.scale.set(2);
 
 app.stage.addChild(triangle);
 
-app.ticker.add(function(delta) {
+app.ticker.add((delta) => {
     triangle.rotation += 0.01;
 });

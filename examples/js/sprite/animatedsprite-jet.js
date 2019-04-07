@@ -1,24 +1,23 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 PIXI.loader
     .add('examples/assets/spritesheet/fighter.json')
     .load(onAssetsLoaded);
 
-function onAssetsLoaded()
-{
+function onAssetsLoaded() {
     // create an array of textures from an image path
-    var frames = [];
+    const frames = [];
 
-    for (var i = 0; i < 30; i++) {
-        var val = i < 10 ? '0' + i : i;
+    for (let i = 0; i < 30; i++) {
+        const val = i < 10 ? `0${i}` : i;
 
         // magically works since the spritesheet was loaded with the pixi loader
-        frames.push(PIXI.Texture.fromFrame('rollSequence00' + val + '.png'));
+        frames.push(PIXI.Texture.from(`rollSequence00${val}.png`));
     }
 
     // create an AnimatedSprite (brings back memories from the days of Flash, right ?)
-    var anim = new PIXI.extras.AnimatedSprite(frames);
+    const anim = new PIXI.extras.AnimatedSprite(frames);
 
     /*
      * An AnimatedSprite inherits all the properties of a PIXI sprite
@@ -33,7 +32,7 @@ function onAssetsLoaded()
     app.stage.addChild(anim);
 
     // Animate the rotation
-    app.ticker.add(function() {
+    app.ticker.add(() => {
         anim.rotation += 0.01;
     });
 }

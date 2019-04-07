@@ -1,28 +1,27 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 // create a new background sprite
-var background = new PIXI.Sprite.fromImage('examples/assets/bg_rotate.jpg');
+const background = PIXI.Sprite.from('examples/assets/bg_rotate.jpg');
 background.width = 800;
 background.height = 600;
 app.stage.addChild(background);
 
-//speed up the process, because OVERLAY and HARD_LIGHT will use copyTex instead of readPixels
+// speed up the process, because OVERLAY and HARD_LIGHT will use copyTex instead of readPixels
 app.stage.filters = [new PIXI.filters.AlphaFilter()];
 app.stage.filterArea = app.screen;
 
 // create an array to store a reference to the dudes
-var dudeArray = [];
+const dudeArray = [];
 
-var totaldudes = 20;
-var texture = PIXI.Texture.fromImage('examples/assets/flowerTop.png');
+const totaldudes = 20;
+const texture = PIXI.Texture.from('examples/assets/flowerTop.png');
 
-for (var i = 0; i < totaldudes; i++)
-{
+for (let i = 0; i < totaldudes; i++) {
     // create a new Sprite that uses the image name that we just generated as its source
-    var dude = new PIXI.Sprite(texture);
-	// setting renderer plugin 'picture', from pixi-picture
-	dude.pluginName = 'picture';
+    const dude = new PIXI.Sprite(texture);
+    // setting renderer plugin 'picture', from pixi-picture
+    dude.pluginName = 'picture';
 
     dude.anchor.set(0.5);
 
@@ -34,9 +33,9 @@ for (var i = 0; i < totaldudes; i++)
     dude.y = Math.floor(Math.random() * app.screen.height);
 
     // The important bit of this example, this is how you change the default blend mode of the sprite
-    dude.blendMode = Math.random() > 0.5 ?
-        PIXI.BLEND_MODES.OVERLAY:
-        PIXI.BLEND_MODES.HARD_LIGHT;
+    dude.blendMode = Math.random() > 0.5
+        ? PIXI.BLEND_MODES.OVERLAY
+        : PIXI.BLEND_MODES.HARD_LIGHT;
 
     // create some extra properties that will control movement
     dude.direction = Math.random() * Math.PI * 2;
@@ -54,23 +53,19 @@ for (var i = 0; i < totaldudes; i++)
 }
 
 // create a bounding box box for the little dudes
-var dudeBoundsPadding = 100;
+const dudeBoundsPadding = 100;
 
-var dudeBounds = new PIXI.Rectangle(
+const dudeBounds = new PIXI.Rectangle(
     -dudeBoundsPadding,
     -dudeBoundsPadding,
     app.screen.width + dudeBoundsPadding * 2,
-    app.screen.height + dudeBoundsPadding * 2
+    app.screen.height + dudeBoundsPadding * 2,
 );
 
-var tick = 0;
-
-app.ticker.add(function() {
-
+app.ticker.add(() => {
     // iterate through the dudes and update the positions
-    for (var i = 0; i < dudeArray.length; i++)
-    {
-        var dude = dudeArray[i];
+    for (let i = 0; i < dudeArray.length; i++) {
+        const dude = dudeArray[i];
         dude.direction += dude.turningSpeed * 0.01;
         dude.x += Math.sin(dude.direction) * dude.speed;
         dude.y += Math.cos(dude.direction) * dude.speed;
@@ -79,19 +74,14 @@ app.ticker.add(function() {
         // wrap the dudes by testing their bounds...
         if (dude.x < dudeBounds.x) {
             dude.x += dudeBounds.width;
-        }
-        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+        } else if (dude.x > dudeBounds.x + dudeBounds.width) {
             dude.x -= dudeBounds.width;
         }
 
         if (dude.y < dudeBounds.y) {
             dude.y += dudeBounds.height;
-        }
-        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+        } else if (dude.y > dudeBounds.y + dudeBounds.height) {
             dude.y -= dudeBounds.height;
         }
     }
-
-    // increment the ticker
-    tick += 0.1;
 });

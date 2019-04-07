@@ -1,26 +1,26 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 app.stop();
 
 // load resources
 PIXI.loader
-    .add('spritesheet','examples/assets/spritesheet/monsters.json')
+    .add('spritesheet', 'examples/assets/spritesheet/monsters.json')
     .load(onAssetsLoaded);
 
 // holder to store aliens
-var aliens = [];
-var alienFrames = [
+const aliens = [];
+const alienFrames = [
     'eggHead.png',
     'flowerTop.png',
     'helmlok.png',
-    'skully.png'
+    'skully.png',
 ];
 
-var count = 0;
+let count = 0;
 
 // create an empty container
-var alienContainer = new PIXI.Container();
+const alienContainer = new PIXI.Container();
 alienContainer.x = 400;
 alienContainer.y = 300;
 
@@ -30,18 +30,17 @@ app.stage.addChild(alienContainer);
 
 function onAssetsLoaded() {
     // add a bunch of aliens with textures from image paths
-    for (var i = 0; i < 100; i++) {
-
-        var frameName = alienFrames[i % 4];
+    for (let i = 0; i < 100; i++) {
+        const frameName = alienFrames[i % 4];
 
         // create an alien using the frame name..
-        var alien = PIXI.Sprite.fromFrame(frameName);
+        const alien = PIXI.Sprite.from(frameName);
         alien.tint = Math.random() * 0xFFFFFF;
 
         /*
          * fun fact for the day :)
          * another way of doing the above would be
-         * var texture = PIXI.Texture.fromFrame(frameName);
+         * var texture = PIXI.Texture.from(frameName);
          * var alien = new PIXI.Sprite(texture);
          */
         alien.x = Math.random() * 800 - 400;
@@ -67,11 +66,10 @@ function onClick() {
     // sprite.y = Math.random() * 600;
 }
 
-app.ticker.add(function() {
-
+app.ticker.add(() => {
     // let's rotate the aliens a little bit
-    for (var i = 0; i < 100; i++) {
-        var alien = aliens[i];
+    for (let i = 0; i < 100; i++) {
+        const alien = aliens[i];
         alien.rotation += 0.1;
     }
 

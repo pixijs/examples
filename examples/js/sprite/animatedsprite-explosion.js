@@ -1,4 +1,4 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 app.stop();
@@ -8,19 +8,18 @@ PIXI.loader
     .load(onAssetsLoaded);
 
 function onAssetsLoaded() {
-
     // create an array to store the textures
-    var explosionTextures = [],
-        i;
+    const explosionTextures = [];
+    let i;
 
     for (i = 0; i < 26; i++) {
-         var texture = PIXI.Texture.fromFrame('Explosion_Sequence_A ' + (i+1) + '.png');
-         explosionTextures.push(texture);
+        const texture = PIXI.Texture.from(`Explosion_Sequence_A ${i + 1}.png`);
+        explosionTextures.push(texture);
     }
 
     for (i = 0; i < 50; i++) {
-        // create an explosion AnimatedSprite
-        var explosion = new PIXI.extras.AnimatedSprite(explosionTextures);
+    // create an explosion AnimatedSprite
+        const explosion = new PIXI.extras.AnimatedSprite(explosionTextures);
 
         explosion.x = Math.random() * app.screen.width;
         explosion.y = Math.random() * app.screen.height;

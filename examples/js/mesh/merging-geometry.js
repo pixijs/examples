@@ -1,37 +1,37 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
-var geometry = new PIXI.Geometry()
-.addAttribute('aVertexPosition',  // the attribute name
-              [-100, -100,   // x, y
-                100, -100,   // x, y
-                100 , 100,
-               -100 , 100], // x, y
-               2)           // the size of the attribute
-.addAttribute('aUvs',  // the attribute name
-              [0, 0,  // u, v
-               1, 0,  // u, v
-               1, 1,
-               0, 1], // u, v
-               2)        // the size of the attribute
-.addIndex([0, 1, 2, 0, 2, 3]);
+const geometry = new PIXI.Geometry()
+    .addAttribute('aVertexPosition', // the attribute name
+        [-100, -100, // x, y
+            100, -100, // x, y
+            100, 100,
+            -100, 100], // x, y
+        2) // the size of the attribute
+    .addAttribute('aUvs', // the attribute name
+        [0, 0, // u, v
+            1, 0, // u, v
+            1, 1,
+            0, 1], // u, v
+        2) // the size of the attribute
+    .addIndex([0, 1, 2, 0, 2, 3]);
 
-var geometry2 = new PIXI.Geometry()
-.addAttribute('aVertexPosition',  // the attribute name
-              [-100 + 100, -100,   // x, y
-                100 + 100, -100,   // x, y
-                100 + 100, 100], // x, y
-               2)           // the size of the attribute
-.addAttribute('aUvs',  // the attribute name
-              [0, 0,  // u, v
-               1, 0,  // u, v
-               1, 1], // u, v
-               2)        // the size of the attribute
-.addIndex([0, 1, 2]);
+const geometry2 = new PIXI.Geometry()
+    .addAttribute('aVertexPosition', // the attribute name
+        [-100 + 100, -100, // x, y
+            100 + 100, -100, // x, y
+            100 + 100, 100], // x, y
+        2) // the size of the attribute
+    .addAttribute('aUvs', // the attribute name
+        [0, 0, // u, v
+            1, 0, // u, v
+            1, 1], // u, v
+        2) // the size of the attribute
+    .addIndex([0, 1, 2]);
 
-var geometry3 = PIXI.Geometry.merge([geometry, geometry2]);
+const geometry3 = PIXI.Geometry.merge([geometry, geometry2]);
 
-var shader = new PIXI.Shader.from(`
+const shader = PIXI.Shader.from(`
 
     precision mediump float;
 
@@ -50,7 +50,7 @@ var shader = new PIXI.Shader.from(`
 
     }`,
 
-    `precision mediump float;
+`precision mediump float;
 
     varying vec2 vUvs;
 
@@ -63,16 +63,16 @@ var shader = new PIXI.Shader.from(`
 
 `,
 {
-  uSampler2:PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg')
-})
+    uSampler2: PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg'),
+});
 
-var quad = new PIXI.Mesh(geometry3, shader);
+const quad = new PIXI.Mesh(geometry3, shader);
 
 quad.position.set(400, 300);
 quad.scale.set(2);
 
 app.stage.addChild(quad);
 
-app.ticker.add(function(delta) {
+app.ticker.add((delta) => {
     quad.rotation += 0.01;
 });

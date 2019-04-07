@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
     }
 
     bpc.loadScriptsAsync = function() {
-        for (var i = 0; i < bpc.scriptsToLoad.length; i++) {
+        for (let i = 0; i < bpc.scriptsToLoad.length; i++) {
             $.ajax({
                 url: bpc.scriptsToLoad[i],
                 dataType: 'script',
@@ -92,7 +92,7 @@ jQuery(document).ready(function($) {
     bpc.loadComplete = function() {
         $.getJSON('examples/manifest.json', function(data) {
             var sections = Object.keys(data);
-            for (var i = 0; i < sections.length; i++) {
+            for (let i = 0; i < sections.length; i++) {
                 var html = '<span class="section" data-section="' + sections[i] + '">' + sections[i] + '</span><ul data-section="' + sections[i] + '">',
                     items = data[sections[i]];
 
@@ -129,7 +129,7 @@ jQuery(document).ready(function($) {
                 return tag.ref.replace('refs/tags/', '');
             });
 
-            for (var i = 0; i < taggedVersions.length; i++) {
+            for (let i = 0; i < taggedVersions.length; i++) {
                 $('.select-group .select ul').append('<li data-val="' + taggedVersions[i] + '">' + taggedVersions[i] + '</li>');
             }
 
@@ -141,7 +141,7 @@ jQuery(document).ready(function($) {
                     return tag.ref.replace('refs/heads/', '');
                 });
 
-                for (var i = 0; i < data.length; i++) {
+                for (let i = 0; i < data.length; i++) {
                     $('.select-group .select ul').append('<li data-val="' + data[i] + '">' + data[i] + '</li>');
                 }
 
@@ -200,7 +200,7 @@ jQuery(document).ready(function($) {
         bpc.generateIFrameContent = function() {
             // Remove all iFrames and content
             var iframes = document.querySelectorAll('iframe');
-            for (var i = 0; i < iframes.length; i++) {
+            for (let i = 0; i < iframes.length; i++) {
                 iframes[i].parentNode.removeChild(iframes[i]);
             }
             $('#example').html('<iframe id="preview" src="blank.html"></iframe>');

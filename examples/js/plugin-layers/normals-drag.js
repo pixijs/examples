@@ -1,53 +1,56 @@
-var W = 800, H = 600, PAD = 80, resolution = 1;
-var WIDTH = W / resolution, HEIGHT  = H / resolution;
+const W = 800;
+const H = 600;
+const resolution = 1;
+const WIDTH = W / resolution;
+const HEIGHT = H / resolution;
 
 // LAYERS plugin is here: https://github.com/pixijs/pixi-display/tree/layers
 // LIGHTS plugin is here: https://github.com/pixijs/pixi-lights/tree/v4.x
 
-var app = new PIXI.Application({width: WIDTH, height: HEIGHT, resolution});
+const app = new PIXI.Application({ width: WIDTH, height: HEIGHT, resolution });
 document.body.appendChild(app.view);
 
-var stage = app.stage = new PIXI.display.Stage();
+const stage = app.stage = new PIXI.display.Stage();
 
 // bg is first, its not lighted
-var bg = new PIXI.extras.TilingSprite(PIXI.Texture.fromImage('examples/assets/p2.jpeg'), WIDTH, HEIGHT);
+const bg = new PIXI.TilingSprite(PIXI.Texture.from('examples/assets/p2.jpeg'), WIDTH, HEIGHT);
 bg.tint = 0x808080;
 stage.addChild(bg);
 
 // put all layers for deferred rendering of normals
-var diffuseLayer = new PIXI.display.Layer(PIXI.lights.diffuseGroup);
+const diffuseLayer = new PIXI.display.Layer(PIXI.lights.diffuseGroup);
 stage.addChild(diffuseLayer);
-var diffuseBlackSprite = new PIXI.Sprite(diffuseLayer.getRenderTexture());
+const diffuseBlackSprite = new PIXI.Sprite(diffuseLayer.getRenderTexture());
 diffuseBlackSprite.tint = 0;
 // without the black sprite, lighted elements will be transparent to background. Try remove that line
 stage.addChild(diffuseBlackSprite);
 stage.addChild(new PIXI.display.Layer(PIXI.lights.normalGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.lightGroup));
 
-var sortGroup = new PIXI.display.Group(0, true);
-sortGroup.on('sort', function (sprite) {
-    //green bunnies go down
+const sortGroup = new PIXI.display.Group(0, true);
+sortGroup.on('sort', (sprite) => {
+    // green bunnies go down
     sprite.zOrder = -sprite.y;
 });
 // the group will process all of its members children after the sort
 sortGroup.sortPriority = 1;
 stage.addChild(new PIXI.display.Layer(sortGroup));
 
-var dragGroup = new PIXI.display.Group(0, true);
+const dragGroup = new PIXI.display.Group(0, true);
 // dragged objects has to processed after sorted, so we need a flag here too
 dragGroup.sortPriority = 1;
 stage.addChild(new PIXI.display.Layer(dragGroup));
 
 // LIGHT and its movement
 stage.addChild(new PIXI.lights.AmbientLight(null, 0.6));
-var light = new PIXI.lights.PointLight(0xffffff, 1);
+const light = new PIXI.lights.PointLight(0xffffff, 1);
 light.position.set(525, 160);
 stage.addChild(light);
 app.ticker.add(() => {
-    light.position.copy(app.renderer.plugins.interaction.mouse.global);
+    light.position.copyFrom(app.renderer.plugins.interaction.mouse.global);
 });
 
-var lightLoader = new PIXI.loaders.Loader();
+const lightLoader = new PIXI.Loader.shareds.Loader();
 lightLoader.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
 lightLoader
     .add('block_diffuse', 'test/block.png')
@@ -55,23 +58,23 @@ lightLoader
     .load(onAssetsLoaded);
 
 function onAssetsLoaded(loader, res) {
-    for (var i=0; i<8; i+=2) {
-        stage.addChild(createBlock(100 + i * 50, 100 + i*30));
+    for (let i = 0; i < 8; i += 2) {
+        stage.addChild(createBlock(100 + i * 50, 100 + i * 30));
     }
-    for (var i=1; i<8; i+=2) {
-        stage.addChild(createBlock(100 + i * 50, 100 + i*30));
+    for (let i = 1; i < 8; i += 2) {
+        stage.addChild(createBlock(100 + i * 50, 100 + i * 30));
     }
 }
 
 function createBlock(x, y) {
-    var container = new PIXI.Container();
-    //we need to sort them before children go to respective layers
+    const container = new PIXI.Container();
+    // we need to sort them before children go to respective layers
     container.parentGroup = sortGroup;
     container.position.set(x, y);
-    var diffuseSprite = new PIXI.Sprite(lightLoader.resources.block_diffuse.texture);
+    const diffuseSprite = new PIXI.Sprite(lightLoader.resources.block_diffuse.texture);
     diffuseSprite.parentGroup = PIXI.lights.diffuseGroup;
     diffuseSprite.anchor.set(0.5);
-    var normalSprite = new PIXI.Sprite(lightLoader.resources.block_normal.texture);
+    const normalSprite = new PIXI.Sprite(lightLoader.resources.block_normal.texture);
     normalSprite.parentGroup = PIXI.lights.normalGroup;
     normalSprite.anchor.set(0.5);
     container.addChild(diffuseSprite);
@@ -82,7 +85,7 @@ function createBlock(x, y) {
     return container;
 }
 
-/// === DRAG ZONE ===
+// / === DRAG ZONE ===
 function subscribe(obj) {
     obj.interactive = true;
     obj.on('mousedown', onDragStart)
@@ -123,7 +126,7 @@ function onDragEnd() {
 
 function onDragMove() {
     if (this.dragging) {
-        var newPosition = this.data.getLocalPosition(this.parent);
+        const newPosition = this.data.getLocalPosition(this.parent);
         this.x = newPosition.x - this.dragPoint.x;
         this.y = newPosition.y - this.dragPoint.y;
     }

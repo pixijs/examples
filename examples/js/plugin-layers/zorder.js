@@ -1,65 +1,64 @@
 // This is demo of pixi-display.js, https://github.com/gameofbombs/pixi-display
 // Drag the rabbits to understand what's going on
 
-var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
+const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
-//META STUFF, groups exist without stage just fine
+// META STUFF, groups exist without stage just fine
 
 // z-index = 0, sorting = true;
-var greenGroup = new PIXI.display.Group(0, true);
-greenGroup.on('sort', function (sprite) {
-    //green bunnies go down
+const greenGroup = new PIXI.display.Group(0, true);
+greenGroup.on('sort', (sprite) => {
+    // green bunnies go down
     sprite.zOrder = -sprite.y;
 });
 
 // z-index = 1, sorting = true, we can provide zOrder function directly in constructor
-var blueGroup = new PIXI.display.Group(1, function (sprite) {
-    //blue bunnies go up
+const blueGroup = new PIXI.display.Group(1, ((sprite) => {
+    // blue bunnies go up
     sprite.zOrder = +sprite.y;
-});
+}));
 
 // Drag is the best layer, dragged element is above everything else
-var dragGroup = new PIXI.display.Group(2, false);
+const dragGroup = new PIXI.display.Group(2, false);
 
 // Shadows are the lowest
-var shadowGroup = new PIXI.display.Group(-1, false);
+const shadowGroup = new PIXI.display.Group(-1, false);
 
-//specify display list component
+// specify display list component
 app.stage = new PIXI.display.Stage();
 app.stage.group.enableSort = true;
-//sorry, group cant exist without layer yet :(
+// sorry, group cant exist without layer yet :(
 app.stage.addChild(new PIXI.display.Layer(greenGroup));
 app.stage.addChild(new PIXI.display.Layer(blueGroup));
 app.stage.addChild(new PIXI.display.Layer(dragGroup));
 app.stage.addChild(new PIXI.display.Layer(shadowGroup));
 
-var blurFilter = new PIXI.filters.BlurFilter();
+const blurFilter = new PIXI.filters.BlurFilter();
 blurFilter.blur = 0.5;
 
 // create a texture from an image path
-var texture_green = PIXI.Texture.fromImage('examples/assets/bunny_green.png');
-var texture_blue = PIXI.Texture.fromImage('examples/assets/bunny_blue.png');
+const textureGreen = PIXI.Texture.from('examples/assets/bunny_green.png');
+const textureBlue = PIXI.Texture.from('examples/assets/bunny_blue.png');
 
 // make obsolete containers. Why do we need them?
 // Just to show that we can do everything without caring of actual parent container
-var bunniesOdd = new PIXI.Container();
-var bunniesEven = new PIXI.Container();
-var bunniesBlue = new PIXI.Container();
+const bunniesOdd = new PIXI.Container();
+const bunniesEven = new PIXI.Container();
+const bunniesBlue = new PIXI.Container();
 app.stage.addChild(bunniesOdd);
 app.stage.addChild(bunniesBlue);
 app.stage.addChild(bunniesEven);
 
-var ind = [];
-for (var i = 0; i < 15; i++) {
-    var bunny = new PIXI.Sprite(texture_green);
+for (let i = 0; i < 15; i++) {
+    const bunny = new PIXI.Sprite(textureGreen);
     bunny.width = 50;
     bunny.height = 50;
     bunny.position.set(100 + 20 * i, 100 + 20 * i);
     bunny.anchor.set(0.5);
     // that thing is required
     bunny.parentGroup = greenGroup;
-    if (i % 2 == 0) {
+    if (i % 2 === 0) {
         bunniesEven.addChild(bunny);
     } else {
         bunniesOdd.addChild(bunny);
@@ -68,8 +67,8 @@ for (var i = 0; i < 15; i++) {
     addShadow(bunny);
 }
 
-for (var i = 9; i >= 0; i--) {
-    var bunny = new PIXI.Sprite(texture_blue);
+for (let i = 9; i >= 0; i--) {
+    const bunny = new PIXI.Sprite(textureBlue);
     bunny.width = 50;
     bunny.height = 50;
     bunny.position.set(400 + 20 * i, 400 - 20 * i);
@@ -94,11 +93,11 @@ function subscribe(obj) {
 }
 
 function addShadow(obj) {
-    var gr = new PIXI.Graphics();
+    const gr = new PIXI.Graphics();
     gr.beginFill(0x0, 1);
-    //yes , I know bunny size, I'm sorry for this hack
-    var scale = 1.1;
-    gr.drawRect(-25/2 * scale, -36/2 * scale, 25 * scale, 36 * scale);
+    // yes , I know bunny size, I'm sorry for this hack
+    const scale = 1.1;
+    gr.drawRect(-25 / 2 * scale, -36 / 2 * scale, 25 * scale, 36 * scale);
     gr.endFill();
     gr.filters = [blurFilter];
 
@@ -134,7 +133,7 @@ function onDragEnd() {
 
 function onDragMove() {
     if (this.dragging) {
-        var newPosition = this.data.getLocalPosition(this.parent);
+        const newPosition = this.data.getLocalPosition(this.parent);
         this.x = newPosition.x - this.dragPoint.x;
         this.y = newPosition.y - this.dragPoint.y;
     }

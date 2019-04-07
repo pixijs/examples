@@ -1,13 +1,13 @@
-var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb } );
+const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
-var basicText = new PIXI.Text('Basic text in pixi');
+const basicText = new PIXI.Text('Basic text in pixi');
 basicText.x = 50;
 basicText.y = 100;
 
 app.stage.addChild(basicText);
 
-var style = new PIXI.TextStyle({
+const style = new PIXI.TextStyle({
     fontFamily: 'Arial',
     fontSize: 36,
     fontStyle: 'italic',
@@ -21,10 +21,10 @@ var style = new PIXI.TextStyle({
     dropShadowAngle: Math.PI / 6,
     dropShadowDistance: 6,
     wordWrap: true,
-    wordWrapWidth: 440
+    wordWrapWidth: 440,
 });
 
-var richText = new PIXI.Text('Rich text with a lot of options and across multiple lines', style);
+const richText = new PIXI.Text('Rich text with a lot of options and across multiple lines', style);
 richText.x = 50;
 richText.y = 250;
 

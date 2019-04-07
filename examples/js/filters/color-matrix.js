@@ -1,34 +1,34 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 app.stage.interactive = true;
 
-var bg = PIXI.Sprite.fromImage('examples/assets/bg_rotate.jpg');
+const bg = PIXI.Sprite.from('examples/assets/bg_rotate.jpg');
 bg.anchor.set(0.5);
 
 bg.x = app.screen.width / 2;
 bg.y = app.screen.height / 2;
 
-var filter = new PIXI.filters.ColorMatrixFilter();
+const filter = new PIXI.filters.ColorMatrixFilter();
 
-var container = new PIXI.Container();
+const container = new PIXI.Container();
 container.x = app.screen.width / 2;
 container.y = app.screen.height / 2;
 
-var bgFront = PIXI.Sprite.fromImage('examples/assets/bg_scene_rotate.jpg');
+const bgFront = PIXI.Sprite.from('examples/assets/bg_scene_rotate.jpg');
 bgFront.anchor.set(0.5);
 
 container.addChild(bgFront);
 
-var light2 = PIXI.Sprite.fromImage('examples/assets/light_rotate_2.png');
+const light2 = PIXI.Sprite.from('examples/assets/light_rotate_2.png');
 light2.anchor.set(0.5);
 container.addChild(light2);
 
-var light1 = PIXI.Sprite.fromImage('examples/assets/light_rotate_1.png');
+const light1 = PIXI.Sprite.from('examples/assets/light_rotate_1.png');
 light1.anchor.set(0.5);
 container.addChild(light1);
 
-var panda =  PIXI.Sprite.fromImage('examples/assets/panda.png');
+const panda = PIXI.Sprite.from('examples/assets/panda.png');
 panda.anchor.set(0.5);
 
 container.addChild(panda);
@@ -37,27 +37,26 @@ app.stage.addChild(container);
 
 app.stage.filters = [filter];
 
-var count = 0;
-var enabled = true;
+let count = 0;
+let enabled = true;
 
-app.stage.on('pointertap', function() {
+app.stage.on('pointertap', () => {
     enabled = !enabled;
     app.stage.filters = enabled ? [filter] : null;
 });
 
-var help = new PIXI.Text('Click or tap to turn filters on / off.', {
+const help = new PIXI.Text('Click or tap to turn filters on / off.', {
     fontFamily: 'Arial',
     fontSize: 12,
-    fontWeight:'bold',
-    fill: 'white'
+    fontWeight: 'bold',
+    fill: 'white',
 });
 help.y = app.screen.height - 25;
 help.x = 10;
 
 app.stage.addChild(help);
 
-app.ticker.add(function(delta) {
-
+app.ticker.add((delta) => {
     bg.rotation += 0.01;
     bgFront.rotation -= 0.01;
     light1.rotation += 0.02;
@@ -68,7 +67,7 @@ app.ticker.add(function(delta) {
 
     count += 0.1;
 
-    var matrix = filter.matrix;
+    const { matrix } = filter;
 
     matrix[1] = Math.sin(count) * 3;
     matrix[2] = Math.cos(count);

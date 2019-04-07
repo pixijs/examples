@@ -1,7 +1,7 @@
-var app = new PIXI.Application(800, 600, { antialias: true });
+const app = new PIXI.Application({ antialias: true });
 document.body.appendChild(app.view);
 
-var graphics = new PIXI.Graphics();
+const graphics = new PIXI.Graphics();
 
 // Rectangle
 graphics.beginFill(0xDE3249);
@@ -84,7 +84,7 @@ graphics.drawStar(470, 450, 4, 50);
 graphics.endFill();
 
 // draw polygon
-var path = [600, 370, 700, 460, 780, 420, 730, 570, 590, 520];
+const path = [600, 370, 700, 460, 780, 420, 730, 570, 590, 520];
 
 graphics.lineStyle(0);
 graphics.beginFill(0x3500FA, 1);

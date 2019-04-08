@@ -164,43 +164,35 @@
         },
         {
             "title": "Triangle",
-            "entry": "triangle.js",
-            "validVersions": [5]
+            "entry": "triangle.js"
         },
         {
             "title": "Colored Triangle",
-            "entry": "triangle-color.js",
-            "validVersions": [5]
+            "entry": "triangle-color.js"
         },
         {
             "title": "Textured Triangle",
-            "entry": "triangle-textured.js",
-            "validVersions": [5]
+            "entry": "triangle-textured.js"
         },
         {
             "title": "Uniforms",
-            "entry": "uniforms.js",
-            "validVersions": [5]
+            "entry": "uniforms.js"
         },
         {
             "title": "Sharing Geometry",
-            "entry": "sharing-geometry.js",
-            "validVersions": [5]
+            "entry": "sharing-geometry.js"
         },
         {
             "title": "Sharing Shader",
-            "entry": "shared-shader.js",
-            "validVersions": [5]
+            "entry": "shared-shader.js"
         },
         {
             "title": "Merging Geometry",
-            "entry": "merging-geometry.js",
-            "validVersions": [5]
+            "entry": "merging-geometry.js"
         },
         {
             "title": "Interleaving Geometry",
-            "entry": "interleaving-geometry.js",
-            "validVersions": [5]
+            "entry": "interleaving-geometry.js"
         }
 	],
 	"textures": [
@@ -222,13 +214,11 @@
         },
         {
             "title": "Gradient Resource",
-            "entry": "gradient-resource.js",
-            "validVersions": [5]
+            "entry": "gradient-resource.js"
         },
         {
             "title": "v5 Not-premultiplied alpha",
-            "entry": "not-premultiplied-alpha.js",
-            "validVersions": [5]
+            "entry": "not-premultiplied-alpha.js"
         }
     ],
     "plugin-filters": [
@@ -408,7 +398,7 @@
     ],
     "plugin-compressed-textures": [
         {
-            "title": "v4 Extension chooser",
+            "title": "Extension chooser",
             "entry": "dds.js",
             "plugins": [
                 "pixi-compressed-textures"

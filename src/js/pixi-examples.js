@@ -12,8 +12,6 @@ function getMajorPixiVersion(pixiVersionString) {
 
     if (pixiVersionString.substr(0, 1) === 'v') {
         majorVersion = parseInt(pixiVersionString.substr(1, 1), 10);
-    } else if (pixiVersionString === 'release') {
-        majorVersion = 4;
     }
 
     return majorVersion;
@@ -32,7 +30,8 @@ jQuery(document).ready(($) => {
         $('.main-content').animate({ scrollTop: 0 }, 200);
     };
 
-    bpc.pixiVersionString = getParameterByName('v') || 'release';
+    bpc.allowedVersions = [5];
+    bpc.pixiVersionString = getParameterByName('v') || 'dev';
     bpc.majorPixiVersion = getMajorPixiVersion(bpc.pixiVersionString);
 
     bpc.exampleUrl = '';
@@ -104,12 +103,11 @@ jQuery(document).ready(($) => {
         });
 
         $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/tags', (dataTag) => {
-            // Filters the tags to only include v4 and above.
+            // Filters the tags to only include versions we care about.
             // Only use the last 5 tags per major version
-            const allowedVersions = [4, 5];
-            const maxTagsPerVersion = 3;
+            const maxTagsPerVersion = 5;
             let taggedVersions = [];
-            allowedVersions.forEach((version) => {
+            bpc.allowedVersions.forEach((version) => {
                 let filtered = dataTag.filter(tag => tag.ref.indexOf(`refs/tags/v${version}`) === 0);
                 if (filtered.length > maxTagsPerVersion) {
                     filtered = filtered.slice(-maxTagsPerVersion);

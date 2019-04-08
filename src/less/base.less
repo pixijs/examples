@@ -87,7 +87,31 @@ a {
 
 	&.mobile-open {
 		left: 0px;
-	}
+    }
+
+    .select-major-version {
+        display: block;
+        width: 100%;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 0px 20px 20px;
+        letter-spacing: 0.05em;
+        text-align: center;
+        color: white;
+        .versions {
+            font-size: 15px;
+            a {
+                color: @blue300;
+                &:hover, &.open {
+                    color: #fff;
+                    .transition(color, @anim);
+                }
+            }
+            .selected {
+                color: @pink300;
+            }
+        }
+    }
 
 	.main-menu {
 		.section {
@@ -101,7 +125,6 @@ a {
 			color: @blue200;
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
-			//background: url(../../img/icon-arrow-down.png) 14px 13px no-repeat;
 			background: url(../../img/arrow-right-default.png) 15px 12px no-repeat;
 			cursor: pointer;
 

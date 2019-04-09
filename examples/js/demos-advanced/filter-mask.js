@@ -1,14 +1,8 @@
 // for this example you have to move mouse
 
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
-var stage = app.stage;
-
-//prepare circle texture, that will be our brush
-var brush = new PIXI.Graphics();
-brush.beginFill(0xffffff);
-brush.drawCircle(0, 0, 50);
-brush.endFill();
+const stage = app.stage;
 
 PIXI.loader.add('t1', 'examples/assets/bg_grass.jpg');
 PIXI.loader.load(setup);

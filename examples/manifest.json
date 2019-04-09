@@ -49,7 +49,11 @@
 		{
 			"title": "Star Warp",
 			"entry": "star-warp.js"
-		}
+		},
+        {
+            "title": "Filter Mask",
+            "entry": "filter-mask.js"
+        }
     ],
     "sprite": [
         {

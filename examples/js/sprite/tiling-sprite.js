@@ -1,24 +1,23 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // create a texture from an image path
-var texture = PIXI.Texture.fromImage('examples/assets/p2.jpeg');
+const texture = PIXI.Texture.from('examples/assets/p2.jpeg');
 
 /* create a tiling sprite ...
  * requires a texture, a width and a height
  * in WebGL the image size should preferably be a power of two
  */
-var tilingSprite = new PIXI.extras.TilingSprite(
+const tilingSprite = new PIXI.TilingSprite(
     texture,
     app.screen.width,
-    app.screen.height
+    app.screen.height,
 );
 app.stage.addChild(tilingSprite);
 
-var count = 0;
+let count = 0;
 
-app.ticker.add(function() {
-
+app.ticker.add(() => {
     count += 0.005;
 
     tilingSprite.tileScale.x = 2 + Math.sin(count);

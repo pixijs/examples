@@ -3,57 +3,56 @@
 // Be ready to study the plugins code. Please use latest version of those libs
 // Used plugins: pixi-spine, pixi-projection (+spine), pixi-display
 
-var app = new PIXI.Application(800, 600, { autoStart: false });
+const app = new PIXI.Application({ autoStart: false });
 document.body.appendChild(app.view);
 app.stage = new PIXI.display.Stage();
 
-var loader = app.loader;
+const { loader } = app;
 
 // create a new loader
 loader.add('spritesheet', 'examples/assets/pixi-projection/dudes.json');
 loader.add('back', 'examples/assets/pixi-projection/back.png');
 loader.add('pixie', 'examples/assets/pixi-spine/pixie.json');
-//begin load
+// begin load
 loader.load(onAssetsLoaded);
 
 // holder to store aliens
-var aliens = [];
-var alienFrames = ["eggHead.png", "flowerTop.png", "helmlok.png", "skully.png"];
+const alienFrames = ['eggHead.png', 'flowerTop.png', 'helmlok.png', 'skully.png'];
 
 // create an empty container
-var camera = new PIXI.projection.Camera3d();
-camera.position.set(app.screen.width/2, app.screen.height/2);
+const camera = new PIXI.projection.Camera3d();
+camera.position.set(app.screen.width / 2, app.screen.height / 2);
 camera.setPlanes(1000, 10, 10000, true);
 app.stage.addChild(camera);
 
-var alienContainer = new PIXI.projection.Container3d();
-var earthContainer = new PIXI.projection.Container3d();
+const alienContainer = new PIXI.projection.Container3d();
+const earthContainer = new PIXI.projection.Container3d();
 camera.addChild(earthContainer);
 camera.addChild(alienContainer);
 
-var sortGroup = new PIXI.display.Group(1, function (plane) {
+const sortGroup = new PIXI.display.Group(1, ((plane) => {
     plane.zOrder = plane.getDepth();
-});
+}));
 app.stage.addChild(new PIXI.display.Layer(sortGroup));
-var debugGraphics = new PIXI.Graphics();
+const debugGraphics = new PIXI.Graphics();
 app.stage.addChild(debugGraphics);
 
 function spawnAlien(d) {
+    let sprite1;
     if (d < 4) {
-        var frameName = alienFrames[d];
-        //if you want to use 3d transform for object, either create Sprite3d/Container3d
-        var sprite1 = new PIXI.projection.Sprite3d(PIXI.Texture.fromFrame(frameName));
+        const frameName = alienFrames[d];
+        // if you want to use 3d transform for object, either create Sprite3d/Container3d
+        sprite1 = new PIXI.projection.Sprite3d(PIXI.Texture.from(frameName));
         sprite1.anchor.set(0.5, 1.0);
         sprite1.scale3d.set(0.5);
     } else {
-        var sprite1 = new PIXI.projection.Spine3d(loader.resources.pixie.spineData);
+        sprite1 = new PIXI.projection.Spine3d(loader.resources.pixie.spineData);
         sprite1.scale3d.set(0.1);
-        sprite1.state.setAnimation(0, "running", true);
-        //sprite1.alpha = 0.5;
+        sprite1.state.setAnimation(0, 'running', true);
     }
 
-    //Sprite belongs to plane, and plane is vertical in world coordinates.
-    var spritePlane = new PIXI.projection.Container3d();
+    // Sprite belongs to plane, and plane is vertical in world coordinates.
+    const spritePlane = new PIXI.projection.Container3d();
     spritePlane.alwaysFront = true;
     spritePlane.addChild(sprite1);
     spritePlane.interactive = true;
@@ -62,20 +61,20 @@ function spawnAlien(d) {
     return spritePlane;
 }
 
-var filter = new PIXI.filters.BlurFilter();
+const filter = new PIXI.filters.BlurFilter();
 filter.blur = 2;
 
 function onAssetsLoaded() {
-    var earth = new PIXI.projection.Sprite3d(loader.resources.back.texture);
-    //because earth is Sprite3d, we can access its euler angles
+    const earth = new PIXI.projection.Sprite3d(loader.resources.back.texture);
+    // because earth is Sprite3d, we can access its euler angles
     earth.euler.x = Math.PI / 2;
     earth.anchor.x = earth.anchor.y = 0.5;
     earthContainer.addChild(earth);
 
-    for (var i = 0; i < 30; i++) {
-        var d = Math.random() * 6 | 0;
+    for (let i = 0; i < 30; i++) {
+        const d = Math.random() * 6 | 0;
 
-        var spritePlane = spawnAlien(d);
+        const spritePlane = spawnAlien(d);
         spritePlane.position3d.x = (Math.random() * 2 - 1) * 500.0;
         spritePlane.position3d.z = (Math.random() * 2 - 1) * 500.0;
 
@@ -83,11 +82,11 @@ function onAssetsLoaded() {
     }
 
     earthContainer.interactive = true;
-    earthContainer.on('click', function (event) {
-        var p = new PIXI.Point();
+    earthContainer.on('click', (event) => {
+        const p = new PIXI.Point();
         event.data.getLocalPosition(earth, p, event.data.global);
 
-        var sp = spawnAlien(4);
+        const sp = spawnAlien(4);
         sp.position3d.x = p.x;
         sp.position3d.z = p.y;
         alienContainer.addChild(sp);
@@ -97,15 +96,14 @@ function onAssetsLoaded() {
     app.start();
 }
 
-var ang = 0;
+let ang = 0;
 
 app.ticker.add(() => {
     debugGraphics.clear();
     debugGraphics.lineStyle(2, 0xffffff, 1.0);
-    alienContainer.children.forEach(function (alien) {
-        var rect = alien.getBounds();
-        if (rect !== PIXI.Rectangle.EMPTY)
-            debugGraphics.drawShape(rect);
+    alienContainer.children.forEach((alien) => {
+        const rect = alien.getBounds();
+        if (rect !== PIXI.Rectangle.EMPTY) debugGraphics.drawShape(rect);
         if (alien.trackedPointers[1] && alien.trackedPointers[1].over) {
             if (!alien.filters) {
                 alien.filters = [filter];
@@ -113,18 +111,17 @@ app.ticker.add(() => {
         } else {
             alien.filters = null;
         }
-
     });
 
     ang += 0.01;
     camera.euler.y = ang;
     camera.euler.x = -Math.PI / 6;
 
-    alienContainer.children.forEach(function (plane) {
+    alienContainer.children.forEach((plane) => {
         if (plane.alwaysFront) {
-            //1. rotate sprite plane to the camera
-            plane.children[0].euler.x = -Math.PI/6;
-            //2. rotate sprite to the camera
+            // 1. rotate sprite plane to the camera
+            plane.children[0].euler.x = -Math.PI / 6;
+            // 2. rotate sprite to the camera
             plane.euler.y = ang;
         }
     });

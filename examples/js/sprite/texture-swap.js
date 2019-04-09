@@ -1,16 +1,16 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-var bol = false;
+let bol = false;
 
 // create a texture from an image path
-var texture = PIXI.Texture.fromImage('examples/assets/flowerTop.png');
+const texture = PIXI.Texture.from('examples/assets/flowerTop.png');
 
 // create a second texture
-var secondTexture = PIXI.Texture.fromImage('examples/assets/eggHead.png');
+const secondTexture = PIXI.Texture.from('examples/assets/eggHead.png');
 
 // create a new Sprite using the texture
-var dude = new PIXI.Sprite(texture);
+const dude = new PIXI.Sprite(texture);
 
 // center the sprites anchor point
 dude.anchor.set(0.5);
@@ -25,17 +25,16 @@ app.stage.addChild(dude);
 dude.interactive = true;
 dude.buttonMode = true;
 
-dude.on('pointertap', function() {
+dude.on('pointertap', () => {
     bol = !bol;
     if (bol) {
         dude.texture = secondTexture;
-    }
-    else {
+    } else {
         dude.texture = texture;
     }
 });
 
-app.ticker.add(function() {
+app.ticker.add(() => {
     // just for fun, let's rotate mr rabbit a little
     dude.rotation += 0.1;
 });

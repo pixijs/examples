@@ -1,21 +1,20 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // create a new background sprite
-var background = new PIXI.Sprite.fromImage('examples/assets/bg_rotate.jpg');
+const background = PIXI.Sprite.from('examples/assets/bg_rotate.jpg');
 background.width = app.screen.width;
 background.height = app.screen.height;
 app.stage.addChild(background);
 
 // create an array to store a reference to the dudes
-var dudeArray = [];
+const dudeArray = [];
 
-var totaldudes = 20;
+const totaldudes = 20;
 
-for (var i = 0; i < totaldudes; i++) {
-
+for (let i = 0; i < totaldudes; i++) {
     // create a new Sprite that uses the image name that we just generated as its source
-    var dude = PIXI.Sprite.fromImage('examples/assets/flowerTop.png');
+    const dude = PIXI.Sprite.from('examples/assets/flowerTop.png');
 
     dude.anchor.set(0.5);
 
@@ -45,21 +44,19 @@ for (var i = 0; i < totaldudes; i++) {
 }
 
 // create a bounding box for the little dudes
-var dudeBoundsPadding = 100;
+const dudeBoundsPadding = 100;
 
-var dudeBounds = new PIXI.Rectangle(
+const dudeBounds = new PIXI.Rectangle(
     -dudeBoundsPadding,
     -dudeBoundsPadding,
     app.screen.width + dudeBoundsPadding * 2,
-    app.screen.height + dudeBoundsPadding * 2
+    app.screen.height + dudeBoundsPadding * 2,
 );
 
-app.ticker.add(function() {
-
+app.ticker.add(() => {
     // iterate through the dudes and update the positions
-    for (var i = 0; i < dudeArray.length; i++) {
-
-        var dude = dudeArray[i];
+    for (let i = 0; i < dudeArray.length; i++) {
+        const dude = dudeArray[i];
         dude.direction += dude.turningSpeed * 0.01;
         dude.x += Math.sin(dude.direction) * dude.speed;
         dude.y += Math.cos(dude.direction) * dude.speed;
@@ -68,15 +65,13 @@ app.ticker.add(function() {
         // wrap the dudes by testing their bounds...
         if (dude.x < dudeBounds.x) {
             dude.x += dudeBounds.width;
-        }
-        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+        } else if (dude.x > dudeBounds.x + dudeBounds.width) {
             dude.x -= dudeBounds.width;
         }
 
         if (dude.y < dudeBounds.y) {
             dude.y += dudeBounds.height;
-        }
-        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+        } else if (dude.y > dudeBounds.y + dudeBounds.height) {
             dude.y -= dudeBounds.height;
         }
     }

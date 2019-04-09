@@ -1,15 +1,14 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // holder to store the aliens
-var aliens = [];
+const aliens = [];
 
-var totalDudes = 20;
+const totalDudes = 20;
 
-for (var i = 0; i < totalDudes; i++) {
-
+for (let i = 0; i < totalDudes; i++) {
     // create a new Sprite that uses the image name that we just generated as its source
-    var dude =  PIXI.Sprite.fromImage('examples/assets/eggHead.png');
+    const dude = PIXI.Sprite.from('examples/assets/eggHead.png');
 
     // set the anchor point so the texture is centerd on the sprite
     dude.anchor.set(0.5);
@@ -40,18 +39,16 @@ for (var i = 0; i < totalDudes; i++) {
 }
 
 // create a bounding box for the little dudes
-var dudeBoundsPadding = 100;
-var dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
-                                    -dudeBoundsPadding,
-                                    app.screen.width + dudeBoundsPadding * 2,
-                                    app.screen.height + dudeBoundsPadding * 2);
+const dudeBoundsPadding = 100;
+const dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
+    -dudeBoundsPadding,
+    app.screen.width + dudeBoundsPadding * 2,
+    app.screen.height + dudeBoundsPadding * 2);
 
-app.ticker.add(function() {
-
+app.ticker.add(() => {
     // iterate through the dudes and update their position
-    for (var i = 0; i < aliens.length; i++) {
-
-        var dude = aliens[i];
+    for (let i = 0; i < aliens.length; i++) {
+        const dude = aliens[i];
         dude.direction += dude.turningSpeed * 0.01;
         dude.x += Math.sin(dude.direction) * dude.speed;
         dude.y += Math.cos(dude.direction) * dude.speed;
@@ -60,15 +57,13 @@ app.ticker.add(function() {
         // wrap the dudes by testing their bounds...
         if (dude.x < dudeBounds.x) {
             dude.x += dudeBounds.width;
-        }
-        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+        } else if (dude.x > dudeBounds.x + dudeBounds.width) {
             dude.x -= dudeBounds.width;
         }
 
         if (dude.y < dudeBounds.y) {
             dude.y += dudeBounds.height;
-        }
-        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+        } else if (dude.y > dudeBounds.y + dudeBounds.height) {
             dude.y -= dudeBounds.height;
         }
     }

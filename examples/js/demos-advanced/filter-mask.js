@@ -1,36 +1,33 @@
-// for this example you have to move mouse
-
 const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
-const stage = app.stage;
 
-PIXI.loader.add('t1', 'examples/assets/bg_grass.jpg');
-PIXI.loader.load(setup);
+// Inner radius of the circle
+const radius = 100;
 
-function setup(loader, resources) {
-    let background = new PIXI.Sprite(resources['t1'].texture);
-    stage.addChild(background);
+// The blur amount
+const blurSize = 32;
+
+app.loader.add('grass', 'examples/assets/bg_grass.jpg');
+app.loader.load(setup);
+
+function setup(loader, resources)
+{
+    const background = new PIXI.Sprite(resources.grass.texture);
+    app.stage.addChild(background);
     background.width = app.screen.width;
     background.height = app.screen.height;
 
-    // Dimension
-    let radius = 150;
-    let offset = 10; // depends on blur factor.
+    const circle = new PIXI.Graphics()
+        .beginFill(0xFF0000)
+        .drawCircle(radius + blurSize, radius + blurSize, radius)
+        .endFill();
+    circle.filters = [new PIXI.filters.BlurFilter(blurSize)];
 
-    let circle = new PIXI.Graphics();
-    circle.beginFill(0xFF0000);
-    circle.drawCircle(radius + offset, radius + offset, radius);
-    circle.endFill();
+    const bounds = new PIXI.Rectangle(0, 0, (radius + blurSize) * 2, (radius + blurSize) * 2);
+    const texture = app.renderer.generateTexture(circle, PIXI.SCALE_MODES.NEAREST, 1, bounds);
+    const focus = new PIXI.Sprite(texture);
 
-    // Filters
-    circle.filters = [new PIXI.filters.BlurFilter()];
-
-    let rect = new PIXI.Rectangle(0, 0, (radius + offset) * 2, (radius + offset) * 2);
-    let texture = app.renderer.generateTexture(circle, PIXI.SCALE_MODES.NEAREST, 1, rect);
-
-    focus = new PIXI.Sprite(texture);
-
-    stage.addChild(focus);
+    app.stage.addChild(focus);
     background.mask = focus;
 
     app.stage.interactive = true;
@@ -38,7 +35,7 @@ function setup(loader, resources) {
 
     function pointerMove(event)
     {
-        focus.position.x = event.data.global.x - focus.width * 0.5;
-        focus.position.y = event.data.global.y - focus.height * 0.5;
+        focus.position.x = event.data.global.x - focus.width / 2;
+        focus.position.y = event.data.global.y - focus.height / 2;
     }
 }

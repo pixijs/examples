@@ -51,8 +51,8 @@
             "entry": "mouse-trail.js"
         },
 		{
-			"title": "Star Warp",
-			"entry": "star-warp.js"
+            "title": "Star Warp",
+            "entry": "star-warp.js"
 		}
     ],
     "sprite": [

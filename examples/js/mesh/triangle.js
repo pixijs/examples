@@ -1,10 +1,10 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-var geometry = new PIXI.Geometry()
-.addAttribute('aVertexPosition', [-100, -50, 100, -50, 0, 100])
+const geometry = new PIXI.Geometry()
+    .addAttribute('aVertexPosition', [-100, -50, 100, -50, 0, 100]);
 
-var shader = new PIXI.Shader.from(`
+const shader = PIXI.Shader.from(`
 
     precision mediump float;
     attribute vec2 aVertexPosition;
@@ -16,20 +16,20 @@ var shader = new PIXI.Shader.from(`
         gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
     }`,
 
-    `precision mediump float;
+`precision mediump float;
 
     void main() {
         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
     }
 
-`)
+`);
 
-var triangle = new PIXI.Mesh(geometry, shader);
+const triangle = new PIXI.Mesh(geometry, shader);
 
 triangle.position.set(400, 300);
 
 app.stage.addChild(triangle);
 
-app.ticker.add(function(delta) {
+app.ticker.add((delta) => {
     triangle.rotation += 0.01;
 });

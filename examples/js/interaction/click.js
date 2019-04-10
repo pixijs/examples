@@ -1,10 +1,10 @@
-var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
+const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
 // Scale mode for all textures, will retain pixelation
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-var sprite = PIXI.Sprite.fromImage('examples/assets/bunny.png');
+const sprite = PIXI.Sprite.from('examples/assets/bunny.png');
 
 // Set the initial position
 sprite.anchor.set(0.5);
@@ -26,7 +26,7 @@ sprite.on('pointerdown', onClick);
 
 app.stage.addChild(sprite);
 
-function onClick () {
+function onClick() {
     sprite.scale.x *= 1.25;
     sprite.scale.y *= 1.25;
 }

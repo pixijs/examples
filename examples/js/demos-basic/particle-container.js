@@ -1,24 +1,23 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-var sprites = new PIXI.particles.ParticleContainer(10000, {
+const sprites = new PIXI.ParticleContainer(10000, {
     scale: true,
     position: true,
     rotation: true,
     uvs: true,
-    alpha: true
+    alpha: true,
 });
 app.stage.addChild(sprites);
 
 // create an array to store all the sprites
-var maggots = [];
+const maggots = [];
 
-var totalSprites = app.renderer instanceof PIXI.WebGLRenderer ? 10000 : 100;
+const totalSprites = app.renderer instanceof PIXI.Renderer ? 10000 : 100;
 
-for (var i = 0; i < totalSprites; i++) {
-
+for (let i = 0; i < totalSprites; i++) {
     // create a new Sprite
-    var dude = PIXI.Sprite.fromImage('examples/assets/maggot_tiny.png');
+    const dude = PIXI.Sprite.from('examples/assets/maggot_tiny.png');
 
     dude.tint = Math.random() * 0xE8D4CD;
 
@@ -52,22 +51,20 @@ for (var i = 0; i < totalSprites; i++) {
 }
 
 // create a bounding box box for the little maggots
-var dudeBoundsPadding = 100;
-var dudeBounds = new PIXI.Rectangle(
+const dudeBoundsPadding = 100;
+const dudeBounds = new PIXI.Rectangle(
     -dudeBoundsPadding,
     -dudeBoundsPadding,
     app.screen.width + dudeBoundsPadding * 2,
-    app.screen.height + dudeBoundsPadding * 2
+    app.screen.height + dudeBoundsPadding * 2,
 );
 
-var tick = 0;
+let tick = 0;
 
-app.ticker.add(function() {
-
+app.ticker.add(() => {
     // iterate through the sprites and update their position
-    for (var i = 0; i < maggots.length; i++) {
-
-        var dude = maggots[i];
+    for (let i = 0; i < maggots.length; i++) {
+        const dude = maggots[i];
         dude.scale.y = 0.95 + Math.sin(tick + dude.offset) * 0.05;
         dude.direction += dude.turningSpeed * 0.01;
         dude.x += Math.sin(dude.direction) * (dude.speed * dude.scale.y);
@@ -77,15 +74,13 @@ app.ticker.add(function() {
         // wrap the maggots
         if (dude.x < dudeBounds.x) {
             dude.x += dudeBounds.width;
-        }
-        else if (dude.x > dudeBounds.x + dudeBounds.width) {
+        } else if (dude.x > dudeBounds.x + dudeBounds.width) {
             dude.x -= dudeBounds.width;
         }
 
         if (dude.y < dudeBounds.y) {
             dude.y += dudeBounds.height;
-        }
-        else if (dude.y > dudeBounds.y + dudeBounds.height) {
+        } else if (dude.y > dudeBounds.y + dudeBounds.height) {
             dude.y -= dudeBounds.height;
         }
     }

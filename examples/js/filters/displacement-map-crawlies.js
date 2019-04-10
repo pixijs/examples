@@ -1,23 +1,22 @@
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 app.stage.interactive = true;
 
-var container = new PIXI.Container();
+const container = new PIXI.Container();
 app.stage.addChild(container);
 
-var padding = 100;
-var bounds = new PIXI.Rectangle(
+const padding = 100;
+const bounds = new PIXI.Rectangle(
     -padding,
     -padding,
     app.screen.width + padding * 2,
-    app.screen.height + padding * 2
+    app.screen.height + padding * 2,
 );
-var maggots = [];
+const maggots = [];
 
-for (var i = 0; i < 20; i++)
-{
-    var maggot =  PIXI.Sprite.fromImage('examples/assets/maggot.png');
+for (let i = 0; i < 20; i++) {
+    const maggot = PIXI.Sprite.from('examples/assets/maggot.png');
     maggot.anchor.set(0.5);
     container.addChild(maggot);
 
@@ -30,13 +29,12 @@ for (var i = 0; i < 20; i++)
 
     maggot.scale.set(1 + Math.random() * 0.3);
     maggot.original = new PIXI.Point();
-	maggot.original.copy(maggot.scale);
+    maggot.original.copy(maggot.scale);
     maggots.push(maggot);
-
 }
 
-var displacementSprite = PIXI.Sprite.fromImage('examples/assets/pixi-filters/displace.png');
-var displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+const displacementSprite = PIXI.Sprite.from('examples/assets/pixi-filters/displace.png');
+const displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
 
 app.stage.addChild(displacementSprite);
 
@@ -46,7 +44,7 @@ displacementFilter.scale.x = 110;
 displacementFilter.scale.y = 110;
 displacementSprite.anchor.set(0.5);
 
-var ring = PIXI.Sprite.fromImage('examples/assets/pixi-filters/ring.png');
+const ring = PIXI.Sprite.from('examples/assets/pixi-filters/ring.png');
 
 ring.anchor.set(0.5);
 
@@ -54,7 +52,7 @@ ring.visible = false;
 
 app.stage.addChild(ring);
 
-var bg = PIXI.Sprite.fromImage('examples/assets/bg_grass.jpg');
+const bg = PIXI.Sprite.from('examples/assets/bg_grass.jpg');
 bg.width = app.screen.width;
 bg.height = app.screen.height;
 
@@ -66,42 +64,38 @@ app.stage
     .on('mousemove', onPointerMove)
     .on('touchmove', onPointerMove);
 
-function onPointerMove(eventData)
-{
+function onPointerMove(eventData) {
     ring.visible = true;
 
     displacementSprite.position.set(eventData.data.global.x - 25, eventData.data.global.y);
-    ring.position.copy(displacementSprite.position);
+    ring.position.copyFrom(displacementSprite.position);
 }
 
-var count = 0;
+let count = 0;
 
-app.ticker.add(function() {
-
+app.ticker.add(() => {
     count += 0.05;
 
-    for (var i = 0; i < maggots.length; i++) {
-        var maggot = maggots[i];
+    for (let i = 0; i < maggots.length; i++) {
+        const maggot = maggots[i];
 
         maggot.direction += maggot.turnSpeed * 0.01;
         maggot.x += Math.sin(maggot.direction) * maggot.speed;
         maggot.y += Math.cos(maggot.direction) * maggot.speed;
 
-        maggot.rotation = -maggot.direction - Math.PI/2;
+        maggot.rotation = -maggot.direction - Math.PI / 2;
         maggot.scale.x = maggot.original.x + Math.sin(count) * 0.2;
 
         // wrap the maggots around as the crawl
         if (maggot.x < bounds.x) {
             maggot.x += bounds.width;
-        }
-        else if (maggot.x > bounds.x + bounds.width) {
+        } else if (maggot.x > bounds.x + bounds.width) {
             maggot.x -= bounds.width;
         }
 
         if (maggot.y < bounds.y) {
             maggot.y += bounds.height;
-        }
-        else if (maggot.y > bounds.y + bounds.height) {
+        } else if (maggot.y > bounds.y + bounds.height) {
             maggot.y -= bounds.height;
         }
     }

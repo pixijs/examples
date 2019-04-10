@@ -1,26 +1,26 @@
-var app = new PIXI.Application(800, 600, { resolution: window.devicePixelRatio || 1 });
+const app = new PIXI.Application({ resolution: window.devicePixelRatio || 1 });
 document.body.appendChild(app.view);
 
 // use empty array if you dont want to use detect feature
-var extensions = PIXI.compressedTextures.detectExtensions(app.renderer);
+const extensions = PIXI.compressedTextures.detectExtensions(app.renderer);
 
-var loader = new PIXI.loaders.Loader();
+const loader = new PIXI.Loader.shareds.Loader();
 loader.pre(PIXI.compressedTextures.extensionChooser(extensions));
 // use @2x texture if resolution is 2, use dds format if its windows
-var textureOptions1 = { metadata: {choice: ["@2x.png", ".dds", "@2x.dds"]} };
+const textureOptions1 = { metadata: { choice: ['@2x.png', '.dds', '@2x.dds'] } };
 // use dds format if its windows but dont care for retina
-var textureOptions2 = { metadata: {choice: [".dds"]} };
+const textureOptions2 = { metadata: { choice: ['.dds'] } };
 // while loading atlas, choose resolution for atlas and choose format for image
-var atlasOptions = { metadata: { choice: ["@2x.json", "@1x.json"], imageMetadata: { choice: [".dds"]} } };
+const atlasOptions = { metadata: { choice: ['@2x.json', '@1x.json'], imageMetadata: { choice: ['.dds'] } } };
 
 loader.add('building1', 'examples/assets/pixi-compressed-textures/building1.png', textureOptions1)
     .add('building2', 'examples/assets/pixi-compressed-textures/building2.png', textureOptions2)
-    .add('atlas1', 'examples/assets/pixi-compressed-textures/buildings.json', atlasOptions )
-    .load(function(loader, resources) {
-        var spr1 = new PIXI.Sprite(resources.building1.texture);
-        var spr2 = new PIXI.Sprite(resources.building2.texture);
-        var spr3 = new PIXI.Sprite.fromImage('goldmine_10_5.png');
-        var spr4 = new PIXI.Sprite.fromImage('wind_extractor_10.png');
+    .add('atlas1', 'examples/assets/pixi-compressed-textures/buildings.json', atlasOptions)
+    .load((loaderInstance, resources) => {
+        const spr1 = new PIXI.Sprite(resources.building1.texture);
+        const spr2 = new PIXI.Sprite(resources.building2.texture);
+        const spr3 = PIXI.Sprite.from('goldmine_10_5.png');
+        const spr4 = PIXI.Sprite.from('wind_extractor_10.png');
         spr1.y = spr3.y = 150;
         spr2.y = spr4.y = 350;
         spr1.x = spr2.x = 250;

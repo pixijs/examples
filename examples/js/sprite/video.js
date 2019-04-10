@@ -1,8 +1,8 @@
-var app = new PIXI.Application(800, 600, { transparent: true });
+const app = new PIXI.Application({ transparent: true });
 document.body.appendChild(app.view);
 
 // Create play button that can be used to trigger the video
-var button = new PIXI.Graphics()
+const button = new PIXI.Graphics()
     .beginFill(0x0, 0.5)
     .drawRoundedRect(0, 0, 100, 100, 10)
     .endFill()
@@ -32,15 +32,14 @@ app.stage.addChild(button);
 button.on('pointertap', onPlayVideo);
 
 function onPlayVideo() {
-
     // Don't need the button anymore
     button.destroy();
 
     // create a video texture from a path
-    var texture = PIXI.Texture.fromVideo('examples/assets/video.mp4');
+    const texture = PIXI.Texture.from('examples/assets/video.mp4');
 
     // create a new Sprite using the video texture (yes it's that easy)
-    var videoSprite = new PIXI.Sprite(texture);
+    const videoSprite = new PIXI.Sprite(texture);
 
     // Stetch the fullscreen
     videoSprite.width = app.screen.width;

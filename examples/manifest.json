@@ -35,21 +35,21 @@
     ],
     "demos-advanced": [
         {
-			"title": "Slots",
-			"entry": "slots.js"
-		},
-		{
-		    "title": "Scratchcard",
-			"entry": "scratchcard.js"
-		},
-		{
+            "title": "Slots",
+            "entry": "slots.js"
+        },
+        {
+            "title": "Scratchcard",
+            "entry": "scratchcard.js"
+        },
+        {
             "title": "Mouse Trail",
             "entry": "mouse-trail.js"
         },
-		{
-			"title": "Star Warp",
-			"entry": "star-warp.js"
-		}
+        {
+            "title": "Star Warp",
+            "entry": "star-warp.js"
+        }
     ],
     "sprite": [
         {
@@ -68,7 +68,7 @@
             "title": "Animated Sprite - Jet",
             "entry": "animatedsprite-jet.js"
         },
-		{
+        {
             "title": "Animated Sprite Speed",
             "entry": "animatedsprite-animationspeed.js"
         },
@@ -123,9 +123,9 @@
             "entry": "dragging.js"
         },
         {
-			"title": "Custom mouse icon",
-			"entry": "custom-mouse-icon.js"
-		}
+            "title": "Custom mouse icon",
+            "entry": "custom-mouse-icon.js"
+        }
     ],
     "filters": [
         {
@@ -136,7 +136,7 @@
             "title": "Color Matrix",
             "entry": "color-matrix.js"
         },
-		{
+        {
             "title": "Mouse Blending",
             "entry": "mouse-blending.js"
         },
@@ -144,16 +144,16 @@
             "title": "Displacement Map - Crawlies",
             "entry": "displacement-map-crawlies.js"
         },
-		{
-			"title": "Displacement Map - Flag",
-			"entry": "displacement-map-flag.js"
-		},
-		{
+        {
+            "title": "Displacement Map - Flag",
+            "entry": "displacement-map-flag.js"
+        },
+        {
             "title": "Custom Filter",
             "entry": "custom.js"
         }
-	],
-	"mesh": [
+    ],
+    "mesh": [
         {
             "title": "Textured Mesh - Basic",
             "entry": "textured-mesh-basic.js"
@@ -194,8 +194,8 @@
             "title": "Interleaving Geometry",
             "entry": "interleaving-geometry.js"
         }
-	],
-	"textures": [
+    ],
+    "textures": [
         {
             "title": "Texture Rotate",
             "entry": "texture-rotate.js"
@@ -237,7 +237,9 @@
             "plugins": [
                 "pixi-spine"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "Goblin",
@@ -245,7 +247,9 @@
             "plugins": [
                 "pixi-spine"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "Pixie",
@@ -253,7 +257,9 @@
             "plugins": [
                 "pixi-spine"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "Walking Animation",
@@ -261,7 +267,9 @@
             "plugins": [
                 "pixi-spine"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         }
     ],
     "plugin-projection": [
@@ -271,7 +279,9 @@
             "plugins": [
                 "pixi-projection"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "2D Plane",
@@ -279,7 +289,9 @@
             "plugins": [
                 "pixi-projection"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "2D Plane Tiling",
@@ -287,7 +299,9 @@
             "plugins": [
                 "pixi-projection"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "2D Quad projective",
@@ -295,15 +309,19 @@
             "plugins": [
                 "pixi-projection"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
-		{
+        {
             "title": "2D Quad bilinear",
             "entry": "quad-bi.js",
             "plugins": [
                 "pixi-projection"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "Isometry basics",
@@ -311,7 +329,9 @@
             "plugins": [
                 "pixi-projection"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "3D Camera Spine Layers",
@@ -321,7 +341,9 @@
                 "pixi-layers",
                 "pixi-projection-spine"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "3D Cards",
@@ -330,7 +352,9 @@
                 "pixi-layers",
                 "pixi-projection"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "3D Runner",
@@ -339,7 +363,9 @@
                 "pixi-spine",
                 "pixi-projection"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         }
     ],
     "plugin-layers": [
@@ -350,7 +376,9 @@
                 "pixi-layers",
                 "pixi-lights"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "Lighting",
@@ -358,15 +386,19 @@
             "plugins": [
                 "pixi-layers"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
-		{
+        {
             "title": "Z-order",
             "entry": "zorder.js",
             "plugins": [
                 "pixi-layers"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "Drag, Sort, Light",
@@ -375,7 +407,9 @@
                 "pixi-layers",
                 "pixi-lights"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         },
         {
             "title": "Trail",
@@ -383,7 +417,9 @@
             "plugins": [
                 "pixi-layers"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         }
     ],
     "plugin-picture": [
@@ -393,7 +429,9 @@
             "plugins": [
                 "pixi-picture"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         }
     ],
     "plugin-compressed-textures": [
@@ -403,7 +441,9 @@
             "plugins": [
                 "pixi-compressed-textures"
             ],
-            "validVersions": [4]
+            "validVersions": [
+                4
+            ]
         }
     ]
 }

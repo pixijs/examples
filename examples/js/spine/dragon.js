@@ -4,7 +4,7 @@ document.body.appendChild(app.view);
 app.stop();
 
 // load spine data
-PIXI.loader
+app.loader
     .add('dragon', 'examples/assets/pixi-spine/dragon.json')
     .load(onAssetsLoaded);
 

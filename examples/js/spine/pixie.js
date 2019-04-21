@@ -4,7 +4,7 @@ document.body.appendChild(app.view);
 app.stop();
 
 // load spine data
-PIXI.loader
+app.loader
     .add('pixie', 'examples/assets/pixi-spine/pixie.json')
     .load(onAssetsLoaded);
 

@@ -21,14 +21,6 @@
             "entry": "particle-container.js"
         },
         {
-            "title": "Masking - Graphics",
-            "entry": "masking-graphics.js"
-        },
-        {
-            "title": "Masking - Sprite Alpha",
-            "entry": "masking-sprite-alpha.js"
-        },
-        {
             "title": "BlendModes",
             "entry": "blendmodes.js"
         }
@@ -125,6 +117,20 @@
         {
             "title": "Custom mouse icon",
             "entry": "custom-mouse-icon.js"
+        }
+    ],
+    "masks": [
+        {
+            "title": "Graphics",
+            "entry": "graphics.js"
+        },
+        {
+            "title": "Sprite",
+            "entry": "sprite.js"
+        },
+        {
+            "title": "Filter",
+            "entry": "filter.js"
         }
     ],
     "filters": [

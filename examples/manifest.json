@@ -264,6 +264,13 @@
             "plugins": [
                 "pixi-spine"
             ]
+        },
+        {
+            "title": "Pixie Shadow",
+            "entry": "pixie-shadow-filter.js",
+            "plugins": [
+                "pixi-spine"
+            ]
         }
     ],
     "plugin-projection": [

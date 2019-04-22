@@ -22,7 +22,7 @@
     "rules": {
         "indent": [1, 4, { "SwitchCase": 1, "VariableDeclarator": { "var": 1, "let": 1, "const": 1 } }],
         "linebreak-style": 0,
-        "max-len": [1, { "code": 150, "tabWidth": 4 }],
+        "max-len": [1, { "code": 200, "tabWidth": 4 }],
         "no-bitwise": 0,
         "no-console": 0,
         "no-multi-assign": 0,

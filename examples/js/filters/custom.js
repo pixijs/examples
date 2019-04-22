@@ -18,7 +18,14 @@ let filter;
 // Handle the load completed
 function onLoaded(loader, res) {
     // Create the new filter, arguments: (vertexShader, framentSource)
-    filter = new PIXI.Filter(null, res.shader.data);
+    filter = new PIXI.Filter(null, res.shader.data, {
+        customUniform: 0.0
+    });
+
+    // === WARNING ===
+    // specify uniforms in filter constructor
+    // or set them BEFORE first use
+    // filter.uniforms.customUniform = 0.0
 
     // Add the filter
     background.filters = [filter];

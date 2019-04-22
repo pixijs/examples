@@ -1,6 +1,6 @@
 {
   "name": "pixi-examples",
-  "version": "1.2.0",
+  "version": "5.0.0",
   "description": "The examples site for pixi",
   "author": "Pixi Team",
   "license": "MIT",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-import": "^2.17.2",
     "less": "^3.9.0",
     "less-plugin-clean-css": "^1.5.1",
     "terser": "^3.17.0",

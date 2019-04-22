@@ -19,7 +19,7 @@ function getMajorPixiVersion(pixiVersionString) {
 
 jQuery(document).ready(($) => {
     window.onpopstate = function onpopstate(event) {
-        bpc.pixiVersionString = getParameterByName('v') || 'release';
+        bpc.pixiVersionString = getParameterByName('v') || 'dev';
         bpc.generateIFrameContent();
 
         $('.select-group .select li.selected').removeClass('selected');

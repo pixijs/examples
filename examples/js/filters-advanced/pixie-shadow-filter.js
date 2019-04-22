@@ -59,7 +59,7 @@ function onAssetsLoaded(loader, res) {
     app.start();
 }
 
-// That's default v4 vertex shader taken
+// That's default v4 vertex shader, just in case
 const myVertex = `
 attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
@@ -78,20 +78,21 @@ const myFragment = `
 varying vec2 vTextureCoord;
 
 uniform sampler2D uSampler;
-uniform vec4 filterArea;
+uniform vec4 inputSize;
+uniform vec4 outputFrame;
 uniform vec2 shadowDirection;
 uniform float floorY;
 
 void main(void) {
     //1. get the screen coordinate
-    vec2 screenCoord = vTextureCoord * filterArea.xy + filterArea.zw; 
+    vec2 screenCoord = vTextureCoord * inputSize.xy + outputFrame.xy;
     //2. calculate Y shift of our dimension vector
     vec2 shadow;
-    //shadow coordinate system is a bit skewed, but it has to be THE SAME FOR FLOORY
+    //shadow coordinate system is a bit skewed, but it has to be the same for screenCoord.y = floorY
     float paramY = (screenCoord.y - floorY) / shadowDirection.y;
     shadow.y = paramY + floorY;
     shadow.x = screenCoord.x + paramY * shadowDirection.x;
-    vec2 bodyFilterCoord = (shadow - filterArea.zw) / filterArea.xy;
+    vec2 bodyFilterCoord = (shadow - outputFrame.xy) * inputSize.zw; // same as / inputSize.xy
 
     vec4 originalColor = texture2D(uSampler, vTextureCoord);
     vec4 shadowColor = texture2D(uSampler, bodyFilterCoord);

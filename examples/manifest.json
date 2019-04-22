@@ -133,7 +133,7 @@
             "entry": "filter.js"
         }
     ],
-    "filters": [
+    "filters-basic": [
         {
             "title": "Blur",
             "entry": "blur.js"
@@ -143,20 +143,29 @@
             "entry": "color-matrix.js"
         },
         {
-            "title": "Mouse Blending",
-            "entry": "mouse-blending.js"
-        },
-        {
             "title": "Displacement Map - Crawlies",
             "entry": "displacement-map-crawlies.js"
         },
         {
             "title": "Displacement Map - Flag",
             "entry": "displacement-map-flag.js"
+        }
+    ],
+    "filters-advanced": [
+        {
+            "title": "Mouse Blending",
+            "entry": "mouse-blending.js"
         },
         {
             "title": "Custom Filter",
             "entry": "custom.js"
+        },
+        {
+            "title": "Pixie Shadow",
+            "entry": "pixie-shadow-filter.js",
+            "plugins": [
+                "pixi-spine"
+            ]
         }
     ],
     "mesh": [
@@ -261,13 +270,6 @@
         {
             "title": "Walking Animation",
             "entry": "spineboy.js",
-            "plugins": [
-                "pixi-spine"
-            ]
-        },
-        {
-            "title": "Pixie Shadow",
-            "entry": "pixie-shadow-filter.js",
             "plugins": [
                 "pixi-spine"
             ]

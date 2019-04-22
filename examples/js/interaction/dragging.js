@@ -1,23 +1,22 @@
-var app = new PIXI.Application(800, 600, { backgroundColor : 0x1099bb });
+const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
 // create a texture from an image path
-var texture = PIXI.Texture.fromImage('examples/assets/bunny.png');
+const texture = PIXI.Texture.from('examples/assets/bunny.png');
 
 // Scale mode for pixelation
 texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
-for (var i = 0; i < 10; i++) {
+for (let i = 0; i < 10; i++) {
     createBunny(
         Math.floor(Math.random() * app.screen.width),
-        Math.floor(Math.random() * app.screen.height)
+        Math.floor(Math.random() * app.screen.height),
     );
 }
 
 function createBunny(x, y) {
-
     // create our little bunny friend..
-    var bunny = new PIXI.Sprite(texture);
+    const bunny = new PIXI.Sprite(texture);
 
     // enable the bunny to be interactive... this will allow it to respond to mouse and touch events
     bunny.interactive = true;
@@ -39,17 +38,17 @@ function createBunny(x, y) {
         .on('pointerupoutside', onDragEnd)
         .on('pointermove', onDragMove);
 
-        // For mouse-only events
-        // .on('mousedown', onDragStart)
-        // .on('mouseup', onDragEnd)
-        // .on('mouseupoutside', onDragEnd)
-        // .on('mousemove', onDragMove);
+    // For mouse-only events
+    // .on('mousedown', onDragStart)
+    // .on('mouseup', onDragEnd)
+    // .on('mouseupoutside', onDragEnd)
+    // .on('mousemove', onDragMove);
 
-        // For touch-only events
-        // .on('touchstart', onDragStart)
-        // .on('touchend', onDragEnd)
-        // .on('touchendoutside', onDragEnd)
-        // .on('touchmove', onDragMove);
+    // For touch-only events
+    // .on('touchstart', onDragStart)
+    // .on('touchend', onDragEnd)
+    // .on('touchendoutside', onDragEnd)
+    // .on('touchmove', onDragMove);
 
     // move the sprite to its designated position
     bunny.x = x;
@@ -77,7 +76,7 @@ function onDragEnd() {
 
 function onDragMove() {
     if (this.dragging) {
-        var newPosition = this.data.getLocalPosition(this.parent);
+        const newPosition = this.data.getLocalPosition(this.parent);
         this.x = newPosition.x;
         this.y = newPosition.y;
     }

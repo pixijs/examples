@@ -5,16 +5,16 @@
  * https://github.com/pixijs/pixi.js/wiki/v4-Creating-Filters#cannot-read-property-location-of-undefined
  */
 
-var app = new PIXI.Application(800, 600);
+const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // Create background image
-var background = PIXI.Sprite.fromImage("examples/assets/bg_grass.jpg");
+const background = PIXI.Sprite.from('examples/assets/bg_grass.jpg');
 background.width = app.screen.width;
 background.height = app.screen.height;
 app.stage.addChild(background);
 
-var shaderFrag = `
+const shaderFrag = `
 precision mediump float;
 
 uniform vec2 mouse;
@@ -32,16 +32,16 @@ void main() {
 }
 `;
 
-var container = new PIXI.Container();
+const container = new PIXI.Container();
 container.filterArea = app.screen;
 app.stage.addChild(container);
-var filter = new PIXI.Filter(null, shaderFrag);
+const filter = new PIXI.Filter(null, shaderFrag);
 container.filters = [filter];
 
 // Animate the filter
-app.ticker.add(function(delta) {
-    var v2 = filter.uniforms.mouse;
-    var global = app.renderer.plugins.interaction.mouse.global;
+app.ticker.add((delta) => {
+    let v2 = filter.uniforms.mouse;
+    const { global } = app.renderer.plugins.interaction.mouse;
     v2[0] = global.x; v2[1] = global.y;
     filter.uniforms.mouse = v2;
 

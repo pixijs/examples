@@ -2,7 +2,7 @@ var app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 // load spine data
-PIXI.loader
+app.loader
     .add('goblins', 'examples/assets/pixi-spine/goblins.json')
     .load(onAssetsLoaded);
 

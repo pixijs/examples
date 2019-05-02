@@ -245,6 +245,22 @@
             ]
         }
     ],
+    "plugin-dragonbones": [
+        {
+            "title": "Robot",
+            "entry": "robot.js",
+            "plugins": [
+                "pixi-dragonbones"
+            ]
+        },
+        {
+            "title": "Eye Tracking",
+            "entry": "eyetracking.js",
+            "plugins": [
+                "pixi-dragonbones"
+            ]
+        }
+    ],
     "plugin-spine": [
         {
             "title": "Dragon",

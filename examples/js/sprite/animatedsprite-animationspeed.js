@@ -3,7 +3,7 @@ document.body.appendChild(app.view);
 
 app.stop();
 
-PIXI.Loader.shared
+app.loader
     .add('spritesheet', 'examples/assets/spritesheet/0123456789.json')
     .load(onAssetsLoaded);
 

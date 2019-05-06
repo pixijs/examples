@@ -10,9 +10,9 @@ brush.beginFill(0xffffff);
 brush.drawCircle(0, 0, 50);
 brush.endFill();
 
-PIXI.Loader.shared.add('t1', 'examples/assets/bg_grass.jpg');
-PIXI.Loader.shared.add('t2', 'examples/assets/bg_rotate.jpg');
-PIXI.Loader.shared.load(setup);
+app.loader.add('t1', 'examples/assets/bg_grass.jpg');
+app.loader.add('t2', 'examples/assets/bg_rotate.jpg');
+app.loader.load(setup);
 
 function setup(loader, resources) {
     const background = new PIXI.Sprite(resources.t1.texture);

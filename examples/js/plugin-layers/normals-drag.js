@@ -50,7 +50,7 @@ app.ticker.add(() => {
     light.position.copyFrom(app.renderer.plugins.interaction.mouse.global);
 });
 
-const lightLoader = new PIXI.Loader.shareds.Loader();
+const lightLoader = new app.loaders.Loader();
 lightLoader.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
 lightLoader
     .add('block_diffuse', 'test/block.png')

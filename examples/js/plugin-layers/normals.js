@@ -12,9 +12,9 @@ stage.addChild(new PIXI.display.Layer(PIXI.lights.diffuseGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.normalGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.lightGroup));
 
-PIXI.Loader.shared.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
+app.loader.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
 
-PIXI.Loader.shared
+app.loader
     .add('bg_diffuse', 'test/BGTextureTest.jpg')
     .add('bg_normal', 'test/BGTextureNORM.jpg')
     .add('block_diffuse', 'test/block.png')

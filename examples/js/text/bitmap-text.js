@@ -1,7 +1,7 @@
 const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
-PIXI.Loader.shared
+app.loader
     .add('desyrel', 'examples/assets/bitmap-font/desyrel.xml')
     .load(onAssetsLoaded);
 

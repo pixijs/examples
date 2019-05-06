@@ -1,7 +1,7 @@
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-PIXI.Loader.shared
+app.loader
     .add('examples/assets/spritesheet/fighter.json')
     .load(onAssetsLoaded);
 

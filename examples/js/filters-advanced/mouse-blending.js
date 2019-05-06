@@ -40,13 +40,11 @@ const container = new PIXI.Container();
 container.filterArea = new PIXI.Rectangle(100, 100, app.screen.width - 200, app.screen.height - 200);
 app.stage.addChild(container);
 const filter = new PIXI.Filter(null, shaderFrag, {
-    mouse: new PIXI.Point()
+    mouse: new PIXI.Point(),
 });
 container.filters = [filter];
 
 // Animate the filter
 app.ticker.add((delta) => {
-
     filter.uniforms.mouse.copyFrom(app.renderer.plugins.interaction.mouse.global);
-
 });

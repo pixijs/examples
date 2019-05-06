@@ -196,8 +196,6 @@ jQuery(document).ready(($) => {
 
             if (bpc.pixiVersionString === 'local') {
                 pixiUrl = 'dist/pixi.js';
-            } else if (bpc.majorPixiVersion === 3) { // pull v3 from github cdn
-                pixiUrl = `https://cdn.rawgit.com/GoodBoyDigital/pixi.js/${bpc.pixiVersionString}/bin/pixi.js`;
             } else { // other versions come from S3
                 pixiUrl = `https://d157l7jdn8e5sf.cloudfront.net/${bpc.pixiVersionString}/pixi.js`;
             }
@@ -207,10 +205,6 @@ jQuery(document).ready(($) => {
             html += '</style></head><body>';
             html += '<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>';
             html += `<script src="${pixiUrl}"></script>`;
-
-            if (bpc.majorPixiVersion < 5) {
-                html += '<script src="pixi-plugins/pixi-legacy.js"></script>';
-            }
 
             for (let i = 0; i < bpc.exampleRequiredPlugins.length; i++) {
                 html += `<script src="pixi-plugins/${bpc.exampleRequiredPlugins[i]}.js"></script>`;

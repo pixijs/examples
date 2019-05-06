@@ -1,7 +1,7 @@
 const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
-    backgroundColor: 0x1099bb
+    backgroundColor: 0x1099bb,
 });
 document.body.appendChild(app.view);
 
@@ -9,7 +9,7 @@ app.stop();
 
 // load spine data
 // uncomment this line if you run it from pixi-playground
-//app.loader.baseUrl = 'https://pixijs.io/examples';
+// app.loader.baseUrl = 'https://pixijs.io/examples';
 app.loader
     .add('pixie', 'examples/assets/pixi-spine/pixie.json')
     .load(onAssetsLoaded);

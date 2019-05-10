@@ -83,6 +83,7 @@ app.ticker.add(() => {
     thing.lineTo(120 + Math.sin(count) * 20, 100 + Math.cos(count) * 20);
     thing.lineTo(-120 + Math.cos(count) * 20, 100 + Math.sin(count) * 20);
     thing.lineTo(-120 + Math.sin(count) * 20, -100 + Math.cos(count) * 20);
+    thing.closePath();
 
     thing.rotation = count * 0.1;
 });

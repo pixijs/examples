@@ -57,6 +57,7 @@ graphics.moveTo(50, 350);
 graphics.lineTo(250, 350);
 graphics.lineTo(100, 400);
 graphics.lineTo(50, 350);
+graphics.closePath();
 graphics.endFill();
 
 // draw a rounded rectangle

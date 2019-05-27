@@ -16,6 +16,7 @@ graphics.lineTo(100, 100);
 graphics.lineTo(250, 220);
 graphics.lineTo(50, 220);
 graphics.lineTo(50, 50);
+graphics.closePath();
 graphics.endFill();
 
 // set a fill and line style again
@@ -30,6 +31,7 @@ graphics.quadraticCurveTo(600, 0, 480, 100);
 graphics.lineTo(330, 120);
 graphics.lineTo(410, 200);
 graphics.lineTo(210, 300);
+graphics.closePath();
 graphics.endFill();
 
 // draw a rectangle

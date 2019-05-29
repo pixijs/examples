@@ -56,7 +56,7 @@ const uniforms = {
 
 const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniforms);
 
-const quad = new PIXI.Mesh(geometry, shader, uniforms);
+const quad = new PIXI.Mesh(geometry, shader);
 
 quad.position.set(400, 300);
 quad.scale.set(2);

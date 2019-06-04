@@ -388,9 +388,6 @@
             "entry": "lighting.js",
             "plugins": [
                 "pixi-layers"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -398,9 +395,6 @@
             "entry": "zorder.js",
             "plugins": [
                 "pixi-layers"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {

@@ -10,13 +10,13 @@ document.body.appendChild(app.view);
 const greenGroup = new PIXI.display.Group(0, true);
 greenGroup.on('sort', (sprite) => {
     // green bunnies go down
-    sprite.zOrder = -sprite.y;
+    sprite.zOrder = sprite.y;
 });
 
 // z-index = 1, sorting = true, we can provide zOrder function directly in constructor
 const blueGroup = new PIXI.display.Group(1, ((sprite) => {
     // blue bunnies go up
-    sprite.zOrder = +sprite.y;
+    sprite.zOrder = -sprite.y;
 }));
 
 // Drag is the best layer, dragged element is above everything else
@@ -27,8 +27,9 @@ const shadowGroup = new PIXI.display.Group(-1, false);
 
 // specify display list component
 app.stage = new PIXI.display.Stage();
-app.stage.group.enableSort = true;
-// sorry, group cant exist without layer yet :(
+//PixiJS v5 sorting - works on zIndex - and layer gets its zIndex from a group!
+app.stage.sortableChildren = true;
+// sorry, group cant exist without layer yet :(;
 app.stage.addChild(new PIXI.display.Layer(greenGroup));
 app.stage.addChild(new PIXI.display.Layer(blueGroup));
 app.stage.addChild(new PIXI.display.Layer(dragGroup));

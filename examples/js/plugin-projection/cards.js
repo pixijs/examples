@@ -23,7 +23,7 @@ camera.addChild(cards);
 
 const shadowGroup = new PIXI.display.Group(1);
 const cardsGroup = new PIXI.display.Group(2, ((item) => {
-    item.zOrder = item.getDepth();
+    item.zOrder = -item.getDepth();
     item.parent.checkFace();
 }));
 
@@ -195,7 +195,8 @@ function onClick(event) {
 
 function addText(txt) {
     const style = {
-        font: 'normal 80px Arial',
+        fontSize: 80,
+        fontFamily: 'Arial',
         fill: '#f5ffe3',
         dropShadow: true,
         dropShadowColor: 'rgba(1, 1, 1, 0.4)',

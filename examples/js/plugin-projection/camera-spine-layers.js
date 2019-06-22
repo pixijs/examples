@@ -31,7 +31,7 @@ camera.addChild(earthContainer);
 camera.addChild(alienContainer);
 
 const sortGroup = new PIXI.display.Group(1, ((plane) => {
-    plane.zOrder = plane.getDepth();
+    plane.zOrder = -plane.getDepth();
 }));
 app.stage.addChild(new PIXI.display.Layer(sortGroup));
 const debugGraphics = new PIXI.Graphics();

@@ -281,9 +281,6 @@
             "entry": "basic.js",
             "plugins": [
                 "pixi-projection"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -291,9 +288,6 @@
             "entry": "plane.js",
             "plugins": [
                 "pixi-projection"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -301,9 +295,6 @@
             "entry": "plane-tiling.js",
             "plugins": [
                 "pixi-projection"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -311,9 +302,6 @@
             "entry": "quad-homo.js",
             "plugins": [
                 "pixi-projection"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -331,9 +319,6 @@
             "entry": "iso-basic.js",
             "plugins": [
                 "pixi-projection"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -343,9 +328,6 @@
                 "pixi-spine",
                 "pixi-layers",
                 "pixi-projection-spine"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -354,9 +336,6 @@
             "plugins": [
                 "pixi-layers",
                 "pixi-projection"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -365,9 +344,6 @@
             "plugins": [
                 "pixi-spine",
                 "pixi-projection"
-            ],
-            "validVersions": [
-                4
             ]
         }
     ],

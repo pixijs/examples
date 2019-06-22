@@ -54,12 +54,9 @@ else if (PIXI.ParticleContainer) {
     PIXI.ParticleContainer.prototype.layerableChildren = false;
 }
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -372,6 +369,7 @@ var pixi_display;
                 var buffer = db[this.currentBufferIndex];
                 if (!buffer.baseTexture._glTextures[renderer.CONTEXT_UID]) {
                     renderer.renderTexture.bind(buffer, undefined, undefined);
+                    renderer.texture.bind(buffer);
                     if (group.clearColor) {
                         renderer.renderTexture.clear(group.clearColor);
                     }
@@ -590,7 +588,7 @@ var pixi_display;
         return Layer;
     }(PIXI.Container));
     pixi_display.Layer = Layer;
-    LayerTextureCache.prototype.renderCanvas = function (renderer) {
+    Layer.prototype.renderCanvas = function (renderer) {
         if (this._preRender(renderer)) {
             this.containerRenderCanvas(renderer);
             this._postRender(renderer);

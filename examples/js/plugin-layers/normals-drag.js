@@ -4,7 +4,7 @@ const resolution = 1;
 const WIDTH = W / resolution;
 const HEIGHT = H / resolution;
 
-// LAYERS plugin is here: https://github.com/pixijs/pixi-display/tree/layers
+// LAYERS plugin is here: https://github.com/pixijs/pixi-layers/tree/master
 // LIGHTS plugin is here: https://github.com/pixijs/pixi-lights/tree/v4.x
 
 const app = new PIXI.Application({ width: WIDTH, height: HEIGHT, resolution });

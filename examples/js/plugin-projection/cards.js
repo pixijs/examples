@@ -136,7 +136,7 @@ class CardSprite extends PIXI.projection.Container3d {
         }
         inner.position3d.z = -Math.sin(inner.euler.y) * this.back.width;
 
-        // assignment is overriden, so its actually calling euler.copy(this.euler)
+        // assignment is overriden, so its actually calling euler.copyFrom(this.euler)
         this.shadow.euler = inner.euler;
     }
 

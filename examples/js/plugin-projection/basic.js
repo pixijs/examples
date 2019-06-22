@@ -91,9 +91,9 @@ function onDragStart(event) {
     obj.dragging = 1;
     obj.dragPointerStart = event.data.getLocalPosition(obj.parent);
     obj.dragObjStart = new PIXI.Point();
-    obj.dragObjStart.copy(obj.position);
+    obj.dragObjStart.copyFrom(obj.position);
     obj.dragGlobalStart = new PIXI.Point();
-    obj.dragGlobalStart.copy(event.data.global);
+    obj.dragGlobalStart.copyFrom(event.data.global);
 }
 
 function onDragEnd(event) {

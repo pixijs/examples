@@ -50,7 +50,7 @@ app.ticker.add((delta) => {
     pos.x = -pos.x;
     container.proj.setAxisY(pos, -squareFar.factor);
 
-    tiling.tileScale.copy(surface.scale);
+    tiling.tileScale.copyFrom(surface.scale);
     // dont overflow tilePosition, shaders will have less precision
     tiling.tilePosition.x = (tiling.tilePosition.x + delta) % tiling.texture.width;
     // sync container proj and tiling inside proj
@@ -106,9 +106,9 @@ function onDragStart(event) {
     obj.dragging = 1;
     obj.dragPointerStart = event.data.getLocalPosition(obj.parent);
     obj.dragObjStart = new PIXI.Point();
-    obj.dragObjStart.copy(obj.position);
+    obj.dragObjStart.copyFrom(obj.position);
     obj.dragGlobalStart = new PIXI.Point();
-    obj.dragGlobalStart.copy(event.data.global);
+    obj.dragGlobalStart.copyFrom(event.data.global);
     event.stopPropagation();
 }
 

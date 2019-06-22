@@ -1,4 +1,4 @@
-// This is demo of pixi-display.js, https://github.com/gameofbombs/pixi-display
+// This is demo of pixi-layers.js, https://github.com/pixijs/pixi-layers
 // Drag the rabbits to understand what's going on
 
 const app = new PIXI.Application({ backgroundColor: 0x1099bb });

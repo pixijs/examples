@@ -3,7 +3,7 @@ const W = 800; const H = 600; const PAD = 80; const
 const WIDTH = W / resolution; const
     HEIGHT = H / resolution;
 
-// the plugin is here: https://github.com/pixijs/pixi-display/tree/layers, its WIP
+// the plugin is here: https://github.com/pixijs/pixi-layers/tree/master, its WIP
 
 const app = new PIXI.Application({ width: WIDTH, height: HEIGHT, resolution });
 document.body.appendChild(app.view);

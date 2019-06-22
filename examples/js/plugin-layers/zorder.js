@@ -27,7 +27,7 @@ const shadowGroup = new PIXI.display.Group(-1, false);
 
 // specify display list component
 app.stage = new PIXI.display.Stage();
-//PixiJS v5 sorting - works on zIndex - and layer gets its zIndex from a group!
+// PixiJS v5 sorting - works on zIndex - and layer gets its zIndex from a group!
 app.stage.sortableChildren = true;
 // sorry, group cant exist without layer yet :(;
 app.stage.addChild(new PIXI.display.Layer(greenGroup));

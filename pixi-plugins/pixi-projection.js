@@ -198,6 +198,106 @@ var pixi_projection;
 })(pixi_projection || (pixi_projection = {}));
 var pixi_projection;
 (function (pixi_projection) {
+    var TYPES = PIXI.TYPES;
+    var premultiplyTint = PIXI.utils.premultiplyTint;
+    var shaderVert = "precision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position.xyw = projectionMatrix * aVertexPosition;\n    gl_Position.z = 0.0;\n    \n    vTextureCoord = aTextureCoord;\n    vTextureId = aTextureId;\n    vColor = aColor;\n}\n";
+    var shaderFrag = "\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\nuniform sampler2D uSamplers[%count%];\n\nvoid main(void){\nvec4 color;\n%forloop%\ngl_FragColor = color * vColor;\n}";
+    var Batch3dGeometry = (function (_super) {
+        __extends(Batch3dGeometry, _super);
+        function Batch3dGeometry(_static) {
+            if (_static === void 0) { _static = false; }
+            var _this = _super.call(this) || this;
+            _this._buffer = new PIXI.Buffer(null, _static, false);
+            _this._indexBuffer = new PIXI.Buffer(null, _static, true);
+            _this.addAttribute('aVertexPosition', _this._buffer, 3, false, TYPES.FLOAT)
+                .addAttribute('aTextureCoord', _this._buffer, 2, false, TYPES.FLOAT)
+                .addAttribute('aColor', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
+                .addAttribute('aTextureId', _this._buffer, 1, true, TYPES.FLOAT)
+                .addIndex(_this._indexBuffer);
+            return _this;
+        }
+        return Batch3dGeometry;
+    }(PIXI.Geometry));
+    pixi_projection.Batch3dGeometry = Batch3dGeometry;
+    var Batch2dPluginFactory = (function () {
+        function Batch2dPluginFactory() {
+        }
+        Batch2dPluginFactory.create = function (options) {
+            var _a = Object.assign({
+                vertex: shaderVert,
+                fragment: shaderFrag,
+                geometryClass: Batch3dGeometry,
+                vertexSize: 7,
+            }, options), vertex = _a.vertex, fragment = _a.fragment, vertexSize = _a.vertexSize, geometryClass = _a.geometryClass;
+            return (function (_super) {
+                __extends(BatchPlugin, _super);
+                function BatchPlugin(renderer) {
+                    var _this = _super.call(this, renderer) || this;
+                    _this.shaderGenerator = new PIXI.BatchShaderGenerator(vertex, fragment);
+                    _this.geometryClass = geometryClass;
+                    _this.vertexSize = vertexSize;
+                    return _this;
+                }
+                BatchPlugin.prototype.packInterleavedGeometry = function (element, float32View, uint32View, indexBuffer, index, indexCount) {
+                    var p = index / this.vertexSize;
+                    var uvs = element.uvs;
+                    var indicies = element.indices;
+                    var vertexData = element.vertexData;
+                    var vertexData2d = element.vertexData2d;
+                    var textureId = element._texture.baseTexture._id;
+                    var alpha = Math.min(element.worldAlpha, 1.0);
+                    var argb = alpha < 1.0 && element._texture.baseTexture.premultiplyAlpha ? premultiplyTint(element._tintRGB, alpha)
+                        : element._tintRGB + (alpha * 255 << 24);
+                    if (vertexData2d) {
+                        var j = 0;
+                        for (var i = 0; i < vertexData2d.length; i += 3, j += 2) {
+                            float32View[index++] = vertexData2d[i];
+                            float32View[index++] = vertexData2d[i + 1];
+                            float32View[index++] = vertexData2d[i + 2];
+                            float32View[index++] = uvs[j];
+                            float32View[index++] = uvs[j + 1];
+                            uint32View[index++] = argb;
+                            float32View[index++] = textureId;
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < vertexData.length; i += 2) {
+                            float32View[index++] = vertexData[i];
+                            float32View[index++] = vertexData[i + 1];
+                            float32View[index++] = 1.0;
+                            float32View[index++] = uvs[i];
+                            float32View[index++] = uvs[i + 1];
+                            uint32View[index++] = argb;
+                            float32View[index++] = textureId;
+                        }
+                    }
+                    for (var i = 0; i < indicies.length; i++) {
+                        indexBuffer[indexCount++] = p + indicies[i];
+                    }
+                };
+                return BatchPlugin;
+            }(PIXI.BatchRenderer));
+        };
+        return Batch2dPluginFactory;
+    }());
+    pixi_projection.Batch2dPluginFactory = Batch2dPluginFactory;
+    PIXI.Renderer.registerPlugin('batch2d', Batch2dPluginFactory.create({}));
+})(pixi_projection || (pixi_projection = {}));
+var pixi_projection;
+(function (pixi_projection) {
+    var UniformBatchRenderer = (function (_super) {
+        __extends(UniformBatchRenderer, _super);
+        function UniformBatchRenderer() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        UniformBatchRenderer.prototype.addToBatch = function (sprite) {
+        };
+        return UniformBatchRenderer;
+    }(PIXI.BatchRenderer));
+    pixi_projection.UniformBatchRenderer = UniformBatchRenderer;
+})(pixi_projection || (pixi_projection = {}));
+var pixi_projection;
+(function (pixi_projection) {
     var p = [new PIXI.Point(), new PIXI.Point(), new PIXI.Point(), new PIXI.Point()];
     var a = [0, 0, 0, 0];
     var Surface = (function () {
@@ -594,7 +694,7 @@ var pixi_projection;
                 }
                 BatchPlugin.prototype.getUniforms = function (sprite) {
                     var proj = sprite.proj;
-                    var shader = this.shader;
+                    var shader = this._shader;
                     if (proj.surface !== null) {
                         return proj.uniforms;
                     }
@@ -1590,93 +1690,6 @@ var pixi_projection;
         return Sprite2d;
     }(PIXI.Sprite));
     pixi_projection.Sprite2d = Sprite2d;
-})(pixi_projection || (pixi_projection = {}));
-var pixi_projection;
-(function (pixi_projection) {
-    var TYPES = PIXI.TYPES;
-    var premultiplyTint = PIXI.utils.premultiplyTint;
-    var shaderVert = "precision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position.xyw = projectionMatrix * aVertexPosition;\n    gl_Position.z = 0.0;\n    \n    vTextureCoord = aTextureCoord;\n    vTextureId = aTextureId;\n    vColor = aColor;\n}\n";
-    var shaderFrag = "\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\nuniform sampler2D uSamplers[%count%];\n\nvoid main(void){\nvec4 color;\n%forloop%\ngl_FragColor = color * vColor;\n}";
-    var Batch3dGeometry = (function (_super) {
-        __extends(Batch3dGeometry, _super);
-        function Batch3dGeometry(_static) {
-            if (_static === void 0) { _static = false; }
-            var _this = _super.call(this) || this;
-            _this._buffer = new PIXI.Buffer(null, _static, false);
-            _this._indexBuffer = new PIXI.Buffer(null, _static, true);
-            _this.addAttribute('aVertexPosition', _this._buffer, 3, false, TYPES.FLOAT)
-                .addAttribute('aTextureCoord', _this._buffer, 2, false, TYPES.FLOAT)
-                .addAttribute('aColor', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
-                .addAttribute('aTextureId', _this._buffer, 1, true, TYPES.FLOAT)
-                .addIndex(_this._indexBuffer);
-            return _this;
-        }
-        return Batch3dGeometry;
-    }(PIXI.Geometry));
-    pixi_projection.Batch3dGeometry = Batch3dGeometry;
-    var Batch2dPluginFactory = (function () {
-        function Batch2dPluginFactory() {
-        }
-        Batch2dPluginFactory.create = function (options) {
-            var _a = Object.assign({
-                vertex: shaderVert,
-                fragment: shaderFrag,
-                geometryClass: Batch3dGeometry,
-                vertexSize: 7,
-            }, options), vertex = _a.vertex, fragment = _a.fragment, vertexSize = _a.vertexSize, geometryClass = _a.geometryClass;
-            return (function (_super) {
-                __extends(BatchPlugin, _super);
-                function BatchPlugin(renderer) {
-                    var _this = _super.call(this, renderer) || this;
-                    _this.shaderGenerator = new PIXI.BatchShaderGenerator(vertex, fragment);
-                    _this.geometryClass = geometryClass;
-                    _this.vertexSize = vertexSize;
-                    return _this;
-                }
-                BatchPlugin.prototype.packGeometry = function (element, float32View, uint32View, indexBuffer, index, indexCount) {
-                    var p = index / this.vertexSize;
-                    var uvs = element.uvs;
-                    var indicies = element.indices;
-                    var vertexData = element.vertexData;
-                    var vertexData2d = element.vertexData2d;
-                    var textureId = element._texture.baseTexture._id;
-                    var alpha = Math.min(element.worldAlpha, 1.0);
-                    var argb = alpha < 1.0 && element._texture.baseTexture.premultiplyAlpha ? premultiplyTint(element._tintRGB, alpha)
-                        : element._tintRGB + (alpha * 255 << 24);
-                    if (vertexData2d) {
-                        var j = 0;
-                        for (var i = 0; i < vertexData2d.length; i += 3, j += 2) {
-                            float32View[index++] = vertexData2d[i];
-                            float32View[index++] = vertexData2d[i + 1];
-                            float32View[index++] = vertexData2d[i + 2];
-                            float32View[index++] = uvs[j];
-                            float32View[index++] = uvs[j + 1];
-                            uint32View[index++] = argb;
-                            float32View[index++] = textureId;
-                        }
-                    }
-                    else {
-                        for (var i = 0; i < vertexData.length; i += 2) {
-                            float32View[index++] = vertexData[i];
-                            float32View[index++] = vertexData[i + 1];
-                            float32View[index++] = 1.0;
-                            float32View[index++] = uvs[i];
-                            float32View[index++] = uvs[i + 1];
-                            uint32View[index++] = argb;
-                            float32View[index++] = textureId;
-                        }
-                    }
-                    for (var i = 0; i < indicies.length; i++) {
-                        indexBuffer[indexCount++] = p + indicies[i];
-                    }
-                };
-                return BatchPlugin;
-            }(PIXI.BatchRenderer));
-        };
-        return Batch2dPluginFactory;
-    }());
-    pixi_projection.Batch2dPluginFactory = Batch2dPluginFactory;
-    PIXI.Renderer.registerPlugin('batch2d', Batch2dPluginFactory.create({}));
 })(pixi_projection || (pixi_projection = {}));
 var pixi_projection;
 (function (pixi_projection) {

@@ -4526,7 +4526,7 @@ var pixi_spine;
                         var uvs = map.uvs;
                         this.readVertices(map, mesh, uvs.length);
                         mesh.triangles = map.triangles;
-                        mesh.regionUVs = uvs;
+                        mesh.regionUVs = new Float32Array(uvs);
                         mesh.hullLength = this.getValue(map, "hull", 0) * 2;
                         return mesh;
                     }
@@ -5400,6 +5400,10 @@ var pixi_spine;
                             else if (direction == "xy")
                                 page.uWrap = page.vWrap = core.TextureWrap.Repeat;
                             textureLoader(line, function (texture) {
+                                if (texture === null) {
+                                    _this.pages.splice(_this.pages.indexOf(page), 1);
+                                    return callback && callback(null);
+                                }
                                 page.baseTexture = texture;
                                 if (!texture.valid) {
                                     texture.setSize(page.width, page.height);
@@ -6570,28 +6574,6 @@ var pixi_spine;
                 _this.tempColor = new core.Color(0, 0, 0, 0);
                 return _this;
             }
-            MeshAttachment.prototype.updateUVs = function (region, uvs) {
-                var regionUVs = this.regionUVs;
-                var n = regionUVs.length;
-                if (!uvs || uvs.length != n) {
-                    uvs = core.Utils.newFloatArray(n);
-                }
-                if (region == null) {
-                    return;
-                }
-                var texture = region.texture;
-                var r = texture._uvs;
-                var w1 = region.width, h1 = region.height, w2 = region.originalWidth, h2 = region.originalHeight;
-                var x = region.offsetX, y = region.pixiOffsetY;
-                for (var i = 0; i < n; i += 2) {
-                    var u = this.regionUVs[i], v = this.regionUVs[i + 1];
-                    u = (u * w2 - x) / w1;
-                    v = (v * h2 - y) / h1;
-                    uvs[i] = (r.x0 * (1 - u) + r.x1 * u) * (1 - v) + (r.x3 * (1 - u) + r.x2 * u) * v;
-                    uvs[i + 1] = (r.y0 * (1 - u) + r.y1 * u) * (1 - v) + (r.y3 * (1 - u) + r.y2 * u) * v;
-                }
-                return uvs;
-            };
             MeshAttachment.prototype.applyDeform = function (sourceAttachment) {
                 return this == sourceAttachment || (this.inheritDeform && this.parentMesh == sourceAttachment);
             };
@@ -6998,7 +6980,6 @@ var pixi_spine;
             else {
                 light = this.tintRgb;
             }
-            var thack = false;
             for (var i = 0, n = slots.length; i < n; i++) {
                 var slot = slots[i];
                 var attachment = slot.attachment;
@@ -7174,8 +7155,7 @@ var pixi_spine;
             mesh.region = region;
             mesh.texture = region.texture;
             region.texture.updateUvs();
-            attachment.updateUVs(region, mesh.uvBuffer.data);
-            mesh.uvBuffer.update();
+            mesh.uvBuffer.update(attachment.regionUVs);
         };
         Spine.prototype.autoUpdateTransform = function () {
             if (Spine.globalAutoUpdate) {
@@ -7219,7 +7199,7 @@ var pixi_spine;
                 slot.tempAttachment = null;
                 slot.tempRegion = null;
             }
-            var strip = this.newMesh(region.texture, new Float32Array(attachment.regionUVs.length), new Float32Array(attachment.regionUVs.length), new Uint16Array(attachment.triangles), PIXI.DRAW_MODES.TRIANGLES);
+            var strip = this.newMesh(region.texture, new Float32Array(attachment.regionUVs.length), attachment.regionUVs, new Uint16Array(attachment.triangles), PIXI.DRAW_MODES.TRIANGLES);
             if (strip.canvasPadding) {
                 strip.canvasPadding = 1.5;
             }
@@ -7244,12 +7224,13 @@ var pixi_spine;
             return graphics;
         };
         Spine.prototype.updateGraphics = function (slot, clip) {
-            var vertices = slot.currentGraphics.graphicsData[0].shape.points;
+            var geom = slot.currentGraphics.geometry;
+            var vertices = geom.graphicsData[0].shape.points;
             var n = clip.worldVerticesLength;
             vertices.length = n;
             clip.computeWorldVertices(slot, 0, n, vertices, 0, 2);
-            slot.currentGraphics.dirty++;
-            slot.currentGraphics.clearDirty++;
+            geom.dirty++;
+            geom.clearDirty++;
         };
         Spine.prototype.hackTextureBySlotIndex = function (slotIndex, texture, size) {
             if (texture === void 0) { texture = null; }
@@ -7435,12 +7416,14 @@ var pixi_spine;
                         : imageLoaderAdapter(this, namePrefix, baseUrl, imageOptions);
             var createSkeletonWithRawAtlas = function (rawData) {
                 new pixi_spine.core.TextureAtlas(rawData, adapter, function (spineAtlas) {
-                    var spineJsonParser = new pixi_spine.core.SkeletonJson(new pixi_spine.core.AtlasAttachmentLoader(spineAtlas));
-                    if (metadataSkeletonScale) {
-                        spineJsonParser.scale = metadataSkeletonScale;
+                    if (spineAtlas) {
+                        var spineJsonParser = new pixi_spine.core.SkeletonJson(new pixi_spine.core.AtlasAttachmentLoader(spineAtlas));
+                        if (metadataSkeletonScale) {
+                            spineJsonParser.scale = metadataSkeletonScale;
+                        }
+                        resource.spineData = spineJsonParser.readSkeletonData(resource.data);
+                        resource.spineAtlas = spineAtlas;
                     }
-                    resource.spineData = spineJsonParser.readSkeletonData(resource.data);
-                    resource.spineAtlas = spineAtlas;
                     next();
                 });
             };
@@ -7482,7 +7465,12 @@ var pixi_spine;
             }
             else {
                 loader.add(name, url, imageOptions, function (resource) {
-                    callback(resource.texture.baseTexture);
+                    if (!resource.error) {
+                        callback(resource.texture.baseTexture);
+                    }
+                    else {
+                        callback(null);
+                    }
                 });
             }
         };

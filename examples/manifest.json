@@ -245,22 +245,6 @@
             ]
         }
     ],
-    "plugin-dragonbones": [
-        {
-            "title": "Robot",
-            "entry": "robot.js",
-            "plugins": [
-                "pixi-dragonbones"
-            ]
-        },
-        {
-            "title": "Eye Tracking",
-            "entry": "eyetracking.js",
-            "plugins": [
-                "pixi-dragonbones"
-            ]
-        }
-    ],
     "plugin-spine": [
         {
             "title": "Dragon",
@@ -288,6 +272,22 @@
             "entry": "spineboy.js",
             "plugins": [
                 "pixi-spine"
+            ]
+        }
+    ],
+	"plugin-dragonbones": [
+        {
+            "title": "Robot",
+            "entry": "robot.js",
+            "plugins": [
+                "pixi-dragonbones"
+            ]
+        },
+        {
+            "title": "Eye Tracking",
+            "entry": "eyetracking.js",
+            "plugins": [
+                "pixi-dragonbones"
             ]
         }
     ],

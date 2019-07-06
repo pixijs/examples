@@ -238,8 +238,9 @@ var pixi_projection;
                     _this.vertexSize = vertexSize;
                     return _this;
                 }
-                BatchPlugin.prototype.packInterleavedGeometry = function (element, float32View, uint32View, indexBuffer, index, indexCount) {
-                    var p = index / this.vertexSize;
+                BatchPlugin.prototype.packInterleavedGeometry = function (element, attributeBuffer, indexBuffer, aIndex, iIndex) {
+                    var uint32View = attributeBuffer.uint32View, float32View = attributeBuffer.float32View;
+                    var p = aIndex / this.vertexSize;
                     var uvs = element.uvs;
                     var indicies = element.indices;
                     var vertexData = element.vertexData;
@@ -251,28 +252,28 @@ var pixi_projection;
                     if (vertexData2d) {
                         var j = 0;
                         for (var i = 0; i < vertexData2d.length; i += 3, j += 2) {
-                            float32View[index++] = vertexData2d[i];
-                            float32View[index++] = vertexData2d[i + 1];
-                            float32View[index++] = vertexData2d[i + 2];
-                            float32View[index++] = uvs[j];
-                            float32View[index++] = uvs[j + 1];
-                            uint32View[index++] = argb;
-                            float32View[index++] = textureId;
+                            float32View[aIndex++] = vertexData2d[i];
+                            float32View[aIndex++] = vertexData2d[i + 1];
+                            float32View[aIndex++] = vertexData2d[i + 2];
+                            float32View[aIndex++] = uvs[j];
+                            float32View[aIndex++] = uvs[j + 1];
+                            uint32View[aIndex++] = argb;
+                            float32View[aIndex++] = textureId;
                         }
                     }
                     else {
                         for (var i = 0; i < vertexData.length; i += 2) {
-                            float32View[index++] = vertexData[i];
-                            float32View[index++] = vertexData[i + 1];
-                            float32View[index++] = 1.0;
-                            float32View[index++] = uvs[i];
-                            float32View[index++] = uvs[i + 1];
-                            uint32View[index++] = argb;
-                            float32View[index++] = textureId;
+                            float32View[aIndex++] = vertexData[i];
+                            float32View[aIndex++] = vertexData[i + 1];
+                            float32View[aIndex++] = 1.0;
+                            float32View[aIndex++] = uvs[i];
+                            float32View[aIndex++] = uvs[i + 1];
+                            uint32View[aIndex++] = argb;
+                            float32View[aIndex++] = textureId;
                         }
                     }
                     for (var i = 0; i < indicies.length; i++) {
-                        indexBuffer[indexCount++] = p + indicies[i];
+                        indexBuffer[iIndex++] = p + indicies[i];
                     }
                 };
                 return BatchPlugin;

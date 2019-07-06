@@ -268,10 +268,33 @@
             ]
         },
         {
-            "title": "Walking Animation",
+            "title": "Spineboy Walking",
             "entry": "spineboy.js",
             "plugins": [
                 "pixi-spine"
+            ]
+        },
+		{
+            "title": "Spineboy Pro",
+            "entry": "spineboy-pro.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        }
+    ],
+	"plugin-dragonbones": [
+        {
+            "title": "Robot",
+            "entry": "robot.js",
+            "plugins": [
+                "pixi-dragonbones"
+            ]
+        },
+        {
+            "title": "Eye Tracking",
+            "entry": "eyetracking.js",
+            "plugins": [
+                "pixi-dragonbones"
             ]
         }
     ],

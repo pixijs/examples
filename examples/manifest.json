@@ -319,6 +319,14 @@
             "plugins": [
                 "pixi-heaven"
             ]
+        },
+		{
+            "title": "Spine support",
+            "entry": "spineboy-pro.js",
+            "plugins": [
+				"pixi-spine",
+                "pixi-heaven"
+            ]
         }
 	],
     "plugin-projection": [

@@ -7,9 +7,6 @@ var pixi_heaven;
         CLAMP_OPTIONS[CLAMP_OPTIONS["ALWAYS"] = 2] = "ALWAYS";
     })(CLAMP_OPTIONS = pixi_heaven.CLAMP_OPTIONS || (pixi_heaven.CLAMP_OPTIONS = {}));
     pixi_heaven.settings = {
-        MESH_PLUGIN: 'meshHeaven',
-        SPINE_MESH_PLUGIN: 'batchHeaven',
-        TEXTURE_MANAGER: true,
         MESH_CLAMP: CLAMP_OPTIONS.AUTO,
     };
 })(pixi_heaven || (pixi_heaven = {}));
@@ -343,22 +340,6 @@ var pixi_heaven;
             enumerable: true,
             configurable: true
         });
-        BitmapText.prototype.updateTransform = function () {
-            var thisAny = this;
-            thisAny._boundsID++;
-            this.transform.updateTransform(this.parent.transform);
-            thisAny.worldAlpha = this.alpha * this.parent.worldAlpha;
-            if (this.color) {
-                this.color.alpha = this.worldAlpha;
-                this.color.updateTransform();
-            }
-            for (var i = 0, j = this.children.length; i < j; ++i) {
-                var child = this.children[i];
-                if (child.visible) {
-                    child.updateTransform();
-                }
-            }
-        };
         BitmapText.prototype.addChild = function (child) {
             var additionalChildren = [];
             for (var _i = 1; _i < arguments.length; _i++) {
@@ -372,6 +353,10 @@ var pixi_heaven;
                 child.pluginName = 'batchHeaven';
             }
             return _super.prototype.addChild.apply(this, [child].concat(additionalChildren));
+        };
+        BitmapText.prototype._render = function (renderer) {
+            this.color.alpha = this.worldAlpha;
+            this.color.updateTransform();
         };
         return BitmapText;
     }(PIXI.BitmapText));
@@ -583,6 +568,10 @@ var pixi_heaven;
             renderer.geometry.bind(this.geometry, shader);
             renderer.geometry.draw(this.drawMode, this.size, this.start, this.geometry.instanceCount);
         };
+        Mesh.prototype._renderToBatch = function (renderer) {
+            this.color.updateTransform();
+            _super.prototype._renderToBatch.call(this, renderer);
+        };
         return Mesh;
     }(PIXI.Mesh));
     pixi_heaven.Mesh = Mesh;
@@ -616,7 +605,7 @@ var pixi_heaven;
 })(pixi_heaven || (pixi_heaven = {}));
 var pixi_heaven;
 (function (pixi_heaven) {
-    var vertex = "attribute vec2 aVertexPosition;\n\tattribute vec2 aTextureCoord;\n\n\tuniform mat3 projectionMatrix;\n\tuniform mat3 translationMatrix;\n\tuniform mat3 uTransform;\n\n\tvarying vec2 vTextureCoord;\n\n\tvoid main(void)\n\t{\n\t\tgl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n\t\tvTextureCoord = (uTransform * vec3(aTextureCoord, 1.0)).xy;\n\t}";
+    var vertex = "attribute vec2 aVertexPosition;\n\tattribute vec2 aTextureCoord;\n\n\tuniform mat3 projectionMatrix;\n\tuniform mat3 translationMatrix;\n\tuniform mat3 uTextureMatrix;\n\n\tvarying vec2 vTextureCoord;\n\n\tvoid main(void)\n\t{\n\t\tgl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n\t\tvTextureCoord = (uTextureMatrix * vec3(aTextureCoord, 1.0)).xy;\n\t}";
     var fragment = "varying vec2 vTextureCoord;\nuniform vec4 uLight, uDark;\n\nuniform sampler2D uSampler;\n\nvoid main(void)\n{\n    vec4 texColor = texture2D(uSampler, vTextureCoord);\n    gl_FragColor.a = texColor.a * uLight.a;\n\tgl_FragColor.rgb = ((texColor.a - 1.0) * uDark.a + 1.0 - texColor.rgb) * uDark.rgb + texColor.rgb * uLight.rgb;\n}\n\t";
     var fragTrim = "\n\tvarying vec2 vTextureCoord;\n\tuniform vec4 uLight, uDark;\n\tuniform vec4 uClampFrame;\n\t\n\tuniform sampler2D uSampler;\n\t\n\tvoid main(void)\n\t{\n\t    vec2 coord = vTextureCoord;\n\t    if (coord.x < uClampFrame.x || coord.x > uClampFrame.z\n\t        || coord.y < uClampFrame.y || coord.y > uClampFrame.w)\n\t            discard;\n\t    vec4 texColor = texture2D(uSampler, vTextureCoord);\n\t    gl_FragColor.a = texColor.a * uLight.a;\n\t\tgl_FragColor.rgb = ((texColor.a - 1.0) * uDark.a + 1.0 - texColor.rgb) * uDark.rgb + texColor.rgb * uLight.rgb;\n\t}\n\t";
     var MeshMaterial = (function (_super) {
@@ -628,6 +617,9 @@ var pixi_heaven;
                 uTextureMatrix: PIXI.Matrix.IDENTITY,
                 uColor: new Float32Array([1, 1, 1, 1]),
             };
+            options = Object.assign({
+                pluginName: 'batchHeaven',
+            }, options);
             var allowTrim = options.allowTrim;
             if (!allowTrim) {
                 if (pixi_heaven.settings.MESH_CLAMP === pixi_heaven.CLAMP_OPTIONS.AUTO) {
@@ -637,9 +629,6 @@ var pixi_heaven;
                     allowTrim = true;
                 }
             }
-            options = Object.assign({
-                pluginName: 'batchHeaven',
-            }, options);
             if (options.uniforms) {
                 Object.assign(uniforms, options.uniforms);
             }
@@ -688,8 +677,7 @@ var pixi_heaven;
             configurable: true
         });
         MeshMaterial.prototype.update = function () {
-            var color = this.color;
-            color.updateTransform();
+            this.color.updateTransform();
             if (this.uvMatrix.update()) {
                 this.uniforms.uTextureMatrix = this.uvMatrix.mapCoord;
                 if (this.allowTrim) {
@@ -740,24 +728,6 @@ var pixi_heaven;
             enumerable: true,
             configurable: true
         });
-        Sprite.prototype.updateTransform = function () {
-            if (this.sortableChildren && this.sortDirty) {
-                this.sortChildren();
-            }
-            this._boundsID++;
-            this.transform.updateTransform(this.parent.transform);
-            this.worldAlpha = this.alpha * this.parent.worldAlpha;
-            if (this.color) {
-                this.color.alpha = this.worldAlpha;
-                this.color.updateTransform();
-            }
-            for (var i = 0, j = this.children.length; i < j; ++i) {
-                var child = this.children[i];
-                if (child.visible) {
-                    child.updateTransform();
-                }
-            }
-        };
         Sprite.prototype._onTextureUpdate = function () {
             var thisAny = this;
             thisAny._textureID = -1;
@@ -781,6 +751,11 @@ var pixi_heaven;
             if (thisAny._height) {
                 this.scale.y = sign(this.scale.y) * thisAny._height / thisAny._texture.orig.height;
             }
+        };
+        Sprite.prototype._render = function (renderer) {
+            this.color.alpha = this.worldAlpha;
+            this.color.updateTransform();
+            _super.prototype._render.call(this, renderer);
         };
         Sprite.prototype._calculateBounds = function () {
             var thisAny = this;
@@ -987,7 +962,9 @@ var pixi_heaven;
             configurable: true
         });
         this._onTextureUpdate = pixi_heaven.Sprite.prototype._onTextureUpdate;
-        this.updateTransform = pixi_heaven.Sprite.prototype.updateTransform;
+        this._render = pixi_heaven.Sprite.prototype._render;
+        this._calculateBounds = pixi_heaven.Sprite.prototype._calculateBounds;
+        this.calculateVertices = pixi_heaven.Sprite.prototype.calculateVertices;
         this.color = new pixi_heaven.ColorTransform();
         this.pluginName = 'batchHeaven';
         return this;
@@ -1003,60 +980,57 @@ var pixi_heaven;
 })(pixi_heaven || (pixi_heaven = {}));
 var pixi_heaven;
 (function (pixi_heaven) {
-    var spine;
-    (function (spine_1) {
-        var Spine = (function (_super) {
-            __extends(Spine, _super);
-            function Spine(spineData) {
-                var _this = _super.call(this, spineData) || this;
-                _this.hasSpriteMask = false;
-                _this.color = new pixi_heaven.ColorTransform();
-                return _this;
+    var Spine = (function (_super) {
+        __extends(Spine, _super);
+        function Spine(spineData) {
+            var _this = _super.call(this, spineData) || this;
+            _this.hasSpriteMask = false;
+            _this.color = new pixi_heaven.ColorTransform();
+            return _this;
+        }
+        Spine.prototype.newSprite = function (tex) {
+            return new SpineSprite(tex, this);
+        };
+        Spine.prototype.newMesh = function (texture, vertices, uvs, indices, drawMode) {
+            return new SpineMesh(texture, vertices, uvs, indices, drawMode, this);
+        };
+        return Spine;
+    }(PIXI.spine.Spine));
+    pixi_heaven.Spine = Spine;
+    var SpineMesh = (function (_super) {
+        __extends(SpineMesh, _super);
+        function SpineMesh(texture, vertices, uvs, indices, drawMode, spine) {
+            if (spine === void 0) { spine = null; }
+            var _this = _super.call(this, texture, vertices, uvs, indices, drawMode) || this;
+            _this.region = null;
+            _this.spine = spine;
+            return _this;
+        }
+        SpineMesh.prototype._render = function (renderer) {
+            _super.prototype._render.call(this, renderer);
+        };
+        return SpineMesh;
+    }(pixi_heaven.SimpleMesh));
+    pixi_heaven.SpineMesh = SpineMesh;
+    var SpineSprite = (function (_super) {
+        __extends(SpineSprite, _super);
+        function SpineSprite(tex, spine) {
+            var _this = _super.call(this, tex) || this;
+            _this.region = null;
+            _this.spine = spine;
+            return _this;
+        }
+        SpineSprite.prototype._render = function (renderer) {
+            if (this.maskSprite) {
+                this.spine.hasSpriteMask = true;
             }
-            Spine.prototype.newSprite = function (tex) {
-                return new SpineSprite(tex, this);
-            };
-            Spine.prototype.newMesh = function (texture, vertices, uvs, indices, drawMode) {
-                return new SpineMesh(texture, vertices, uvs, indices, drawMode, this);
-            };
-            return Spine;
-        }(PIXI.spine.Spine));
-        spine_1.Spine = Spine;
-        var SpineMesh = (function (_super) {
-            __extends(SpineMesh, _super);
-            function SpineMesh(texture, vertices, uvs, indices, drawMode, spine) {
-                if (spine === void 0) { spine = null; }
-                var _this = _super.call(this, texture, vertices, uvs, indices, drawMode) || this;
-                _this.region = null;
-                _this.spine = spine;
-                return _this;
+            if (this.spine.hasSpriteMask) {
+                this.pluginName = 'spriteMasked';
             }
-            SpineMesh.prototype._render = function (renderer) {
-                _super.prototype._render.call(this, renderer);
-            };
-            return SpineMesh;
-        }(pixi_heaven.SimpleMesh));
-        spine_1.SpineMesh = SpineMesh;
-        var SpineSprite = (function (_super) {
-            __extends(SpineSprite, _super);
-            function SpineSprite(tex, spine) {
-                var _this = _super.call(this, tex) || this;
-                _this.region = null;
-                _this.spine = spine;
-                return _this;
-            }
-            SpineSprite.prototype._render = function (renderer) {
-                if (this.maskSprite) {
-                    this.spine.hasSpriteMask = true;
-                }
-                if (this.spine.hasSpriteMask) {
-                    this.pluginName = 'spriteMasked';
-                }
-                _super.prototype._render.call(this, renderer);
-            };
-            return SpineSprite;
-        }(pixi_heaven.Sprite));
-        spine_1.SpineSprite = SpineSprite;
-    })(spine = pixi_heaven.spine || (pixi_heaven.spine = {}));
+            _super.prototype._render.call(this, renderer);
+        };
+        return SpineSprite;
+    }(pixi_heaven.Sprite));
+    pixi_heaven.SpineSprite = SpineSprite;
 })(pixi_heaven || (pixi_heaven = {}));
 //# sourceMappingURL=pixi-heaven.js.map

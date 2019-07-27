@@ -1,3 +1,5 @@
+// the plugin is here: https://github.com/gameofbombs/pixi-heaven/tree/master
+
 const app = new PIXI.Application({backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 

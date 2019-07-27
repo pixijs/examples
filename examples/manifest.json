@@ -298,6 +298,29 @@
             ]
         }
     ],
+	"plugin-heaven": [
+        {
+            "title": "Invert",
+            "entry": "invert.js",
+            "plugins": [
+                "pixi-heaven"
+            ]
+        },
+		{
+            "title": "Polygon Packing",
+            "entry": "polygon.js",
+            "plugins": [
+                "pixi-heaven"
+            ]
+        },
+		{
+            "title": "Decals",
+            "entry": "decals.js",
+            "plugins": [
+                "pixi-heaven"
+            ]
+        }
+	],
     "plugin-projection": [
         {
             "title": "2D Basics",

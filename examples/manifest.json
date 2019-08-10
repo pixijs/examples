@@ -168,7 +168,7 @@
             ]
         }
     ],
-    "mesh & shaders": [
+    "mesh-and-shaders": [
         {
             "title": "Textured Mesh - Basic",
             "entry": "textured-mesh-basic.js"

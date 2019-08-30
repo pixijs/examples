@@ -3,8 +3,8 @@ document.body.appendChild(app.view);
 
 // use empty array if you dont want to use detect feature
 const extensions = PIXI.compressedTextures.detectExtensions(app.renderer);
+const loader = app.loader;
 
-const loader = new app.loaders.Loader();
 loader.pre(PIXI.compressedTextures.extensionChooser(extensions));
 // use @2x texture if resolution is 2, use dds format if its windows
 const textureOptions1 = { metadata: { choice: ['@2x.png', '.dds', '@2x.dds'] } };

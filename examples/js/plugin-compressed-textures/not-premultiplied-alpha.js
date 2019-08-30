@@ -5,7 +5,7 @@ document.body.appendChild(app.view);
 
 // compressed textures setup
 
-const loader = new PIXI.Loader('http://pixijs.io/examples/');
+const loader = new PIXI.Loader();
 
 const textStyle = { fill: 0xffffff };
 function createSprite(texture, text) {

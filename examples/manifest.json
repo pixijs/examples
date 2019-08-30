@@ -230,10 +230,6 @@
         {
             "title": "Gradient Resource",
             "entry": "gradient-resource.js"
-        },
-        {
-            "title": "v5 Not-premultiplied alpha",
-            "entry": "not-premultiplied-alpha.js"
         }
     ],
     "plugin-filters": [
@@ -467,9 +463,13 @@
             "entry": "dds.js",
             "plugins": [
                 "pixi-compressed-textures"
-            ],
-            "validVersions": [
-                4
+            ]
+        },
+        {
+            "title": "Not-premultiplied alpha",
+            "entry": "not-premultiplied-alpha.js",
+            "plugins": [
+                "pixi-compressed-textures"
             ]
         }
     ]

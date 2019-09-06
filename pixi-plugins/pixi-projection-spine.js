@@ -34,14 +34,6 @@ var pixi_projection;
     })(utils = pixi_projection.utils || (pixi_projection.utils = {}));
 })(pixi_projection || (pixi_projection = {}));
 PIXI.projection = pixi_projection;
-var pixi_heaven;
-(function (pixi_heaven) {
-    if (!PIXI.spine) {
-        PIXI.spine = {
-            Spine: function () { }
-        };
-    }
-})(pixi_heaven || (pixi_heaven = {}));
 var pixi_projection;
 (function (pixi_projection) {
     var AbstractProjection = (function () {
@@ -277,7 +269,7 @@ var pixi_projection;
                     }
                 };
                 return BatchPlugin;
-            }(PIXI.BatchRenderer));
+            }(PIXI.AbstractBatchRenderer));
         };
         return Batch2dPluginFactory;
     }());
@@ -294,7 +286,7 @@ var pixi_projection;
         UniformBatchRenderer.prototype.addToBatch = function (sprite) {
         };
         return UniformBatchRenderer;
-    }(PIXI.BatchRenderer));
+    }(PIXI.AbstractBatchRenderer));
     pixi_projection.UniformBatchRenderer = UniformBatchRenderer;
 })(pixi_projection || (pixi_projection = {}));
 var pixi_projection;
@@ -736,7 +728,7 @@ var pixi_projection;
                     }
                 };
                 return BatchPlugin;
-            }(PIXI.BatchRenderer));
+            }(PIXI.AbstractBatchRenderer));
         };
         return BatchBilinearPluginFactory;
     }());
@@ -1581,6 +1573,7 @@ var pixi_projection;
             this._bounds.addQuad(this.vertexTrimmedData);
         };
         Sprite2d.prototype.calculateVertices = function () {
+            var texture = this._texture;
             if (this.proj._affine) {
                 this.vertexData2d = null;
                 _super.prototype.calculateVertices.call(this);
@@ -1590,13 +1583,15 @@ var pixi_projection;
                 this.vertexData2d = new Float32Array(12);
             }
             var wid = this.transform._worldID;
-            var tuid = this._texture._updateID;
+            var tuid = texture._updateID;
             if (this._transformID === wid && this._textureID === tuid) {
                 return;
             }
+            if (this._textureID !== tuid) {
+                this.uvs = texture._uvs.uvsFloat32;
+            }
             this._transformID = wid;
             this._textureID = tuid;
-            var texture = this._texture;
             var wt = this.proj.world.mat3;
             var vertexData2d = this.vertexData2d;
             var vertexData = this.vertexData;
@@ -1891,7 +1886,7 @@ var pixi_projection;
         alphaMaskFilter[0].resolution = this.renderer.resolution;
         alphaMaskFilter[0].maskSprite = maskData;
         target.filterArea = maskData.getBounds(true);
-        this.renderer.filterManager.pushFilter(target, alphaMaskFilter);
+        this.renderer.filter.push(target, alphaMaskFilter);
         this.alphaMaskIndex++;
     };
 })(pixi_projection || (pixi_projection = {}));
@@ -3293,6 +3288,7 @@ var pixi_projection;
             return _this;
         }
         Sprite3d.prototype.calculateVertices = function () {
+            var texture = this._texture;
             if (this.proj._affine) {
                 this.vertexData2d = null;
                 _super.prototype.calculateVertices.call(this);
@@ -3302,13 +3298,15 @@ var pixi_projection;
                 this.vertexData2d = new Float32Array(12);
             }
             var wid = this.transform._worldID;
-            var tuid = this._texture._updateID;
+            var tuid = texture._updateID;
             if (this._transformID === wid && this._textureID === tuid) {
                 return;
             }
+            if (this._textureID !== tuid) {
+                this.uvs = texture._uvs.uvsFloat32;
+            }
             this._transformID = wid;
             this._textureID = tuid;
-            var texture = this._texture;
             var wt = this.proj.world.mat4;
             var vertexData2d = this.vertexData2d;
             var vertexData = this.vertexData;

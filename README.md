@@ -9,7 +9,7 @@ The iframe that displays the examples is **800 * 600**, consequently please avoi
 This micro-site is built using HTML and jQuery and can be run on your local server without additional requirements.
 
 If you change the site code within `src/js/pixi-examples.js` or any styling within `src/less` you will need to rebuild the project.
-After installing dependencies via `npm i`, you can perform a one off projection build via `npm run build`, or start a watch process for development via `npm run watch`.
+After installing dependencies via `npm i`, you can perform a one off projection build via `npm run build` and open with `http-server -c-1`, also you can start a watch process for development via `npm run watch`.
 
 ## Project structure ##
 

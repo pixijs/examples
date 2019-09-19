@@ -145,7 +145,375 @@ var pixi_compressed_textures;
 })(pixi_compressed_textures || (pixi_compressed_textures = {}));
 var pixi_compressed_textures;
 (function (pixi_compressed_textures) {
-    pixi_compressed_textures.Loaders = undefined;
+    var AbstractInternalLoader = (function () {
+        function AbstractInternalLoader(_image) {
+            if (_image === void 0) { _image = new pixi_compressed_textures.CompressedImage("unknown"); }
+            this._image = _image;
+            this._format = 0;
+        }
+        AbstractInternalLoader.prototype.free = function () { };
+        ;
+        AbstractInternalLoader.test = function (arrayBuffer) {
+            return false;
+        };
+        AbstractInternalLoader.type = "ABSTRACT";
+        return AbstractInternalLoader;
+    }());
+    pixi_compressed_textures.AbstractInternalLoader = AbstractInternalLoader;
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    var _a;
+    var ASTC_HEADER_LENGTH = 16;
+    var ASTC_HEADER_DIM_X = 4;
+    var ASTC_HEADER_DIM_Y = 5;
+    var ASTC_HEADER_WIDTH = 7;
+    var ASTC_HEADER_HEIGHT = 10;
+    var ASTC_MAGIC = 0x5CA1AB13;
+    var COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0;
+    var COMPRESSED_RGBA_ASTC_5x4_KHR = 0x93B1;
+    var COMPRESSED_RGBA_ASTC_5x5_KHR = 0x93B2;
+    var COMPRESSED_RGBA_ASTC_6x5_KHR = 0x93B3;
+    var COMPRESSED_RGBA_ASTC_6x6_KHR = 0x93B4;
+    var COMPRESSED_RGBA_ASTC_8x5_KHR = 0x93B5;
+    var COMPRESSED_RGBA_ASTC_8x6_KHR = 0x93B6;
+    var COMPRESSED_RGBA_ASTC_8x8_KHR = 0x93B7;
+    var COMPRESSED_RGBA_ASTC_10x5_KHR = 0x93B8;
+    var COMPRESSED_RGBA_ASTC_10x6_KHR = 0x93B9;
+    var COMPRESSED_RGBA_ASTC_10x8_KHR = 0x93BA;
+    var COMPRESSED_RGBA_ASTC_10x10_KHR = 0x93BB;
+    var COMPRESSED_RGBA_ASTC_12x10_KHR = 0x93BC;
+    var COMPRESSED_RGBA_ASTC_12x12_KHR = 0x93BD;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR = 0x93D0;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR = 0x93D1;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR = 0x93D2;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR = 0x93D3;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR = 0x93D4;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR = 0x93D5;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR = 0x93D6;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR = 0x93D7;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR = 0x93D8;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR = 0x93D9;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR = 0x93DA;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR = 0x93DB;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR = 0x93DC;
+    var COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR = 0x93DD;
+    var ASTC_DIMS_TO_FORMAT = (_a = {},
+        _a[4 * 4] = 0,
+        _a[5 * 4] = 1,
+        _a[5 * 5] = 2,
+        _a[6 * 5] = 3,
+        _a[6 * 6] = 4,
+        _a[8 * 5] = 5,
+        _a[8 * 6] = 6,
+        _a[8 * 8] = 7,
+        _a[10 * 5] = 8,
+        _a[10 * 6] = 9,
+        _a[10 * 8] = 10,
+        _a[10 * 10] = 11,
+        _a[12 * 10] = 12,
+        _a[12 * 12] = 13,
+        _a);
+    var ASTCLoader = (function (_super) {
+        __extends(ASTCLoader, _super);
+        function ASTCLoader(_image, useSRGB) {
+            if (useSRGB === void 0) { useSRGB = false; }
+            var _this = _super.call(this, _image) || this;
+            _this.useSRGB = useSRGB;
+            _this._blockSize = { x: 0, y: 0 };
+            return _this;
+        }
+        ASTCLoader.prototype.load = function (buffer) {
+            if (!ASTCLoader.test(buffer)) {
+                throw "Invalid magic number in ASTC header";
+            }
+            var header = new Uint8Array(buffer, 0, ASTC_HEADER_LENGTH);
+            var dim_x = header[ASTC_HEADER_DIM_X];
+            var dim_y = header[ASTC_HEADER_DIM_Y];
+            var width = (header[ASTC_HEADER_WIDTH]) + (header[ASTC_HEADER_WIDTH + 1] << 8) + (header[ASTC_HEADER_WIDTH + 2] << 16);
+            var height = (header[ASTC_HEADER_HEIGHT]) + (header[ASTC_HEADER_HEIGHT + 1] << 8) + (header[ASTC_HEADER_HEIGHT + 2] << 16);
+            var internalFormat = ASTC_DIMS_TO_FORMAT[dim_x * dim_y] + (this.useSRGB ? COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR : COMPRESSED_RGBA_ASTC_4x4_KHR);
+            var astcData = new Uint8Array(buffer, ASTC_HEADER_LENGTH);
+            this._format = internalFormat;
+            this._blockSize.x = dim_x;
+            this._blockSize.y = dim_y;
+            var dest = this._image;
+            dest.init(dest.src, astcData, 'ASTC', width, height, 1, internalFormat);
+            return dest;
+        };
+        ASTCLoader.test = function (buffer) {
+            var magic = new Int32Array(buffer, 0, 1);
+            return magic[0] === ASTC_MAGIC;
+        };
+        ASTCLoader.prototype.levelBufferSize = function (width, height, mipLevel) {
+            if (mipLevel === void 0) { mipLevel = 0; }
+            var f_ = Math.floor;
+            var dim_x = this._blockSize.x;
+            var dim_y = this._blockSize.y;
+            return (f_((width + dim_x - 1) / dim_x) * f_((height + dim_y - 1) / dim_y)) << 4;
+        };
+        ASTCLoader.type = "ASTC";
+        return ASTCLoader;
+    }(pixi_compressed_textures.AbstractInternalLoader));
+    pixi_compressed_textures.ASTCLoader = ASTCLoader;
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+function fourCCToInt32(value) {
+    return value.charCodeAt(0) +
+        (value.charCodeAt(1) << 8) +
+        (value.charCodeAt(2) << 16) +
+        (value.charCodeAt(3) << 24);
+}
+function int32ToFourCC(value) {
+    return String.fromCharCode(value & 0xff, (value >> 8) & 0xff, (value >> 16) & 0xff, (value >> 24) & 0xff);
+}
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    var _a;
+    var DDS_MAGIC = 0x20534444;
+    var DDSD_MIPMAPCOUNT = 0x20000;
+    var DDPF_FOURCC = 0x4;
+    var DDS_HEADER_LENGTH = 31;
+    var DDS_HEADER_MAGIC = 0;
+    var DDS_HEADER_SIZE = 1;
+    var DDS_HEADER_FLAGS = 2;
+    var DDS_HEADER_HEIGHT = 3;
+    var DDS_HEADER_WIDTH = 4;
+    var DDS_HEADER_MIPMAPCOUNT = 7;
+    var DDS_HEADER_PF_FLAGS = 20;
+    var DDS_HEADER_PF_FOURCC = 21;
+    var FOURCC_DXT1 = fourCCToInt32("DXT1");
+    var FOURCC_DXT3 = fourCCToInt32("DXT3");
+    var FOURCC_DXT5 = fourCCToInt32("DXT5");
+    var FOURCC_ATC = fourCCToInt32("ATC ");
+    var FOURCC_ATCA = fourCCToInt32("ATCA");
+    var FOURCC_ATCI = fourCCToInt32("ATCI");
+    var COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0;
+    var COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F1;
+    var COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
+    var COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
+    var COMPRESSED_RGB_ATC_WEBGL = 0x8C92;
+    var COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL = 0x8C93;
+    var COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL = 0x87EE;
+    var FOURCC_TO_FORMAT = (_a = {},
+        _a[FOURCC_DXT1] = COMPRESSED_RGB_S3TC_DXT1_EXT,
+        _a[FOURCC_DXT3] = COMPRESSED_RGBA_S3TC_DXT3_EXT,
+        _a[FOURCC_DXT5] = COMPRESSED_RGBA_S3TC_DXT5_EXT,
+        _a[FOURCC_ATC] = COMPRESSED_RGB_ATC_WEBGL,
+        _a[FOURCC_ATCA] = COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL,
+        _a[FOURCC_ATCI] = COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL,
+        _a);
+    var DDSLoader = (function (_super) {
+        __extends(DDSLoader, _super);
+        function DDSLoader(_image) {
+            return _super.call(this, _image) || this;
+        }
+        DDSLoader.prototype.load = function (arrayBuffer) {
+            if (!DDSLoader.test(arrayBuffer)) {
+                throw "Invalid magic number in DDS header";
+            }
+            var header = new Int32Array(arrayBuffer, 0, DDS_HEADER_LENGTH);
+            if (!(header[DDS_HEADER_PF_FLAGS] & DDPF_FOURCC))
+                throw "Unsupported format, must contain a FourCC code";
+            var fourCC = header[DDS_HEADER_PF_FOURCC];
+            var internalFormat = FOURCC_TO_FORMAT[fourCC] || -1;
+            if (internalFormat < 0) {
+                throw "Unsupported FourCC code: " + int32ToFourCC(fourCC);
+            }
+            var levels = 1;
+            if (header[DDS_HEADER_FLAGS] & DDSD_MIPMAPCOUNT) {
+                levels = Math.max(1, header[DDS_HEADER_MIPMAPCOUNT]);
+            }
+            var width = header[DDS_HEADER_WIDTH];
+            var height = header[DDS_HEADER_HEIGHT];
+            var dataOffset = header[DDS_HEADER_SIZE] + 4;
+            var dxtData = new Uint8Array(arrayBuffer, dataOffset);
+            var dest = this._image;
+            this._format = internalFormat;
+            dest.init(dest.src, dxtData, 'DDS', width, height, levels, internalFormat);
+            return dest;
+        };
+        DDSLoader.test = function (buffer) {
+            var magic = new Int32Array(buffer, 0, 1);
+            return magic[0] === DDS_MAGIC;
+        };
+        DDSLoader.prototype.levelBufferSize = function (width, height, mipLevel) {
+            if (mipLevel === void 0) { mipLevel = 0; }
+            switch (this._format) {
+                case COMPRESSED_RGB_S3TC_DXT1_EXT:
+                case COMPRESSED_RGB_ATC_WEBGL:
+                    return ((width + 3) >> 2) * ((height + 3) >> 2) * 8;
+                case COMPRESSED_RGBA_S3TC_DXT3_EXT:
+                case COMPRESSED_RGBA_S3TC_DXT5_EXT:
+                case COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL:
+                case COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL:
+                    return ((width + 3) >> 2) * ((height + 3) >> 2) * 16;
+                default:
+                    return 0;
+            }
+        };
+        DDSLoader.type = "DDS";
+        return DDSLoader;
+    }(pixi_compressed_textures.AbstractInternalLoader));
+    pixi_compressed_textures.DDSLoader = DDSLoader;
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    var _a;
+    var COMPRESSED_RGB_PVRTC_4BPPV1_IMG = 0x8C00;
+    var COMPRESSED_RGB_PVRTC_2BPPV1_IMG = 0x8C01;
+    var COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 0x8C02;
+    var COMPRESSED_RGBA_PVRTC_2BPPV1_IMG = 0x8C03;
+    var COMPRESSED_RGB_ETC1_WEBGL = 0x8D64;
+    var PVR_FORMAT_2BPP_RGB = 0;
+    var PVR_FORMAT_2BPP_RGBA = 1;
+    var PVR_FORMAT_4BPP_RGB = 2;
+    var PVR_FORMAT_4BPP_RGBA = 3;
+    var PVR_FORMAT_ETC1 = 6;
+    var PVR_FORMAT_DXT1 = 7;
+    var PVR_FORMAT_DXT3 = 9;
+    var PVR_FORMAT_DXT5 = 5;
+    var PVR_HEADER_LENGTH = 13;
+    var PVR_MAGIC = 0x03525650;
+    var PVR_HEADER_MAGIC = 0;
+    var PVR_HEADER_FORMAT = 2;
+    var PVR_HEADER_HEIGHT = 6;
+    var PVR_HEADER_WIDTH = 7;
+    var PVR_HEADER_MIPMAPCOUNT = 11;
+    var PVR_HEADER_METADATA = 12;
+    var COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0;
+    var COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F1;
+    var COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
+    var COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
+    var PVR_TO_FORMAT = (_a = {},
+        _a[PVR_FORMAT_2BPP_RGB] = COMPRESSED_RGB_PVRTC_2BPPV1_IMG,
+        _a[PVR_FORMAT_2BPP_RGBA] = COMPRESSED_RGBA_PVRTC_2BPPV1_IMG,
+        _a[PVR_FORMAT_4BPP_RGB] = COMPRESSED_RGB_PVRTC_4BPPV1_IMG,
+        _a[PVR_FORMAT_4BPP_RGBA] = COMPRESSED_RGBA_PVRTC_4BPPV1_IMG,
+        _a[PVR_FORMAT_ETC1] = COMPRESSED_RGB_ETC1_WEBGL,
+        _a[PVR_FORMAT_DXT1] = COMPRESSED_RGB_S3TC_DXT1_EXT,
+        _a[PVR_FORMAT_DXT3] = COMPRESSED_RGBA_S3TC_DXT3_EXT,
+        _a[PVR_FORMAT_DXT5] = COMPRESSED_RGBA_S3TC_DXT5_EXT,
+        _a);
+    var PVRTCLoader = (function (_super) {
+        __extends(PVRTCLoader, _super);
+        function PVRTCLoader(_image) {
+            return _super.call(this, _image) || this;
+        }
+        PVRTCLoader.prototype.load = function (arrayBuffer) {
+            if (!pixi_compressed_textures.DDSLoader.test(arrayBuffer)) {
+                throw "Invalid magic number in PVR header";
+            }
+            var header = new Int32Array(arrayBuffer, 0, PVR_HEADER_LENGTH);
+            var format = header[PVR_HEADER_FORMAT];
+            var internalFormat = PVR_TO_FORMAT[format] || -1;
+            var width = header[PVR_HEADER_WIDTH];
+            var height = header[PVR_HEADER_HEIGHT];
+            var levels = header[PVR_HEADER_MIPMAPCOUNT];
+            var dataOffset = header[PVR_HEADER_METADATA] + 52;
+            var pvrtcData = new Uint8Array(arrayBuffer, dataOffset);
+            var dest = this._image;
+            this._format = internalFormat;
+            dest.init(dest.src, pvrtcData, 'PVR', width, height, levels, internalFormat);
+            return dest;
+        };
+        PVRTCLoader.test = function (buffer) {
+            var magic = new Int32Array(buffer, 0, 1);
+            return magic[0] === PVR_MAGIC;
+        };
+        PVRTCLoader.prototype.levelBufferSize = function (width, height, mipLevel) {
+            if (mipLevel === void 0) { mipLevel = 0; }
+            switch (this._format) {
+                case COMPRESSED_RGB_S3TC_DXT1_EXT:
+                case COMPRESSED_RGB_ETC1_WEBGL:
+                    return ((width + 3) >> 2) * ((height + 3) >> 2) * 8;
+                case COMPRESSED_RGBA_S3TC_DXT3_EXT:
+                case COMPRESSED_RGBA_S3TC_DXT5_EXT:
+                    return ((width + 3) >> 2) * ((height + 3) >> 2) * 16;
+                case COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+                case COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+                    return Math.floor((Math.max(width, 8) * Math.max(height, 8) * 4 + 7) / 8);
+                case COMPRESSED_RGB_PVRTC_2BPPV1_IMG:
+                case COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:
+                    return Math.floor((Math.max(width, 16) * Math.max(height, 8) * 2 + 7) / 8);
+                default:
+                    return 0;
+            }
+        };
+        PVRTCLoader.type = "PVR";
+        return PVRTCLoader;
+    }(pixi_compressed_textures.AbstractInternalLoader));
+    pixi_compressed_textures.PVRTCLoader = PVRTCLoader;
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    function arrayBufferCopy(src, dst, dstByteOffset, numBytes) {
+        var dst32Offset = dstByteOffset / 4;
+        var tail = (numBytes % 4);
+        var src32 = new Uint32Array(src.buffer, 0, (numBytes - tail) / 4);
+        var dst32 = new Uint32Array(dst.buffer);
+        for (var ii = 0; ii < src32.length; ii++) {
+            dst32[dst32Offset + ii] = src32[ii];
+        }
+        for (var i = numBytes - tail; i < numBytes; i++) {
+            dst[dstByteOffset + i] = src[i];
+        }
+    }
+    var COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0;
+    var COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
+    var COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
+    var DXT_FORMAT_MAP = [
+        COMPRESSED_RGB_S3TC_DXT1_EXT,
+        COMPRESSED_RGBA_S3TC_DXT3_EXT,
+        COMPRESSED_RGBA_S3TC_DXT5_EXT
+    ];
+    var CRNLoader = (function (_super) {
+        __extends(CRNLoader, _super);
+        function CRNLoader(_image) {
+            return _super.call(this, _image) || this;
+        }
+        CRNLoader.prototype.load = function (arrayBuffer) {
+            var srcSize = arrayBuffer.byteLength;
+            var bytes = new Uint8Array(arrayBuffer);
+            var src = CRN_Module._malloc(srcSize);
+            arrayBufferCopy(bytes, CRN_Module.HEAPU8, src, srcSize);
+            var width = CRN_Module._crn_get_width(src, srcSize);
+            var height = CRN_Module._crn_get_height(src, srcSize);
+            var levels = CRN_Module._crn_get_levels(src, srcSize);
+            var format = CRN_Module._crn_get_dxt_format(src, srcSize);
+            var dstSize = CRN_Module._crn_get_uncompressed_size(src, srcSize, 0);
+            var dst = CRN_Module._malloc(dstSize);
+            CRN_Module._crn_decompress(src, srcSize, dst, dstSize, 0);
+            var dxtData = new Uint8Array(CRN_Module.HEAPU8.buffer, dst, dstSize);
+            var internalFormat = DXT_FORMAT_MAP[format];
+            var dest = this._image;
+            this._format = internalFormat;
+            this._caches = [src, dst];
+            return dest.init(dest.src, dxtData, 'CRN', width, height, levels, internalFormat);
+        };
+        CRNLoader.prototype.levelBufferSize = function (width, height, mipLevel) {
+            if (mipLevel === void 0) { mipLevel = 0; }
+            return pixi_compressed_textures.DDSLoader.prototype.levelBufferSize.call(this, width, height, mipLevel);
+        };
+        CRNLoader.prototype.free = function () {
+            CRN_Module._free(this._caches[0]);
+            CRN_Module._free(this._caches[1]);
+        };
+        CRNLoader.test = function (buffer) {
+            return !!CRN_Module;
+        };
+        CRNLoader.type = "CRN";
+        return CRNLoader;
+    }(pixi_compressed_textures.AbstractInternalLoader));
+    pixi_compressed_textures.CRNLoader = CRNLoader;
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    pixi_compressed_textures.Loaders = [
+        pixi_compressed_textures.DDSLoader,
+        pixi_compressed_textures.PVRTCLoader,
+        pixi_compressed_textures.ASTCLoader,
+        pixi_compressed_textures.CRNLoader
+    ];
     PIXI.systems.TextureSystem.prototype.initCompressed = function () {
         var gl = this.gl;
         if (!this.compressedExtensions) {
@@ -354,368 +722,5 @@ var pixi_compressed_textures;
 var pixi_compressed_textures;
 (function (pixi_compressed_textures) {
     PIXI.compressedTextures = pixi_compressed_textures;
-})(pixi_compressed_textures || (pixi_compressed_textures = {}));
-var pixi_compressed_textures;
-(function (pixi_compressed_textures) {
-    var AbstractInternalLoader = (function () {
-        function AbstractInternalLoader(_image) {
-            if (_image === void 0) { _image = new pixi_compressed_textures.CompressedImage("unknown"); }
-            this._image = _image;
-            this._format = 0;
-        }
-        AbstractInternalLoader.prototype.free = function () { };
-        ;
-        AbstractInternalLoader.test = function (arrayBuffer) {
-            return false;
-        };
-        AbstractInternalLoader.type = "ABSTRACT";
-        return AbstractInternalLoader;
-    }());
-    pixi_compressed_textures.AbstractInternalLoader = AbstractInternalLoader;
-})(pixi_compressed_textures || (pixi_compressed_textures = {}));
-var pixi_compressed_textures;
-(function (pixi_compressed_textures) {
-    var _a;
-    var ASTC_HEADER_LENGTH = 16;
-    var ASTC_HEADER_DIM_X = 4;
-    var ASTC_HEADER_DIM_Y = 5;
-    var ASTC_HEADER_WIDTH = 7;
-    var ASTC_HEADER_HEIGHT = 10;
-    var ASTC_MAGIC = 0x5CA1AB13;
-    var COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0;
-    var COMPRESSED_RGBA_ASTC_5x4_KHR = 0x93B1;
-    var COMPRESSED_RGBA_ASTC_5x5_KHR = 0x93B2;
-    var COMPRESSED_RGBA_ASTC_6x5_KHR = 0x93B3;
-    var COMPRESSED_RGBA_ASTC_6x6_KHR = 0x93B4;
-    var COMPRESSED_RGBA_ASTC_8x5_KHR = 0x93B5;
-    var COMPRESSED_RGBA_ASTC_8x6_KHR = 0x93B6;
-    var COMPRESSED_RGBA_ASTC_8x8_KHR = 0x93B7;
-    var COMPRESSED_RGBA_ASTC_10x5_KHR = 0x93B8;
-    var COMPRESSED_RGBA_ASTC_10x6_KHR = 0x93B9;
-    var COMPRESSED_RGBA_ASTC_10x8_KHR = 0x93BA;
-    var COMPRESSED_RGBA_ASTC_10x10_KHR = 0x93BB;
-    var COMPRESSED_RGBA_ASTC_12x10_KHR = 0x93BC;
-    var COMPRESSED_RGBA_ASTC_12x12_KHR = 0x93BD;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR = 0x93D0;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR = 0x93D1;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR = 0x93D2;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR = 0x93D3;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR = 0x93D4;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR = 0x93D5;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR = 0x93D6;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR = 0x93D7;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR = 0x93D8;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR = 0x93D9;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR = 0x93DA;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR = 0x93DB;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR = 0x93DC;
-    var COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR = 0x93DD;
-    var ASTC_DIMS_TO_FORMAT = (_a = {},
-        _a[4 * 4] = 0,
-        _a[5 * 4] = 1,
-        _a[5 * 5] = 2,
-        _a[6 * 5] = 3,
-        _a[6 * 6] = 4,
-        _a[8 * 5] = 5,
-        _a[8 * 6] = 6,
-        _a[8 * 8] = 7,
-        _a[10 * 5] = 8,
-        _a[10 * 6] = 9,
-        _a[10 * 8] = 10,
-        _a[10 * 10] = 11,
-        _a[12 * 10] = 12,
-        _a[12 * 12] = 13,
-        _a);
-    var ASTCLoader = (function (_super) {
-        __extends(ASTCLoader, _super);
-        function ASTCLoader(_image, useSRGB) {
-            if (useSRGB === void 0) { useSRGB = false; }
-            var _this = _super.call(this, _image) || this;
-            _this.useSRGB = useSRGB;
-            _this._blockSize = { x: 0, y: 0 };
-            return _this;
-        }
-        ASTCLoader.prototype.load = function (buffer) {
-            if (!ASTCLoader.test(buffer)) {
-                throw "Invalid magic number in ASTC header";
-            }
-            var header = new Uint8Array(buffer, 0, ASTC_HEADER_LENGTH);
-            var dim_x = header[ASTC_HEADER_DIM_X];
-            var dim_y = header[ASTC_HEADER_DIM_Y];
-            var width = (header[ASTC_HEADER_WIDTH]) + (header[ASTC_HEADER_WIDTH + 1] << 8) + (header[ASTC_HEADER_WIDTH + 2] << 16);
-            var height = (header[ASTC_HEADER_HEIGHT]) + (header[ASTC_HEADER_HEIGHT + 1] << 8) + (header[ASTC_HEADER_HEIGHT + 2] << 16);
-            var internalFormat = ASTC_DIMS_TO_FORMAT[dim_x * dim_y] + (this.useSRGB ? COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR : COMPRESSED_RGBA_ASTC_4x4_KHR);
-            var astcData = new Uint8Array(buffer, ASTC_HEADER_LENGTH);
-            this._format = internalFormat;
-            this._blockSize.x = dim_x;
-            this._blockSize.y = dim_y;
-            var dest = this._image;
-            dest.init(dest.src, astcData, 'ASTC', width, height, 1, internalFormat);
-            return dest;
-        };
-        ASTCLoader.test = function (buffer) {
-            var magic = new Int32Array(buffer, 0, 1);
-            return magic[0] === ASTC_MAGIC;
-        };
-        ASTCLoader.prototype.levelBufferSize = function (width, height, mipLevel) {
-            if (mipLevel === void 0) { mipLevel = 0; }
-            var f_ = Math.floor;
-            var dim_x = this._blockSize.x;
-            var dim_y = this._blockSize.y;
-            return (f_((width + dim_x - 1) / dim_x) * f_((height + dim_y - 1) / dim_y)) << 4;
-        };
-        ASTCLoader.type = "ASTC";
-        return ASTCLoader;
-    }(pixi_compressed_textures.AbstractInternalLoader));
-    pixi_compressed_textures.ASTCLoader = ASTCLoader;
-})(pixi_compressed_textures || (pixi_compressed_textures = {}));
-var pixi_compressed_textures;
-(function (pixi_compressed_textures) {
-    function arrayBufferCopy(src, dst, dstByteOffset, numBytes) {
-        var dst32Offset = dstByteOffset / 4;
-        var tail = (numBytes % 4);
-        var src32 = new Uint32Array(src.buffer, 0, (numBytes - tail) / 4);
-        var dst32 = new Uint32Array(dst.buffer);
-        for (var ii = 0; ii < src32.length; ii++) {
-            dst32[dst32Offset + ii] = src32[ii];
-        }
-        for (var i = numBytes - tail; i < numBytes; i++) {
-            dst[dstByteOffset + i] = src[i];
-        }
-    }
-    var COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0;
-    var COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
-    var COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
-    var DXT_FORMAT_MAP = [
-        COMPRESSED_RGB_S3TC_DXT1_EXT,
-        COMPRESSED_RGBA_S3TC_DXT3_EXT,
-        COMPRESSED_RGBA_S3TC_DXT5_EXT
-    ];
-    var CRNLoader = (function (_super) {
-        __extends(CRNLoader, _super);
-        function CRNLoader(_image) {
-            return _super.call(this, _image) || this;
-        }
-        CRNLoader.prototype.load = function (arrayBuffer) {
-            var srcSize = arrayBuffer.byteLength;
-            var bytes = new Uint8Array(arrayBuffer);
-            var src = CRN_Module._malloc(srcSize);
-            arrayBufferCopy(bytes, CRN_Module.HEAPU8, src, srcSize);
-            var width = CRN_Module._crn_get_width(src, srcSize);
-            var height = CRN_Module._crn_get_height(src, srcSize);
-            var levels = CRN_Module._crn_get_levels(src, srcSize);
-            var format = CRN_Module._crn_get_dxt_format(src, srcSize);
-            var dstSize = CRN_Module._crn_get_uncompressed_size(src, srcSize, 0);
-            var dst = CRN_Module._malloc(dstSize);
-            CRN_Module._crn_decompress(src, srcSize, dst, dstSize, 0);
-            var dxtData = new Uint8Array(CRN_Module.HEAPU8.buffer, dst, dstSize);
-            var internalFormat = DXT_FORMAT_MAP[format];
-            var dest = this._image;
-            this._format = internalFormat;
-            this._caches = [src, dst];
-            return dest.init(dest.src, dxtData, 'CRN', width, height, levels, internalFormat);
-        };
-        CRNLoader.prototype.levelBufferSize = function (width, height, mipLevel) {
-            if (mipLevel === void 0) { mipLevel = 0; }
-            return pixi_compressed_textures.DDSLoader.prototype.levelBufferSize.call(this, width, height, mipLevel);
-        };
-        CRNLoader.prototype.free = function () {
-            CRN_Module._free(this._caches[0]);
-            CRN_Module._free(this._caches[1]);
-        };
-        CRNLoader.test = function (buffer) {
-            return !!CRN_Module;
-        };
-        CRNLoader.type = "CRN";
-        return CRNLoader;
-    }(pixi_compressed_textures.AbstractInternalLoader));
-    pixi_compressed_textures.CRNLoader = CRNLoader;
-})(pixi_compressed_textures || (pixi_compressed_textures = {}));
-function fourCCToInt32(value) {
-    return value.charCodeAt(0) +
-        (value.charCodeAt(1) << 8) +
-        (value.charCodeAt(2) << 16) +
-        (value.charCodeAt(3) << 24);
-}
-function int32ToFourCC(value) {
-    return String.fromCharCode(value & 0xff, (value >> 8) & 0xff, (value >> 16) & 0xff, (value >> 24) & 0xff);
-}
-var pixi_compressed_textures;
-(function (pixi_compressed_textures) {
-    var _a;
-    var DDS_MAGIC = 0x20534444;
-    var DDSD_MIPMAPCOUNT = 0x20000;
-    var DDPF_FOURCC = 0x4;
-    var DDS_HEADER_LENGTH = 31;
-    var DDS_HEADER_MAGIC = 0;
-    var DDS_HEADER_SIZE = 1;
-    var DDS_HEADER_FLAGS = 2;
-    var DDS_HEADER_HEIGHT = 3;
-    var DDS_HEADER_WIDTH = 4;
-    var DDS_HEADER_MIPMAPCOUNT = 7;
-    var DDS_HEADER_PF_FLAGS = 20;
-    var DDS_HEADER_PF_FOURCC = 21;
-    var FOURCC_DXT1 = fourCCToInt32("DXT1");
-    var FOURCC_DXT3 = fourCCToInt32("DXT3");
-    var FOURCC_DXT5 = fourCCToInt32("DXT5");
-    var FOURCC_ATC = fourCCToInt32("ATC ");
-    var FOURCC_ATCA = fourCCToInt32("ATCA");
-    var FOURCC_ATCI = fourCCToInt32("ATCI");
-    var COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0;
-    var COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F1;
-    var COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
-    var COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
-    var COMPRESSED_RGB_ATC_WEBGL = 0x8C92;
-    var COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL = 0x8C93;
-    var COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL = 0x87EE;
-    var FOURCC_TO_FORMAT = (_a = {},
-        _a[FOURCC_DXT1] = COMPRESSED_RGB_S3TC_DXT1_EXT,
-        _a[FOURCC_DXT3] = COMPRESSED_RGBA_S3TC_DXT3_EXT,
-        _a[FOURCC_DXT5] = COMPRESSED_RGBA_S3TC_DXT5_EXT,
-        _a[FOURCC_ATC] = COMPRESSED_RGB_ATC_WEBGL,
-        _a[FOURCC_ATCA] = COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL,
-        _a[FOURCC_ATCI] = COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL,
-        _a);
-    var DDSLoader = (function (_super) {
-        __extends(DDSLoader, _super);
-        function DDSLoader(_image) {
-            return _super.call(this, _image) || this;
-        }
-        DDSLoader.prototype.load = function (arrayBuffer) {
-            if (!DDSLoader.test(arrayBuffer)) {
-                throw "Invalid magic number in DDS header";
-            }
-            var header = new Int32Array(arrayBuffer, 0, DDS_HEADER_LENGTH);
-            if (!(header[DDS_HEADER_PF_FLAGS] & DDPF_FOURCC))
-                throw "Unsupported format, must contain a FourCC code";
-            var fourCC = header[DDS_HEADER_PF_FOURCC];
-            var internalFormat = FOURCC_TO_FORMAT[fourCC] || -1;
-            if (internalFormat < 0) {
-                throw "Unsupported FourCC code: " + int32ToFourCC(fourCC);
-            }
-            var levels = 1;
-            if (header[DDS_HEADER_FLAGS] & DDSD_MIPMAPCOUNT) {
-                levels = Math.max(1, header[DDS_HEADER_MIPMAPCOUNT]);
-            }
-            var width = header[DDS_HEADER_WIDTH];
-            var height = header[DDS_HEADER_HEIGHT];
-            var dataOffset = header[DDS_HEADER_SIZE] + 4;
-            var dxtData = new Uint8Array(arrayBuffer, dataOffset);
-            var dest = this._image;
-            this._format = internalFormat;
-            dest.init(dest.src, dxtData, 'DDS', width, height, levels, internalFormat);
-            return dest;
-        };
-        DDSLoader.test = function (buffer) {
-            var magic = new Int32Array(buffer, 0, 1);
-            return magic[0] === DDS_MAGIC;
-        };
-        DDSLoader.prototype.levelBufferSize = function (width, height, mipLevel) {
-            if (mipLevel === void 0) { mipLevel = 0; }
-            switch (this._format) {
-                case COMPRESSED_RGB_S3TC_DXT1_EXT:
-                case COMPRESSED_RGB_ATC_WEBGL:
-                    return ((width + 3) >> 2) * ((height + 3) >> 2) * 8;
-                case COMPRESSED_RGBA_S3TC_DXT3_EXT:
-                case COMPRESSED_RGBA_S3TC_DXT5_EXT:
-                case COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL:
-                case COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL:
-                    return ((width + 3) >> 2) * ((height + 3) >> 2) * 16;
-                default:
-                    return 0;
-            }
-        };
-        DDSLoader.type = "DDS";
-        return DDSLoader;
-    }(pixi_compressed_textures.AbstractInternalLoader));
-    pixi_compressed_textures.DDSLoader = DDSLoader;
-})(pixi_compressed_textures || (pixi_compressed_textures = {}));
-var pixi_compressed_textures;
-(function (pixi_compressed_textures) {
-    var _a;
-    var COMPRESSED_RGB_PVRTC_4BPPV1_IMG = 0x8C00;
-    var COMPRESSED_RGB_PVRTC_2BPPV1_IMG = 0x8C01;
-    var COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 0x8C02;
-    var COMPRESSED_RGBA_PVRTC_2BPPV1_IMG = 0x8C03;
-    var COMPRESSED_RGB_ETC1_WEBGL = 0x8D64;
-    var PVR_FORMAT_2BPP_RGB = 0;
-    var PVR_FORMAT_2BPP_RGBA = 1;
-    var PVR_FORMAT_4BPP_RGB = 2;
-    var PVR_FORMAT_4BPP_RGBA = 3;
-    var PVR_FORMAT_ETC1 = 6;
-    var PVR_FORMAT_DXT1 = 7;
-    var PVR_FORMAT_DXT3 = 9;
-    var PVR_FORMAT_DXT5 = 5;
-    var PVR_HEADER_LENGTH = 13;
-    var PVR_MAGIC = 0x03525650;
-    var PVR_HEADER_MAGIC = 0;
-    var PVR_HEADER_FORMAT = 2;
-    var PVR_HEADER_HEIGHT = 6;
-    var PVR_HEADER_WIDTH = 7;
-    var PVR_HEADER_MIPMAPCOUNT = 11;
-    var PVR_HEADER_METADATA = 12;
-    var COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0;
-    var COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F1;
-    var COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
-    var COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
-    var PVR_TO_FORMAT = (_a = {},
-        _a[PVR_FORMAT_2BPP_RGB] = COMPRESSED_RGB_PVRTC_2BPPV1_IMG,
-        _a[PVR_FORMAT_2BPP_RGBA] = COMPRESSED_RGBA_PVRTC_2BPPV1_IMG,
-        _a[PVR_FORMAT_4BPP_RGB] = COMPRESSED_RGB_PVRTC_4BPPV1_IMG,
-        _a[PVR_FORMAT_4BPP_RGBA] = COMPRESSED_RGBA_PVRTC_4BPPV1_IMG,
-        _a[PVR_FORMAT_ETC1] = COMPRESSED_RGB_ETC1_WEBGL,
-        _a[PVR_FORMAT_DXT1] = COMPRESSED_RGB_S3TC_DXT1_EXT,
-        _a[PVR_FORMAT_DXT3] = COMPRESSED_RGBA_S3TC_DXT3_EXT,
-        _a[PVR_FORMAT_DXT5] = COMPRESSED_RGBA_S3TC_DXT5_EXT,
-        _a);
-    var PVRTCLoader = (function (_super) {
-        __extends(PVRTCLoader, _super);
-        function PVRTCLoader(_image) {
-            return _super.call(this, _image) || this;
-        }
-        PVRTCLoader.prototype.load = function (arrayBuffer) {
-            if (!pixi_compressed_textures.DDSLoader.test(arrayBuffer)) {
-                throw "Invalid magic number in PVR header";
-            }
-            var header = new Int32Array(arrayBuffer, 0, PVR_HEADER_LENGTH);
-            var format = header[PVR_HEADER_FORMAT];
-            var internalFormat = PVR_TO_FORMAT[format] || -1;
-            var width = header[PVR_HEADER_WIDTH];
-            var height = header[PVR_HEADER_HEIGHT];
-            var levels = header[PVR_HEADER_MIPMAPCOUNT];
-            var dataOffset = header[PVR_HEADER_METADATA] + 52;
-            var pvrtcData = new Uint8Array(arrayBuffer, dataOffset);
-            var dest = this._image;
-            this._format = internalFormat;
-            dest.init(dest.src, pvrtcData, 'PVR', width, height, levels, internalFormat);
-            return dest;
-        };
-        PVRTCLoader.test = function (buffer) {
-            var magic = new Int32Array(buffer, 0, 1);
-            return magic[0] === PVR_MAGIC;
-        };
-        PVRTCLoader.prototype.levelBufferSize = function (width, height, mipLevel) {
-            if (mipLevel === void 0) { mipLevel = 0; }
-            switch (this._format) {
-                case COMPRESSED_RGB_S3TC_DXT1_EXT:
-                case COMPRESSED_RGB_ETC1_WEBGL:
-                    return ((width + 3) >> 2) * ((height + 3) >> 2) * 8;
-                case COMPRESSED_RGBA_S3TC_DXT3_EXT:
-                case COMPRESSED_RGBA_S3TC_DXT5_EXT:
-                    return ((width + 3) >> 2) * ((height + 3) >> 2) * 16;
-                case COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-                case COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-                    return Math.floor((Math.max(width, 8) * Math.max(height, 8) * 4 + 7) / 8);
-                case COMPRESSED_RGB_PVRTC_2BPPV1_IMG:
-                case COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:
-                    return Math.floor((Math.max(width, 16) * Math.max(height, 8) * 2 + 7) / 8);
-                default:
-                    return 0;
-            }
-        };
-        PVRTCLoader.type = "PVR";
-        return PVRTCLoader;
-    }(pixi_compressed_textures.AbstractInternalLoader));
-    pixi_compressed_textures.PVRTCLoader = PVRTCLoader;
 })(pixi_compressed_textures || (pixi_compressed_textures = {}));
 //# sourceMappingURL=pixi-compressed-textures.js.map

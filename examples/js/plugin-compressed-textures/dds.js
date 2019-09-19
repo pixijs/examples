@@ -15,7 +15,9 @@ const atlasOptions = { metadata: { choice: ['@2x.json', '@1x.json'], imageMetada
 
 loader.add('building1', 'examples/assets/pixi-compressed-textures/building1.png', textureOptions1)
     .add('building2', 'examples/assets/pixi-compressed-textures/building2.png', textureOptions2)
-    .add('atlas1', 'examples/assets/pixi-compressed-textures/buildings.json', atlasOptions)
+    // special case: if @1x.json is our default fallback, and not just .json, please specify @1x here.
+    // its hardcoded only for '@1x' suffix. That shows our approach is not enough, need something better
+    .add('atlas1', 'examples/assets/pixi-compressed-textures/buildings@1x.json', atlasOptions)
     .load((loaderInstance, resources) => {
         const spr1 = new PIXI.Sprite(resources.building1.texture);
         const spr2 = new PIXI.Sprite(resources.building2.texture);

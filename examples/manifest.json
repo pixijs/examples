@@ -471,6 +471,17 @@
             "plugins": [
                 "pixi-compressed-textures"
             ]
+        },
+        {
+            "title": "BASIS",
+            "entry": "basis.js",
+            "plugins": [
+                "pixi-compressed-textures",
+                "basis_transcoder"
+            ],
+            "validVersions":[
+                5
+            ]
         }
     ]
 }

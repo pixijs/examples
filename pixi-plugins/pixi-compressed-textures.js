@@ -150,6 +150,7 @@ var pixi_compressed_textures;
             if (_image === void 0) { _image = new pixi_compressed_textures.CompressedImage("unknown"); }
             this._image = _image;
             this._format = 0;
+            _image._internalLoader = this;
         }
         AbstractInternalLoader.prototype.free = function () { };
         ;
@@ -529,7 +530,7 @@ var pixi_compressed_textures;
             return _this;
         }
         BASISLoader.test = function (array) {
-            var header = new Uint32Array(array)[0];
+            var header = new Uint32Array(array, 0, 1)[0];
             var decoder = !!BASISLoader.BASIS_BINDING;
             var isValid = header === 0x134273 && decoder;
             var isSupported = BASISLoader.RGB_FORMAT && BASISLoader.RGBA_FORMAT;

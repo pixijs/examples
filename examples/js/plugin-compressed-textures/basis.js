@@ -1,4 +1,7 @@
-// Create our application instance
+
+// please look in README file of pixi-compressed-textures plugin by the link
+// https://github.com/pixijs/pixi-compressed-textures/blob/master/README.md
+
 var app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -20,6 +23,7 @@ function init() {
     WebAssembly.instantiateStreaming = undefined;
 
     //wait before BASIS loads
+
     BASIS().then(basisLoaded);
 }
 

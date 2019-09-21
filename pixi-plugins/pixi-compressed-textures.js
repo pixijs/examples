@@ -444,8 +444,202 @@ var pixi_compressed_textures;
     }(pixi_compressed_textures.AbstractInternalLoader));
     pixi_compressed_textures.PVRTCLoader = PVRTCLoader;
 })(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 var pixi_compressed_textures;
 (function (pixi_compressed_textures) {
+    var _a, _b;
+    var BASIS_FORMAT = {
+        cTFETC1: 0,
+        cTFBC1: 2,
+        cTFBC3: 3,
+        cTFPVRTC1_4_RGB: 8,
+        cTFPVRTC1_4_RGBA: 9,
+        cTFASTC_4x4: 10,
+        cTFRGBA32: 11
+    };
+    var BASIS_HAS_ALPHA = (_a = {},
+        _a[3] = true,
+        _a[9] = true,
+        _a[10] = true,
+        _a[11] = true,
+        _a);
+    var NON_COMPRESSED = -1;
+    var COMPRESSED_RGB_ETC1_WEBGL = 0x8D64;
+    var COMPRESSED_RGB_S3TC_DXT1_EXT = 0x83F0;
+    var COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F1;
+    var COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
+    var COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
+    var COMPRESSED_RGB_PVRTC_4BPPV1_IMG = 0x8C00;
+    var COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 0x8C02;
+    var COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0;
+    var BASIS_TO_FMT = (_b = {},
+        _b[BASIS_FORMAT.cTFRGBA32] = NON_COMPRESSED,
+        _b[BASIS_FORMAT.cTFETC1] = COMPRESSED_RGB_ETC1_WEBGL,
+        _b[BASIS_FORMAT.cTFBC1] = COMPRESSED_RGB_S3TC_DXT1_EXT,
+        _b[BASIS_FORMAT.cTFBC3] = COMPRESSED_RGBA_S3TC_DXT5_EXT,
+        _b[BASIS_FORMAT.cTFPVRTC1_4_RGB] = COMPRESSED_RGB_PVRTC_4BPPV1_IMG,
+        _b[BASIS_FORMAT.cTFPVRTC1_4_RGBA] = COMPRESSED_RGBA_PVRTC_4BPPV1_IMG,
+        _b[BASIS_FORMAT.cTFASTC_4x4] = COMPRESSED_RGBA_ASTC_4x4_KHR,
+        _b);
+    var FMT_TO_BASIS = Object.keys(BASIS_TO_FMT).reduce(function (acc, next) {
+        acc[BASIS_TO_FMT[+next]] = +next;
+        return acc;
+    }, {});
+    var BASISLoader = (function (_super) {
+        __extends(BASISLoader, _super);
+        function BASISLoader(_image) {
+            var _this = _super.call(this, _image) || this;
+            _this.type = "BASIS";
+            _this._file = undefined;
+            return _this;
+        }
+        BASISLoader.test = function (array) {
+            var header = new Uint32Array(array)[0];
+            var decoder = !!BASISLoader.BASIS_BINDING;
+            var isValid = header === 0x134273 && decoder;
+            var isSupported = BASISLoader.RGB_FORMAT && BASISLoader.RGBA_FORMAT;
+            if (!isValid && isSupported) {
+                console.warn("[BASIS LOADER] Is Supported, but transcoder not binded or file is not BASIS file!");
+            }
+            return (isSupported && isValid);
+        };
+        BASISLoader.bindTranscoder = function (fileCtr, ext) {
+            if (!fileCtr || !ext) {
+                throw "Invalid state! undef fileCtr or ext invalid!";
+            }
+            ;
+            var plain = Object.keys(ext)
+                .reduce(function (acc, key) {
+                var val = ext[key];
+                if (!val) {
+                    return acc;
+                }
+                ;
+                return Object.assign(acc, val.__proto__);
+            }, {});
+            var latestOp = undefined;
+            var lastestAlpha = undefined;
+            for (var v in plain) {
+                var native = plain[v];
+                if (FMT_TO_BASIS[native] !== undefined) {
+                    var basis = FMT_TO_BASIS[native];
+                    if (BASIS_HAS_ALPHA[basis]) {
+                        lastestAlpha = {
+                            native: native, name: v, basis: basis
+                        };
+                    }
+                    else {
+                        latestOp = {
+                            native: native, name: v, basis: basis
+                        };
+                    }
+                }
+            }
+            BASISLoader.RGB_FORMAT = latestOp || lastestAlpha;
+            BASISLoader.RGBA_FORMAT = lastestAlpha || latestOp;
+            BASISLoader.BASIS_BINDING = fileCtr;
+            console.log("[BASISLoader] Supported formats:", "\nRGB:" + BASISLoader.RGB_FORMAT.name + "\nRGBA:" + BASISLoader.RGBA_FORMAT.name);
+            pixi_compressed_textures.RegisterCompressedLoader(BASISLoader);
+            pixi_compressed_textures.RegisterCompressedExtensions('basis');
+        };
+        BASISLoader.prototype.load = function (buffer) {
+            if (!BASISLoader.test(buffer)) {
+                throw "BASIS Transcoder not binded or transcoding not supported =(!";
+            }
+            this._loadAsync(buffer);
+            return this._image;
+        };
+        BASISLoader.prototype._loadAsync = function (buffer) {
+            return __awaiter(this, void 0, void 0, function () {
+                var startTime, BasisFileCtr, basisFile, width, height, levels, hasAlpha, dest, target, dst, _a, name;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            startTime = performance.now();
+                            BasisFileCtr = BASISLoader.BASIS_BINDING;
+                            basisFile = new BasisFileCtr(new Uint8Array(buffer));
+                            return [4, basisFile.getImageWidth(0, 0)];
+                        case 1:
+                            width = _b.sent();
+                            return [4, basisFile.getImageHeight(0, 0)];
+                        case 2:
+                            height = _b.sent();
+                            levels = 1;
+                            return [4, basisFile.getHasAlpha()];
+                        case 3:
+                            hasAlpha = _b.sent();
+                            dest = this._image;
+                            return [4, basisFile.startTranscoding()];
+                        case 4:
+                            if (!(_b.sent())) {
+                                throw "Transcoding error!";
+                            }
+                            target = hasAlpha ? BASISLoader.RGBA_FORMAT : BASISLoader.RGB_FORMAT;
+                            console.log("Grats! BASIS will be transcoded to:", target);
+                            _a = Uint8Array.bind;
+                            return [4, basisFile.getImageTranscodedSizeInBytes(0, 0, target.basis)];
+                        case 5:
+                            dst = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
+                            return [4, basisFile.transcodeImage(dst, 0, 0, target.basis, !!0, !!0)];
+                        case 6:
+                            if (!(_b.sent())) {
+                                throw "Transcoding error!";
+                            }
+                            console.log("[BASISLoader] Totla transcoding time:", performance.now() - startTime);
+                            this._format = target.native;
+                            this._file = basisFile;
+                            name = target.name.replace("COMPRESSED_", "");
+                            return [2, dest.init(dest.src, dst, 'BASIS|' + name, width, height, levels, target.native)];
+                    }
+                });
+            });
+        };
+        BASISLoader.prototype.levelBufferSize = function (width, height, level) {
+            return this._file ? this._file.getImageTranscodedSizeInBytes(0, level, FMT_TO_BASIS[this._format]) : undefined;
+        };
+        BASISLoader.BASIS_BINDING = undefined;
+        return BASISLoader;
+    }(pixi_compressed_textures.AbstractInternalLoader));
+    pixi_compressed_textures.BASISLoader = BASISLoader;
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    var CRN_Module = window.CRN_Module;
     function arrayBufferCopy(src, dst, dstByteOffset, numBytes) {
         var dst32Offset = dstByteOffset / 4;
         var tail = (numBytes % 4);
@@ -519,15 +713,12 @@ var pixi_compressed_textures;
         if (!this.compressedExtensions) {
             this.compressedExtensions = {
                 dxt: gl.getExtension("WEBGL_compressed_texture_s3tc"),
-                pvrtc: gl.getExtension("WEBGL_compressed_texture_pvrtc"),
+                pvrtc: (gl.getExtension("WEBGL_compressed_texture_pvrtc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc")),
                 astc: gl.getExtension("WEBGL_compressed_texture_astc"),
                 atc: gl.getExtension("WEBGL_compressed_texture_atc"),
                 etc1: gl.getExtension("WEBGL_compressed_texture_etc1")
             };
             this.compressedExtensions.crn = this.compressedExtensions.dxt;
-        }
-        if (!pixi_compressed_textures.Loaders) {
-            pixi_compressed_textures.RegisterCompressedLoader(pixi_compressed_textures.DDSLoader, pixi_compressed_textures.PVRTCLoader, pixi_compressed_textures.ASTCLoader, pixi_compressed_textures.CRNLoader);
         }
     };
     function RegisterCompressedLoader() {

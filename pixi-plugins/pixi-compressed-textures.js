@@ -735,7 +735,9 @@ var pixi_compressed_textures;
         }
     }
     pixi_compressed_textures.RegisterCompressedLoader = RegisterCompressedLoader;
-    function detectExtensions(renderer, resolution) {
+    pixi_compressed_textures.defaultDetectedExtensions = ['.png', '.jpg', '.json', '.atlas'];
+    function detectExtensions(renderer, resolution, defaultResolution) {
+        if (defaultResolution === void 0) { defaultResolution = 1; }
         var extensions = [];
         if (renderer instanceof PIXI.Renderer) {
             renderer.texture.initCompressed();
@@ -751,16 +753,20 @@ var pixi_compressed_textures;
             if (data.etc1)
                 extensions.push('.etc1');
         }
-        resolution = resolution || renderer.resolution;
-        var res = "@" + resolution + "x";
         var ext = extensions.slice(0);
-        while (ext.length > 0) {
-            extensions.push(res + ext.pop());
+        var resolutions = [resolution || renderer.resolution];
+        if (defaultResolution) {
+            resolutions.push(defaultResolution);
         }
-        extensions.push(res + ".png");
-        extensions.push(res + ".jpg");
-        extensions.push(res + ".json");
-        extensions.push(res + ".atlas");
+        for (var i = 0; i < resolutions.length; i++) {
+            var res = "@" + resolutions[i] + "x";
+            for (var j = 0; j < ext.length; j++) {
+                extensions.push(res + ext[j]);
+            }
+            for (var j = 0; j < pixi_compressed_textures.defaultDetectedExtensions.length; j++) {
+                extensions.push(res + pixi_compressed_textures.defaultDetectedExtensions[j]);
+            }
+        }
         return extensions;
     }
     pixi_compressed_textures.detectExtensions = detectExtensions;
@@ -847,9 +853,6 @@ var pixi_compressed_textures;
                 k = url.lastIndexOf(".");
                 if (k >= 0) {
                     resource._baseUrl = url.substring(0, k);
-                    if (k >= 4 && url.substring(k - 3, 3) === '@1x') {
-                        resource._baseUrl = url.substring(0, k);
-                    }
                 }
                 else {
                     return next();

@@ -2,7 +2,10 @@
     "demos-basic": [
         {
             "title": "Container",
-            "entry": "container.js"
+            "entry": "container.js",
+            "plugins": [
+                "dat.gui.min"
+            ]
         },
         {
             "title": "Transparent Background",

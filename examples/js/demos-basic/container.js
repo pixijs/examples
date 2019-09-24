@@ -33,3 +33,19 @@ app.ticker.add((delta) => {
     // use delta to create frame-independent transform
     container.rotation -= 0.01 * delta;
 });
+
+
+//this demo can use dat.gui
+const gui = new dat.GUI();
+const [f1,f2] = [gui.addFolder('container'),gui.addFolder('children[0]')];
+f1.add(container.position,"x").min(0).max(app.screen.width).step(1).name('.position.x');
+f1.add(container.position,"y").min(0).max(app.screen.height).step(1).name('.position.y');
+f1.add(container.position,"x").min(0).max(app.screen.width).step(1).name('.pivot.x');
+f1.add(container,"alpha").min(0).max(1).step(0.01);
+f1.add(container.position,"y").min(0).max(app.screen.height).step(1).name('.pivot.y');
+f1.add(container,"rotation").step(0.01).listen();
+
+f2.add(container.children[0],"x").min(0).max(container.height).step(1).name('.position.x');
+f2.add(container.children[0],"y").min(0).max(container.height).step(1).name('.position.y');
+f2.add(container.children[0],"rotation").min(-Math.PI).max(Math.PI).step(0.01).name('rotation');
+f2.add(container.children[0],"alpha").min(0).max(10).step(0.01);

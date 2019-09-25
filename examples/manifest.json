@@ -279,6 +279,13 @@
             "plugins": [
                 "pixi-spine"
             ]
+        },
+        {
+            "title": "Spine Events",
+            "entry": "spine-events.js",
+            "plugins": [
+                "pixi-spine"
+            ]
         }
     ],
 	"plugin-dragonbones": [

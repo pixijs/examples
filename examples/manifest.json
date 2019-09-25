@@ -41,7 +41,11 @@
         {
             "title": "Star Warp",
             "entry": "star-warp.js"
-        }
+        },
+		{
+			"title": "Shadertoy rendertexture",
+			"entry": "shadertoy-rendertexture.js"
+		}
     ],
     "sprite": [
         {

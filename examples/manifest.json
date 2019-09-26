@@ -41,11 +41,7 @@
         {
             "title": "Star Warp",
             "entry": "star-warp.js"
-        },
-		{
-			"title": "Shadertoy rendertexture",
-			"entry": "shadertoy-rendertexture.js"
-		}
+        }
     ],
     "sprite": [
         {
@@ -170,7 +166,11 @@
             "plugins": [
                 "pixi-spine"
             ]
-        }
+        },
+		{
+			"title": "Shadertoy rendertexture",
+			"entry": "shadertoy-filter-rendertexture.js"
+		}
     ],
     "mesh-and-shaders": [
         {
@@ -212,7 +212,11 @@
         {
             "title": "Interleaving Geometry",
             "entry": "interleaving-geometry.js"
-        }
+        },
+		{
+			"title": "Shadertoy",
+			"entry": "shadertoy-mesh.js"
+		}
     ],
     "textures": [
         {

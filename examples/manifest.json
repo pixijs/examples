@@ -395,6 +395,13 @@
                 "pixi-spine",
                 "pixi-projection"
             ]
+        },
+        {
+            "title": "Bunnies Packer",
+            "entry": "bunny-pack.js",
+            "plugins": [
+                "pixi-projection"
+            ]
         }
     ],
     "plugin-layers": [

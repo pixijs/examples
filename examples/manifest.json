@@ -496,36 +496,36 @@
             "title": "GSAP 2 Tick Director",
             "entry": "gsap2-tick.js",
             "plugins": [
-                "TweenMax.min"
+                "gsap3/TweenMax.min"
             ]
         },
         {
             "title": "GSAP 2 Random Draw",
             "entry": "gsap2-random-draw.js",
             "plugins": [
-                "TweenMax.min"
+                "gsap3/TweenMax.min"
             ]
         },
         {
             "title": "GSAP 2 Basic Examples",
             "entry": "gsap2-basic.js",
             "plugins": [
-                "TweenMax.min"
+                "gsap3/TweenMax.min"
             ]
         },
         {
             "title": "GSAP 2 Filters",
             "entry": "gsap2-filters.js",
             "plugins": [
-                "TweenMax.min",
-                "PixiPlugin.min"
+                "gsap3/TweenMax.min",
+                "gsap3/PixiPlugin.min"
             ]
         },
         {
             "title": "GSAP 2 Trail",
             "entry": "gsap2-trail.js",
             "plugins": [
-                "TweenMax.min"
+                "gsap3/TweenMax.min"
             ]
         }
     ],
@@ -534,36 +534,35 @@
             "title": "GSAP 3 Tick Director",
             "entry": "gsap3-tick.js",
             "plugins": [
-                "gsap.min"
+                "gsap3/gsap.min"
             ]
         },
         {
             "title": "GSAP 3 Random Draw",
             "entry": "gsap3-random-draw.js",
             "plugins": [
-                "gsap.min"
+                "gsap3/gsap.min"
             ]
         },
         {
             "title": "GSAP 3 Basic Examples",
             "entry": "gsap3-basic.js",
             "plugins": [
-                "gsap.min"
+                "gsap3/gsap.min"
             ]
         },
         {
             "title": "GSAP 3 Filters",
             "entry": "gsap3-filters.js",
             "plugins": [
-                "gsap.min",
-                "PixiPlugin.min"
+                "gsap3/gsap.min"
             ]
         },
         {
             "title": "GSAP 3 Trail",
             "entry": "gsap3-trail.js",
             "plugins": [
-                "gsap.min"
+                "gsap3/gsap.min"
             ]
         }
     ]

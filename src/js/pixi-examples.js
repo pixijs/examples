@@ -299,9 +299,8 @@ jQuery(document).ready(($) => {
             if (arr.length > 1) {
                 // Deprecated categories, mesh -> mesh-and-shaders
                 if (arr[0] === 'mesh') {
-                    //TODO: push it in history
+                    // TODO: push it in history
                     arr[0] = 'mesh-and-shaders';
-
                 }
 
                 if ($(`.main-menu .section[data-section="${arr[0]}"]`).length > 0) {

@@ -496,36 +496,44 @@
             "title": "GSAP 2 Tick Director",
             "entry": "gsap2-tick.js",
             "plugins": [
-                "gsap3/TweenMax.min"
+                "gsap/gsap2/TweenMax.min"
             ]
         },
         {
             "title": "GSAP 2 Random Draw",
             "entry": "gsap2-random-draw.js",
             "plugins": [
-                "gsap3/TweenMax.min"
+                "gsap/gsap2/TweenMax.min"
             ]
         },
         {
             "title": "GSAP 2 Basic Examples",
             "entry": "gsap2-basic.js",
             "plugins": [
-                "gsap3/TweenMax.min"
+                "gsap/gsap2/TweenMax.min"
             ]
         },
         {
             "title": "GSAP 2 Filters",
             "entry": "gsap2-filters.js",
             "plugins": [
-                "gsap3/TweenMax.min",
-                "gsap3/PixiPlugin.min"
+                "gsap/gsap2/TweenMax.min",
+                "gsap/gsap2/PixiPlugin.min"
             ]
         },
         {
             "title": "GSAP 2 Trail",
             "entry": "gsap2-trail.js",
             "plugins": [
-                "gsap3/TweenMax.min"
+                "gsap/gsap2/TweenMax.min"
+            ]
+        },
+        {
+            "title": "GSAP 2 Tint",
+            "entry": "gsap2-tint.js",
+            "plugins": [
+                "gsap/gsap2/TweenMax.min",
+                "gsap/gsap2/PixiPlugin.min"
             ]
         }
     ],
@@ -534,35 +542,43 @@
             "title": "GSAP 3 Tick Director",
             "entry": "gsap3-tick.js",
             "plugins": [
-                "gsap3/gsap.min"
+                "gsap/gsap3/gsap.min"
             ]
         },
         {
             "title": "GSAP 3 Random Draw",
             "entry": "gsap3-random-draw.js",
             "plugins": [
-                "gsap3/gsap.min"
+                "gsap/gsap3/gsap.min"
             ]
         },
         {
             "title": "GSAP 3 Basic Examples",
             "entry": "gsap3-basic.js",
             "plugins": [
-                "gsap3/gsap.min"
+                "gsap/gsap3/gsap.min"
             ]
         },
         {
             "title": "GSAP 3 Filters",
             "entry": "gsap3-filters.js",
             "plugins": [
-                "gsap3/gsap.min"
+                "gsap/gsap3/gsap.min"
             ]
         },
         {
             "title": "GSAP 3 Trail",
             "entry": "gsap3-trail.js",
             "plugins": [
-                "gsap3/gsap.min"
+                "gsap/gsap3/gsap.min"
+            ]
+        },
+        {
+            "title": "GSAP 3 Tint",
+            "entry": "gsap3-tint.js",
+            "plugins": [
+                "gsap/gsap3/gsap.min",
+                "gsap/gsap3/PixiPlugin.min"
             ]
         }
     ]

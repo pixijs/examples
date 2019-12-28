@@ -62,7 +62,7 @@ app.ticker.add((delta) => {
         // Calculate star scale & rotation.
         const dxCenter = star.sprite.x - app.renderer.screen.width / 2;
         const dyCenter = star.sprite.y - app.renderer.screen.height / 2;
-        const distanceCenter = Math.sqrt(dxCenter * dxCenter + dyCenter + dyCenter);
+        const distanceCenter = Math.sqrt(dxCenter * dxCenter + dyCenter * dyCenter);
         const distanceScale = Math.max(0, (2000 - z) / 2000);
         star.sprite.scale.x = distanceScale * starBaseSize;
         // Star is looking towards center so that y axis is towards center.

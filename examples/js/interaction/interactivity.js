@@ -26,7 +26,6 @@ const buttonPositions = [
 
 for (let i = 0; i < 5; i++) {
     const button = new PIXI.Sprite(textureButton);
-    button.buttonMode = true;
 
     button.anchor.set(0.5);
     button.x = buttonPositions[i * 2];

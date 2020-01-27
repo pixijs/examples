@@ -45,7 +45,8 @@ Object.assign(PIXI.DisplayObject.prototype, {
     zIndex: 0,
     updateOrder: 0,
     displayOrder: 0,
-    layerableChildren: true
+    layerableChildren: true,
+    isLayer: false
 });
 if (PIXI.ParticleContainer) {
     PIXI.ParticleContainer.prototype.layerableChildren = false;
@@ -54,9 +55,12 @@ else if (PIXI.ParticleContainer) {
     PIXI.ParticleContainer.prototype.layerableChildren = false;
 }
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -177,141 +181,40 @@ var pixi_display;
 })(pixi_display || (pixi_display = {}));
 var pixi_display;
 (function (pixi_display) {
-    var InteractionManager = PIXI.interaction.InteractionManager;
-    Object.assign(InteractionManager.prototype, {
-        _queue: [[], []],
-        _displayProcessInteractive: function (point, displayObject, hitTestOrder, interactive, outOfMask) {
-            if (!displayObject || !displayObject.visible) {
-                return 0;
-            }
-            var hit = 0, interactiveParent = interactive = displayObject.interactive || interactive;
-            if (displayObject.hitArea) {
-                interactiveParent = false;
-            }
-            if (displayObject._activeParentLayer) {
-                outOfMask = false;
-            }
-            var mask = displayObject._mask;
-            if (hitTestOrder < Infinity && mask) {
-                if (!mask.containsPoint(point)) {
-                    outOfMask = true;
+    function processInteractive51(strangeStuff, displayObject, func, hitTest, interactive) {
+        if (!this.search) {
+            this.search = new pixi_display.LayersTreeSearch();
+        }
+        this.search.findHit(strangeStuff, displayObject, func, hitTest);
+        var delayedEvents = this.delayedEvents;
+        if (delayedEvents && delayedEvents.length) {
+            strangeStuff.stopPropagationHint = false;
+            var delayedLen = delayedEvents.length;
+            this.delayedEvents = [];
+            for (var i = 0; i < delayedLen; i++) {
+                var _a = delayedEvents[i], displayObject_1 = _a.displayObject, eventString = _a.eventString, eventData = _a.eventData;
+                if (eventData.stopsPropagatingAt === displayObject_1) {
+                    eventData.stopPropagationHint = true;
                 }
-            }
-            if (hitTestOrder < Infinity && displayObject.filterArea) {
-                if (!displayObject.filterArea.contains(point.x, point.y)) {
-                    outOfMask = true;
-                }
-            }
-            var children = displayObject.children;
-            if (displayObject.interactiveChildren && children) {
-                for (var i = children.length - 1; i >= 0; i--) {
-                    var child = children[i];
-                    var hitChild = this._displayProcessInteractive(point, child, hitTestOrder, interactiveParent, outOfMask);
-                    if (hitChild) {
-                        if (!child.parent) {
-                            continue;
-                        }
-                        hit = hitChild;
-                        hitTestOrder = hitChild;
-                    }
-                }
-            }
-            if (interactive) {
-                if (!outOfMask) {
-                    if (hitTestOrder < displayObject.displayOrder) {
-                        if (displayObject.hitArea) {
-                            displayObject.worldTransform.applyInverse(point, this._tempPoint);
-                            if (displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y)) {
-                                hit = displayObject.displayOrder;
-                            }
-                        }
-                        else if (displayObject.containsPoint) {
-                            if (displayObject.containsPoint(point)) {
-                                hit = displayObject.displayOrder;
-                            }
-                        }
-                    }
-                    if (displayObject.interactive) {
-                        this._queueAdd(displayObject, hit === Infinity ? 0 : hit);
-                    }
-                }
-                else {
-                    if (displayObject.interactive) {
-                        this._queueAdd(displayObject, 0);
-                    }
-                }
-            }
-            return hit;
-        },
-        processInteractive: function (strangeStuff, displayObject, func, hitTest, interactive) {
-            var interactionEvent = null;
-            var point = null;
-            if (strangeStuff.data &&
-                strangeStuff.data.global) {
-                interactionEvent = strangeStuff;
-                point = interactionEvent.data.global;
-            }
-            else {
-                point = strangeStuff;
-            }
-            this._startInteractionProcess();
-            this._displayProcessInteractive(point, displayObject, hitTest ? 0 : Infinity, false);
-            this._finishInteractionProcess(interactionEvent, func);
-        },
-        _startInteractionProcess: function () {
-            this._eventDisplayOrder = 1;
-            if (!this._queue) {
-                this._queue = [[], []];
-            }
-            this._queue[0].length = 0;
-            this._queue[1].length = 0;
-        },
-        _queueAdd: function (displayObject, order) {
-            var queue = this._queue;
-            if (order < this._eventDisplayOrder) {
-                queue[0].push(displayObject);
-            }
-            else {
-                if (order > this._eventDisplayOrder) {
-                    this._eventDisplayOrder = order;
-                    var q = queue[1];
-                    for (var i = 0, l = q.length; i < l; i++) {
-                        queue[0].push(q[i]);
-                    }
-                    queue[1].length = 0;
-                }
-                queue[1].push(displayObject);
-            }
-        },
-        _finishInteractionProcess: function (event, func) {
-            var queue = this._queue;
-            var q = queue[0];
-            for (var i = 0, l = q.length; i < l; i++) {
-                if (event) {
-                    if (func) {
-                        func(event, q[i], false);
-                    }
-                }
-                else {
-                    func(q[i], false);
-                }
-            }
-            q = queue[1];
-            for (var i = 0, l = q.length; i < l; i++) {
-                if (event) {
-                    if (!event.target) {
-                        event.target = q[i];
-                    }
-                    if (func) {
-                        func(event, q[i], true);
-                    }
-                }
-                else {
-                    func(q[i], true);
-                }
+                this.dispatchEvent(displayObject_1, eventString, eventData);
             }
         }
-    });
+    }
+    pixi_display.processInteractive51 = processInteractive51;
+    function patchInteractionManager(interactionManager) {
+        if (!interactionManager) {
+            return;
+        }
+        if (interactionManager.search) {
+            if (!interactionManager.search.worksWithDisplay) {
+                interactionManager.search = new pixi_display.LayersTreeSearch();
+            }
+        }
+        else {
+            interactionManager.processInteractive = processInteractive51;
+        }
+    }
+    pixi_display.patchInteractionManager = patchInteractionManager;
 })(pixi_display || (pixi_display = {}));
 var pixi_display;
 (function (pixi_display) {
@@ -597,6 +500,151 @@ var pixi_display;
 })(pixi_display || (pixi_display = {}));
 var pixi_display;
 (function (pixi_display) {
+    var Point = PIXI.Point;
+    var LayersTreeSearch = (function () {
+        function LayersTreeSearch() {
+            this._tempPoint = new Point();
+            this._queue = [[], []];
+            this._eventDisplayOrder = 0;
+            this.worksWithDisplay = true;
+        }
+        LayersTreeSearch.prototype.recursiveFindHit = function (point, displayObject, hitTestOrder, interactive, outOfMask) {
+            if (!displayObject || !displayObject.visible) {
+                return 0;
+            }
+            var hit = 0, interactiveParent = interactive = displayObject.interactive || interactive;
+            if (displayObject.hitArea) {
+                interactiveParent = false;
+            }
+            if (displayObject._activeParentLayer) {
+                outOfMask = false;
+            }
+            var mask = displayObject._mask;
+            if (hitTestOrder < Infinity && mask) {
+                if (!mask.containsPoint(point)) {
+                    outOfMask = true;
+                }
+            }
+            if (hitTestOrder < Infinity && displayObject.filterArea) {
+                if (!displayObject.filterArea.contains(point.x, point.y)) {
+                    outOfMask = true;
+                }
+            }
+            var children = displayObject.children;
+            if (displayObject.interactiveChildren && children) {
+                for (var i = children.length - 1; i >= 0; i--) {
+                    var child = children[i];
+                    var hitChild = this.recursiveFindHit(point, child, hitTestOrder, interactiveParent, outOfMask);
+                    if (hitChild) {
+                        if (!child.parent) {
+                            continue;
+                        }
+                        hit = hitChild;
+                        hitTestOrder = hitChild;
+                    }
+                }
+            }
+            if (interactive) {
+                if (!outOfMask) {
+                    if (hitTestOrder < displayObject.displayOrder) {
+                        if (displayObject.hitArea) {
+                            displayObject.worldTransform.applyInverse(point, this._tempPoint);
+                            if (displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y)) {
+                                hit = displayObject.displayOrder;
+                            }
+                        }
+                        else if (displayObject.containsPoint) {
+                            if (displayObject.containsPoint(point)) {
+                                hit = displayObject.displayOrder;
+                            }
+                        }
+                    }
+                    if (displayObject.interactive) {
+                        this._queueAdd(displayObject, hit === Infinity ? 0 : hit);
+                    }
+                }
+                else {
+                    if (displayObject.interactive) {
+                        this._queueAdd(displayObject, 0);
+                    }
+                }
+            }
+            return hit;
+        };
+        LayersTreeSearch.prototype.findHit = function (strangeStuff, displayObject, func, hitTest) {
+            var interactionEvent = null;
+            var point = null;
+            if (strangeStuff.data &&
+                strangeStuff.data.global) {
+                interactionEvent = strangeStuff;
+                point = interactionEvent.data.global;
+            }
+            else {
+                point = strangeStuff;
+            }
+            this._startInteractionProcess();
+            this.recursiveFindHit(point, displayObject, hitTest ? 0 : Infinity, false, false);
+            this._finishInteractionProcess(interactionEvent, func);
+        };
+        LayersTreeSearch.prototype._startInteractionProcess = function () {
+            this._eventDisplayOrder = 1;
+            if (!this._queue) {
+                this._queue = [[], []];
+            }
+            this._queue[0].length = 0;
+            this._queue[1].length = 0;
+        };
+        LayersTreeSearch.prototype._queueAdd = function (displayObject, order) {
+            var queue = this._queue;
+            if (order < this._eventDisplayOrder) {
+                queue[0].push(displayObject);
+            }
+            else {
+                if (order > this._eventDisplayOrder) {
+                    this._eventDisplayOrder = order;
+                    var q = queue[1];
+                    for (var i = 0, l = q.length; i < l; i++) {
+                        queue[0].push(q[i]);
+                    }
+                    queue[1].length = 0;
+                }
+                queue[1].push(displayObject);
+            }
+        };
+        LayersTreeSearch.prototype._finishInteractionProcess = function (event, func) {
+            var queue = this._queue;
+            var q = queue[0];
+            for (var i = 0, l = q.length; i < l; i++) {
+                if (event) {
+                    if (func) {
+                        func(event, q[i], false);
+                    }
+                }
+                else {
+                    func(q[i], false);
+                }
+            }
+            q = queue[1];
+            for (var i = 0, l = q.length; i < l; i++) {
+                if (event) {
+                    if (!event.target) {
+                        event.target = q[i];
+                    }
+                    if (func) {
+                        func(event, q[i], true);
+                    }
+                }
+                else {
+                    func(q[i], true);
+                }
+            }
+        };
+        return LayersTreeSearch;
+    }());
+    pixi_display.LayersTreeSearch = LayersTreeSearch;
+})(pixi_display || (pixi_display = {}));
+var pixi_display;
+(function (pixi_display) {
     var Stage = (function (_super) {
         __extends(Stage, _super);
         function Stage() {
@@ -717,6 +765,7 @@ var pixi_display;
             if (displayObject.isStage) {
                 displayObject.updateStage();
             }
+            pixi_display.patchInteractionManager(this.plugins.interaction);
             this._oldRender(displayObject, renderTexture, clear, transform, skipUpdateTransform);
         }
     });
@@ -737,6 +786,7 @@ var pixi_display;
                 if (displayObject.isStage) {
                     displayObject.updateStage();
                 }
+                pixi_display.patchInteractionManager(this.plugins.interaction);
                 this._oldRender(displayObject, renderTexture, clear, transform, skipUpdateTransform);
             }
         });

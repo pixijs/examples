@@ -52,7 +52,12 @@ var pixi_compressed_textures;
             this.data = null;
         };
         CompressedImage.prototype.bind = function (baseTexture) {
-            baseTexture.premultiplyAlpha = false;
+            if (baseTexture.alphaMode !== undefined) {
+                baseTexture.alphaMode = PIXI.ALPHA_MODES.NO_PREMULTIPLIED_ALPHA;
+            }
+            else {
+                baseTexture.premultiplyAlpha = false;
+            }
             _super.prototype.bind.call(this, baseTexture);
         };
         CompressedImage.prototype.upload = function (renderer, baseTexture, glTexture) {
@@ -89,7 +94,7 @@ var pixi_compressed_textures;
             var gl = renderer.state.gl;
             var levels = this.levels;
             if (baseTexture.scaleMode === PIXI.SCALE_MODES.LINEAR) {
-                if (levels > 1) {
+                if (levels > 1 && glTexture.mipmap) {
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
                 }
@@ -99,8 +104,7 @@ var pixi_compressed_textures;
                 }
             }
             else {
-                if (levels > 1) {
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                if (levels > 1 && glTexture.mipmap) {
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
                 }
                 else {
@@ -108,6 +112,8 @@ var pixi_compressed_textures;
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
                 }
             }
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, glTexture.wrapMode);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, glTexture.wrapMode);
             return true;
         };
         CompressedImage.prototype.loadFromArrayBuffer = function (arrayBuffer, crnLoad) {
@@ -401,7 +407,7 @@ var pixi_compressed_textures;
             return _super.call(this, _image) || this;
         }
         PVRTCLoader.prototype.load = function (arrayBuffer) {
-            if (!pixi_compressed_textures.DDSLoader.test(arrayBuffer)) {
+            if (!PVRTCLoader.test(arrayBuffer)) {
                 throw "Invalid magic number in PVR header";
             }
             var header = new Int32Array(arrayBuffer, 0, PVR_HEADER_LENGTH);
@@ -445,42 +451,6 @@ var pixi_compressed_textures;
     }(pixi_compressed_textures.AbstractInternalLoader));
     pixi_compressed_textures.PVRTCLoader = PVRTCLoader;
 })(pixi_compressed_textures || (pixi_compressed_textures = {}));
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var pixi_compressed_textures;
 (function (pixi_compressed_textures) {
     var _a, _b;
@@ -586,49 +556,28 @@ var pixi_compressed_textures;
             return this._image;
         };
         BASISLoader.prototype._loadAsync = function (buffer) {
-            return __awaiter(this, void 0, void 0, function () {
-                var startTime, BasisFileCtr, basisFile, width, height, levels, hasAlpha, dest, target, dst, _a, name;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            startTime = performance.now();
-                            BasisFileCtr = BASISLoader.BASIS_BINDING;
-                            basisFile = new BasisFileCtr(new Uint8Array(buffer));
-                            return [4, basisFile.getImageWidth(0, 0)];
-                        case 1:
-                            width = _b.sent();
-                            return [4, basisFile.getImageHeight(0, 0)];
-                        case 2:
-                            height = _b.sent();
-                            levels = 1;
-                            return [4, basisFile.getHasAlpha()];
-                        case 3:
-                            hasAlpha = _b.sent();
-                            dest = this._image;
-                            return [4, basisFile.startTranscoding()];
-                        case 4:
-                            if (!(_b.sent())) {
-                                throw "Transcoding error!";
-                            }
-                            target = hasAlpha ? BASISLoader.RGBA_FORMAT : BASISLoader.RGB_FORMAT;
-                            console.log("Grats! BASIS will be transcoded to:", target);
-                            _a = Uint8Array.bind;
-                            return [4, basisFile.getImageTranscodedSizeInBytes(0, 0, target.basis)];
-                        case 5:
-                            dst = new (_a.apply(Uint8Array, [void 0, _b.sent()]))();
-                            return [4, basisFile.transcodeImage(dst, 0, 0, target.basis, !!0, !!0)];
-                        case 6:
-                            if (!(_b.sent())) {
-                                throw "Transcoding error!";
-                            }
-                            console.log("[BASISLoader] Totla transcoding time:", performance.now() - startTime);
-                            this._format = target.native;
-                            this._file = basisFile;
-                            name = target.name.replace("COMPRESSED_", "");
-                            return [2, dest.init(dest.src, dst, 'BASIS|' + name, width, height, levels, target.native)];
-                    }
-                });
-            });
+            var startTime = performance.now();
+            var BasisFileCtr = BASISLoader.BASIS_BINDING;
+            var basisFile = new BasisFileCtr(new Uint8Array(buffer));
+            var width = basisFile.getImageWidth(0, 0);
+            var height = basisFile.getImageHeight(0, 0);
+            var levels = 1;
+            var hasAlpha = basisFile.getHasAlpha();
+            var dest = this._image;
+            if (!basisFile.startTranscoding()) {
+                throw "Transcoding error!";
+            }
+            var target = hasAlpha ? BASISLoader.RGBA_FORMAT : BASISLoader.RGB_FORMAT;
+            console.log("Grats! BASIS will be transcoded to:", target);
+            var dst = new Uint8Array(basisFile.getImageTranscodedSizeInBytes(0, 0, target.basis));
+            if (!basisFile.transcodeImage(dst, 0, 0, target.basis, !!0, !!0)) {
+                throw "Transcoding error!";
+            }
+            console.log("[BASISLoader] Totla transcoding time:", performance.now() - startTime);
+            this._format = target.native;
+            this._file = basisFile;
+            var name = target.name.replace("COMPRESSED_", "");
+            return Promise.resolve(dest.init(dest.src, dst, 'BASIS|' + name, width, height, levels, target.native));
         };
         BASISLoader.prototype.levelBufferSize = function (width, height, level) {
             return this._file ? this._file.getImageTranscodedSizeInBytes(0, level, FMT_TO_BASIS[this._format]) : undefined;
@@ -917,5 +866,335 @@ var pixi_compressed_textures;
 var pixi_compressed_textures;
 (function (pixi_compressed_textures) {
     PIXI.compressedTextures = pixi_compressed_textures;
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    var WorkedBASISLoader = (function (_super) {
+        __extends(WorkedBASISLoader, _super);
+        function WorkedBASISLoader(_image) {
+            var _this = _super.call(this, _image) || this;
+            _this._mips = [];
+            return _this;
+        }
+        WorkedBASISLoader.prototype._loadAsync = function (buffer) {
+            var _this = this;
+            var start = performance.now();
+            var pool = pixi_compressed_textures.BASISLoader.BASIS_BINDING;
+            var config = {
+                genMip: true,
+                rgbaFormat: pixi_compressed_textures.BASISLoader.RGBA_FORMAT.basis,
+                rgbFormat: pixi_compressed_textures.BASISLoader.RGB_FORMAT.basis,
+                transfer: true
+            };
+            return pool
+                .transcode(buffer, config)
+                .then(function (result) {
+                var width = result.width;
+                var height = result.height;
+                var srcBuffer = new Uint8Array(result.buffer);
+                var target = result.hasAlpha ? pixi_compressed_textures.BASISLoader.RGBA_FORMAT : pixi_compressed_textures.BASISLoader.RGB_FORMAT;
+                var name = target.name.replace("COMPRESSED_", "");
+                var dest = _this._image;
+                _this._mips = result.mipmaps;
+                console.log("[WorkedBASISLoader] Total transcoding time:", performance.now() - start);
+                return dest.init(dest.src, srcBuffer, 'BASIS|' + name, width, height, 1, target.native);
+            });
+        };
+        WorkedBASISLoader.loadAndRunTranscoder = function (options) {
+            return Promise.all([
+                fetch(options.path + "/basis_transcoder.js").then(function (r) { return r.text(); }),
+                fetch(options.path + "/basis_transcoder.wasm").then(function (w) { return w.arrayBuffer(); }),
+            ]).then(function (_a) {
+                var js = _a[0], wasm = _a[1];
+                WorkedBASISLoader.runTranscoder(Object.assign(options, {
+                    jsSource: js, wasmSource: wasm
+                }));
+            });
+        };
+        WorkedBASISLoader.runTranscoder = function (options) {
+            var trans = new pixi_compressed_textures.WorkedBASIS.TranscoderWorkerPool(options.threads || 2);
+            _super.bindTranscoder.call(this, trans, options.ext);
+            var idx = pixi_compressed_textures.Loaders.indexOf(pixi_compressed_textures.BASISLoader);
+            pixi_compressed_textures.Loaders[idx] = WorkedBASISLoader;
+            return trans.init(options.jsSource, options.wasmSource);
+        };
+        WorkedBASISLoader.prototype.levelBufferSize = function (width, height, mip) {
+            return this._mips[mip].size;
+        };
+        return WorkedBASISLoader;
+    }(pixi_compressed_textures.BASISLoader));
+    pixi_compressed_textures.WorkedBASISLoader = WorkedBASISLoader;
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    var WorkedBASIS;
+    (function (WorkedBASIS) {
+        var BasisWorker = (function () {
+            function BasisWorker() {
+                this.worker = undefined;
+                this.id = BasisWorker.ID++;
+                this.free = false;
+                this.initDone = false;
+                this.binary = undefined;
+                this._rej = undefined;
+                this._res = undefined;
+            }
+            BasisWorker.prototype.init = function (basisSource, basisBinary) {
+                var _this = this;
+                if (basisSource === void 0) { basisSource = undefined; }
+                if (basisBinary === void 0) { basisBinary = undefined; }
+                if (!this.worker) {
+                    this.worker = WorkedBASIS.generateWorker(basisSource);
+                }
+                if (!this.worker) {
+                    throw "Can't create worker";
+                }
+                if (this.initDone) {
+                    return Promise.resolve(true);
+                }
+                console.log("[BASIS Worker " + this.id + "] init start!");
+                this.worker.addEventListener("message", this._onMessage.bind(this));
+                this.worker.addEventListener("error", this._onError.bind(this));
+                this.binary = basisBinary;
+                var initStart = performance.now();
+                return new Promise(function (res, rej) {
+                    _this._rej = rej;
+                    _this._res = res;
+                    _this._init(basisBinary);
+                }).then(function (res) {
+                    console.log("[BASIS Worker " + _this.id + "] init done!", performance.now() - initStart);
+                    _this.initDone = true;
+                    _this.free = true;
+                    _this.binary = res.buffer;
+                    return true;
+                });
+            };
+            BasisWorker.prototype.transcode = function (buffer, options) {
+                var _this = this;
+                if (!this.free) {
+                    throw "[BASIS Worker " + this.id + "] Is busy! Check '.free' status!";
+                }
+                if (!buffer
+                    || options.rgbaFormat === undefined
+                    || options.rgbFormat === undefined) {
+                    throw "Buffer and formats requred!";
+                }
+                var config = {
+                    rgbaFormat: options.rgbaFormat,
+                    rgbFormat: options.rgbFormat,
+                    genMip: options.genMip || false
+                };
+                this.free = false;
+                return new Promise(function (res, rej) {
+                    _this._rej = rej;
+                    _this._res = res;
+                    if (options.transfer) {
+                        _this.worker.postMessage({
+                            type: "transcode",
+                            buffer: buffer,
+                            config: config
+                        }, [buffer]);
+                    }
+                    else {
+                        _this.worker.postMessage({
+                            type: "transcode",
+                            buffer: buffer,
+                            config: config
+                        });
+                    }
+                }).then(function (result) {
+                    _this.free = true;
+                    return result;
+                });
+            };
+            BasisWorker.prototype._init = function (bin) {
+                this.worker.postMessage({
+                    type: "init", id: 0, wasmBinary: bin
+                }, [bin]);
+            };
+            BasisWorker.prototype._onMessage = function (event) {
+                if (event.data.type === "error") {
+                    this._onError(event.data.error);
+                }
+                if (this._res) {
+                    this._res(event.data);
+                }
+            };
+            BasisWorker.prototype._onError = function (reason) {
+                if (this._rej) {
+                    this._rej(reason);
+                }
+            };
+            BasisWorker.prototype.destroy = function () {
+                this.worker.terminate();
+            };
+            BasisWorker.ID = 0;
+            return BasisWorker;
+        }());
+        WorkedBASIS.BasisWorker = BasisWorker;
+        var TranscoderWorkerPool = (function () {
+            function TranscoderWorkerPool(count) {
+                if (count === void 0) { count = 0; }
+                this.workers = [];
+                this.count = 1;
+                this.count = count || 1;
+            }
+            TranscoderWorkerPool.prototype.init = function (jsSource, wasmSource) {
+                var _this = this;
+                var count = 0;
+                var next = function () {
+                    if (++count > _this.count) {
+                        return;
+                    }
+                    var w = new BasisWorker();
+                    _this.workers.push(w);
+                    return w.init(jsSource, wasmSource).then(function () {
+                        wasmSource = w.binary;
+                        next();
+                    });
+                };
+                return next().then(function () {
+                    return _this;
+                });
+            };
+            TranscoderWorkerPool.prototype.transcode = function (buffer, options) {
+                if (!this.workers || !this.workers.length) {
+                    throw "[TranscoderWorkerPool] Pool empty, populate before!";
+                }
+                var workers = this.workers;
+                var freeWorker = undefined;
+                var iteration = 0;
+                var search = function (doneCallback) {
+                    for (var _i = 0, workers_1 = workers; _i < workers_1.length; _i++) {
+                        var w = workers_1[_i];
+                        if (w.free) {
+                            freeWorker = w;
+                            break;
+                        }
+                    }
+                    if (iteration > 100) {
+                        throw "[TranscoderWorkerPool] Can't found free worker after 100 interation!";
+                    }
+                    if (!freeWorker) {
+                        setTimeout(function () { return search(doneCallback); }, 10 * iteration);
+                    }
+                    else {
+                        doneCallback(freeWorker);
+                    }
+                    iteration++;
+                };
+                return new Promise(search).then(function (worker) {
+                    console.log("[TranscoderWorkerPool] run transcoding on " + worker.id + " worker");
+                    return worker.transcode(buffer, options);
+                });
+            };
+            TranscoderWorkerPool.prototype.destroy = function () {
+                this.workers.forEach(function (w) {
+                    w.destroy();
+                });
+                this.workers = undefined;
+            };
+            return TranscoderWorkerPool;
+        }());
+        WorkedBASIS.TranscoderWorkerPool = TranscoderWorkerPool;
+    })(WorkedBASIS = pixi_compressed_textures.WorkedBASIS || (pixi_compressed_textures.WorkedBASIS = {}));
+})(pixi_compressed_textures || (pixi_compressed_textures = {}));
+var pixi_compressed_textures;
+(function (pixi_compressed_textures) {
+    var WorkedBASIS;
+    (function (WorkedBASIS) {
+        WorkedBASIS.basisWorkerSource = function () {
+            var _BasisFile;
+            function init(message) {
+                var bin = message.wasmBinary;
+                __init(bin).then(function () {
+                    self.postMessage({ type: "init", status: true, buffer: bin }, [bin]);
+                });
+            }
+            function transcode(message) {
+                try {
+                    var res = __transcode(message.buffer, message.config);
+                    Object.assign(res, {
+                        type: 'transcode',
+                    });
+                    self.postMessage(res, [res.buffer.buffer]);
+                }
+                catch (error) {
+                    console.error(error);
+                    self.postMessage({ type: 'error', id: message.id, error: error.message });
+                }
+            }
+            onmessage = function (e) {
+                var message = e.data;
+                var func = self[message.type];
+                if (func) {
+                    func(message);
+                }
+            };
+            function __init(wasmBinary) {
+                var Module;
+                return new Promise(function (resolve) {
+                    Module = { wasmBinary: wasmBinary, onRuntimeInitialized: resolve };
+                    return BASIS(Module);
+                }).then(function () {
+                    var BasisFile = Module.BasisFile, initializeBasis = Module.initializeBasis;
+                    _BasisFile = BasisFile;
+                    initializeBasis();
+                });
+            }
+            function __transcode(buffer, config) {
+                var basisFile = new _BasisFile(new Uint8Array(buffer));
+                var width = basisFile.getImageWidth(0, 0);
+                var height = basisFile.getImageHeight(0, 0);
+                var levels = config.genMip ? basisFile.getNumLevels(0) : 1;
+                var hasAlpha = basisFile.getHasAlpha();
+                var cleanup = function () {
+                    basisFile.close();
+                    basisFile.delete();
+                };
+                if (!width || !height || !levels) {
+                    cleanup();
+                    throw 'Invalid .basis file';
+                }
+                if (!basisFile.startTranscoding()) {
+                    cleanup();
+                    throw '.startTranscoding failed';
+                }
+                var totalSize = 0;
+                var offset = 0;
+                var targetBuffer = undefined;
+                var mipmaps = [];
+                var target = hasAlpha ? config.rgbaFormat : config.rgbFormat;
+                for (var mip = 0; mip < levels; mip++) {
+                    var mipWidth = basisFile.getImageWidth(0, mip);
+                    var mipHeight = basisFile.getImageHeight(0, mip);
+                    var size = basisFile.getImageTranscodedSizeInBytes(0, mip, target);
+                    totalSize += size;
+                    mipmaps.push({ width: mipWidth, height: mipHeight, format: target, size: size });
+                }
+                targetBuffer = new Uint8Array(totalSize);
+                for (var mip = 0; mip < levels; mip++) {
+                    var size = mipmaps[mip].size;
+                    var dst = new Uint8Array(targetBuffer.buffer, offset, size);
+                    var status_1 = basisFile.transcodeImage(dst, 0, mip, target, 0, 0);
+                    if (!status_1) {
+                        cleanup();
+                        throw '.transcodeImage failed.';
+                    }
+                    offset += size;
+                }
+                cleanup();
+                return { width: width, height: height, hasAlpha: hasAlpha, mipmaps: mipmaps, buffer: targetBuffer };
+            }
+        };
+        function generateWorker(basisJSSource) {
+            var source = WorkedBASIS.basisWorkerSource.toString();
+            var b0 = source.indexOf("{");
+            var b1 = source.lastIndexOf("}");
+            source = basisJSSource + "\n" + source.substring(b0 + 1, b1);
+            return new Worker(URL.createObjectURL(new Blob([source])));
+        }
+        WorkedBASIS.generateWorker = generateWorker;
+    })(WorkedBASIS = pixi_compressed_textures.WorkedBASIS || (pixi_compressed_textures.WorkedBASIS = {}));
 })(pixi_compressed_textures || (pixi_compressed_textures = {}));
 //# sourceMappingURL=pixi-compressed-textures.js.map

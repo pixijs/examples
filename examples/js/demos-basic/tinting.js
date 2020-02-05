@@ -29,7 +29,7 @@ for (let i = 0; i < totalDudes; i++) {
     // this number will be used to modify the direction of the dude over time
     dude.turningSpeed = Math.random() - 0.8;
 
-    // create a random speed for the dude between 0 - 2
+    // create a random speed for the dude between 2 - 4
     dude.speed = 2 + Math.random() * 2;
 
     // finally we push the dude into the aliens array so it it can be easily accessed later

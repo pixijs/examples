@@ -57,7 +57,8 @@ app.stage.addChild(screenshotText);
 screenshotText.interactive = true;
 screenshotText.buttonMode = true;
 
-// Generates a texture object from a container, then give that texture to our sprite object
+// Generates a texture object from a container, then give that texture to our sprite object and create a download link containing
+// an image of the snapshot we just took
 // Note that we're not doing this with our 'bunnyContainer' because it'll just be a straight shot of the bunnies
 // and won't copy the rotations of the bunnies. Try putting in the bunnyContainer instead to see what I mean.
 var takeScreenshot = function () {

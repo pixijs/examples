@@ -63,6 +63,14 @@ screenshotText.buttonMode = true;
 var takeScreenshot = function () {
     var screenTexture = app.renderer.generateTexture( screenContainer, PIXI.SCALE_MODES.LINEAR );
     screenShot.texture = screenTexture;
+    app.renderer.extract.canvas(screenContainer).toBlob(function(b){
+        var a = document.createElement('a');
+        document.body.append(a);
+        a.download = 'screenshot';
+        a.href = URL.createObjectURL(b);
+        a.click();
+        a.remove();
+    }, 'image/png');
 };
 
 // Wire that up to our text button

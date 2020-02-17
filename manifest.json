@@ -160,6 +160,12 @@
             "entry": "displacement-map.js"
         }
     ],
+    "interaction": [
+        {
+            "title": "Interactivity",
+            "entry": "custom-hitarea.js"
+        }
+    ],
 	"mesh": [
         {
             "title": "Triangle",

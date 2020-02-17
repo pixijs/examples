@@ -135,6 +135,12 @@
 			"entry": "slots-demo.js"
 		}
     ],
+    "demos-advanced": [
+        {
+            "title": "Screenshot",
+            "entry": "screenshot.js"
+        }
+    ],
     "filters": [
         {
             "title": "Filter",

@@ -162,7 +162,7 @@
     ],
     "interaction": [
         {
-            "title": "Interactivity",
+            "title": "Custom Hitareas",
             "entry": "custom-hitarea.js"
         }
     ],

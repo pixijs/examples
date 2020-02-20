@@ -11,8 +11,6 @@ const app = new PIXI.Application({
 
 document.body.appendChild(app.view);
 
-const i = 0;
-
 // Create a new texture
 const texture = PIXI.Texture.from('examples/assets/bunny.png');
 

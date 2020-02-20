@@ -1,12 +1,18 @@
 var app = new PIXI.Application( 800, 600, { backgroundColor: 0x1099bb } );
 document.body.appendChild( app.view );
 
+// Flag for colliding
 var colliding = false;
 
-var movementSpeed = 0.1;
+// Options for how objects interact
+// How fast the red square moves
+var movementSpeed = 0.05;
+
+// Mass of the squares
 var greenSquareMass = 3;
 var redSquareMass = 1;
 
+// Strength of the impulse push between two objects
 var impulsePower = 5;
 
 // Test For Hit
@@ -29,6 +35,8 @@ function testForHit( object1, object2 ) {
     } );
 }
 
+// Calculates the results of a collision, allowing us to give an impulse that shoves
+// objects apart
 function collisionResponse( object1, object2, object1Acceleration, object2Acceleration, object1Mass, object2Mass ) {
     if ( !object1 || !object2 ) {
         return;
@@ -47,6 +55,7 @@ function collisionResponse( object1, object2, object1Acceleration, object2Accele
     return new PIXI.Point( impulse * vCollisionNorm.x, impulse * vCollisionNorm.y );
 }
 
+// Calculate the distance between two given points
 function distanceBetweenTwoPoints( p1, p2 ) {
     var a = p1.x - p2.x;
     var b = p1.y - p2.y;
@@ -54,8 +63,7 @@ function distanceBetweenTwoPoints( p1, p2 ) {
     return Math.hypot( a, b );
 }
 
-// For the first example, we'll make our button. You can use any shape instead of a
-// polygon
+// The green square we will knock about
 var greenSquare = new PIXI.Graphics()
     .beginFill( 0x33FF33 )
     .drawRect(
@@ -66,15 +74,7 @@ var greenSquare = new PIXI.Graphics()
     )
     .endFill();
 
-// Turns on interactive elements to show that these are buttons
-// to be clicked
-greenSquare.interactive = true;
-greenSquare.buttonMode = true;
-
-// Add to stage
-app.stage.addChild( greenSquare );
-
-// Create a hitarea that matches, which will be used for point intersection
+// Create a hitarea that matches the shape, which will be used for point intersection
 greenSquare.hitArea = new PIXI.Rectangle(
     ( app.screen.width - 100 ) / 2,
     ( app.screen.height - 100 ) / 2,
@@ -82,6 +82,10 @@ greenSquare.hitArea = new PIXI.Rectangle(
     100
 );
 
+// Add to stage
+app.stage.addChild( greenSquare );
+
+// The square you move around
 var redSquare = new PIXI.Graphics()
     .beginFill( 0xFF3333 )
     .drawRect(
@@ -92,23 +96,25 @@ var redSquare = new PIXI.Graphics()
     )
     .endFill();
 
-// Turns on interactive elements to show that these are buttons
-// to be clicked
-redSquare.interactive = true;
-redSquare.buttonMode = true;
-
 // Add to stage
 app.stage.addChild( redSquare );
 
+// The green squares acceleration value
 var greenAcceleration = new PIXI.Point( 0 );
+var redAcceleration = new PIXI.Point( 0 );
 
 // Listen for animate update
 app.ticker.add( function ( delta ) {
+    redAcceleration.set( 0 );
+
     var mouseCoords = app.renderer.plugins.interaction.mouse.global;
 
+    // Check halves of the screen
     var halfWidth = app.screen.width / 2;
     var halfHeight = app.screen.height / 2;
 
+    // Check whether the green square ever moves off the screen
+    // If so, reverse acceleration in that direction
     if ( greenSquare.x < -halfWidth || greenSquare.x > halfWidth ) {
         greenAcceleration.x = -greenAcceleration.x;
     }
@@ -117,35 +123,48 @@ app.ticker.add( function ( delta ) {
         greenAcceleration.y = -greenAcceleration.y;
     }
 
-    if ( app.screen.width < mouseCoords.x || mouseCoords.x < 0 || app.screen.height < mouseCoords.y || mouseCoords.y < 0 ) {
-        return;
-    }
-
+    // Check if the two squares are colliding
     colliding = testForHit( greenSquare, redSquare );
 
-    var redSquareAdjustedPosition = new PIXI.Point( redSquare.x + ( redSquare.width * 1.5 ), redSquare.y + ( redSquare.height * 1.5 ) );
+    // If the mouse is off screen, then don't update any further
+    if ( app.screen.width > mouseCoords.x || mouseCoords.x > 0 || app.screen.height > mouseCoords.y || mouseCoords.y > 0 ) {
+        // Get the red square's center point
+        var redSquareCenterPosition = new PIXI.Point( redSquare.x + ( redSquare.width * 1.5 ), redSquare.y + ( redSquare.height * 1.5 ) );
 
-    var toMouseDirection = new PIXI.Point( mouseCoords.x - redSquareAdjustedPosition.x, mouseCoords.y - redSquareAdjustedPosition.y );
-    var angleToMouse = Math.atan2( toMouseDirection.y, toMouseDirection.x );
-    var redSpeed = distanceBetweenTwoPoints( mouseCoords, redSquareAdjustedPosition ) * movementSpeed;
-    var redAcceleration = new PIXI.Point( Math.cos( angleToMouse ) * redSpeed, Math.sin( angleToMouse ) * redSpeed );
+        // Calculate the direction vector between the mouse pointer and the red square
+        var toMouseDirection = new PIXI.Point( mouseCoords.x - redSquareCenterPosition.x, mouseCoords.y - redSquareCenterPosition.y );
 
+        // Use the above to figure out the angle that direction has
+        var angleToMouse = Math.atan2( toMouseDirection.y, toMouseDirection.x );
+
+        // Figure out the speed the square should be travelling by, as a function of how far away from the mouse pointer the red square is
+        var redSpeed = distanceBetweenTwoPoints( mouseCoords, redSquareCenterPosition ) * movementSpeed;
+
+        // Calculate the acceleration of the red square
+        redAcceleration.set( Math.cos( angleToMouse ) * redSpeed, Math.sin( angleToMouse ) * redSpeed );
+    }
+
+    // If the two squares are colliding
     if ( colliding ) {
+        // Calculate the changes in acceleration that should be made between each square as a result
+        // of the collision
         var collisionPush = collisionResponse(
             greenSquare, redSquare,
             greenAcceleration, redAcceleration,
             greenSquareMass, redSquareMass
         );
+        // Set the changes in acceleration for both squares
         redAcceleration.set( ( collisionPush.x * greenSquareMass ), ( collisionPush.y * greenSquareMass ) );
         greenAcceleration.set( -( collisionPush.x * redSquareMass ), -( collisionPush.y * redSquareMass ) );
     }
-
-    redSquare.x += redAcceleration.x * delta;
-    redSquare.y += redAcceleration.y * delta;
 
     greenSquare.x += greenAcceleration.x * delta;
     greenSquare.y += greenAcceleration.y * delta;
     greenSquare.hitArea.x += greenAcceleration.x * delta;
     greenSquare.hitArea.y += greenAcceleration.y * delta;
+
+    // Apply the acceleration to the XY coords of the squares to update their positions
+    redSquare.x += redAcceleration.x * delta;
+    redSquare.y += redAcceleration.y * delta;
 
 } );

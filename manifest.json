@@ -160,10 +160,10 @@
             "entry": "displacement-map.js"
         }
     ],
-    "interaction": [
+    "advanced-demos": [
         {
-            "title": "Custom Hitareas",
-            "entry": "custom-hitarea.js"
+            "title": "Collision Detection",
+            "entry": "collision-detection.js"
         }
     ],
 	"mesh": [

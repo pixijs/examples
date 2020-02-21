@@ -1,0 +1,48 @@
+{"frames": {
+
+  "eggHead.png":
+  {
+    "frame": {"x":159,"y":2,"w":142,"h":157},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":142,"h":157},
+    "sourceSize": {"w":142,"h":157},
+    "pivot": {"x":0.5,"y":0.5}
+  },
+  "flowerTop.png":
+  {
+    "frame": {"x":303,"y":127,"w":119,"h":181},
+    "rotated": true,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":119,"h":181},
+    "sourceSize": {"w":119,"h":181},
+    "pivot": {"x":0.5,"y":0.5}
+  },
+  "helmlok.png":
+  {
+    "frame": {"x":303,"y":2,"w":123,"h":177},
+    "rotated": true,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":123,"h":177},
+    "sourceSize": {"w":123,"h":177},
+    "pivot": {"x":0.5,"y":0.5}
+  },
+  "skully.png":
+  {
+    "frame": {"x":2,"y":2,"w":155,"h":165},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":155,"h":165},
+    "sourceSize": {"w":155,"h":165},
+    "pivot": {"x":0.5,"y":0.5}
+  }},
+  "meta": {
+    "app": "http://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "dudes.png",
+    "format": "RGBA8888",
+    "size": {"w":486,"h":248},
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:131ec91738109ab5c927b86ae9684dca:d249952eb7549ee793baa78c6ec65bda:160eb6758fe4007ba8592b420f92bb0b$"
+  }
+}

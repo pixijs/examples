@@ -43,7 +43,7 @@
             "entry": "star-warp.js"
         },
         {
-            "title": "Collision Detection and Resolution",
+            "title": "Collision",
             "entry": "collision-detection.js"
         }
     ],

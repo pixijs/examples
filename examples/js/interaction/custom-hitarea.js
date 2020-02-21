@@ -11,17 +11,11 @@ starButton1.position.set(50, 200);
 starButton1.buttonMode = true;
 starButton1.interactive = true;
 
-starButton1.pointerdown = (event) => {
-    starButton1.tint = 0x333333;
-};
+starButton1.on('pointerdown', (event) => onClick(starButton1));
 
-starButton1.pointerover = (event) => {
-    starButton1.tint = 0x666666;
-};
+starButton1.on('pointerover', (event) => onPointerOver(starButton1));
 
-starButton1.pointerout = (event) => {
-    starButton1.tint = 0xFFFFFF;
-};
+starButton1.on('pointerout', (event) => onPointerOut(starButton1));
 
 // Custom Hitarea Button
 const starButton2 = new PIXI.Sprite(yellowStar);
@@ -44,17 +38,11 @@ starButton2.hitArea = new PIXI.Polygon([
 starButton2.buttonMode = true;
 starButton2.interactive = true;
 
-starButton2.pointerdown = (event) => {
-    starButton2.tint = 0x333333;
-};
+starButton2.on('pointerdown', (event) => onClick(starButton2));
 
-starButton2.pointerover = (event) => {
-    starButton2.tint = 0x666666;
-};
+starButton2.on('pointerover', (event) => onPointerOver(starButton2));
 
-starButton2.pointerout = (event) => {
-    starButton2.tint = 0xFFFFFF;
-};
+starButton2.on('pointerout', (event) => onPointerOut(starButton2));
 
 // With Mask, No Hit Area
 const starButton3 = new PIXI.Sprite(yellowStar);
@@ -71,17 +59,11 @@ const squareMask = new PIXI.Graphics()
 
 starButton3.mask = squareMask;
 
-starButton3.pointerdown = (event) => {
-    starButton3.tint = 0x333333;
-};
+starButton3.on('pointerdown', (event) => onClick(starButton3));
 
-starButton3.pointerover = (event) => {
-    starButton3.tint = 0x666666;
-};
+starButton3.on('pointerover', (event) => onPointerOver(starButton3));
 
-starButton3.pointerout = (event) => {
-    starButton3.tint = 0xFFFFFF;
-};
+starButton3.on('pointerout', (event) => onPointerOut(starButton3));
 
 // With a Mask and Hit Area
 // Hitareas ignore masks. You can still click on a button made in this way,
@@ -112,17 +94,11 @@ starButton4.hitArea = new PIXI.Polygon([
 starButton4.buttonMode = true;
 starButton4.interactive = true;
 
-starButton4.pointerdown = (event) => {
-    starButton4.tint = 0x333333;
-};
+starButton4.on('pointerdown', (event) => onClick(starButton4));
 
-starButton4.pointerover = (event) => {
-    starButton4.tint = 0x666666;
-};
+starButton4.on('pointerover', (event) => onPointerOver(starButton4));
 
-starButton4.pointerout = (event) => {
-    starButton4.tint = 0xFFFFFF;
-};
+starButton4.on('pointerout', (event) => onPointerOut(starButton4));
 
 const style = new PIXI.TextStyle({ fill: '#ffffff' });
 
@@ -155,3 +131,15 @@ app.stage.addChild(
     text3,
     text4,
 );
+
+function onClick(object) {
+    object.tint = 0x333333;
+}
+
+function onPointerOver(object) {
+    object.tint = 0x666666;
+}
+
+function onPointerOut(object) {
+    object.tint = 0xFFFFFF;
+}

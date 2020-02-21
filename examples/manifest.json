@@ -1,0 +1,585 @@
+{
+    "demos-basic": [
+        {
+            "title": "Container",
+            "entry": "container.js"
+        },
+        {
+            "title": "Transparent Background",
+            "entry": "transparent-background.js"
+        },
+        {
+            "title": "Tinting",
+            "entry": "tinting.js"
+        },
+        {
+            "title": "CacheAsBitmap",
+            "entry": "cacheAsBitmap.js"
+        },
+        {
+            "title": "Particle Container",
+            "entry": "particle-container.js"
+        },
+        {
+            "title": "BlendModes",
+            "entry": "blendmodes.js"
+        }
+    ],
+    "demos-advanced": [
+        {
+            "title": "Slots",
+            "entry": "slots.js"
+        },
+        {
+            "title": "Scratchcard",
+            "entry": "scratchcard.js"
+        },
+        {
+            "title": "Mouse Trail",
+            "entry": "mouse-trail.js"
+        },
+        {
+            "title": "Star Warp",
+            "entry": "star-warp.js"
+        }
+    ],
+    "sprite": [
+        {
+            "title": "Basic",
+            "entry": "basic.js"
+        },
+        {
+            "title": "Texture Swap",
+            "entry": "texture-swap.js"
+        },
+        {
+            "title": "Animated Sprite - Explosion",
+            "entry": "animatedsprite-explosion.js"
+        },
+        {
+            "title": "Animated Sprite - Jet",
+            "entry": "animatedsprite-jet.js"
+        },
+        {
+            "title": "Animated Sprite Speed",
+            "entry": "animatedsprite-animationspeed.js"
+        },
+        {
+            "title": "Tiling Sprite",
+            "entry": "tiling-sprite.js"
+        },
+        {
+            "title": "Video",
+            "entry": "video.js"
+        }
+    ],
+    "text": [
+        {
+            "title": "Text",
+            "entry": "text.js"
+        },
+        {
+            "title": "Bitmap Text",
+            "entry": "bitmap-text.js"
+        },
+        {
+            "title": "Webfont",
+            "entry": "webfont.js"
+        }
+    ],
+    "graphics": [
+        {
+            "title": "Simple",
+            "entry": "simple.js"
+        },
+        {
+            "title": "Advanced",
+            "entry": "advanced.js"
+        },
+        {
+            "title": "Dynamic",
+            "entry": "dynamic.js"
+        }
+    ],
+    "interaction": [
+        {
+            "title": "Click",
+            "entry": "click.js"
+        },
+        {
+            "title": "Interactivity",
+            "entry": "interactivity.js"
+        },
+        {
+            "title": "Dragging",
+            "entry": "dragging.js"
+        },
+        {
+            "title": "Custom mouse icon",
+            "entry": "custom-mouse-icon.js"
+        }
+    ],
+    "masks": [
+        {
+            "title": "Graphics",
+            "entry": "graphics.js"
+        },
+        {
+            "title": "Sprite",
+            "entry": "sprite.js"
+        },
+        {
+            "title": "Filter",
+            "entry": "filter.js"
+        }
+    ],
+    "filters-basic": [
+        {
+            "title": "Blur",
+            "entry": "blur.js"
+        },
+        {
+            "title": "Color Matrix",
+            "entry": "color-matrix.js"
+        },
+        {
+            "title": "Displacement Map - Crawlies",
+            "entry": "displacement-map-crawlies.js"
+        },
+        {
+            "title": "Displacement Map - Flag",
+            "entry": "displacement-map-flag.js"
+        }
+    ],
+    "filters-advanced": [
+        {
+            "title": "Mouse Blending",
+            "entry": "mouse-blending.js"
+        },
+        {
+            "title": "Custom Filter",
+            "entry": "custom.js"
+        },
+        {
+            "title": "Pixie Shadow",
+            "entry": "pixie-shadow-filter.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        }
+    ],
+    "mesh-and-shaders": [
+        {
+            "title": "Textured Mesh - Basic",
+            "entry": "textured-mesh-basic.js"
+        },
+        {
+            "title": "Textured Mesh - Advanced",
+            "entry": "textured-mesh-advanced.js"
+        },
+        {
+            "title": "Triangle",
+            "entry": "triangle.js"
+        },
+        {
+            "title": "Colored Triangle",
+            "entry": "triangle-color.js"
+        },
+        {
+            "title": "Textured Triangle",
+            "entry": "triangle-textured.js"
+        },
+        {
+            "title": "Uniforms",
+            "entry": "uniforms.js"
+        },
+        {
+            "title": "Sharing Geometry",
+            "entry": "sharing-geometry.js"
+        },
+        {
+            "title": "Sharing Shader",
+            "entry": "shared-shader.js"
+        },
+        {
+            "title": "Merging Geometry",
+            "entry": "merging-geometry.js"
+        },
+        {
+            "title": "Interleaving Geometry",
+            "entry": "interleaving-geometry.js"
+        }
+    ],
+    "textures": [
+        {
+            "title": "Texture Rotate",
+            "entry": "texture-rotate.js"
+        },
+        {
+            "title": "Render Texture Basic",
+            "entry": "render-texture-basic.js"
+        },
+        {
+            "title": "Render Texture Advanced",
+            "entry": "render-texture-advanced.js"
+        },
+        {
+            "title": "Gradient Basic",
+            "entry": "gradient-basic.js"
+        },
+        {
+            "title": "Gradient Resource",
+            "entry": "gradient-resource.js"
+        }
+    ],
+    "plugin-filters": [
+        {
+            "title": "Outline",
+            "entry": "outline.js",
+            "plugins": [
+                "pixi-filters"
+            ]
+        }
+    ],
+    "plugin-spine": [
+        {
+            "title": "Dragon",
+            "entry": "dragon.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        },
+        {
+            "title": "Goblin",
+            "entry": "goblins.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        },
+        {
+            "title": "Pixie",
+            "entry": "pixie.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        },
+        {
+            "title": "Spineboy Walking",
+            "entry": "spineboy.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        },
+		{
+            "title": "Spineboy Pro",
+            "entry": "spineboy-pro.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        }
+    ],
+	"plugin-dragonbones": [
+        {
+            "title": "Robot",
+            "entry": "robot.js",
+            "plugins": [
+                "pixi-dragonbones"
+            ]
+        },
+        {
+            "title": "Eye Tracking",
+            "entry": "eyetracking.js",
+            "plugins": [
+                "pixi-dragonbones"
+            ]
+        }
+    ],
+	"plugin-heaven": [
+        {
+            "title": "Invert",
+            "entry": "invert.js",
+            "plugins": [
+                "pixi-heaven"
+            ]
+        },
+		{
+            "title": "Polygon Packing",
+            "entry": "polygon.js",
+            "plugins": [
+                "pixi-heaven"
+            ]
+        },
+		{
+            "title": "Decals",
+            "entry": "decals.js",
+            "plugins": [
+                "pixi-heaven"
+            ]
+        },
+		{
+            "title": "Spine support",
+            "entry": "spineboy-pro.js",
+            "plugins": [
+				"pixi-spine",
+                "pixi-heaven"
+            ]
+        }
+	],
+    "plugin-projection": [
+        {
+            "title": "2D Basics",
+            "entry": "basic.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "2D Plane",
+            "entry": "plane.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "2D Plane Tiling",
+            "entry": "plane-tiling.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "2D Quad projective",
+            "entry": "quad-homo.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "2D Quad bilinear",
+            "entry": "quad-bi.js",
+            "plugins": [
+                "pixi-projection"
+            ],
+            "validVersions": [
+                4
+            ]
+        },
+        {
+            "title": "Isometry basics",
+            "entry": "iso-basic.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "3D Camera Spine Layers",
+            "entry": "camera-spine-layers.js",
+            "plugins": [
+                "pixi-spine",
+                "pixi-layers",
+                "pixi-projection-spine"
+            ]
+        },
+        {
+            "title": "3D Cards",
+            "entry": "cards.js",
+            "plugins": [
+                "pixi-layers",
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "3D Runner",
+            "entry": "runner.js",
+            "plugins": [
+                "pixi-spine",
+                "pixi-projection"
+            ]
+        },
+        {
+            "title": "Bunnies Packer",
+            "entry": "bunny-pack.js",
+            "plugins": [
+                "pixi-projection"
+            ]
+        }
+    ],
+    "plugin-layers": [
+        {
+            "title": "Normals",
+            "entry": "normals.js",
+            "plugins": [
+                "pixi-layers",
+                "pixi-lights"
+            ],
+            "validVersions": [
+                4
+            ]
+        },
+        {
+            "title": "Lighting",
+            "entry": "lighting.js",
+            "plugins": [
+                "pixi-layers"
+            ]
+        },
+        {
+            "title": "Z-order",
+            "entry": "zorder.js",
+            "plugins": [
+                "pixi-layers"
+            ]
+        },
+        {
+            "title": "Drag, Sort, Light",
+            "entry": "normals-drag.js",
+            "plugins": [
+                "pixi-layers",
+                "pixi-lights"
+            ],
+            "validVersions": [
+                4
+            ]
+        },
+        {
+            "title": "Trail",
+            "entry": "trail.js",
+            "plugins": [
+                "pixi-layers"
+            ],
+            "validVersions": [
+                4
+            ]
+        }
+    ],
+    "plugin-picture": [
+        {
+            "title": "Overlay blendMode",
+            "entry": "overlay.js",
+            "plugins": [
+                "pixi-picture"
+            ],
+            "validVersions": [
+                4
+            ]
+        }
+    ],
+    "plugin-compressed-textures": [
+        {
+            "title": "Extension chooser",
+            "entry": "dds.js",
+            "plugins": [
+                "pixi-compressed-textures"
+            ]
+        },
+        {
+            "title": "Not-premultiplied alpha",
+            "entry": "not-premultiplied-alpha.js",
+            "plugins": [
+                "pixi-compressed-textures"
+            ]
+        },
+        {
+            "title": "BASIS",
+            "entry": "basis.js",
+            "plugins": [
+                "pixi-compressed-textures",
+                "basis_transcoder"
+            ],
+            "validVersions":[
+                5
+            ]
+        }
+    ],
+    "gsap2-interaction": [
+        {
+            "title": "GSAP 2 Tick Director",
+            "entry": "gsap2-tick.js",
+            "plugins": [
+                "gsap/gsap2/TweenMax.min"
+            ]
+        },
+        {
+            "title": "GSAP 2 Random Draw",
+            "entry": "gsap2-random-draw.js",
+            "plugins": [
+                "gsap/gsap2/TweenMax.min"
+            ]
+        },
+        {
+            "title": "GSAP 2 Basic Examples",
+            "entry": "gsap2-basic.js",
+            "plugins": [
+                "gsap/gsap2/TweenMax.min"
+            ]
+        },
+        {
+            "title": "GSAP 2 Filters",
+            "entry": "gsap2-filters.js",
+            "plugins": [
+                "gsap/gsap2/TweenMax.min",
+                "gsap/gsap2/PixiPlugin.min"
+            ]
+        },
+        {
+            "title": "GSAP 2 Trail",
+            "entry": "gsap2-trail.js",
+            "plugins": [
+                "gsap/gsap2/TweenMax.min"
+            ]
+        },
+        {
+            "title": "GSAP 2 Tint",
+            "entry": "gsap2-tint.js",
+            "plugins": [
+                "gsap/gsap2/TweenMax.min",
+                "gsap/gsap2/PixiPlugin.min"
+            ]
+        }
+    ],
+    "gsap3-interaction": [
+        {
+            "title": "GSAP 3 Tick Director",
+            "entry": "gsap3-tick.js",
+            "plugins": [
+                "gsap/gsap3/gsap.min"
+            ]
+        },
+        {
+            "title": "GSAP 3 Random Draw",
+            "entry": "gsap3-random-draw.js",
+            "plugins": [
+                "gsap/gsap3/gsap.min"
+            ]
+        },
+        {
+            "title": "GSAP 3 Basic Examples",
+            "entry": "gsap3-basic.js",
+            "plugins": [
+                "gsap/gsap3/gsap.min"
+            ]
+        },
+        {
+            "title": "GSAP 3 Filters",
+            "entry": "gsap3-filters.js",
+            "plugins": [
+                "gsap/gsap3/gsap.min"
+            ]
+        },
+        {
+            "title": "GSAP 3 Trail",
+            "entry": "gsap3-trail.js",
+            "plugins": [
+                "gsap/gsap3/gsap.min"
+            ]
+        },
+        {
+            "title": "GSAP 3 Tint",
+            "entry": "gsap3-tint.js",
+            "plugins": [
+                "gsap/gsap3/gsap.min",
+                "gsap/gsap3/PixiPlugin.min"
+            ]
+        }
+    ]
+}

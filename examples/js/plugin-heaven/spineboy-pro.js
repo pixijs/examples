@@ -38,14 +38,13 @@ function onAssetsLoaded(loader, res) {
         spineBoyPro.state.setAnimation(0, animation, loopAnimations.includes(animation));
 
         lastAnimation = animation;
-		
     });
-	
-	
-	let phase = 0;
-	app.ticker.add(() => {
-		phase += 0.1;
-		let x = Math.sin(phase) * 0.25 + 0.25;
-		spineBoyPro.color.setDark(x, x, x);
-	});
+
+
+    let phase = 0;
+    app.ticker.add(() => {
+        phase += 0.1;
+        const x = Math.sin(phase) * 0.25 + 0.25;
+        spineBoyPro.color.setDark(x, x, x);
+    });
 }

@@ -108,14 +108,14 @@ jQuery(document).ready(($) => {
             const maxTagsPerVersion = 5;
             let taggedVersions = [];
             bpc.allowedVersions.forEach((version) => {
-                let filtered = dataTag.filter(tag => tag.ref.indexOf(`refs/tags/v${version}`) === 0);
+                let filtered = dataTag.filter((tag) => tag.ref.indexOf(`refs/tags/v${version}`) === 0);
                 if (filtered.length > maxTagsPerVersion) {
                     filtered = filtered.slice(-maxTagsPerVersion);
                 }
                 taggedVersions = taggedVersions.concat(filtered);
             });
 
-            taggedVersions = taggedVersions.map(tag => tag.ref.replace('refs/tags/', ''));
+            taggedVersions = taggedVersions.map((tag) => tag.ref.replace('refs/tags/', ''));
 
             for (let i = 0; i < taggedVersions.length; i++) {
                 $('.select-group .select ul').append(`<li data-val="${taggedVersions[i]}">${taggedVersions[i]}</li>`);
@@ -123,7 +123,7 @@ jQuery(document).ready(($) => {
 
             $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/heads', (dataHead) => {
                 // For NEXT version development
-                dataHead = dataHead.filter(tag => tag.ref.indexOf('refs/heads/next') === 0).map(tag => tag.ref.replace('refs/heads/', ''));
+                dataHead = dataHead.filter((tag) => tag.ref.indexOf('refs/heads/next') === 0).map((tag) => tag.ref.replace('refs/heads/', ''));
 
                 for (let i = 0; i < dataHead.length; i++) {
                     $('.select-group .select ul').append(`<li data-val="${dataHead[i]}">${dataHead[i]}</li>`);
@@ -166,7 +166,7 @@ jQuery(document).ready(($) => {
                 bpc.exampleRequiredPlugins = plugins === '' ? [] : plugins.split(',');
 
                 const validVersions = $(this).attr('data-validVersions');
-                bpc.exampleValidVersions = validVersions === '' ? [5] : validVersions.split(',').map(v => parseInt(v, 10));
+                bpc.exampleValidVersions = validVersions === '' ? [5] : validVersions.split(',').map((v) => parseInt(v, 10));
 
                 $.ajax({
                     url: `examples/js/${$(this).parent().attr('data-section')}/${$(this).attr('data-src')}`,
@@ -271,7 +271,7 @@ jQuery(document).ready(($) => {
         bpc.updateMenu = function updateMenu() {
             $('.main-nav .main-menu ul li').each(function updateEachMenuItem() {
                 const validVersions = $(this).attr('data-validVersions');
-                const exampleValidVersions = validVersions === '' ? [5] : validVersions.split(',').map(v => parseInt(v, 10));
+                const exampleValidVersions = validVersions === '' ? [5] : validVersions.split(',').map((v) => parseInt(v, 10));
                 if (exampleValidVersions.indexOf(bpc.majorPixiVersion) === -1) {
                     $(this).addClass('invalid');
                 } else {

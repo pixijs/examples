@@ -41,10 +41,10 @@ bunnyContainer.pivot.x = bunnyContainer.width / 2;
 bunnyContainer.pivot.y = bunnyContainer.height / 2;
 
 app.ticker.add((delta) => {
-    if ( wait ) {
-        setTimeout( function () {
+    if (wait) {
+        setTimeout(() => {
             wait = false;
-        }, 500 );
+        }, 500);
     } else {
         bunnyContainer.rotation += 0.05 * delta;
     }

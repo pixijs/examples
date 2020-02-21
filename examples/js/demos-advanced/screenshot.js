@@ -1,7 +1,7 @@
 const app = new PIXI.Application({ backgroundColor: 0x111111 });
 document.body.appendChild(app.view);
 
-let elapsedTime = 201;
+let wait = false;
 
 // Generates a texture object from a container, then give that texture to our
 // sprite object and create a download link containing an image of the snapshot
@@ -10,7 +10,7 @@ let elapsedTime = 201;
 // Note that we can do this with any container. Instead of 'app.stage', which
 // contains everything, try the 'bunnyContainer' instead.
 function takeScreenshot() {
-    elapsedTime = 0;
+    wait = true;
     app.renderer.extract.canvas(app.stage).toBlob((b) => {
         const a = document.createElement('a');
         document.body.append(a);
@@ -41,10 +41,12 @@ bunnyContainer.pivot.x = bunnyContainer.width / 2;
 bunnyContainer.pivot.y = bunnyContainer.height / 2;
 
 app.ticker.add((delta) => {
-    if (elapsedTime > 200) {
-        bunnyContainer.rotation += 0.05 * delta;
+    if ( wait ) {
+        setTimeout( function () {
+            wait = false;
+        }, 500 );
     } else {
-        elapsedTime += delta;
+        bunnyContainer.rotation += 0.05 * delta;
     }
 });
 

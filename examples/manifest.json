@@ -117,6 +117,10 @@
         {
             "title": "Custom mouse icon",
             "entry": "custom-mouse-icon.js"
+        },
+        {
+            "title": "Custom Hitarea",
+            "entry": "custom-hitarea.js"
         }
     ],
     "masks": [

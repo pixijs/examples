@@ -9,7 +9,7 @@ app.stage.addChild(container);
 app.loader.add('dudes', 'examples/assets/polygon/dudes.json');
 app.loader.load((loader, resources) => {
     const keys = Object.keys(resources.dudes.textures);
-    const textures = keys.map(x => resources.dudes.textures[x]);
+    const textures = keys.map((x) => resources.dudes.textures[x]);
 
     // Create a 5x5 grid of bunnies
     for (let i = 0; i < 25; i++) {

@@ -4,7 +4,7 @@ class BagPart extends PROJ.Container3d {
     constructor(tIn, tOut = undefined) {
         super();
 
-        this._axis = new PROJ.Container3d();
+        this.axis = new PROJ.Container3d();
         this._cent = new PROJ.Container3d();
         this._closed = false;
         this._closing = false;
@@ -28,8 +28,8 @@ class BagPart extends PROJ.Container3d {
         this._cent.pivot3d.set(this.sideWidth / 2, this.sideHeight / 2);
         this._cent.position3d.set(this.sideWidth / 2, this.sideHeight / 2);
 
-        this._axis.addChild(this._cent);
-        this.addChild(this._axis);
+        this.axis.addChild(this._cent);
+        this.addChild(this.axis);
 
         this.rotPoint = new PIXI.ObservablePoint(this._rChange, this, -1, 0);
         this._rChange();
@@ -51,8 +51,6 @@ class BagPart extends PROJ.Container3d {
     }
 
     _closeBech(dt) {
-        const e = this.euler;
-
         if (this._fader >= 1) {
             this._closed = true;
             this._closing = false;
@@ -64,7 +62,7 @@ class BagPart extends PROJ.Container3d {
 
         const r = -this._fader * Math.PI;
 
-        this._axis.euler.y = r;
+        this.axis.euler.y = r;
         if (this._out) {
             this._out.renderable = this._fader > 0.5;
             this._in.renderable = this._fader < 0.5;
@@ -79,13 +77,13 @@ class BagPart extends PROJ.Container3d {
 
     _rChange() {
         const p = this.rotPoint;
-        const p3d = this._axis.pivot3d;
+        const p3d = this.axis.pivot3d;
         const angle = Math.atan2(-p.y, p.x);
 
         p3d.x = (p.x + 1) * 0.5 * this.sideWidth;
         p3d.y = (p.y + 1) * 0.5 * this.sideHeight;
 
-        this._axis.euler.z = angle;
+        this.axis.euler.z = angle;
         this.euler.z = -angle;
     }
 
@@ -113,7 +111,7 @@ class BagPart extends PROJ.Container3d {
 
         const x = 0.5 * (link[0] + 1) * parent.sideWidth;
         const y = 0.5 * (link[1] + 1) * parent.sideHeight;
-        const piv = parent._axis.pivot3d;
+        const piv = parent.axis.pivot3d;
 
         this.position.x = x + parent.position.x - piv.x;
         this.position.y = y + parent.position.y - piv.y;
@@ -133,7 +131,7 @@ class BagPart extends PROJ.Container3d {
 
         if (!p) return;
 
-        p._axis.addChild(this);
+        p.axis.addChild(this);
 
         const x = p.sideWidth * (link[0] + 1) * 0.5;
         const y = p.sideHeight * (link[1] + 1) * 0.5;
@@ -150,7 +148,6 @@ class Bag extends PROJ.Container3d {
     }
 
     pack(side, parent = undefined, link = undefined) {
-        const t = this.tall;
         const h = this.head;
 
         this.addChild(side);

@@ -52,4 +52,3 @@ app.stage.addChild(bunny3);
 TweenMax.to(bunny3, time, {
     pixi: { tint: 'rgb(0,0,255)' }, repeat: -1, yoyo: true,
 });
-

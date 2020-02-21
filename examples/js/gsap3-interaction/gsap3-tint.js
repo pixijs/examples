@@ -52,4 +52,3 @@ app.stage.addChild(bunny3);
 gsap.to(bunny3, {
     pixi: { tint: 'rgb(0,0,255)' }, duration: time, repeat: -1, yoyo: true,
 });
-

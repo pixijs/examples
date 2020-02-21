@@ -20,7 +20,7 @@ const squares = [
     createSquare(w - 150, h + 150),
 ];
 
-const quad = squares.map(s => s.position);
+const quad = squares.map((s) => s.position);
 
 // add sprite itself
 const containerSprite = new PIXI.projection.Sprite2s(PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg'));

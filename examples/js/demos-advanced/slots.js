@@ -199,5 +199,5 @@ function lerp(a1, a2, t) {
 // Backout function from tweenjs.
 // https://github.com/CreateJS/TweenJS/blob/master/src/tweenjs/Ease.js
 function backout(amount) {
-    return t => (--t * t * ((amount + 1) * t + amount) + 1);
+    return (t) => (--t * t * ((amount + 1) * t + amount) + 1);
 }

@@ -44,7 +44,9 @@ bunny4.x = 100;
 bunny4.anchor.set(0.5, 0.5);
 app.stage.addChild(bunny4);
 
-gsap.to(bunny4, { rotation: 2 * Math.PI, duration: time, repeat: -1, yoyo: true });
+gsap.to(bunny4, {
+    rotation: 2 * Math.PI, duration: time, repeat: -1, yoyo: true,
+});
 
 let colorBunny = null;
 createNewBunny();

@@ -2,7 +2,7 @@ var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 
 // Bunny texture
-var texture = PIXI.Texture.fromImage('required/assets/basics/bunny.png');
+var texture = PIXI.Texture.fromImage('examples/assets/bunny.png');
 
 // Text style object
 var style = new PIXI.TextStyle({

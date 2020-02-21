@@ -41,6 +41,10 @@
         {
             "title": "Star Warp",
             "entry": "star-warp.js"
+        },
+        {
+            "title": "Collision Detection and Resolution",
+            "entry": "collision-detection.js"
         }
     ],
     "sprite": [

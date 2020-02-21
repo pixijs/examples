@@ -161,10 +161,6 @@
         }
     ],
     "advanced-demos": [
-        {
-            "title": "Collision Detection",
-            "entry": "collision-detection.js"
-        }
     ],
 	"mesh": [
         {

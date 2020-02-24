@@ -2,6 +2,7 @@ const app = new PIXI.Application({ backgroundColor: 0x111111 });
 document.body.appendChild(app.view);
 
 let wait = false;
+let waiting = false;
 
 // Generates a texture object from a container, then give that texture to our
 // sprite object and create a download link containing an image of the snapshot
@@ -42,10 +43,13 @@ bunnyContainer.pivot.y = bunnyContainer.height / 2;
 
 app.ticker.add((delta) => {
     if (wait) {
+        waiting = true;
+        wait = false;
         setTimeout(() => {
-            wait = false;
+            waiting = false;
         }, 500);
-    } else {
+    }
+    if (!waiting) {
         bunnyContainer.rotation += 0.05 * delta;
     }
 });

@@ -46,6 +46,10 @@
             "title": "Screenshot",
             "entry": "screenshot.js"
         }
+        {
+            "title": "Collision",
+            "entry": "collision-detection.js"
+        }
     ],
     "sprite": [
         {

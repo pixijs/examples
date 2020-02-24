@@ -178,7 +178,11 @@
             "plugins": [
                 "pixi-spine"
             ]
-        }
+        },
+		{
+			"title": "Shadertoy rendertexture",
+			"entry": "shadertoy-filter-rendertexture.js"
+		}
     ],
     "mesh-and-shaders": [
         {
@@ -220,7 +224,11 @@
         {
             "title": "Interleaving Geometry",
             "entry": "interleaving-geometry.js"
-        }
+        },
+		{
+			"title": "Shadertoy",
+			"entry": "shadertoy-mesh.js"
+		}
     ],
     "textures": [
         {

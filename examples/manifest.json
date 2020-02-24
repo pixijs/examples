@@ -43,6 +43,10 @@
             "entry": "star-warp.js"
         },
         {
+            "title": "Screenshot",
+            "entry": "screenshot.js"
+        }
+        {
             "title": "Collision",
             "entry": "collision-detection.js"
         }
@@ -121,6 +125,10 @@
         {
             "title": "Custom mouse icon",
             "entry": "custom-mouse-icon.js"
+        },
+        {
+            "title": "Custom Hitarea",
+            "entry": "custom-hitarea.js"
         }
     ],
     "masks": [

@@ -13,10 +13,13 @@ const impulsePower = 5;
 // Test For Hit
 // A basic AABB check between two different squares
 function testForAABB(object1, object2) {
-    return object1.x < object2.x + object2.width
-        && object1.x + object2.width > object2.x
-        && object1.y < object2.y + object2.height
-        && object1.y + object2.height > object2.y;
+    const bounds1 = object1.getBounds();
+    const bounds2 = object2.getBounds();
+
+    return bounds1.x < bounds2.x + bounds2.width
+        && bounds1.x + bounds2.width > bounds2.x
+        && bounds1.y < bounds2.y + bounds2.height
+        && bounds1.y + bounds2.height > bounds2.y;
 }
 
 // Calculates the results of a collision, allowing us to give an impulse that

@@ -228,6 +228,10 @@
 		{
 			"title": "Shadertoy",
 			"entry": "shadertoy-mesh.js"
+		},
+		{
+			"title": "Multipass shader generated mesh",
+			"entry": "Multipass-shader-generated-mesh.js"
 		}
     ],
     "textures": [

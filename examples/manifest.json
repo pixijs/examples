@@ -180,7 +180,7 @@
             ]
         },
 		{
-			"title": "Shadertoy rendertexture",
+			"title": "Shadertoy filter",
 			"entry": "shadertoy-filter-rendertexture.js"
 		}
     ],

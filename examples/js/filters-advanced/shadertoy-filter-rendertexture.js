@@ -1,7 +1,7 @@
 /**
 Please note that this is not the most optimal way of doing pure shader generated rendering and should be used when scene is wanted as input texture.
 Check the mesh version of example for more performant version if you need only shader generated content.
-**/
+* */
 
 const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
@@ -12,15 +12,15 @@ app.loader
 
 let filter = null;
 
-let text = new PIXI.Text("PixiJS", {fill:0xFFFFFF, fontSize:80});
+const text = new PIXI.Text('PixiJS', { fill: 0xFFFFFF, fontSize: 80 });
 text.anchor.set(0.5, 0.5);
-text.position.set(app.renderer.screen.width/2, app.renderer.screen.height/2);
+text.position.set(app.renderer.screen.width / 2, app.renderer.screen.height / 2);
 
 app.stage.addChild(text);
 
 let totalTime = 0;
 
-//Fragment shader, in real use this would be much cleaner when loaded from a file/embedded into the application as data resource.
+// Fragment shader, in real use this would be much cleaner when loaded from a file/embedded into the application as data resource.
 const fragment = `//Based on this: https://www.shadertoy.com/view/wtlSWX
 
 varying vec2 vTextureCoord;
@@ -90,32 +90,24 @@ void main()
 `;
 
 function onAssetsLoaded(loader) {
-	//Add perlin noise for filter, make sure it's wrapping and does not have mipmap.
-	loader.resources["examples/assets/perlin.jpg"].texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
-	loader.resources["examples/assets/perlin.jpg"].texture.baseTexture.mipmap = false;
-	
-	const perlin = loader.resources["examples/assets/perlin.jpg"].texture;
-	perlin.width = perlin.height = 200;
-	
-	//Build the filter
-	filter = new PIXI.Filter(null, fragment, {
-		time:0.0,
-		noise:perlin
-  });
-  app.stage.filterArea = app.renderer.screen;
-	app.stage.filters = [filter];
-	
+    // Add perlin noise for filter, make sure it's wrapping and does not have mipmap.
+    loader.resources['examples/assets/perlin.jpg'].texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+    loader.resources['examples/assets/perlin.jpg'].texture.baseTexture.mipmap = false;
+
+    const perlin = loader.resources['examples/assets/perlin.jpg'].texture;
+    perlin.width = perlin.height = 200;
+
+    // Build the filter
+    filter = new PIXI.Filter(null, fragment, {
+        time: 0.0,
+        noise: perlin,
+    });
+    app.stage.filterArea = app.renderer.screen;
+    app.stage.filters = [filter];
+
     // Listen for animate update.
     app.ticker.add((delta) => {
-
-		filter.uniforms.time = totalTime;
-		totalTime += delta/60;
-		
-		//Animate the sprite somehow just to show it is actually just a sprite.
-		let npx = Math.cos(totalTime*0.5)*250 + 400;
-		let npy = Math.sin(totalTime*0.45)*100 + 200;
-		
-		let dx = (Math.cos((totalTime-10/60)*0.5)*250 + 400) - npx;
-		
+        filter.uniforms.time = totalTime;
+        totalTime += delta / 60;
     });
 }

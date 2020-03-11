@@ -383,9 +383,6 @@
             "entry": "quad-bi.js",
             "plugins": [
                 "pixi-projection"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {

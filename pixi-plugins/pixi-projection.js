@@ -195,7 +195,7 @@ var pixi_projection;
 (function (pixi_projection) {
     var TYPES = PIXI.TYPES;
     var premultiplyTint = PIXI.utils.premultiplyTint;
-    var shaderVert = "precision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position.xyw = projectionMatrix * aVertexPosition;\n    gl_Position.z = 0.0;\n    \n    vTextureCoord = aTextureCoord;\n    vTextureId = aTextureId;\n    vColor = aColor;\n}\n";
+    var shaderVert = "precision highp float;\nattribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n\tgl_Position.xyw = projectionMatrix * aVertexPosition;\n\tgl_Position.z = 0.0;\n\n\tvTextureCoord = aTextureCoord;\n\tvTextureId = aTextureId;\n\tvColor = aColor;\n}\n";
     var shaderFrag = "\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\nuniform sampler2D uSamplers[%count%];\n\nvoid main(void){\nvec4 color;\n%forloop%\ngl_FragColor = color * vColor;\n}";
     var Batch3dGeometry = (function (_super) {
         __extends(Batch3dGeometry, _super);
@@ -356,7 +356,8 @@ var pixi_projection;
                     this.syncUniforms(uniforms);
                     shaderSystem.syncUniformGroup(this._shader.uniformGroup);
                 }
-                stateSystem.setBlendMode(blend);
+                this.state.blendMode = blend;
+                stateSystem.set(this.state);
                 gl.drawElements(type, size, gl.UNSIGNED_SHORT, start * 2);
             }
         };
@@ -512,7 +513,7 @@ var pixi_projection;
                 var d = b * b + vx / dy;
                 if (d <= 0.00001) {
                     newPos.set(NaN, NaN);
-                    return;
+                    return newPos;
                 }
                 if (dy > 0.0) {
                     newPos.x = -b + Math.sqrt(d);
@@ -614,7 +615,7 @@ var pixi_projection;
         if (pp._surface) {
             proj._activeProjection = pp;
             this.updateLocalTransform();
-            this.localTransform.copyFrom(this.worldTransform);
+            this.localTransform.copyTo(this.worldTransform);
             if (ta._parentID < 0) {
                 ++ta._worldID;
             }
@@ -733,8 +734,8 @@ var pixi_projection;
 (function (pixi_projection) {
     var TYPES = PIXI.TYPES;
     var premultiplyTint = PIXI.utils.premultiplyTint;
-    var shaderVert = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec3 aTrans1;\nattribute vec3 aTrans2;\nattribute vec2 aSamplerSize;\nattribute vec4 aFrame;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\n\nvarying vec2 vertexPosition;\nvarying vec3 vTrans1;\nvarying vec3 vTrans2;\nvarying vec2 vSamplerSize;\nvarying vec4 vFrame;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position.xyw = projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0);\n    gl_Position.z = 0.0;\n    \n    vertexPosition = aVertexPosition;\n    vTrans1 = aTrans1;\n    vTrans2 = aTrans2;\n    vTextureId = aTextureId;\n    vColor = aColor;\n    vSamplerSize = aSamplerSize;\n    vFrame = aFrame;\n}\n";
-    var shaderFrag = "precision highp float;\nvarying vec2 vertexPosition;\nvarying vec3 vTrans1;\nvarying vec3 vTrans2;\nvarying vec2 vSamplerSize;\nvarying vec4 vFrame;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nuniform sampler2D uSamplers[%count%];\nuniform vec4 distortion;\n\nvoid main(void){\nvec2 surface;\nvec2 surface2;\n\nfloat vx = vertexPosition.x;\nfloat vy = vertexPosition.y;\nfloat dx = distortion.x;\nfloat dy = distortion.y;\nfloat revx = distortion.z;\nfloat revy = distortion.w;\n\nif (distortion.x == 0.0) {\n    surface.x = vx;\n    surface.y = vy / (1.0 + dy * vx);\n    surface2 = surface;\n} else\nif (distortion.y == 0.0) {\n    surface.y = vy;\n    surface.x = vx / (1.0 + dx * vy);\n    surface2 = surface;\n} else {\n    float c = vy * dx - vx * dy;\n    float b = (c + 1.0) * 0.5;\n    float b2 = (-c + 1.0) * 0.5;\n    float d = b * b + vx * dy;\n    //if (d < -0.00001) {\n    //    discard;\n    //}\n    d = sqrt(max(d, 0.0));\n    surface.x = (- b + d) * revy;\n    surface2.x = (- b - d) * revy;\n    surface.y = (- b2 + d) * revx;\n    surface2.y = (- b2 - d) * revx;\n}\n\nvec2 uv;\nuv.x = vTrans1.x * surface.x + vTrans1.y * surface.y + vTrans1.z;\nuv.y = vTrans2.x * surface.x + vTrans2.y * surface.y + vTrans2.z;\n\nvec2 pixels = uv * vSamplerSize;\n\nif (pixels.x < vFrame.x || pixels.x > vFrame.z ||\n    pixels.y < vFrame.y || pixels.y > vFrame.w) {\n    uv.x = vTrans1.x * surface2.x + vTrans1.y * surface2.y + vTrans1.z;\n    uv.y = vTrans2.x * surface2.x + vTrans2.y * surface2.y + vTrans2.z;\n    pixels = uv * vSamplerSize;\n    \n//    if (pixels.x < vFrame.x || pixels.x > vFrame.z ||\n//        pixels.y < vFrame.y || pixels.y > vFrame.w) {\n//        discard;\n//    }\n}\n\nvec4 edge;\nedge.xy = clamp(pixels - vFrame.xy + 0.5, vec2(0.0, 0.0), vec2(1.0, 1.0));\nedge.zw = clamp(vFrame.zw - pixels + 0.5, vec2(0.0, 0.0), vec2(1.0, 1.0));\n\nfloat alpha = 1.0; //edge.x * edge.y * edge.z * edge.w;\nvec4 rColor = vColor * alpha;\n\nfloat textureId = floor(vTextureId+0.5);\nvec2 vTextureCoord = uv;\nvec4 color;\n%forloop%\ngl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n//gl_FragColor = color * rColor;\n}";
+    var shaderVert = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec3 aTrans1;\nattribute vec3 aTrans2;\nattribute vec2 aSamplerSize;\nattribute vec4 aFrame;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\n\nvarying vec2 vertexPosition;\nvarying vec3 vTrans1;\nvarying vec3 vTrans2;\nvarying vec2 vSamplerSize;\nvarying vec4 vFrame;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n\tgl_Position.xyw = projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0);\n\tgl_Position.z = 0.0;\n\n\tvertexPosition = aVertexPosition;\n\tvTrans1 = aTrans1;\n\tvTrans2 = aTrans2;\n\tvTextureId = aTextureId;\n\tvColor = aColor;\n\tvSamplerSize = aSamplerSize;\n\tvFrame = aFrame;\n}\n";
+    var shaderFrag = "precision highp float;\nvarying vec2 vertexPosition;\nvarying vec3 vTrans1;\nvarying vec3 vTrans2;\nvarying vec2 vSamplerSize;\nvarying vec4 vFrame;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nuniform sampler2D uSamplers[%count%];\nuniform vec4 distortion;\n\nvoid main(void){\nvec2 surface;\nvec2 surface2;\n\nfloat vx = vertexPosition.x;\nfloat vy = vertexPosition.y;\nfloat dx = distortion.x;\nfloat dy = distortion.y;\nfloat revx = distortion.z;\nfloat revy = distortion.w;\n\nif (distortion.x == 0.0) {\n\tsurface.x = vx;\n\tsurface.y = vy / (1.0 + dy * vx);\n\tsurface2 = surface;\n} else\nif (distortion.y == 0.0) {\n\tsurface.y = vy;\n\tsurface.x = vx / (1.0 + dx * vy);\n\tsurface2 = surface;\n} else {\n\tfloat c = vy * dx - vx * dy;\n\tfloat b = (c + 1.0) * 0.5;\n\tfloat b2 = (-c + 1.0) * 0.5;\n\tfloat d = b * b + vx * dy;\n\tif (d < -0.00001) {\n\t    discard;\n\t}\n\td = sqrt(max(d, 0.0));\n\tsurface.x = (- b + d) * revy;\n\tsurface2.x = (- b - d) * revy;\n\tsurface.y = (- b2 + d) * revx;\n\tsurface2.y = (- b2 - d) * revx;\n}\n\nvec2 uv;\nuv.x = vTrans1.x * surface.x + vTrans1.y * surface.y + vTrans1.z;\nuv.y = vTrans2.x * surface.x + vTrans2.y * surface.y + vTrans2.z;\n\nvec2 pixels = uv * vSamplerSize;\n\nif (pixels.x < vFrame.x || pixels.x > vFrame.z ||\n\tpixels.y < vFrame.y || pixels.y > vFrame.w) {\n\tuv.x = vTrans1.x * surface2.x + vTrans1.y * surface2.y + vTrans1.z;\n\tuv.y = vTrans2.x * surface2.x + vTrans2.y * surface2.y + vTrans2.z;\n\tpixels = uv * vSamplerSize;\n\n   if (pixels.x < vFrame.x || pixels.x > vFrame.z ||\n       pixels.y < vFrame.y || pixels.y > vFrame.w) {\n       discard;\n   }\n}\n\nvec4 edge;\nedge.xy = clamp(pixels - vFrame.xy + 0.5, vec2(0.0, 0.0), vec2(1.0, 1.0));\nedge.zw = clamp(vFrame.zw - pixels + 0.5, vec2(0.0, 0.0), vec2(1.0, 1.0));\n\nfloat alpha = 1.0; //edge.x * edge.y * edge.z * edge.w;\nvec4 rColor = vColor * alpha;\n\nfloat textureId = floor(vTextureId+0.5);\nvec2 vTextureCoord = uv;\nvec4 color;\n%forloop%\ngl_FragColor = color * rColor;\n}";
     var BatchBilineardGeometry = (function (_super) {
         __extends(BatchBilineardGeometry, _super);
         function BatchBilineardGeometry(_static) {
@@ -771,7 +772,7 @@ var pixi_projection;
                     var _this = _super.call(this, renderer) || this;
                     _this.defUniforms = {
                         translationMatrix: new PIXI.Matrix(),
-                        distortion: new Float32Array([0, 0])
+                        distortion: new Float32Array([0, 0, Infinity, Infinity])
                     };
                     _this.size = 1000;
                     _this.forceMaxTextures = 1;
@@ -803,8 +804,8 @@ var pixi_projection;
                     var argb = alpha < 1.0 && element._texture.baseTexture.alphaMode ? premultiplyTint(element._tintRGB, alpha)
                         : element._tintRGB + (alpha * 255 << 24);
                     for (var i = 0; i < vertexData.length; i += 2) {
-                        float32View[aIndex] = vertexData[i * 2];
-                        float32View[aIndex + 1] = vertexData[i * 2 + 1];
+                        float32View[aIndex] = vertexData[i];
+                        float32View[aIndex + 1] = vertexData[i + 1];
                         float32View[aIndex + 2] = aTrans.a;
                         float32View[aIndex + 3] = aTrans.c;
                         float32View[aIndex + 4] = aTrans.tx;
@@ -1620,8 +1621,8 @@ var pixi_projection;
             enumerable: true,
             configurable: true
         });
-        Mesh2d.defaultVertexShader = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform mat3 uTransform;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position.xyw = projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0);\n    gl_Position.z = 0.0;\n\n    vTextureCoord = (uTransform * vec3(aTextureCoord, 1.0)).xy;\n}\n";
-        Mesh2d.defaultFragmentShader = "\nvarying vec2 vTextureCoord;\nuniform vec4 uColor;\n\nuniform sampler2D uSampler;\n\nvoid main(void)\n{\n    gl_FragColor = texture2D(uSampler, vTextureCoord) * uColor;\n}";
+        Mesh2d.defaultVertexShader = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform mat3 uTransform;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n\tgl_Position.xyw = projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0);\n\tgl_Position.z = 0.0;\n\n\tvTextureCoord = (uTransform * vec3(aTextureCoord, 1.0)).xy;\n}\n";
+        Mesh2d.defaultFragmentShader = "\nvarying vec2 vTextureCoord;\nuniform vec4 uColor;\n\nuniform sampler2D uSampler;\n\nvoid main(void)\n{\n\tgl_FragColor = texture2D(uSampler, vTextureCoord) * uColor;\n}";
         return Mesh2d;
     }(PIXI.Mesh));
     pixi_projection.Mesh2d = Mesh2d;
@@ -1831,7 +1832,7 @@ var pixi_projection;
         this.calculateVertices = pixi_projection.Sprite2d.prototype.calculateVertices;
         this.calculateTrimmedVertices = pixi_projection.Sprite2d.prototype.calculateTrimmedVertices;
         this._calculateBounds = pixi_projection.Sprite2d.prototype._calculateBounds;
-        this.pluginName = 'sprite2d';
+        this.pluginName = 'batch2d';
         convertTo2d.call(this);
     };
     PIXI.Container.prototype.convertSubtreeTo2d = function () {

@@ -45,9 +45,8 @@ function onComplete(loader, resources) {
     maskSprite.position = bunny.position;
     decalSprite.position = bunny.position;
     maskSprite.renderable = false;
-    // decalSprite.maskSprite = maskSprite;
-    // decalSprite.pluginName = 'spriteMasked';
-    decalSprite.mask = maskSprite;
+    decalSprite.maskSprite = maskSprite;
+    decalSprite.pluginName = 'batchMasked';
 
     app.stage.addChild(bunny);
     app.stage.addChild(maskSprite);

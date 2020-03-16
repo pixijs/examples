@@ -96,7 +96,7 @@ var pixi_heaven;
             }
             this.playing = false;
             if (this._autoUpdate) {
-                PIXI.ticker.shared.remove(this.update, this);
+                PIXI.Ticker.shared.remove(this.update, this);
             }
         };
         AnimationState.prototype.play = function () {
@@ -105,7 +105,7 @@ var pixi_heaven;
             }
             this.playing = true;
             if (this._autoUpdate) {
-                PIXI.ticker.shared.add(this.update, this, PIXI.UPDATE_PRIORITY.HIGH);
+                PIXI.Ticker.shared.add(this.update, this, PIXI.UPDATE_PRIORITY.HIGH);
             }
         };
         AnimationState.prototype.gotoAndStop = function (frameNumber) {
@@ -340,11 +340,12 @@ var pixi_heaven;
             enumerable: true,
             configurable: true
         });
-        BitmapText.prototype.addChild = function (child) {
+        BitmapText.prototype.addChild = function () {
             var additionalChildren = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                additionalChildren[_i - 1] = arguments[_i];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                additionalChildren[_i] = arguments[_i];
             }
+            var child = additionalChildren[0];
             if (!child.color && child.vertexData) {
                 if (!this.color) {
                     this.color = new pixi_heaven.ColorTransform();
@@ -550,6 +551,8 @@ var pixi_heaven;
         function Mesh(geometry, shader, state, drawMode) {
             var _this = _super.call(this, geometry, shader, state, drawMode) || this;
             _this.color = null;
+            _this.maskSprite = null;
+            _this.useSpriteMask = false;
             _this.color = shader.color;
             return _this;
         }
@@ -567,6 +570,18 @@ var pixi_heaven;
             renderer.state.set(this.state);
             renderer.geometry.bind(this.geometry, shader);
             renderer.geometry.draw(this.drawMode, this.size, this.start, this.geometry.instanceCount);
+        };
+        Mesh.prototype._render = function (renderer) {
+            if (this.maskSprite) {
+                this.useSpriteMask = true;
+            }
+            if (this.useSpriteMask) {
+                this.material.pluginName = 'batchMasked';
+                this._renderToBatch(renderer);
+            }
+            else {
+                _super.prototype._renderDefault.call(this, renderer);
+            }
         };
         Mesh.prototype._renderToBatch = function (renderer) {
             this.color.updateTransform();
@@ -691,6 +706,346 @@ var pixi_heaven;
 })(pixi_heaven || (pixi_heaven = {}));
 var pixi_heaven;
 (function (pixi_heaven) {
+    var webgl;
+    (function (webgl) {
+        var TYPES = PIXI.TYPES;
+        var premultiplyTint = PIXI.utils.premultiplyTint;
+        var shaderVert = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aLight, aDark;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform vec4 tint;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vLight, vDark;\nvarying float vTextureId;\n\nvoid main(void){\ngl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\nvTextureCoord = aTextureCoord;\nvTextureId = aTextureId;\nvLight = aLight * tint;\nvDark = vec4(aDark.rgb * tint.rgb, aDark.a);\n}\n";
+        var shaderFrag = "\nvarying vec2 vTextureCoord;\nvarying vec4 vLight, vDark;\nvarying float vTextureId;\nuniform sampler2D uSamplers[%count%];\n\nvoid main(void) {\nvec4 color;\nfloat textureId = floor(vTextureId+0.5);\n%forloop%\ngl_FragColor.a = color.a * vLight.a;\ngl_FragColor.rgb = ((color.a - 1.0) * vDark.a + 1.0 - color.rgb) * vDark.rgb + color.rgb * vLight.rgb;\n}";
+        var DarkLightGeometry = (function (_super) {
+            __extends(DarkLightGeometry, _super);
+            function DarkLightGeometry(_static) {
+                if (_static === void 0) { _static = false; }
+                var _this = _super.call(this) || this;
+                _this._buffer = new PIXI.Buffer(null, _static, false);
+                _this._indexBuffer = new PIXI.Buffer(null, _static, true);
+                _this.addAttribute('aVertexPosition', _this._buffer, 2, false, TYPES.FLOAT)
+                    .addAttribute('aTextureCoord', _this._buffer, 2, false, TYPES.FLOAT)
+                    .addAttribute('aLight', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
+                    .addAttribute('aDark', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
+                    .addAttribute('aTextureId', _this._buffer, 1, true, TYPES.FLOAT)
+                    .addIndex(_this._indexBuffer);
+                return _this;
+            }
+            return DarkLightGeometry;
+        }(PIXI.Geometry));
+        webgl.DarkLightGeometry = DarkLightGeometry;
+        var DarkLightPluginFactory = (function () {
+            function DarkLightPluginFactory() {
+            }
+            DarkLightPluginFactory.create = function (options) {
+                var _a = Object.assign({
+                    vertex: shaderVert,
+                    fragment: shaderFrag,
+                    geometryClass: DarkLightGeometry,
+                    vertexSize: 7,
+                }, options), vertex = _a.vertex, fragment = _a.fragment, vertexSize = _a.vertexSize, geometryClass = _a.geometryClass;
+                return (function (_super) {
+                    __extends(BatchPlugin, _super);
+                    function BatchPlugin(renderer) {
+                        var _this = _super.call(this, renderer) || this;
+                        _this.shaderGenerator = new PIXI.BatchShaderGenerator(vertex, fragment);
+                        _this.geometryClass = geometryClass;
+                        _this.vertexSize = vertexSize;
+                        return _this;
+                    }
+                    BatchPlugin.prototype.packInterleavedGeometry = function (element, attributeBuffer, indexBuffer, aIndex, iIndex) {
+                        var uint32View = attributeBuffer.uint32View, float32View = attributeBuffer.float32View;
+                        var lightRgba = -1;
+                        var darkRgba = 0;
+                        if (element.color) {
+                            lightRgba = element.color.lightRgba;
+                            darkRgba = element.color.darkRgba;
+                        }
+                        else {
+                            var alpha = Math.min(element.worldAlpha, 1.0);
+                            lightRgba = (alpha < 1.0
+                                && element._texture.baseTexture.premultiplyAlpha)
+                                ? premultiplyTint(element._tintRGB, alpha)
+                                : element._tintRGB + (alpha * 255 << 24);
+                        }
+                        var p = aIndex / this.vertexSize;
+                        var uvs = element.uvs;
+                        var indices = element.indices;
+                        var vertexData = element.vertexData;
+                        var textureId = element._texture.baseTexture._batchLocation;
+                        for (var i = 0; i < vertexData.length; i += 2) {
+                            float32View[aIndex++] = vertexData[i];
+                            float32View[aIndex++] = vertexData[i + 1];
+                            float32View[aIndex++] = uvs[i];
+                            float32View[aIndex++] = uvs[i + 1];
+                            uint32View[aIndex++] = lightRgba;
+                            uint32View[aIndex++] = darkRgba;
+                            float32View[aIndex++] = textureId;
+                        }
+                        for (var i = 0; i < indices.length; i++) {
+                            indexBuffer[iIndex++] = p + indices[i];
+                        }
+                    };
+                    return BatchPlugin;
+                }(PIXI.AbstractBatchRenderer));
+            };
+            return DarkLightPluginFactory;
+        }());
+        webgl.DarkLightPluginFactory = DarkLightPluginFactory;
+        PIXI.Renderer.registerPlugin('batchHeaven', DarkLightPluginFactory.create({}));
+    })(webgl = pixi_heaven.webgl || (pixi_heaven.webgl = {}));
+})(pixi_heaven || (pixi_heaven = {}));
+var pixi_heaven;
+(function (pixi_heaven) {
+    var webgl;
+    (function (webgl) {
+        var Program = PIXI.Program;
+        var UniformGroup = PIXI.UniformGroup;
+        var Shader = PIXI.Shader;
+        var Matrix = PIXI.Matrix;
+        var LoopShaderGenerator = (function () {
+            function LoopShaderGenerator(vertexSrc, fragTemplate, loops) {
+                this.vertexSrc = vertexSrc;
+                this.fragTemplate = fragTemplate;
+                this.loops = loops;
+                this.programCache = {};
+                this.defaultGroupCache = {};
+                if (fragTemplate.indexOf('%count%') < 0) {
+                    throw new Error('Fragment template must contain "%count%".');
+                }
+                for (var i = 0; i < loops.length; i++) {
+                    if (fragTemplate.indexOf(loops[i].loopLabel) < 0) {
+                        throw new Error("Fragment template must contain \"" + loops[i].loopLabel + "\".");
+                    }
+                }
+            }
+            LoopShaderGenerator.prototype.generateShader = function (maxTextures) {
+                if (!this.programCache[maxTextures]) {
+                    var sampleValues = new Int32Array(maxTextures);
+                    var loops = this.loops;
+                    for (var i = 0; i < maxTextures; i++) {
+                        sampleValues[i] = i;
+                    }
+                    this.defaultGroupCache[maxTextures] = new UniformGroup({ uSamplers: sampleValues }, true);
+                    var fragmentSrc = this.fragTemplate;
+                    for (var i = 0; i < loops.length; i++) {
+                        fragmentSrc = fragmentSrc.replace(/%count%/gi, "" + maxTextures);
+                        fragmentSrc = fragmentSrc.replace(new RegExp(loops[i].loopLabel, 'gi'), this.generateSampleSrc(maxTextures, loops[i]));
+                    }
+                    this.programCache[maxTextures] = new Program(this.vertexSrc, fragmentSrc);
+                }
+                var uniforms = {
+                    tint: new Float32Array([1, 1, 1, 1]),
+                    translationMatrix: new Matrix(),
+                    default: this.defaultGroupCache[maxTextures],
+                };
+                return new Shader(this.programCache[maxTextures], uniforms);
+            };
+            LoopShaderGenerator.prototype.generateSampleSrc = function (maxTextures, loop) {
+                var src = '';
+                src += '\n';
+                src += '\n';
+                for (var i = 0; i < maxTextures; i++) {
+                    if (i > 0) {
+                        src += '\nelse ';
+                    }
+                    if (i < maxTextures - 1) {
+                        src += "if(" + loop.inTex + " < " + i + ".5)";
+                    }
+                    src += '\n{';
+                    src += "\n\t" + loop.outColor + " = texture2D(uSamplers[" + i + "], " + loop.inCoord + ");";
+                    src += '\n}';
+                }
+                src += '\n';
+                src += '\n';
+                return src;
+            };
+            return LoopShaderGenerator;
+        }());
+        webgl.LoopShaderGenerator = LoopShaderGenerator;
+    })(webgl = pixi_heaven.webgl || (pixi_heaven.webgl = {}));
+})(pixi_heaven || (pixi_heaven = {}));
+var pixi_heaven;
+(function (pixi_heaven) {
+    var webgl;
+    (function (webgl) {
+        var TYPES = PIXI.TYPES;
+        var BaseTexture = PIXI.BaseTexture;
+        var premultiplyTint = PIXI.utils.premultiplyTint;
+        var AbstractBatchRenderer = PIXI.AbstractBatchRenderer;
+        var WHITE = PIXI.Texture.WHITE.baseTexture;
+        var shaderVert = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aLight, aDark;\nattribute float aTextureId;\nattribute vec2 aMaskCoord;\nattribute vec4 aMaskClamp;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform vec4 tint;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vLight, vDark;\nvarying float vTextureId;\nvarying vec2 vMaskCoord;\nvarying vec4 vMaskClamp;\n\nvoid main(void){\ngl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\nvTextureCoord = aTextureCoord;\nvTextureId = aTextureId;\nvLight = aLight * tint;\nvDark = vec4(aDark.rgb * tint.rgb, aDark.a);\nvMaskCoord = aMaskCoord;\nvMaskClamp = aMaskClamp;\n}\n";
+        var shaderFrag = "\nvarying vec2 vTextureCoord;\nvarying vec2 vMaskCoord;\nvarying vec4 vMaskClamp;\nvarying vec4 vLight, vDark;\nvarying float vTextureId;\nuniform sampler2D uSamplers[%count%];\n\nvoid main(void) {\nvec4 texColor, maskColor, fragColor;\n\nfloat maskBits = floor((vTextureId + 0.5) / 64.0);\nfloat textureId = floor(0.5 + vTextureId - maskBits * 64.0);\nfloat maskId = floor((maskBits + 0.5) / 16.0);\nmaskBits = maskBits - maskId * 16.0;\n\nfloat clipEnable = step(0.5, maskBits);\n\nfloat clip = step(3.5,\n    step(vMaskClamp.x, vMaskCoord.x) +\n    step(vMaskClamp.y, vMaskCoord.y) +\n    step(vMaskCoord.x, vMaskClamp.z) +\n    step(vMaskCoord.y, vMaskClamp.w));\n%loopTex%\n%loopMask%\nfragColor.a = texColor.a * vLight.a;\nfragColor.rgb = ((texColor.a - 1.0) * vDark.a + 1.0 - texColor.rgb) * vDark.rgb + texColor.rgb * vLight.rgb;\ngl_FragColor = fragColor * maskColor.r * (clipEnable * clip + 1.0 - clipEnable);\n}";
+        var tempArray = new Float32Array([0, 0, 0, 0]);
+        var MaskedGeometry = (function (_super) {
+            __extends(MaskedGeometry, _super);
+            function MaskedGeometry(_static) {
+                if (_static === void 0) { _static = false; }
+                var _this = _super.call(this) || this;
+                _this._buffer = new PIXI.Buffer(null, _static, false);
+                _this._indexBuffer = new PIXI.Buffer(null, _static, true);
+                _this.addAttribute('aVertexPosition', _this._buffer, 2, false, TYPES.FLOAT)
+                    .addAttribute('aTextureCoord', _this._buffer, 2, false, TYPES.FLOAT)
+                    .addAttribute('aLight', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
+                    .addAttribute('aDark', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
+                    .addAttribute('aTextureId', _this._buffer, 1, true, TYPES.FLOAT)
+                    .addAttribute('aMaskCoord', _this._buffer, 2, false, TYPES.FLOAT)
+                    .addAttribute('aMaskClamp', _this._buffer, 4, false, TYPES.FLOAT)
+                    .addIndex(_this._indexBuffer);
+                return _this;
+            }
+            return MaskedGeometry;
+        }(PIXI.Geometry));
+        webgl.MaskedGeometry = MaskedGeometry;
+        var elemTex = [null, null];
+        var MaskedPluginFactory = (function () {
+            function MaskedPluginFactory() {
+            }
+            MaskedPluginFactory.create = function (options) {
+                var _a = Object.assign({
+                    vertex: shaderVert,
+                    fragment: shaderFrag,
+                    geometryClass: MaskedGeometry,
+                    vertexSize: 13,
+                }, options), vertex = _a.vertex, fragment = _a.fragment, vertexSize = _a.vertexSize, geometryClass = _a.geometryClass;
+                return (function (_super) {
+                    __extends(BatchPlugin, _super);
+                    function BatchPlugin(renderer) {
+                        var _this = _super.call(this, renderer) || this;
+                        _this.shaderGenerator = new webgl.LoopShaderGenerator(vertex, fragment, [{
+                                loopLabel: '%loopTex%',
+                                inCoord: 'vTextureCoord',
+                                outColor: 'texColor',
+                                inTex: 'textureId',
+                            }, {
+                                loopLabel: '%loopMask%',
+                                inCoord: 'vMaskCoord',
+                                outColor: 'maskColor',
+                                inTex: 'maskId',
+                            }]);
+                        _this.geometryClass = geometryClass;
+                        _this.vertexSize = vertexSize;
+                        return _this;
+                    }
+                    BatchPlugin.prototype.contextChange = function () {
+                        var thisAny = this;
+                        var batchMAX_TEXTURES = thisAny.renderer.plugins['batch'].MAX_TEXTURES * 2;
+                        thisAny.MAX_TEXTURES = Math.max(2, Math.min(MaskedPluginFactory.MAX_TEXTURES, batchMAX_TEXTURES));
+                        this._shader = thisAny.shaderGenerator.generateShader(this.MAX_TEXTURES);
+                        for (var i = 0; i < thisAny._packedGeometryPoolSize; i++) {
+                            thisAny._packedGeometries[i] = new (this.geometryClass)();
+                        }
+                        this.initFlushBuffers();
+                    };
+                    BatchPlugin.prototype.buildTexturesAndDrawCalls = function () {
+                        var textures = this._bufferedTextures;
+                        var elements = this._bufferedElements;
+                        var _bufferSize = this._bufferSize;
+                        var MAX_TEXTURES = this.MAX_TEXTURES;
+                        var textureArrays = AbstractBatchRenderer._textureArrayPool;
+                        var batch = this.renderer.batch;
+                        var boundTextures = this._tempBoundTextures;
+                        var touch = this.renderer.textureGC.count;
+                        var TICK = ++BaseTexture._globalBatch;
+                        var countTexArrays = 0;
+                        var texArray = textureArrays[0];
+                        var start = 0;
+                        batch.copyBoundTextures(boundTextures, MAX_TEXTURES);
+                        for (var i = 0; i < _bufferSize; ++i) {
+                            var maskTexNull = elements[i].maskSprite ? elements[i].maskSprite.texture.baseTexture : null;
+                            elemTex[0] = maskTexNull && maskTexNull.valid ? maskTexNull : WHITE;
+                            elemTex[1] = textures[i];
+                            textures[i] = null;
+                            var cnt = (elemTex[0]._batchEnabled !== TICK ? 1 : 0) +
+                                (elemTex[1]._batchEnabled !== TICK ? 1 : 0);
+                            if (texArray.count + cnt > MAX_TEXTURES) {
+                                batch.boundArray(texArray, boundTextures, TICK, MAX_TEXTURES);
+                                this.buildDrawCalls(texArray, start, i);
+                                start = i;
+                                texArray = textureArrays[++countTexArrays];
+                                ++TICK;
+                            }
+                            for (var j = 0; j < 2; j++) {
+                                var tex = elemTex[j];
+                                if (tex._batchEnabled !== TICK) {
+                                    tex._batchEnabled = TICK;
+                                    tex.touched = touch;
+                                    texArray.elements[texArray.count++] = tex;
+                                }
+                            }
+                        }
+                        if (texArray.count > 0) {
+                            batch.boundArray(texArray, boundTextures, TICK, MAX_TEXTURES);
+                            this.buildDrawCalls(texArray, start, _bufferSize);
+                            ++countTexArrays;
+                            ++TICK;
+                        }
+                        for (var i = 0; i < boundTextures.length; i++) {
+                            boundTextures[i] = null;
+                        }
+                        BaseTexture._globalBatch = TICK;
+                    };
+                    BatchPlugin.prototype.packInterleavedGeometry = function (element, attributeBuffer, indexBuffer, aIndex, iIndex) {
+                        var uint32View = attributeBuffer.uint32View, float32View = attributeBuffer.float32View;
+                        var lightRgba = -1;
+                        var darkRgba = 0;
+                        if (element.color) {
+                            lightRgba = element.color.lightRgba;
+                            darkRgba = element.color.darkRgba;
+                        }
+                        else {
+                            var alpha = Math.min(element.worldAlpha, 1.0);
+                            lightRgba = (alpha < 1.0
+                                && element._texture.baseTexture.premultiplyAlpha)
+                                ? premultiplyTint(element._tintRGB, alpha)
+                                : element._tintRGB + (alpha * 255 << 24);
+                        }
+                        var p = aIndex / this.vertexSize;
+                        var uvs = element.uvs;
+                        var indices = element.indices;
+                        var vertexData = element.vertexData;
+                        var textureId = element._texture.baseTexture._batchLocation;
+                        var maskTex = WHITE;
+                        var mask = element.maskSprite;
+                        var clamp = tempArray;
+                        var maskVertexData = tempArray;
+                        var maskBit = 0;
+                        if (mask) {
+                            element.calculateMaskVertices();
+                            clamp = mask._texture.uvMatrix.uClampFrame;
+                            maskVertexData = element.maskVertexData;
+                            if (mask.texture.valid) {
+                                maskTex = mask.texture.baseTexture;
+                                maskBit = 1;
+                            }
+                        }
+                        for (var i = 0; i < vertexData.length; i += 2) {
+                            float32View[aIndex++] = vertexData[i];
+                            float32View[aIndex++] = vertexData[i + 1];
+                            float32View[aIndex++] = uvs[i];
+                            float32View[aIndex++] = uvs[i + 1];
+                            uint32View[aIndex++] = lightRgba;
+                            uint32View[aIndex++] = darkRgba;
+                            float32View[aIndex++] = ((maskTex._batchLocation * 16.0 + maskBit) * 64.0) + textureId;
+                            float32View[aIndex++] = maskVertexData[i];
+                            float32View[aIndex++] = maskVertexData[i + 1];
+                            float32View[aIndex++] = clamp[0];
+                            float32View[aIndex++] = clamp[1];
+                            float32View[aIndex++] = clamp[2];
+                            float32View[aIndex++] = clamp[3];
+                        }
+                        for (var i = 0; i < indices.length; i++) {
+                            indexBuffer[iIndex++] = p + indices[i];
+                        }
+                    };
+                    return BatchPlugin;
+                }(AbstractBatchRenderer));
+            };
+            MaskedPluginFactory.MAX_TEXTURES = 8;
+            return MaskedPluginFactory;
+        }());
+        webgl.MaskedPluginFactory = MaskedPluginFactory;
+        PIXI.Renderer.registerPlugin('batchMasked', MaskedPluginFactory.create({}));
+    })(webgl = pixi_heaven.webgl || (pixi_heaven.webgl = {}));
+})(pixi_heaven || (pixi_heaven = {}));
+var pixi_heaven;
+(function (pixi_heaven) {
     var sign = PIXI.utils.sign;
     var tempMat = new PIXI.Matrix();
     var defIndices = new Uint16Array([0, 1, 2, 0, 2, 3]);
@@ -700,6 +1055,7 @@ var pixi_heaven;
             var _this = _super.call(this, texture) || this;
             _this.color = new pixi_heaven.ColorTransform();
             _this.maskSprite = null;
+            _this.maskVertexData = null;
             _this.uvs = null;
             _this.indices = defIndices;
             _this.animState = null;
@@ -834,6 +1190,34 @@ var pixi_heaven;
                 vertexData[7] = (d * h0) + (b * w1) + ty;
             }
         };
+        Sprite.prototype.calculateMaskVertices = function () {
+            var maskSprite = this.maskSprite;
+            var tex = maskSprite.texture;
+            var orig = tex.orig;
+            var anchor = maskSprite.anchor;
+            if (!tex.valid) {
+                return;
+            }
+            if (!tex.uvMatrix) {
+                tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
+            }
+            tex.uvMatrix.update();
+            maskSprite.transform.worldTransform.copyTo(tempMat);
+            tempMat.invert();
+            tempMat.scale(1.0 / orig.width, 1.0 / orig.height);
+            tempMat.translate(anchor.x, anchor.y);
+            tempMat.prepend(tex.uvMatrix.mapCoord);
+            var vertexData = this.vertexData;
+            var n = vertexData.length;
+            if (!this.maskVertexData || this.maskVertexData.length !== n) {
+                this.maskVertexData = new Float32Array(n);
+            }
+            var maskVertexData = this.maskVertexData;
+            for (var i = 0; i < n; i += 2) {
+                maskVertexData[i] = vertexData[i] * tempMat.a + vertexData[i + 1] * tempMat.c + tempMat.tx;
+                maskVertexData[i + 1] = vertexData[i] * tempMat.b + vertexData[i + 1] * tempMat.d + tempMat.ty;
+            }
+        };
         Sprite.prototype.destroy = function (options) {
             if (this.animState) {
                 this.animState.stop();
@@ -844,93 +1228,6 @@ var pixi_heaven;
         return Sprite;
     }(PIXI.Sprite));
     pixi_heaven.Sprite = Sprite;
-})(pixi_heaven || (pixi_heaven = {}));
-var pixi_heaven;
-(function (pixi_heaven) {
-    var pixi_projection;
-    (function (pixi_projection) {
-        var TYPES = PIXI.TYPES;
-        var premultiplyTint = PIXI.utils.premultiplyTint;
-        var shaderVert = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aLight, aDark;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform vec4 tint;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vLight, vDark;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vTextureId = aTextureId;\n    vLight = aLight * tint;\n    vDark = vec4(aDark.rgb * tint.rgb, aDark.a);\n}\n";
-        var shaderFrag = "\nvarying vec2 vTextureCoord;\nvarying vec4 vLight, vDark;\nvarying float vTextureId;\nuniform sampler2D uSamplers[%count%];\n\nvoid main(void) {\nvec4 color;\nfloat textureId = floor(vTextureId+0.5);\n%forloop%\ngl_FragColor.a = color.a * vLight.a;\ngl_FragColor.rgb = ((color.a - 1.0) * vDark.a + 1.0 - color.rgb) * vDark.rgb + color.rgb * vLight.rgb;\n}";
-        var DarkLightGeometry = (function (_super) {
-            __extends(DarkLightGeometry, _super);
-            function DarkLightGeometry(_static) {
-                if (_static === void 0) { _static = false; }
-                var _this = _super.call(this) || this;
-                _this._buffer = new PIXI.Buffer(null, _static, false);
-                _this._indexBuffer = new PIXI.Buffer(null, _static, true);
-                _this.addAttribute('aVertexPosition', _this._buffer, 2, false, TYPES.FLOAT)
-                    .addAttribute('aTextureCoord', _this._buffer, 2, false, TYPES.FLOAT)
-                    .addAttribute('aLight', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
-                    .addAttribute('aDark', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
-                    .addAttribute('aTextureId', _this._buffer, 1, true, TYPES.FLOAT)
-                    .addIndex(_this._indexBuffer);
-                return _this;
-            }
-            return DarkLightGeometry;
-        }(PIXI.Geometry));
-        pixi_projection.DarkLightGeometry = DarkLightGeometry;
-        var DarkLightPluginFactory = (function () {
-            function DarkLightPluginFactory() {
-            }
-            DarkLightPluginFactory.create = function (options) {
-                var _a = Object.assign({
-                    vertex: shaderVert,
-                    fragment: shaderFrag,
-                    geometryClass: DarkLightGeometry,
-                    vertexSize: 7,
-                }, options), vertex = _a.vertex, fragment = _a.fragment, vertexSize = _a.vertexSize, geometryClass = _a.geometryClass;
-                return (function (_super) {
-                    __extends(BatchPlugin, _super);
-                    function BatchPlugin(renderer) {
-                        var _this = _super.call(this, renderer) || this;
-                        _this.shaderGenerator = new PIXI.BatchShaderGenerator(vertex, fragment);
-                        _this.geometryClass = geometryClass;
-                        _this.vertexSize = vertexSize;
-                        return _this;
-                    }
-                    BatchPlugin.prototype.packInterleavedGeometry = function (element, attributeBuffer, indexBuffer, aIndex, iIndex) {
-                        var uint32View = attributeBuffer.uint32View, float32View = attributeBuffer.float32View;
-                        var lightRgba = -1;
-                        var darkRgba = 0;
-                        if (element.color) {
-                            lightRgba = element.color.lightRgba;
-                            darkRgba = element.color.darkRgba;
-                        }
-                        else {
-                            var alpha = Math.min(element.worldAlpha, 1.0);
-                            lightRgba = (alpha < 1.0
-                                && element._texture.baseTexture.premultiplyAlpha)
-                                ? premultiplyTint(element._tintRGB, alpha)
-                                : element._tintRGB + (alpha * 255 << 24);
-                        }
-                        var p = aIndex / this.vertexSize;
-                        var uvs = element.uvs;
-                        var indices = element.indices;
-                        var vertexData = element.vertexData;
-                        var textureId = element._texture.baseTexture._id;
-                        for (var i = 0; i < vertexData.length; i += 2) {
-                            float32View[aIndex++] = vertexData[i];
-                            float32View[aIndex++] = vertexData[i + 1];
-                            float32View[aIndex++] = uvs[i];
-                            float32View[aIndex++] = uvs[i + 1];
-                            uint32View[aIndex++] = lightRgba;
-                            uint32View[aIndex++] = darkRgba;
-                            float32View[aIndex++] = textureId;
-                        }
-                        for (var i = 0; i < indices.length; i++) {
-                            indexBuffer[iIndex++] = p + indices[i];
-                        }
-                    };
-                    return BatchPlugin;
-                }(PIXI.AbstractBatchRenderer));
-            };
-            return DarkLightPluginFactory;
-        }());
-        pixi_projection.DarkLightPluginFactory = DarkLightPluginFactory;
-        PIXI.Renderer.registerPlugin('batchHeaven', DarkLightPluginFactory.create({}));
-    })(pixi_projection || (pixi_projection = {}));
 })(pixi_heaven || (pixi_heaven = {}));
 var pixi_heaven;
 (function (pixi_heaven) {
@@ -1007,7 +1304,19 @@ var pixi_heaven;
             return _this;
         }
         SpineMesh.prototype._render = function (renderer) {
-            _super.prototype._render.call(this, renderer);
+            if (this.autoUpdate) {
+                this.geometry.getBuffer('aVertexPosition').update();
+            }
+            if (this.maskSprite) {
+                this.spine.hasSpriteMask = true;
+            }
+            if (this.spine.hasSpriteMask) {
+                this.material.pluginName = 'batchMasked';
+                this._renderToBatch(renderer);
+            }
+            else {
+                _super.prototype._renderDefault.call(this, renderer);
+            }
         };
         return SpineMesh;
     }(pixi_heaven.SimpleMesh));
@@ -1025,7 +1334,7 @@ var pixi_heaven;
                 this.spine.hasSpriteMask = true;
             }
             if (this.spine.hasSpriteMask) {
-                this.pluginName = 'spriteMasked';
+                this.pluginName = 'batchMasked';
             }
             _super.prototype._render.call(this, renderer);
         };

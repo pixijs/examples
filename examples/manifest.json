@@ -23,6 +23,10 @@
         {
             "title": "BlendModes",
             "entry": "blendmodes.js"
+        },
+        {
+            "title": "SimplePlane",
+            "entry": "simpleplane.js"
         }
     ],
     "demos-advanced": [

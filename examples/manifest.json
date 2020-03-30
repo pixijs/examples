@@ -235,7 +235,7 @@
 		},
 		{
 			"title": "Multipass shader generated mesh",
-			"entry": "Multipass-shader-generated-mesh.js"
+			"entry": "multipass-shader-generated-mesh.js"
 		}
     ],
     "textures": [

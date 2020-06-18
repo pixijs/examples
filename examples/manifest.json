@@ -456,6 +456,13 @@
             ]
         },
         {
+            "title": "Bring to top",
+            "entry": "bringToTop.js",
+            "plugins": [
+                "pixi-layers"
+            ]
+        },
+        {
             "title": "Drag, Sort, Light",
             "entry": "normals-drag.js",
             "plugins": [

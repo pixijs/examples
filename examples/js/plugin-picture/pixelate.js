@@ -27,8 +27,6 @@ uniform sampler2D uSampler, backdropSampler;
 uniform highp vec4 inputSize;
 uniform highp vec4 outputFrame;
 
-uniform vec4 filterArea;
-
 vec2 mapCoord( vec2 coord )
 {
     return coord * inputSize.xy + outputFrame.xy;

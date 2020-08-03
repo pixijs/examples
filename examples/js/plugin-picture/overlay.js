@@ -1,3 +1,6 @@
+// This is demo of pixi-picture.js, https://github.com/pixijs/pixi-picture
+// Plugin automatically assigns a filter for every sprite that has special blendModes
+
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
@@ -7,7 +10,8 @@ background.width = 800;
 background.height = 600;
 app.stage.addChild(background);
 
-// speed up the process, because OVERLAY and HARD_LIGHT will use copyTex instead of readPixels
+// filter can only use copyTex and not readPixels, so you have to make sure that
+// you actually have a backbuffer that is managable by pixi renderer
 app.stage.filters = [new PIXI.filters.AlphaFilter()];
 app.stage.filterArea = app.screen;
 
@@ -19,9 +23,7 @@ const texture = PIXI.Texture.from('examples/assets/flowerTop.png');
 
 for (let i = 0; i < totaldudes; i++) {
     // create a new Sprite that uses the image name that we just generated as its source
-    const dude = new PIXI.Sprite(texture);
-    // setting renderer plugin 'picture', from pixi-picture
-    dude.pluginName = 'picture';
+    const dude = new PIXI.picture.Sprite(texture);
 
     dude.anchor.set(0.5);
 
@@ -33,9 +35,14 @@ for (let i = 0; i < totaldudes; i++) {
     dude.y = Math.floor(Math.random() * app.screen.height);
 
     // The important bit of this example, this is how you change the default blend mode of the sprite
-    dude.blendMode = Math.random() > 0.5
-        ? PIXI.BLEND_MODES.OVERLAY
-        : PIXI.BLEND_MODES.HARD_LIGHT;
+    const num = Math.random() * 3 | 0;
+    if (num===0) {
+        dude.blendMode = PIXI.BLEND_MODES.HARD_LIGHT;
+    } else if (num===1) {
+        dude.blendMode = PIXI.BLEND_MODES.SOFT_LIGHT;
+    } else if (num===2) {
+        dude.blendMode = PIXI.BLEND_MODES.OVERLAY;
+    }
 
     // create some extra properties that will control movement
     dude.direction = Math.random() * Math.PI * 2;

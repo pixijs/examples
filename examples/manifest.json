@@ -486,13 +486,24 @@
     ],
     "plugin-picture": [
         {
-            "title": "Overlay blendMode",
+            "title": "More blend modes",
             "entry": "overlay.js",
             "plugins": [
                 "pixi-picture"
-            ],
-            "validVersions": [
-                4
+            ]
+        },
+        {
+            "title": "Backdrop displacement",
+            "entry": "displacement.js",
+            "plugins": [
+                "pixi-picture"
+            ]
+        },
+        {
+            "title": "Backdrop pixelate",
+            "entry": "pixelate.js",
+            "plugins": [
+                "pixi-picture"
             ]
         }
     ],

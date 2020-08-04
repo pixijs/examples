@@ -14,12 +14,12 @@
  5. put a fullscreen filter on stage. pixi-picture requires that background is rendered inside a framebuffer, i mean Filter or RenderTexture, otherwise "copySubTexImage2D" wont work.
  */
 
-var app = new PIXI.Application({
-    width: 800, height: 600
+const app = new PIXI.Application({
+    width: 800, height: 600,
 });
 document.body.appendChild(app.view);
 
-var fragment = `
+const fragment = `
 varying vec2 vTextureCoord;
 
 uniform vec2 size;
@@ -39,7 +39,7 @@ vec2 unmapCoord( vec2 coord )
 
 vec2 pixelate(vec2 coord, vec2 size)
 {
-	return floor( coord / size ) * size;
+    return floor( coord / size ) * size;
 }
 
 void main(void)
@@ -55,11 +55,10 @@ void main(void)
 }`;
 
 class PixelateFilter extends PIXI.Filter {
-
     constructor(size = 10) {
         super(undefined, fragment, {
             backdropSampler: PIXI.Texture.WHITE.baseTexture,
-            size: new Float32Array(2)
+            size: new Float32Array(2),
         });
         this.size = size;
         this.backdropUniformName = 'backdropSampler';
@@ -68,6 +67,7 @@ class PixelateFilter extends PIXI.Filter {
     get size() {
         return this.uniforms.size;
     }
+
     set size(value) {
         if (typeof value === 'number') {
             value = [value, value];
@@ -82,12 +82,12 @@ app.loader.add('bg_rotate.jpg').add('flowerTop.png').load(complete);
 
 function complete() {
 // create a new background sprite
-    var background = new PIXI.Sprite(app.loader.resources['bg_rotate.jpg'].texture);
+    const background = new PIXI.Sprite(app.loader.resources['bg_rotate.jpg'].texture);
     background.width = 800;
     background.height = 600;
     app.stage.addChild(background);
 
-    var dude  = new PIXI.Sprite(app.loader.resources['flowerTop.png'].texture);
+    const dude = new PIXI.Sprite(app.loader.resources['flowerTop.png'].texture);
     dude.position.set(100);
     dude.filters = [new PixelateFilter()];
     app.stage.addChild(dude);

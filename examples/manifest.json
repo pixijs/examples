@@ -53,6 +53,10 @@
         {
             "title": "Collision",
             "entry": "collision-detection.js"
+        },
+        {
+            "title": "Spinners",
+            "entry": "spinners.js"
         }
     ],
     "sprite": [

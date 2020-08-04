@@ -36,11 +36,11 @@ for (let i = 0; i < totaldudes; i++) {
 
     // The important bit of this example, this is how you change the default blend mode of the sprite
     const num = Math.random() * 3 | 0;
-    if (num===0) {
+    if (num === 0) {
         dude.blendMode = PIXI.BLEND_MODES.HARD_LIGHT;
-    } else if (num===1) {
+    } else if (num === 1) {
         dude.blendMode = PIXI.BLEND_MODES.SOFT_LIGHT;
-    } else if (num===2) {
+    } else if (num === 2) {
         dude.blendMode = PIXI.BLEND_MODES.OVERLAY;
     }
 

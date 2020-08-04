@@ -1,8 +1,7 @@
 // This is demo of pixi-picture.js, https://github.com/pixijs/pixi-picture
 // This is pixijs DisplacementFilter improvement, using a backdrop
 
-const shaderVert =
-    `
+const shaderVert = `
 attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
 
@@ -17,8 +16,7 @@ void main(void)
 }
 `;
 
-const shaderFrag =
-    `
+const shaderFrag = `
 varying vec2 vTextureCoord;
 
 uniform vec2 scale;
@@ -45,10 +43,10 @@ class DisplacementFilter extends PIXI.Filter {
     constructor(scale) {
         super(
             shaderVert,
-            shaderFrag
+            shaderFrag,
         );
 
-        this.uniforms.scale = {x: 1, y: 1};
+        this.uniforms.scale = { x: 1, y: 1 };
 
         if (scale === null || scale === undefined) {
             scale = 20;
@@ -86,7 +84,7 @@ const bounds = new PIXI.Rectangle(
     -padding,
     -padding,
     app.screen.width + padding * 2,
-    app.screen.height + padding * 2
+    app.screen.height + padding * 2,
 );
 const maggots = [];
 
@@ -106,33 +104,29 @@ for (let i = 0; i < 20; i++) {
     maggot.original = new PIXI.Point();
     maggot.original.copy(maggot.scale);
     maggots.push(maggot);
-
 }
-
 const displacementContainer = new PIXI.Container();
 const displacementTexture = PIXI.Texture.fromImage('https://pixijs.io/examples/examples/assets/pixi-filters/displace.png');
 for (let i = -1; i <= 1; i += 2) {
-    let sprite1 = new PIXI.Sprite(displacementTexture);
-    sprite1.position.set(100*i, 0);
+    const sprite1 = new PIXI.Sprite(displacementTexture);
+    sprite1.position.set(100 * i, 0);
     sprite1.anchor.set(0.5);
     displacementContainer.addChild(sprite1);
 }
-
-
 app.stage.addChild(displacementContainer);
 
 const displacementFilter = new DisplacementFilter();
 displacementContainer.filters = [displacementFilter];
 displacementFilter.scale.x = 110;
 displacementFilter.scale.y = 110;
-//displacementFilter.padding = 0;
+// displacementFilter.padding = 0;
 
 
 const ringTexture = PIXI.Texture.fromImage('https://pixijs.io/examples/examples/assets/pixi-filters/ring.png');
 const rings = new PIXI.Container();
 for (let i = -1; i <= 1; i += 2) {
-    let sprite1 = new PIXI.Sprite(ringTexture);
-    sprite1.position.set(100*i, 0);
+    const sprite1 = new PIXI.Sprite(ringTexture);
+    sprite1.position.set(100 * i, 0);
     sprite1.anchor.set(0.5);
     rings.addChild(sprite1);
 }
@@ -161,8 +155,7 @@ function onPointerMove(eventData) {
 
 let count = 0;
 
-app.ticker.add(function () {
-
+app.ticker.add(() => {
     count += 0.05;
 
     for (let i = 0; i < maggots.length; i++) {
@@ -178,15 +171,13 @@ app.ticker.add(function () {
         // wrap the maggots around as the crawl
         if (maggot.x < bounds.x) {
             maggot.x += bounds.width;
-        }
-        else if (maggot.x > bounds.x + bounds.width) {
+        } else if (maggot.x > bounds.x + bounds.width) {
             maggot.x -= bounds.width;
         }
 
         if (maggot.y < bounds.y) {
             maggot.y += bounds.height;
-        }
-        else if (maggot.y > bounds.y + bounds.height) {
+        } else if (maggot.y > bounds.y + bounds.height) {
             maggot.y -= bounds.height;
         }
     }

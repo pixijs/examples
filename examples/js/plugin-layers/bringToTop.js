@@ -6,8 +6,8 @@ document.body.appendChild(app.view);
 const textureGreen = PIXI.Texture.from('examples/assets/bunny_green.png');
 const textureBlue = PIXI.Texture.from('examples/assets/bunny_blue.png');
 
-let blue = new PIXI.Container();
-let green = new PIXI.Container();
+const blue = new PIXI.Container();
+const green = new PIXI.Container();
 
 app.stage = new PIXI.display.Stage();
 
@@ -20,7 +20,6 @@ for (let i = 0; i < 15; i++) {
     bunny.height = 50;
     bunny.position.set(100 + 20 * i, 100 + 20 * i);
     bunny.anchor.set(0.5);
-  
     green.addChild(bunny);
 }
 
@@ -29,12 +28,12 @@ for (let i = 9; i >= 0; i--) {
     bunny.width = 50;
     bunny.height = 50;
     bunny.position.set(100 + 20 * i, 150 + 20 * i);
-    bunny.anchor.set(0.5)
-  
-    if (i == 9) {
-      bunny.tint = 0xFF0000;
-      bunny.parentLayer = topLayer;
+    bunny.anchor.set(0.5);
+
+    if (i === 9) {
+        bunny.tint = 0xFF0000;
+        bunny.parentLayer = topLayer;
     }
-  
+
     blue.addChild(bunny);
 }

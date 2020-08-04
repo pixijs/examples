@@ -105,15 +105,13 @@ function onDragMove(event) {
     if (obj.dragging === 2) {
         const dragPointerEnd = data.getLocalPosition(obj.parent);
 
-        if (dragPointerEnd.x >= -2000 && dragPointerEnd.x <= 2000 &&
-            dragPointerEnd.y >= -2000 && dragPointerEnd.y <= 2000)
-        {
+        if (dragPointerEnd.x >= -2000 && dragPointerEnd.x <= 2000
+            && dragPointerEnd.y >= -2000 && dragPointerEnd.y <= 2000) {
             // DRAG only if its not too far away, and its not NaN
             obj.position.set(
                 obj.dragObjStart.x + (dragPointerEnd.x - obj.dragPointerStart.x),
                 obj.dragObjStart.y + (dragPointerEnd.y - obj.dragPointerStart.y),
             );
-
         }
     }
 }

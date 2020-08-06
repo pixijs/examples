@@ -185,15 +185,7 @@ const generateSpinner4 = (position) => {
     const roundingMask = new PIXI.Graphics();
     roundingMask.beginFill(0, 1);
     roundingMask.lineStyle(1, 0xff0000, 1);
-    roundingMask.moveTo(arcRadius, 0);
-    roundingMask.lineTo(size - arcRadius, 0);
-    roundingMask.arc(size - arcRadius, arcRadius, arcRadius, -Math.PI / 2, 0, false);
-    roundingMask.lineTo(size, size - arcRadius);
-    roundingMask.arc(size - arcRadius, size - arcRadius, arcRadius, 0, Math.PI / 2, false);
-    roundingMask.lineTo(arcRadius, size);
-    roundingMask.arc(arcRadius, size - arcRadius, arcRadius, Math.PI / 2, Math.PI, false);
-    roundingMask.lineTo(0, arcRadius);
-    roundingMask.arc(arcRadius, arcRadius, arcRadius, Math.PI, Math.PI / 2 * 3, false);
+    roundingMask.drawRoundedRect(0, 0, size, size, arcRadius);
     roundingMask.endFill();
     base.mask = roundingMask;
 
@@ -201,15 +193,7 @@ const generateSpinner4 = (position) => {
     const lineSize = 5;
     const edge = new PIXI.Graphics();
     edge.lineStyle(lineSize, 0xff0000, 1);
-    edge.moveTo(arcRadius, 0);
-    edge.lineTo(size - arcRadius, 0);
-    edge.arc(size - arcRadius, arcRadius, arcRadius, -Math.PI / 2, 0, false);
-    edge.lineTo(size, size - arcRadius);
-    edge.arc(size - arcRadius, size - arcRadius, arcRadius, 0, Math.PI / 2, false);
-    edge.lineTo(arcRadius, size);
-    edge.arc(arcRadius, size - arcRadius, arcRadius, Math.PI / 2, Math.PI, false);
-    edge.lineTo(0, arcRadius);
-    edge.arc(arcRadius, arcRadius, arcRadius, Math.PI, Math.PI / 2 * 3, false);
+    edge.drawRoundedRect(0, 0, size, size, arcRadius);
     edge.endFill();
 
     // Mask in this example works basically the same way as in example 1. Except it is reversed and calculates the mask in straight lines in edges.
@@ -290,12 +274,46 @@ const generateSpinner4 = (position) => {
     };
 };
 
+/* ---------------------
+ Spinner 5. Rounded rectangle fixed length spinner by jonlepage
+ -------------------- */
+const generateSpinner5 = (position) => {
+    const container = new PIXI.Container();
+    container.position = position;
+    app.stage.addChild(container);
+
+    const halfCircle = new PIXI.Graphics();
+    halfCircle.beginFill(0xff0000);
+    halfCircle.lineStyle(2, 0xffffff);
+    halfCircle.arc(0, 0, 100, 0, Math.PI);
+    halfCircle.endFill();
+    halfCircle.position.set(50, 50);
+
+    const rectangle = new PIXI.Graphics();
+    rectangle.lineStyle(2, 0xffffff, 1);
+    rectangle.drawRoundedRect(0, 0, 100, 100, 16);
+    rectangle.endFill();
+    rectangle.mask = halfCircle;
+
+    container.addChild(rectangle);
+    container.addChild(halfCircle);
+
+    let phase = 0;
+    return (delta) => {
+        // Update phase
+        phase += delta / 6;
+        phase %= (Math.PI * 2);
+
+        halfCircle.rotation = phase;
+    };
+};
+
 const onTick = [
     generateSpinner1(new PIXI.Point(50, 50)),
     generateSpinner2(new PIXI.Point(160, 50)),
     generateSpinner3(new PIXI.Point(270, 50)),
     generateSpinner4(new PIXI.Point(380, 50)),
-
+    generateSpinner5(new PIXI.Point(490, 50)),
 ];
 
 // Listen for animate update

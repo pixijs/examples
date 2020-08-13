@@ -233,6 +233,10 @@
             "title": "Interleaving Geometry",
             "entry": "interleaving-geometry.js"
         },
+        {
+            "title": "Instanced Geometry",
+            "entry": "instanced-geometry.js"
+        },        
 		{
 			"title": "Shadertoy",
 			"entry": "shadertoy-mesh.js"

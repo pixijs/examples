@@ -1262,8 +1262,18 @@ var pixi_heaven;
         this._render = pixi_heaven.Sprite.prototype._render;
         this._calculateBounds = pixi_heaven.Sprite.prototype._calculateBounds;
         this.calculateVertices = pixi_heaven.Sprite.prototype.calculateVertices;
+        this._onTextureUpdate = pixi_heaven.Sprite.prototype._onTextureUpdate;
+        this.calculateMaskVertices = pixi_heaven.Sprite.prototype.calculateMaskVertices;
+        this.destroy = pixi_heaven.Sprite.prototype.destroy;
         this.color = new pixi_heaven.ColorTransform();
         this.pluginName = 'batchHeaven';
+        if (this._texture.valid) {
+            this._onTextureUpdate();
+        }
+        else {
+            this._texture.off('update', this._onTextureUpdate);
+            this._texture.on('update', this._onTextureUpdate, this);
+        }
         return this;
     };
     PIXI.Container.prototype.convertSubtreeToHeaven = function () {

@@ -237,6 +237,64 @@ var pixi_picture;
 })(pixi_picture || (pixi_picture = {}));
 var pixi_picture;
 (function (pixi_picture) {
+    var MASK_CHANNEL;
+    (function (MASK_CHANNEL) {
+        MASK_CHANNEL[MASK_CHANNEL["RED"] = 0] = "RED";
+        MASK_CHANNEL[MASK_CHANNEL["GREEN"] = 1] = "GREEN";
+        MASK_CHANNEL[MASK_CHANNEL["BLUE"] = 2] = "BLUE";
+        MASK_CHANNEL[MASK_CHANNEL["ALPHA"] = 3] = "ALPHA";
+    })(MASK_CHANNEL = pixi_picture.MASK_CHANNEL || (pixi_picture.MASK_CHANNEL = {}));
+    var MaskConfig = (function () {
+        function MaskConfig(maskBefore, channel) {
+            if (maskBefore === void 0) { maskBefore = false; }
+            if (channel === void 0) { channel = MASK_CHANNEL.ALPHA; }
+            this.maskBefore = maskBefore;
+            this.uniformCode = 'uniform vec4 uChannel;';
+            this.uniforms = {
+                uChannel: new Float32Array([0, 0, 0, 0]),
+            };
+            this.blendCode = "b_res = dot(b_src, uChannel) * b_dest;";
+            this.uniforms.uChannel[channel] = 1.0;
+        }
+        return MaskConfig;
+    }());
+    pixi_picture.MaskConfig = MaskConfig;
+    var MaskFilter = (function (_super) {
+        __extends(MaskFilter, _super);
+        function MaskFilter(baseFilter, config) {
+            if (config === void 0) { config = new MaskConfig(); }
+            var _this = _super.call(this, config) || this;
+            _this.baseFilter = baseFilter;
+            _this.config = config;
+            _this.padding = baseFilter.padding;
+            return _this;
+        }
+        MaskFilter.prototype.apply = function (filterManager, input, output, clearMode) {
+            var target = filterManager.getFilterTexture(input);
+            if (this.config.maskBefore) {
+                var blendMode = this.state.blendMode;
+                this.state.blendMode = PIXI.BLEND_MODES.NONE;
+                filterManager.applyFilter(this, input, target, PIXI.CLEAR_MODES.BLIT);
+                this.baseFilter.blendMode = blendMode;
+                this.baseFilter.apply(filterManager, target, output, clearMode);
+                this.state.blendMode = blendMode;
+            }
+            else {
+                var uBackdrop = this.uniforms.uBackdrop;
+                this.baseFilter.blendMode = PIXI.BLEND_MODES.NONE;
+                this.baseFilter.apply(filterManager, uBackdrop, target, PIXI.CLEAR_MODES.BLIT);
+                this.uniforms.uBackdrop = target;
+                filterManager.applyFilter(this, input, output, clearMode);
+                this.uniforms.uBackdrop = uBackdrop;
+            }
+            filterManager.returnFilterTexture(target);
+        };
+        return MaskFilter;
+    }(pixi_picture.BlendFilter));
+    pixi_picture.MaskFilter = MaskFilter;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
     var blends;
     (function (blends) {
         blends.NPM_BLEND = "if (b_src.a == 0.0) {\n    gl_FragColor = vec4(0, 0, 0, 0);\n    return;\n}\nvec3 Cb = b_src.rgb / b_src.a, Cs;\nif (b_dest.a > 0.0) {\n    Cs = b_dest.rgb / b_dest.a;\n}\n%NPM_BLEND%\nb_res.a = b_src.a + b_dest.a * (1.0-b_src.a);\nb_res.rgb = (1.0 - b_src.a) * Cs + b_src.a * B;\nb_res.rgb *= b_res.a;\n";

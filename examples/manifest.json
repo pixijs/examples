@@ -236,7 +236,7 @@
         {
             "title": "Instanced Geometry",
             "entry": "instanced-geometry.js"
-        },        
+        },
 		{
 			"title": "Shadertoy",
 			"entry": "shadertoy-mesh.js"
@@ -510,6 +510,13 @@
         {
             "title": "Backdrop pixelate",
             "entry": "pixelate.js",
+            "plugins": [
+                "pixi-picture"
+            ]
+        },
+        {
+            "title": "Mask blur",
+            "entry": "mask-blur.js",
             "plugins": [
                 "pixi-picture"
             ]

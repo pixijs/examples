@@ -226,6 +226,7 @@ var pixi_picture;
         var h = (bounds.height) * resolution;
         var gl = renderer.gl;
         var rt = this.getOptimalFilterTexture(w, h, 1);
+        rt.filterFrame = fr;
         renderer.texture.bindForceLocation(rt.baseTexture, 0);
         gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, x, y, w, h);
         return rt;

@@ -274,15 +274,14 @@ var pixi_picture;
             if (this.config.maskBefore) {
                 var blendMode = this.state.blendMode;
                 this.state.blendMode = PIXI.BLEND_MODES.NONE;
-                filterManager.applyFilter(this, input, target, PIXI.CLEAR_MODES.BLIT);
+                filterManager.applyFilter(this, input, target, PIXI.CLEAR_MODES.YES);
                 this.baseFilter.blendMode = blendMode;
                 this.baseFilter.apply(filterManager, target, output, clearMode);
                 this.state.blendMode = blendMode;
             }
             else {
                 var uBackdrop = this.uniforms.uBackdrop;
-                this.baseFilter.blendMode = PIXI.BLEND_MODES.NONE;
-                this.baseFilter.apply(filterManager, uBackdrop, target, PIXI.CLEAR_MODES.BLIT);
+                this.baseFilter.apply(filterManager, uBackdrop, target, PIXI.CLEAR_MODES.YES);
                 this.uniforms.uBackdrop = target;
                 filterManager.applyFilter(this, input, output, clearMode);
                 this.uniforms.uBackdrop = uBackdrop;

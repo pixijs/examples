@@ -17,7 +17,7 @@ function makeEasyWindow() {
     //mask the background and blur it
     const graphics = new PIXI.Graphics();
     graphics.beginFill(0xffffff, 1.0);
-    graphics.drawRoundedRect(0, 0, 300, 100, 40);
+    graphics.drawRoundedRect(-150, -50, 300, 100, 40);
     graphics.filters = [new PIXI.picture.MaskFilter(blur)];
 
     container.addChild(graphics);
@@ -25,7 +25,7 @@ function makeEasyWindow() {
     // blend graphics on top, after everything, with alpha=0.5
     const graphics2 = new PIXI.Graphics();
     graphics2.beginFill(0xffffff, 0.5);
-    graphics2.drawRoundedRect(0, 0, 300, 100, 40);
+    graphics2.drawRoundedRect(-150, -50, 300, 100, 40);
 
     container.addChild(graphics2);
 
@@ -47,7 +47,7 @@ function makeHardWindow() {
 
     const graphics = new PIXI.Graphics();
     graphics.beginFill(0xffffff, 1.0);
-    graphics.drawRoundedRect(0, 0, 300, 100, 40);
+    graphics.drawRoundedRect(-150, -50, 300, 100, 40);
     graphics.filters = [new PIXI.picture.MaskFilter(blur, config)];
     container.addChild(graphics);
     return container;
@@ -62,11 +62,15 @@ function complete() {
 
     const window1 = makeEasyWindow();
     const window2 = makeHardWindow();
-    window1.position.set(100, 100);
-    window2.position.set(100, 400);
+    window1.position.set(250, 150);
+    window2.position.set(250, 450);
     app.stage.addChild(window1, window2);
 
     // do not forget - filter above is required for backdrops to work
     app.stage.filters = [new PIXI.filters.AlphaFilter()];
     app.stage.filterArea = app.screen;
+
+    app.ticker.add((delta) => {
+        window1.rotation += 0.01 * delta;
+    })
 }

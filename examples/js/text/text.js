@@ -22,10 +22,35 @@ const style = new PIXI.TextStyle({
     dropShadowDistance: 6,
     wordWrap: true,
     wordWrapWidth: 440,
+    lineJoin: 'round'
 });
 
 const richText = new PIXI.Text('Rich text with a lot of options and across multiple lines', style);
 richText.x = 50;
-richText.y = 250;
+richText.y = 220;
 
 app.stage.addChild(richText);
+
+const skewStyle = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    dropShadow: true,
+    dropShadowAlpha: 0.8,
+    dropShadowAngle: 2.1,
+    dropShadowBlur: 4,
+    dropShadowColor: "0x111111",
+    dropShadowDistance: 10,
+    fill: ['#ffffff'],
+    stroke: '#004620',
+    fontSize: 60,
+    fontWeight: "lighter",
+    lineJoin: "round",
+    strokeThickness: 12
+});
+
+const skewText = new PIXI.Text('SCEW IS COOL', skewStyle);
+skewText.skew.set(0.65,-0.3);
+skewText.anchor.set(0.5, 0.5);
+skewText.x = 300;
+skewText.y = 480;
+
+app.stage.addChild(skewText);

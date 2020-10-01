@@ -47,7 +47,7 @@ const skewStyle = new PIXI.TextStyle({
     strokeThickness: 12
 });
 
-const skewText = new PIXI.Text('SCEW IS COOL', skewStyle);
+const skewText = new PIXI.Text('SKEW IS COOL', skewStyle);
 skewText.skew.set(0.65,-0.3);
 skewText.anchor.set(0.5, 0.5);
 skewText.x = 300;

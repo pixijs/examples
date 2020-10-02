@@ -352,6 +352,13 @@
                 "pixi-heaven"
             ]
         },
+        {
+            "title": "Batching ADD",
+            "entry": "unity-add-blend.js",
+            "plugins": [
+                "pixi-heaven"
+            ]
+        },
 		{
             "title": "Spine support",
             "entry": "spineboy-pro.js",

@@ -8,6 +8,7 @@ var pixi_heaven;
     })(CLAMP_OPTIONS = pixi_heaven.CLAMP_OPTIONS || (pixi_heaven.CLAMP_OPTIONS = {}));
     pixi_heaven.settings = {
         MESH_CLAMP: CLAMP_OPTIONS.AUTO,
+        BLEND_ADD_UNITY: false,
     };
 })(pixi_heaven || (pixi_heaven = {}));
 var pixi_heaven;
@@ -204,7 +205,7 @@ var pixi_heaven;
             get: function () {
                 return this._textures.length;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(AnimationState.prototype, "textures", {
@@ -228,7 +229,7 @@ var pixi_heaven;
                 this.gotoAndStop(0);
                 this.updateTexture();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(AnimationState.prototype, "currentFrame", {
@@ -239,7 +240,7 @@ var pixi_heaven;
                 }
                 return currentFrame;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         return AnimationState;
@@ -319,6 +320,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var pixi_heaven;
 (function (pixi_heaven) {
     var BitmapText = (function (_super) {
@@ -337,7 +345,7 @@ var pixi_heaven;
             set: function (value) {
                 this.color && (this.color.tintBGR = value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         BitmapText.prototype.addChild = function () {
@@ -353,7 +361,7 @@ var pixi_heaven;
                 child.color = this.color;
                 child.pluginName = 'batchHeaven';
             }
-            return _super.prototype.addChild.apply(this, [child].concat(additionalChildren));
+            return _super.prototype.addChild.apply(this, __spreadArrays([child], additionalChildren));
         };
         BitmapText.prototype._render = function (renderer) {
             this.color.alpha = this.worldAlpha;
@@ -387,7 +395,7 @@ var pixi_heaven;
                 this.dark[0] = value;
                 this._updateID++;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ColorTransform.prototype, "darkG", {
@@ -400,7 +408,7 @@ var pixi_heaven;
                 this.dark[1] = value;
                 this._updateID++;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ColorTransform.prototype, "darkB", {
@@ -413,7 +421,7 @@ var pixi_heaven;
                 this.dark[2] = value;
                 this._updateID++;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ColorTransform.prototype, "lightR", {
@@ -426,7 +434,7 @@ var pixi_heaven;
                 this.light[0] = value;
                 this._updateID++;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ColorTransform.prototype, "lightG", {
@@ -439,7 +447,7 @@ var pixi_heaven;
                 this.light[1] = value;
                 this._updateID++;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ColorTransform.prototype, "lightB", {
@@ -452,7 +460,7 @@ var pixi_heaven;
                 this.light[2] = value;
                 this._updateID++;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ColorTransform.prototype, "alpha", {
@@ -465,7 +473,7 @@ var pixi_heaven;
                 this.light[3] = value;
                 this._updateID++;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ColorTransform.prototype, "pma", {
@@ -478,7 +486,7 @@ var pixi_heaven;
                 this.dark[3] = value ? 1.0 : 0.0;
                 this._updateID++;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ColorTransform.prototype, "tintBGR", {
@@ -489,7 +497,7 @@ var pixi_heaven;
             set: function (value) {
                 this.setLight(((value >> 16) & 0xff) / 255.0, ((value >> 8) & 0xff) / 255.0, (value & 0xff) / 255.0);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         ColorTransform.prototype.setLight = function (R, G, B) {
@@ -605,7 +613,7 @@ var pixi_heaven;
             set: function (value) {
                 this.geometry.getBuffer('aVertexPosition').data = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         SimpleMesh.prototype._render = function (renderer) {
@@ -668,7 +676,7 @@ var pixi_heaven;
                     this.color.pma = value.baseTexture.premultiplyAlpha;
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(MeshMaterial.prototype, "alpha", {
@@ -678,7 +686,7 @@ var pixi_heaven;
             set: function (value) {
                 this.color.alpha = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(MeshMaterial.prototype, "tint", {
@@ -688,7 +696,7 @@ var pixi_heaven;
             set: function (value) {
                 this.color.tintBGR = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         MeshMaterial.prototype.update = function () {
@@ -710,6 +718,8 @@ var pixi_heaven;
     (function (webgl) {
         var TYPES = PIXI.TYPES;
         var premultiplyTint = PIXI.utils.premultiplyTint;
+        var premultiplyBlendMode = PIXI.utils.premultiplyBlendMode;
+        var BLEND_MODES = PIXI.BLEND_MODES;
         var shaderVert = "precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aLight, aDark;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform vec4 tint;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vLight, vDark;\nvarying float vTextureId;\n\nvoid main(void){\ngl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\nvTextureCoord = aTextureCoord;\nvTextureId = aTextureId;\nvLight = aLight * tint;\nvDark = vec4(aDark.rgb * tint.rgb, aDark.a);\n}\n";
         var shaderFrag = "\nvarying vec2 vTextureCoord;\nvarying vec4 vLight, vDark;\nvarying float vTextureId;\nuniform sampler2D uSamplers[%count%];\n\nvoid main(void) {\nvec4 color;\nfloat textureId = floor(vTextureId+0.5);\n%forloop%\ngl_FragColor.a = color.a * vLight.a;\ngl_FragColor.rgb = ((color.a - 1.0) * vDark.a + 1.0 - color.rgb) * vDark.rgb + color.rgb * vLight.rgb;\n}";
         var DarkLightGeometry = (function (_super) {
@@ -764,6 +774,9 @@ var pixi_heaven;
                                 ? premultiplyTint(element._tintRGB, alpha)
                                 : element._tintRGB + (alpha * 255 << 24);
                         }
+                        if (pixi_heaven.settings.BLEND_ADD_UNITY && element.blendAddUnity) {
+                            lightRgba = lightRgba & 0xffffff;
+                        }
                         var p = aIndex / this.vertexSize;
                         var uvs = element.uvs;
                         var indices = element.indices;
@@ -781,6 +794,47 @@ var pixi_heaven;
                         for (var i = 0; i < indices.length; i++) {
                             indexBuffer[iIndex++] = p + indices[i];
                         }
+                    };
+                    BatchPlugin.prototype.buildDrawCalls = function (texArray, start, finish) {
+                        var thisAny = this;
+                        var elements = thisAny._bufferedElements, _attributeBuffer = thisAny._attributeBuffer, _indexBuffer = thisAny._indexBuffer, vertexSize = thisAny.vertexSize;
+                        var drawCalls = PIXI.AbstractBatchRenderer._drawCallPool;
+                        var dcIndex = thisAny._dcIndex;
+                        var aIndex = thisAny._aIndex;
+                        var iIndex = thisAny._iIndex;
+                        var drawCall = drawCalls[dcIndex];
+                        drawCall.start = thisAny._iIndex;
+                        drawCall.texArray = texArray;
+                        for (var i = start; i < finish; ++i) {
+                            var sprite = elements[i];
+                            var tex = sprite._texture.baseTexture;
+                            var spriteBlendMode = premultiplyBlendMode[tex.alphaMode ? 1 : 0][sprite.blendMode];
+                            if (pixi_heaven.settings.BLEND_ADD_UNITY) {
+                                sprite.blendAddUnity = (spriteBlendMode === BLEND_MODES.ADD && tex.alphaMode);
+                                if (sprite.blendAddUnity) {
+                                    spriteBlendMode = BLEND_MODES.NORMAL;
+                                }
+                            }
+                            elements[i] = null;
+                            if (start < i && drawCall.blend !== spriteBlendMode) {
+                                drawCall.size = iIndex - drawCall.start;
+                                start = i;
+                                drawCall = drawCalls[++dcIndex];
+                                drawCall.texArray = texArray;
+                                drawCall.start = iIndex;
+                            }
+                            this.packInterleavedGeometry(sprite, _attributeBuffer, _indexBuffer, aIndex, iIndex);
+                            aIndex += sprite.vertexData.length / 2 * vertexSize;
+                            iIndex += sprite.indices.length;
+                            drawCall.blend = spriteBlendMode;
+                        }
+                        if (start < finish) {
+                            drawCall.size = iIndex - drawCall.start;
+                            ++dcIndex;
+                        }
+                        thisAny._dcIndex = dcIndex;
+                        thisAny._aIndex = aIndex;
+                        thisAny._iIndex = iIndex;
                     };
                     return BatchPlugin;
                 }(PIXI.AbstractBatchRenderer));
@@ -1059,6 +1113,7 @@ var pixi_heaven;
             _this.uvs = null;
             _this.indices = defIndices;
             _this.animState = null;
+            _this.blendAddUnity = false;
             _this.pluginName = 'batchHeaven';
             if (_this.texture.valid)
                 _this._onTextureUpdate();
@@ -1071,7 +1126,7 @@ var pixi_heaven;
             },
             set: function (value) {
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Sprite.prototype, "tint", {
@@ -1081,7 +1136,7 @@ var pixi_heaven;
             set: function (value) {
                 this.color && (this.color.tintBGR = value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Sprite.prototype._onTextureUpdate = function () {

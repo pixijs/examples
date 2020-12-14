@@ -6,7 +6,7 @@ app.loader
     .load(onAssetsLoaded);
 
 function onAssetsLoaded() {
-    const bitmapFontText = new PIXI.BitmapText('bitmap fonts are supported!\nWoo yay!', { font: '55px Desyrel', align: 'left' });
+    const bitmapFontText = new PIXI.BitmapText('bitmap fonts are supported!\nWoo yay!', { fontName: 'Desyrel', fontSize: 55, align: 'left' });
 
     bitmapFontText.x = 50;
     bitmapFontText.y = 200;

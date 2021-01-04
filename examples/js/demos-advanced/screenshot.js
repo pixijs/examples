@@ -24,7 +24,7 @@ function takeScreenshot() {
 
 app.renderer.plugins.interaction.on('pointerdown', takeScreenshot);
 
-const texture = PIXI.Texture.fromImage('examples/assets/bunny.png');
+const texture = PIXI.Texture.from('examples/assets/bunny.png');
 const bunnyContainer = new PIXI.Container();
 bunnyContainer.pivot.set(0.5, 0.5);
 

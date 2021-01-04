@@ -89,7 +89,7 @@ const bounds = new PIXI.Rectangle(
 const maggots = [];
 
 for (let i = 0; i < 20; i++) {
-    const maggot = PIXI.Sprite.fromImage('https://pixijs.io/examples/examples/assets/maggot.png');
+    const maggot = PIXI.Sprite.from('https://pixijs.io/examples/examples/assets/maggot.png');
     maggot.anchor.set(0.5);
     container.addChild(maggot);
 
@@ -106,7 +106,7 @@ for (let i = 0; i < 20; i++) {
     maggots.push(maggot);
 }
 const displacementContainer = new PIXI.Container();
-const displacementTexture = PIXI.Texture.fromImage('https://pixijs.io/examples/examples/assets/pixi-filters/displace.png');
+const displacementTexture = PIXI.Texture.from('https://pixijs.io/examples/examples/assets/pixi-filters/displace.png');
 for (let i = -1; i <= 1; i += 2) {
     const sprite1 = new PIXI.Sprite(displacementTexture);
     sprite1.position.set(100 * i, 0);
@@ -122,7 +122,7 @@ displacementFilter.scale.y = 110;
 // displacementFilter.padding = 0;
 
 
-const ringTexture = PIXI.Texture.fromImage('https://pixijs.io/examples/examples/assets/pixi-filters/ring.png');
+const ringTexture = PIXI.Texture.from('https://pixijs.io/examples/examples/assets/pixi-filters/ring.png');
 const rings = new PIXI.Container();
 for (let i = -1; i <= 1; i += 2) {
     const sprite1 = new PIXI.Sprite(ringTexture);
@@ -134,7 +134,7 @@ rings.visible = false;
 
 app.stage.addChild(rings);
 
-const bg = PIXI.Sprite.fromImage('https://pixijs.io/examples/examples/assets/bg_grass.jpg');
+const bg = PIXI.Sprite.from('https://pixijs.io/examples/examples/assets/bg_grass.jpg');
 bg.width = app.screen.width;
 bg.height = app.screen.height;
 

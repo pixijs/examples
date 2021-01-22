@@ -29,7 +29,7 @@ for (let i = 0; i < 20; i++) {
 
     maggot.scale.set(1 + Math.random() * 0.3);
     maggot.original = new PIXI.Point();
-    maggot.original.copy(maggot.scale);
+    maggot.original.copyFrom(maggot.scale);
     maggots.push(maggot);
 }
 

@@ -102,7 +102,7 @@ for (let i = 0; i < 20; i++) {
 
     maggot.scale.set(1 + Math.random() * 0.3);
     maggot.original = new PIXI.Point();
-    maggot.original.copy(maggot.scale);
+    maggot.original.copyFrom(maggot.scale);
     maggots.push(maggot);
 }
 const displacementContainer = new PIXI.Container();
@@ -150,7 +150,7 @@ function onPointerMove(eventData) {
     rings.visible = true;
 
     displacementContainer.position.set(eventData.data.global.x, eventData.data.global.y);
-    rings.position.copy(displacementContainer.position);
+    rings.position.copyFrom(displacementContainer.position);
 }
 
 let count = 0;

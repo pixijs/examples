@@ -13,7 +13,7 @@ app.loader.load((loader, resources) => {
 function init() {
     // create rotated textures
     const textures = [texture];
-    const D8 = PIXI.GroupD8;
+    const D8 = PIXI.groupD8;
     for (let rotate = 1; rotate < 16; rotate++) {
         const h = D8.isVertical(rotate) ? texture.frame.width : texture.frame.height;
         const w = D8.isVertical(rotate) ? texture.frame.height : texture.frame.width;

@@ -1,0 +1,5 @@
+{
+    "@pixi/tilemap": {
+        "script": "/dist/pixi-tilemap.umd.js"
+    }
+}

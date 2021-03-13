@@ -174,13 +174,17 @@ jQuery(document).ready(($) => {
                     success(data) {
                         bpc.exampleSourceCode = data;
 
-                        bpc.generateIFrameContent();
+                        bpc.loadPackages();
                     },
                 });
             }
         });
 
-        bpc.generateIFrameContent = function generateIFrameContent() {
+        bpc.loadPackages = function loadPackages() {
+            $.getJSON('examples/packages.json', (data) => bpc.generateIFrameContent(data));
+        };
+
+        bpc.generateIFrameContent = function generateIFrameContent(newPackagesManifest) {
             // Remove all iFrames and content
             const iframes = document.querySelectorAll('iframe');
             for (let i = 0; i < iframes.length; i++) {
@@ -207,7 +211,17 @@ jQuery(document).ready(($) => {
             html += `<script src="${pixiUrl}"></script>`;
 
             for (let i = 0; i < bpc.exampleRequiredPlugins.length; i++) {
-                html += `<script src="pixi-plugins/${bpc.exampleRequiredPlugins[i]}.js"></script>`;
+                const pkgName = bpc.exampleRequiredPlugins[i];
+                const pkg = newPackagesManifest[pkgName];
+
+                // TODO: Add options to select version of extra packages
+                if (pkg) {
+                    // New packages manifest pulls from JSDelivr
+                    html += `<script src="https://cdn.jsdelivr.net/npm/${pkgName}@latest/${pkg.script}"></script>`;
+                } else {
+                    // Old plugins stored in this repo
+                    html += `<script src="pixi-plugins/${bpc.exampleRequiredPlugins[i]}.js"></script>`;
+                }
             }
 
             bpc.editor = CodeMirror.fromTextArea(document.getElementById('code'), bpc.editorOptions);

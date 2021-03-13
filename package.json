@@ -34,6 +34,5 @@
     "pre-commit": "^1.2.2",
     "terser": "^4.6.3",
     "watch": "^1.0.2"
-  },
-  "dependencies": {}
+  }
 }

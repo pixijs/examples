@@ -23,3 +23,7 @@ node_modules
 
 # local pixijs and plugins
 dist
+
+# Intellij
+
+*.iml

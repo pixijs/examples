@@ -646,5 +646,14 @@
                 "gsap/gsap3/PixiPlugin.min"
             ]
         }
+    ],
+    "tilemaps": [
+        {
+            "title": "Basic",
+            "entry": "basic.js",
+            "plugins": [
+                "@pixi/tilemap"
+            ]
+        }
     ]
 }

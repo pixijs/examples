@@ -59,6 +59,15 @@
             "entry": "spinners.js"
         }
     ],
+    "events": [
+        {
+            "title": "Drag n' Drop",
+            "entry": "drag-n-drop.js",
+            "plugins": [
+                "@pixi/events"
+            ]
+        }
+    ],
     "sprite": [
         {
             "title": "Basic",

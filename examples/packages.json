@@ -1,4 +1,8 @@
 {
+    "@pixi/events": {
+        "script": "/events.js",
+        "vendor": "http://pixijs.download/dev/packages"
+    },
     "@pixi/tilemap": {
         "script": "/dist/pixi-tilemap.umd.js"
     }

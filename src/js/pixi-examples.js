@@ -155,7 +155,7 @@ jQuery(document).ready(($) => {
                     // Icon from wikipedia!
                     // https://en.wikipedia.org/w/skins/Vector/resources/skins.vector.styles/images/external-link-ltr-icon.svg
                     `<a class="to-editor" rel="noopener noreferrer" target="_blank" href="${window.location.href.replace('lite=true', '')}">`
-                        + '<img src="/examples/assets/external-link-ltr-icon.svg"></img>'
+                        + '<img src="examples/assets/external-link-ltr-icon.svg"></img>'
                     + '</a>',
                 );
                 /* eslint-enable prefer-template */

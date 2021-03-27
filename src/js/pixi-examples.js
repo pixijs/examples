@@ -210,24 +210,30 @@ jQuery(document).ready(($) => {
             html += '<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>';
             html += `<script src="${pixiUrl}"></script>`;
 
+            const exampleRequiredPluginsHTML = [];
+
             for (let i = 0; i < bpc.exampleRequiredPlugins.length; i++) {
                 const pkgName = bpc.exampleRequiredPlugins[i];
                 const pkg = newPackagesManifest[pkgName];
 
                 // TODO: Add options to select version of extra packages
                 if (pkg) {
+                    const src = `${pkg.vendor || `https://cdn.jsdelivr.net/npm/${pkgName}@latest/`}${pkg.script}`;
+
                     // New packages manifest pulls from JSDelivr
-                    html += `<script src="${pkg.vendor || `https://cdn.jsdelivr.net/npm/${pkgName}@latest/`}${pkg.script}"></script>`;
+                    html += `<script src="${src}"></script>`;
+                    exampleRequiredPluginsHTML.push(`<a href="${src}">${pkgName}</a>`);
                 } else {
                     // Old plugins stored in this repo
                     html += `<script src="pixi-plugins/${bpc.exampleRequiredPlugins[i]}.js"></script>`;
+                    exampleRequiredPluginsHTML.push(pkgName);
                 }
             }
 
             bpc.editor = CodeMirror.fromTextArea(document.getElementById('code'), bpc.editorOptions);
 
             if (bpc.exampleRequiredPlugins.length) {
-                $('#code-header').text(`Example Code (plugins used: ${bpc.exampleRequiredPlugins.toString()})`);
+                $('#code-header').html(`Example Code (plugins used: ${exampleRequiredPluginsHTML.join(', ')})`);
             } else {
                 $('#code-header').text('Example Code');
             }

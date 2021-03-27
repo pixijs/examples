@@ -3,6 +3,10 @@
         "script": "/events.js",
         "vendor": "http://pixijs.download/dev/packages"
     },
+    "@pixi/graphics-extras": {
+        "script": "/graphics-extras.js",
+        "vendor": "http://pixijs.download/dev/packages"
+    },
     "@pixi/tilemap": {
         "script": "/dist/pixi-tilemap.umd.js"
     }

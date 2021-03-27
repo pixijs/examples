@@ -122,7 +122,10 @@
     "graphics": [
         {
             "title": "Simple",
-            "entry": "simple.js"
+            "entry": "simple.js",
+            "plugins": [
+                "@pixi/graphics-extras"
+            ]
         },
         {
             "title": "Advanced",

@@ -66,6 +66,13 @@
             "plugins": [
                 "@pixi/events"
             ]
+        },
+        {
+            "title": "Slider",
+            "entry": "slider.js",
+            "plugins": [
+                "@pixi/events"
+            ]
         }
     ],
     "sprite": [

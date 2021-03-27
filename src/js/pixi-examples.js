@@ -53,6 +53,9 @@ jQuery(document).ready(($) => {
     bpc.clickType = 'click';
     bpc.animTime = 0.15;
 
+    bpc.liteMode = false;
+    bpc.packagesManifest = {};
+
     bpc.resize = function resize() { };
 
     // async script loading
@@ -137,6 +140,30 @@ jQuery(document).ready(($) => {
     };
 
     bpc.initNav = function initNav() {
+        if (typeof URLSearchParams !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.get('lite') === 'true') {
+                $('#example-title').addClass('hidden');
+                $('.main-header').addClass('hidden');
+                $('.main-nav').addClass('hidden');
+                $('.main-content').addClass('main-content-lite');
+                $('#content-controls').addClass('hidden');
+
+                /* eslint-disable prefer-template */
+                $('.main-content').append(
+                    // Icon from wikipedia!
+                    // https://en.wikipedia.org/w/skins/Vector/resources/skins.vector.styles/images/external-link-ltr-icon.svg
+                    `<a class="to-editor" rel="noopener noreferrer" target="_blank" href="${window.location.href.replace('lite=true', '')}">`
+                        + '<img src="/examples/assets/external-link-ltr-icon.svg"></img>'
+                    + '</a>',
+                );
+                /* eslint-enable prefer-template */
+
+                bpc.liteMode = true;
+            }
+        }
+
         $('.main-menu .section').on(bpc.clickType, function onClick() {
             $(this).next('ul').slideToggle(250);
             $(this).toggleClass('open');
@@ -181,15 +208,17 @@ jQuery(document).ready(($) => {
         });
 
         bpc.loadPackages = function loadPackages() {
-            $.getJSON('examples/packages.json', (data) => bpc.generateIFrameContent(data));
+            $.getJSON('examples/packages.json', (data) => {
+                bpc.packagesManifest = data;
+                if (!bpc.liteMode) bpc.generateIFrameContent();
+            });
         };
 
-        bpc.generateIFrameContent = function generateIFrameContent(newPackagesManifest) {
-            // Remove all iFrames and content
-            const iframes = document.querySelectorAll('iframe');
-            for (let i = 0; i < iframes.length; i++) {
-                iframes[i].parentNode.removeChild(iframes[i]);
-            }
+        bpc.generateIFrameContent = function generateIFrameContent() {
+            const newPackagesManifest = bpc.packagesManifest;
+
+            removeAllIFrames();
+
             $('#example').html('<iframe id="preview" src="blank.html"></iframe>');
 
             $('.CodeMirror').remove();
@@ -370,7 +399,7 @@ jQuery(document).ready(($) => {
 
         // Refresh Button
         $('.reload').on(bpc.clickType, () => {
-            bpc.exampleSourceCode = bpc.editor.getValue();
+            if (bpc.editor) bpc.exampleSourceCode = bpc.editor.getValue();
             bpc.generateIFrameContent();
         });
     };
@@ -406,3 +435,11 @@ jQuery(document).ready(($) => {
 
     bpc.init();
 });
+
+function removeAllIFrames() {
+    // Remove all iFrames and content
+    const iframes = document.querySelectorAll('iframe, .frame-placeholder');
+    for (let i = 0; i < iframes.length; i++) {
+        iframes[i].parentNode.removeChild(iframes[i]);
+    }
+}

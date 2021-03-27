@@ -217,7 +217,7 @@ jQuery(document).ready(($) => {
                 // TODO: Add options to select version of extra packages
                 if (pkg) {
                     // New packages manifest pulls from JSDelivr
-                    html += `<script src="https://cdn.jsdelivr.net/npm/${pkgName}@latest/${pkg.script}"></script>`;
+                    html += `<script src="${pkg.vendor || `https://cdn.jsdelivr.net/npm/${pkgName}@latest/`}${pkg.script}"></script>`;
                 } else {
                     // Old plugins stored in this repo
                     html += `<script src="pixi-plugins/${bpc.exampleRequiredPlugins[i]}.js"></script>`;

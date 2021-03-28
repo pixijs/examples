@@ -15,7 +15,7 @@ document.body.appendChild(app.view);
 app.stage.hitArea = app.renderer.screen;
 
 // Install EventSystem, if not already (PixiJS 6 doesn't add it by default)
-if (!('event' in app.renderer)) {
+if (!('events' in app.renderer)) {
     app.renderer.addSystem(PIXI.EventSystem, 'events');
 }
 

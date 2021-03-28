@@ -12,7 +12,7 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 // Install EventSystem, if not already (PixiJS 6 doesn't add it by default)
-if (!('event' in app.renderer)) {
+if (!('events' in app.renderer)) {
     app.renderer.addSystem(PIXI.EventSystem, 'events');
 }
 

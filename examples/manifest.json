@@ -68,6 +68,14 @@
             ]
         },
         {
+            "title": "Hit-testing (spatial hash)",
+            "entry": "hit-testing-with-spatial-hash.js",
+            "plugins": [
+                "@pixi/events",
+                "@pixi/spatial-hash"
+            ]
+        },
+        {
             "title": "Slider",
             "entry": "slider.js",
             "plugins": [

@@ -158,7 +158,9 @@ function main() {
     // Textures to choose from for each random character
     const textures = [
         PIXI.Texture.from('examples/assets/skully.png'),
-        PIXI.Texture.from('examples/assets/egghead.png'),
+        PIXI.Texture.from('examples/assets/eggHead.png'),
+        PIXI.Texture.from('examples/assets/flowerTop.png'),
+        PIXI.Texture.from('examples/assets/helmlok.png'),
     ];
     // Rerender scene when each texture loads
     textures.forEach(

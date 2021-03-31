@@ -6,7 +6,6 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 app.loader.baseUrl = 'https://pixijs.io/examples/examples/assets';
-
 app.loader.add('bg_rotate.jpg').add('flowerTop.png').load(complete);
 
 const blur = new PIXI.filters.BlurFilter();
@@ -14,7 +13,7 @@ const blur = new PIXI.filters.BlurFilter();
 function makeEasyWindow() {
     const container = new PIXI.Container();
 
-    //mask the background and blur it
+    // Mask the background and blur it
     const graphics = new PIXI.Graphics();
     graphics.beginFill(0xffffff, 1.0);
     graphics.drawRoundedRect(-150, -50, 300, 100, 40);
@@ -22,7 +21,7 @@ function makeEasyWindow() {
 
     container.addChild(graphics);
 
-    // blend graphics on top, after everything, with alpha=0.5
+    // Blend graphics on top, after everything, with alpha=0.5
     const graphics2 = new PIXI.Graphics();
     graphics2.beginFill(0xffffff, 0.5);
     graphics2.drawRoundedRect(-150, -50, 300, 100, 40);
@@ -32,7 +31,6 @@ function makeEasyWindow() {
     return container;
 }
 
-
 function makeHardWindow() {
     const container = new PIXI.Container();
 
@@ -40,10 +38,9 @@ function makeHardWindow() {
     config.maskBefore = true;
     // combine with overlay graphics with alpha=0.6, then mask it with same graphics
     config.uniforms.uChannel[3] = 0.6;
-    config.blendCode =
-        'vec4 overlay = b_src * uChannel.a;' +
-        'vec4 mix = b_dest * (1.0-overlay.a) + overlay;' +
-        'b_res = mix * b_src.a;';
+    config.blendCode = 'vec4 overlay = b_src * uChannel.a;'
+        + 'vec4 mix = b_dest * (1.0-overlay.a) + overlay;'
+        + 'b_res = mix * b_src.a;';
 
     const graphics = new PIXI.Graphics();
     graphics.beginFill(0xffffff, 1.0);
@@ -54,7 +51,7 @@ function makeHardWindow() {
 }
 
 function complete() {
-// create a new background sprite
+    // Create a new background sprite
     const background = new PIXI.Sprite(app.loader.resources['bg_rotate.jpg'].texture);
     background.width = 800;
     background.height = 600;
@@ -72,5 +69,5 @@ function complete() {
 
     app.ticker.add((delta) => {
         window1.rotation += 0.01 * delta;
-    })
+    });
 }

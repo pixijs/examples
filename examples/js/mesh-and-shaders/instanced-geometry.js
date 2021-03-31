@@ -5,25 +5,24 @@ document.body.appendChild(app.view);
 const geometry = new PIXI.Geometry()
     .addAttribute('aVPos', [-100, 0, 100, 0, 0, -150]);
 
-    geometry.instanced = true;
-    geometry.instanceCount = 5;
+geometry.instanced = true;
+geometry.instanceCount = 5;
 
-    const positionSize = 2;
-    const colorSize = 3;
-    const buffer = new PIXI.Buffer(new Float32Array(geometry.instanceCount * (positionSize + colorSize)));
+const positionSize = 2;
+const colorSize = 3;
+const buffer = new PIXI.Buffer(new Float32Array(geometry.instanceCount * (positionSize + colorSize)));
 
-    geometry.addAttribute('aIPos', buffer, positionSize, false, PIXI.TYPES.FLOAT, 4 * (positionSize + colorSize), 0, true);
-    geometry.addAttribute('aICol', buffer, colorSize, false, PIXI.TYPES.FLOAT, 4 * (positionSize + colorSize), 4 * positionSize, true);
+geometry.addAttribute('aIPos', buffer, positionSize, false, PIXI.TYPES.FLOAT, 4 * (positionSize + colorSize), 0, true);
+geometry.addAttribute('aICol', buffer, colorSize, false, PIXI.TYPES.FLOAT, 4 * (positionSize + colorSize), 4 * positionSize, true);
 
-    for (let i = 0; i < geometry.instanceCount; i++)
-    {
-        const instanceOffset = i * (positionSize + colorSize);
+for (let i = 0; i < geometry.instanceCount; i++) {
+    const instanceOffset = i * (positionSize + colorSize);
 
-        buffer.data[instanceOffset + 0] = i * 80;
-        buffer.data[instanceOffset + 2] = Math.random();
-        buffer.data[instanceOffset + 3] = Math.random();
-        buffer.data[instanceOffset + 4] = Math.random();
-    }
+    buffer.data[instanceOffset + 0] = i * 80;
+    buffer.data[instanceOffset + 2] = Math.random();
+    buffer.data[instanceOffset + 3] = Math.random();
+    buffer.data[instanceOffset + 4] = Math.random();
+}
 
 const shader = PIXI.Shader.from(`
     precision mediump float;
@@ -42,7 +41,7 @@ const shader = PIXI.Shader.from(`
         gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVPos + aIPos, 1.0)).xy, 0.0, 1.0);
     }`,
 
-    `precision mediump float;
+`precision mediump float;
 
     varying vec3 vCol;
 

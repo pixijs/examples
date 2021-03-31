@@ -22,7 +22,7 @@ const style = new PIXI.TextStyle({
     dropShadowDistance: 6,
     wordWrap: true,
     wordWrapWidth: 440,
-    lineJoin: 'round'
+    lineJoin: 'round',
 });
 
 const richText = new PIXI.Text('Rich text with a lot of options and across multiple lines', style);
@@ -37,18 +37,18 @@ const skewStyle = new PIXI.TextStyle({
     dropShadowAlpha: 0.8,
     dropShadowAngle: 2.1,
     dropShadowBlur: 4,
-    dropShadowColor: "0x111111",
+    dropShadowColor: '0x111111',
     dropShadowDistance: 10,
     fill: ['#ffffff'],
     stroke: '#004620',
     fontSize: 60,
-    fontWeight: "lighter",
-    lineJoin: "round",
-    strokeThickness: 12
+    fontWeight: 'lighter',
+    lineJoin: 'round',
+    strokeThickness: 12,
 });
 
 const skewText = new PIXI.Text('SKEW IS COOL', skewStyle);
-skewText.skew.set(0.65,-0.3);
+skewText.skew.set(0.65, -0.3);
 skewText.anchor.set(0.5, 0.5);
 skewText.x = 300;
 skewText.y = 480;

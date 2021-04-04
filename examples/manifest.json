@@ -76,6 +76,14 @@
             ]
         },
         {
+            "title": "Nested boundary (projection)",
+            "entry": "nested-boundary-with-projection.js",
+            "plugins": [
+                "@pixi/events",
+                "@pixi/graphics-extras"
+            ]
+        },
+        {
             "title": "Slider",
             "entry": "slider.js",
             "plugins": [

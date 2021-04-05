@@ -247,7 +247,10 @@ jQuery(document).ready(($) => {
 
                 // TODO: Add options to select version of extra packages
                 if (pkg) {
-                    const src = `${pkg.vendor || `https://cdn.jsdelivr.net/npm/${pkgName}@${pkg.version || 'latest'}/`}${pkg.script}`;
+                    const basePath = pkg.vendor
+                        ? pkg.vendor.replace('{version}', bpc.pixiVersionString)
+                        : `https://cdn.jsdelivr.net/npm/${pkgName}@${pkg.version || 'latest'}/`;
+                    const src = `${basePath}${pkg.script}`;
 
                     // New packages manifest pulls from JSDelivr
                     html += `<script src="${src}"></script>`;

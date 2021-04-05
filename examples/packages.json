@@ -1,11 +1,11 @@
 {
     "@pixi/events": {
         "script": "/events.js",
-        "vendor": "https://pixijs.download/dev/packages"
+        "vendor": "https://pixijs.download/{version}/packages"
     },
     "@pixi/graphics-extras": {
         "script": "/graphics-extras.js",
-        "vendor": "https://pixijs.download/dev/packages"
+        "vendor": "https://pixijs.download/{version}/packages"
     },
     "@pixi/spatial-hash": {
         "script": "dist/pixi-spatial-hash.js",

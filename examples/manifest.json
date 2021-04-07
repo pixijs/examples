@@ -59,38 +59,6 @@
             "entry": "spinners.js"
         }
     ],
-    "events": [
-        {
-            "title": "Drag n' Drop",
-            "entry": "drag-n-drop.js",
-            "plugins": [
-                "@pixi/events"
-            ]
-        },
-        {
-            "title": "Hit-testing (spatial hash)",
-            "entry": "hit-testing-with-spatial-hash.js",
-            "plugins": [
-                "@pixi/events",
-                "@pixi/spatial-hash"
-            ]
-        },
-        {
-            "title": "Nested boundary (projection)",
-            "entry": "nested-boundary-with-projection.js",
-            "plugins": [
-                "@pixi/events",
-                "@pixi/graphics-extras"
-            ]
-        },
-        {
-            "title": "Slider",
-            "entry": "slider.js",
-            "plugins": [
-                "@pixi/events"
-            ]
-        }
-    ],
     "sprite": [
         {
             "title": "Basic",
@@ -301,6 +269,38 @@
         {
             "title": "Gradient Resource",
             "entry": "gradient-resource.js"
+        }
+    ],
+    "events": [
+        {
+            "title": "Drag n' Drop",
+            "entry": "drag-n-drop.js",
+            "plugins": [
+                "@pixi/events"
+            ]
+        },
+        {
+            "title": "Hit-testing (spatial hash)",
+            "entry": "hit-testing-with-spatial-hash.js",
+            "plugins": [
+                "@pixi/events",
+                "@pixi/spatial-hash"
+            ]
+        },
+        {
+            "title": "Nested boundary (projection)",
+            "entry": "nested-boundary-with-projection.js",
+            "plugins": [
+                "@pixi/events",
+                "@pixi/graphics-extras"
+            ]
+        },
+        {
+            "title": "Slider",
+            "entry": "slider.js",
+            "plugins": [
+                "@pixi/events"
+            ]
         }
     ],
     "plugin-filters": [

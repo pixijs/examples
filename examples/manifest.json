@@ -273,6 +273,13 @@
     ],
     "events": [
         {
+            "title": "Click",
+            "entry": "click.js",
+            "plugins": [
+                "@pixi/events"
+            ]
+        },
+        {
             "title": "Drag n' Drop",
             "entry": "drag-n-drop.js",
             "plugins": [
@@ -288,11 +295,25 @@
             ]
         },
         {
+            "title": "Logger",
+            "entry": "logger.js",
+            "plugins": [
+                "@pixi/events"
+            ]
+        },
+        {
             "title": "Nested boundary (projection)",
             "entry": "nested-boundary-with-projection.js",
             "plugins": [
                 "@pixi/events",
                 "@pixi/graphics-extras"
+            ]
+        },
+        {
+            "title": "Pointer tracker",
+            "entry": "pointer-tracker.js",
+            "plugins": [
+                "@pixi/events"
             ]
         },
         {

@@ -8,7 +8,7 @@ function getParameterByName(name) {
 }
 
 function getMajorPixiVersion(pixiVersionString) {
-    let majorVersion = 5;
+    let majorVersion = 6;
 
     if (pixiVersionString.substr(0, 1) === 'v') {
         majorVersion = parseInt(pixiVersionString.substr(1, 1), 10);
@@ -30,7 +30,7 @@ jQuery(document).ready(($) => {
         $('.main-content').animate({ scrollTop: 0 }, 200);
     };
 
-    bpc.allowedVersions = [5];
+    bpc.allowedVersions = [6, 5];
     bpc.pixiVersionString = getParameterByName('v') || 'dev';
     bpc.majorPixiVersion = getMajorPixiVersion(bpc.pixiVersionString);
 
@@ -193,7 +193,7 @@ jQuery(document).ready(($) => {
                 bpc.exampleRequiredPlugins = plugins === '' ? [] : plugins.split(',');
 
                 const validVersions = $(this).attr('data-validVersions');
-                bpc.exampleValidVersions = validVersions === '' ? [5] : validVersions.split(',').map((v) => parseInt(v, 10));
+                bpc.exampleValidVersions = validVersions === '' ? [6, 5] : validVersions.split(',').map((v) => parseInt(v, 10));
 
                 $.ajax({
                     url: `examples/js/${$(this).parent().attr('data-section')}/${$(this).attr('data-src')}`,
@@ -323,7 +323,7 @@ jQuery(document).ready(($) => {
         bpc.updateMenu = function updateMenu() {
             $('.main-nav .main-menu ul li').each(function updateEachMenuItem() {
                 const validVersions = $(this).attr('data-validVersions');
-                const exampleValidVersions = validVersions === '' ? [5] : validVersions.split(',').map((v) => parseInt(v, 10));
+                const exampleValidVersions = validVersions === '' ? [6, 5] : validVersions.split(',').map((v) => parseInt(v, 10));
                 if (exampleValidVersions.indexOf(bpc.majorPixiVersion) === -1) {
                     $(this).addClass('invalid');
                 } else {

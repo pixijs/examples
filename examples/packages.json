@@ -13,5 +13,9 @@
     },
     "@pixi/tilemap": {
         "script": "/dist/pixi-tilemap.umd.js"
+    },
+    "pixi-filters": {
+        "script": "/pixi-filters.js",
+        "vendor": "https://filters.pixijs.download/main"
     }
 }

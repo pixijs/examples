@@ -23,6 +23,7 @@ uniform vec2 scale;
 
 uniform sampler2D uSampler;
 uniform sampler2D backdropSampler;
+uniform vec2 backdropSampler_flipY;
 
 uniform highp vec4 inputSize;
 uniform vec4 inputClamp;
@@ -35,6 +36,9 @@ void main(void)
   map.xy *= scale * inputSize.zw;
 
   vec2 dis = clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), inputClamp.xy, inputClamp.zw);
+  // required to take backdrop from screen without extra drawcall
+  dis.y = dis.y * backdropSampler_flipY.y + backdropSampler_flipY.x;
+
   gl_FragColor = texture2D(backdropSampler, dis);
 }
 `;
@@ -73,8 +77,6 @@ const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
 app.stage.interactive = true;
-app.stage.filters = [new PIXI.filters.AlphaFilter()];
-app.stage.filterArea = app.screen;
 
 const container = new PIXI.Container();
 app.stage.addChild(container);

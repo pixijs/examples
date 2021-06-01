@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * @pixi/picture - v3.0.0
- * Compiled Mon, 31 May 2021 15:17:43 UTC
+ * @pixi/picture - v3.0.1
+ * Compiled Tue, 01 Jun 2021 13:47:52 UTC
  *
  * @pixi/picture is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -30,13 +30,15 @@ varying vec2 vTextureCoord;
 
 uniform sampler2D uSampler;
 uniform sampler2D uBackdrop;
+uniform vec2 uBackdrop_flipY;
 
 %UNIFORM_CODE%
 
 void main(void)
 {
+   vec2 backdropCoord = vec2(vTextureCoord.x, uBackdrop_flipY.x + uBackdrop_flipY.y * vTextureCoord.y);
    vec4 b_src = texture2D(uSampler, vTextureCoord);
-   vec4 b_dest = texture2D(uBackdrop, vTextureCoord);
+   vec4 b_dest = texture2D(uBackdrop, backdropCoord);
    vec4 b_res = b_dest;
    
    %BLEND_CODE%
@@ -50,6 +52,47 @@ void main(void)
            fragCode = fragCode.replace('%BLEND_CODE%', shaderParts.blendCode || "");
            super(undefined, fragCode, shaderParts.uniforms);
            this.backdropUniformName = 'uBackdrop';
+       }
+   }
+
+   const vert = `
+attribute vec2 aVertexPosition;
+
+uniform mat3 projectionMatrix;
+
+varying vec2 vTextureCoord;
+
+uniform vec4 inputSize;
+uniform vec4 outputFrame;
+uniform vec2 flipY;
+
+vec4 filterVertexPosition( void )
+{
+    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;
+
+    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);
+}
+
+vec2 filterTextureCoord( void )
+{
+    return aVertexPosition * (outputFrame.zw * inputSize.zw);
+}
+
+void main(void)
+{
+    gl_Position = filterVertexPosition();
+    vTextureCoord = filterTextureCoord();
+    vTextureCoord.y = flipY.x + flipY.y * vTextureCoord.y;
+}
+
+`;
+   class FlipYFilter extends core.Filter {
+       constructor(frag, uniforms) {
+           const uni = uniforms || {};
+           if (!uni.flipY) {
+               uni.flipY = new Float32Array([0.0, 1.0]);
+           }
+           super(vert, frag, uni);
        }
    }
 
@@ -68,15 +111,18 @@ void main(void)
                uChannel: new Float32Array([0, 0, 0, 0]),
            };
            this.blendCode = `b_res = dot(b_src, uChannel) * b_dest;`;
+           this.safeFlipY = false;
            this.uniforms.uChannel[channel] = 1.0;
        }
    }
+   const tmpArray = new Float32Array([0, 1]);
    class MaskFilter extends BlendFilter {
        constructor(baseFilter, config = new MaskConfig()) {
            super(config);
            this.baseFilter = baseFilter;
            this.config = config;
            this.padding = baseFilter.padding;
+           this.safeFlipY = config.safeFlipY;
        }
        apply(filterManager, input, output, clearMode) {
            const target = filterManager.getFilterTexture(input);
@@ -89,15 +135,31 @@ void main(void)
                this.state.blendMode = blendMode;
            }
            else {
-               const { uBackdrop } = this.uniforms;
-               this.baseFilter.apply(filterManager, uBackdrop, target, constants.CLEAR_MODES.YES);
+               const { uBackdrop, uBackdrop_flipY } = this.uniforms;
+               if (uBackdrop_flipY[1] > 0 || this.safeFlipY) {
+                   this.baseFilter.apply(filterManager, uBackdrop, target, constants.CLEAR_MODES.YES);
+               }
+               else {
+                   const targetFlip = filterManager.getFilterTexture(input);
+                   if (!MaskFilter._flipYFilter) {
+                       MaskFilter._flipYFilter = new FlipYFilter();
+                   }
+                   MaskFilter._flipYFilter.uniforms.flipY[0] = uBackdrop_flipY[0];
+                   MaskFilter._flipYFilter.uniforms.flipY[1] = uBackdrop_flipY[1];
+                   MaskFilter._flipYFilter.apply(filterManager, uBackdrop, targetFlip, constants.CLEAR_MODES.YES);
+                   this.baseFilter.apply(filterManager, targetFlip, target, constants.CLEAR_MODES.YES);
+                   filterManager.returnFilterTexture(targetFlip);
+                   this.uniforms.uBackdrop_flipY = tmpArray;
+               }
                this.uniforms.uBackdrop = target;
                filterManager.applyFilter(this, input, output, clearMode);
                this.uniforms.uBackdrop = uBackdrop;
+               this.uniforms.uBackdrop_flipY = uBackdrop_flipY;
            }
            filterManager.returnFilterTexture(target);
        }
    }
+   MaskFilter._flipYFilter = null;
 
    const NPM_BLEND = `if (b_src.a == 0.0) {
 gl_FragColor = vec4(0, 0, 0, 0);
@@ -357,13 +419,24 @@ b_res.rgb *= mult.a;
        state.sourceFrame.ceil(resolution);
        if (canUseBackdrop) {
            let backdrop = null;
+           let backdropFlip = null;
            for (let i = 0; i < filters.length; i++) {
                const bName = filters[i].backdropUniformName;
                if (bName) {
-                   if (backdrop === null) {
-                       backdrop = this.prepareBackdrop(state.sourceFrame);
+                   const { uniforms } = filters[i];
+                   if (!uniforms[bName + '_flipY']) {
+                       uniforms[bName + '_flipY'] = new Float32Array([0.0, 1.0]);
                    }
-                   filters[i].uniforms[bName] = backdrop;
+                   const flip = uniforms[bName + '_flipY'];
+                   if (backdrop === null) {
+                       backdrop = this.prepareBackdrop(state.sourceFrame, flip);
+                       backdropFlip = flip;
+                   }
+                   else {
+                       flip[0] = backdropFlip[0];
+                       flip[1] = backdropFlip[1];
+                   }
+                   uniforms[bName] = backdrop;
                    if (backdrop) {
                        filters[i]._backdropActive = true;
                    }
@@ -468,24 +541,37 @@ b_res.rgb *= mult.a;
        this.statePool.push(state);
    }
    let hadBackbufferError = false;
-   function prepareBackdrop(bounds) {
+   function prepareBackdrop(bounds, flipY) {
        const renderer = this.renderer;
        const renderTarget = renderer.renderTexture.current;
        const fr = this.renderer.renderTexture.sourceFrame;
-       if (!renderTarget) {
-           if (!hadBackbufferError) {
-               hadBackbufferError = true;
-               console.warn('pixi-picture: you are trying to use Blend Filter on main framebuffer! That wont work.');
-           }
-           return null;
+       const tf = renderer.projection.transform || math.Matrix.IDENTITY;
+       let resolution = 1;
+       if (renderTarget) {
+           resolution = renderTarget.baseTexture.resolution;
+           flipY[1] = 1.0;
        }
-       const resolution = renderTarget.baseTexture.resolution;
-       const x = (bounds.x - fr.x) * resolution;
-       const y = (bounds.y - fr.y) * resolution;
-       const w = (bounds.width) * resolution;
-       const h = (bounds.height) * resolution;
+       else {
+           if (!renderer.useContextAlpha) {
+               if (!hadBackbufferError) {
+                   hadBackbufferError = true;
+                   console.warn('pixi-picture: you are trying to use Blend Filter on main framebuffer! That wont work.');
+               }
+               return null;
+           }
+           resolution = renderer.resolution;
+           flipY[1] = -1.0;
+       }
+       const x = Math.round((bounds.x - fr.x + tf.tx) * resolution);
+       const dy = bounds.y - fr.y + tf.ty;
+       const y = Math.round((flipY[1] < 0.0 ? fr.height - (dy + bounds.height) : dy) * resolution);
+       const w = Math.round(bounds.width * resolution);
+       const h = Math.round(bounds.height * resolution);
        const gl = renderer.gl;
        const rt = this.getOptimalFilterTexture(w, h, 1);
+       if (flipY[1] < 0) {
+           flipY[0] = h / rt.height;
+       }
        rt.filterFrame = fr;
        renderer.texture.bindForceLocation(rt.baseTexture, 0);
        gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, x, y, w, h);
@@ -503,6 +589,7 @@ b_res.rgb *= mult.a;
 
    exports.BackdropFilter = BackdropFilter;
    exports.BlendFilter = BlendFilter;
+   exports.FlipYFilter = FlipYFilter;
    exports.HARDLIGHT_FULL = HARDLIGHT_FULL;
    exports.HARDLIGHT_PART = HARDLIGHT_PART;
    exports.MULTIPLY_FULL = MULTIPLY_FULL;

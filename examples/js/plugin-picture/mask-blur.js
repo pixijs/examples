@@ -17,7 +17,14 @@ function makeEasyWindow() {
     const graphics = new PIXI.Graphics();
     graphics.beginFill(0xffffff, 1.0);
     graphics.drawRoundedRect(-150, -50, 300, 100, 40);
-    graphics.filters = [new PIXI.picture.MaskFilter(blur)];
+
+    // saveFlipY is optimization flag, saves one drawcall
+    // if backdrop is taken from main framebuffer
+    // in our case, blur doesn't care about flipping its input
+    // you can set this flag in config or in MaskFilter itself
+    const filter = new PIXI.picture.MaskFilter(blur);
+    filter.safeFlipY = true;
+    graphics.filters = [filter];
 
     container.addChild(graphics);
 
@@ -62,10 +69,6 @@ function complete() {
     window1.position.set(250, 150);
     window2.position.set(250, 450);
     app.stage.addChild(window1, window2);
-
-    // do not forget - filter above is required for backdrops to work
-    app.stage.filters = [new PIXI.filters.AlphaFilter()];
-    app.stage.filterArea = app.screen;
 
     app.ticker.add((delta) => {
         window1.rotation += 0.01 * delta;

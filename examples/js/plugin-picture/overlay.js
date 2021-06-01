@@ -10,11 +10,6 @@ background.width = 800;
 background.height = 600;
 app.stage.addChild(background);
 
-// filter can only use copyTex and not readPixels, so you have to make sure that
-// you actually have a backbuffer that is managable by pixi renderer
-app.stage.filters = [new PIXI.filters.AlphaFilter()];
-app.stage.filterArea = app.screen;
-
 // create an array to store a reference to the dudes
 const dudeArray = [];
 

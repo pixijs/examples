@@ -17,6 +17,11 @@ function getMajorPixiVersion(pixiVersionString) {
     return majorVersion;
 }
 
+function reload() {
+    if (bpc.editor) bpc.exampleSourceCode = bpc.editor.getValue();
+    bpc.generateIFrameContent();
+}
+
 jQuery(document).ready(($) => {
     window.onpopstate = function onpopstate(event) {
         bpc.pixiVersionString = getParameterByName('v') || 'dev';
@@ -53,7 +58,7 @@ jQuery(document).ready(($) => {
     bpc.clickType = 'click';
     bpc.animTime = 0.15;
 
-    bpc.liteMode = false;
+    bpc.autoPlay = true;
     bpc.packagesManifest = {};
 
     bpc.resize = function resize() { };
@@ -141,26 +146,43 @@ jQuery(document).ready(($) => {
 
     bpc.initNav = function initNav() {
         if (typeof URLSearchParams !== 'undefined') {
-            const params = new URLSearchParams(window.location.search);
-
-            if (params.get('lite') === 'true') {
-                $('#example-title').addClass('hidden');
-                $('.main-header').addClass('hidden');
-                $('.main-nav').addClass('hidden');
-                $('.main-content').addClass('main-content-lite');
-                $('#content-controls').addClass('hidden');
-
-                /* eslint-disable prefer-template */
-                $('.main-content').append(
-                    // Icon from wikipedia!
-                    // https://en.wikipedia.org/w/skins/Vector/resources/skins.vector.styles/images/external-link-ltr-icon.svg
-                    `<a class="to-editor" rel="noopener noreferrer" target="_blank" href="${window.location.href.replace('lite=true', '')}">`
-                        + '<img src="examples/assets/external-link-ltr-icon.svg"></img>'
-                    + '</a>',
-                );
-                /* eslint-enable prefer-template */
-
-                bpc.liteMode = true;
+            const search = window.location.search;
+            const params = new URLSearchParams(search);
+            // @deprecate lite, use embed instead
+            if (params.get('lite') || params.get('embed')) {
+                const $body = $('body');
+                const $reload = $('.reload');
+                $body.addClass('embed');
+                $('#redirect').attr('href', window.location.href.replace(search, ''));
+                bpc.autoPlay = !!params.get('autoplay');
+                if (bpc.autoPlay) {
+                    $body.addClass('autoplay');
+                } else {
+                    $reload.on(bpc.clickType, function onClick() {
+                        $(this).addClass('hidden');
+                    });
+                }
+                if (params.get('noredirect')) {
+                    $body.addClass('noredirect');
+                }
+                const showcode = params.get('showcode');
+                if (!showcode) {
+                    $body.addClass('nocode');
+                } else {
+                    // Add tab handlers
+                    const $tabs = $('.main-tab');
+                    $body.addClass($tabs.filter('.selected').data('view'));
+                    $tabs.on(bpc.clickType, function onClick() {
+                        $tabs.removeClass('selected');
+                        $(this).addClass('selected');
+                        $tabs.each(function onEach() {
+                            $body.removeClass(this.dataset.view);
+                        });
+                        $body.addClass(this.dataset.view);
+                        $reload.addClass('hidden');
+                        reload();
+                    });
+                }
             }
         }
 
@@ -210,7 +232,9 @@ jQuery(document).ready(($) => {
         bpc.loadPackages = function loadPackages() {
             $.getJSON('examples/packages.json', (data) => {
                 bpc.packagesManifest = data;
-                if (!bpc.liteMode) bpc.generateIFrameContent();
+                if (bpc.autoPlay) {
+                    bpc.generateIFrameContent();
+                }
             });
         };
 
@@ -401,10 +425,7 @@ jQuery(document).ready(($) => {
         });
 
         // Refresh Button
-        $('.reload').on(bpc.clickType, () => {
-            if (bpc.editor) bpc.exampleSourceCode = bpc.editor.getValue();
-            bpc.generateIFrameContent();
-        });
+        $('.reload').on(bpc.clickType, reload);
     };
 
     bpc.SaveToDisk = function SaveToDisk(fileURL, fileName) {

@@ -42,6 +42,13 @@
         </div>
     </nav>
     <article class="main-content">
+        <a id="redirect" class="redirect" rel="noopener noreferrer" target="_blank" href="#">
+            <img src="examples/assets/external-link-ltr-icon.svg" />
+        </a>
+        <div class="main-tabs">
+            <button class="main-tab selected" data-view="view-preview">Canvas</button>
+            <button class="main-tab" data-view="view-code">Code</button>
+        </div>
         <h1 id="example-title">Loading&hellip;</h1>
         <div class="example-frame">
             <div class="sizer" id="example">
@@ -63,9 +70,9 @@
                 </svg>
             </div>
         </div>
-        <div id="content-controls">
+        <div class="content-controls">
             <div class="code clearfix">
-                <h3 id="code-header">Example Code</h3>
+                <h3 class="code-header" id="code-header">Example Code</h3>
                 <textarea id="code"></textarea>
                 <div class="footer">
                     <div class="select-group">

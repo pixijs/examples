@@ -61,36 +61,8 @@ jQuery(document).ready(($) => {
     bpc.autoPlay = true;
     bpc.packagesManifest = {};
 
-    bpc.resize = function resize() { };
-
-    // async script loading
-    bpc.scriptsToLoad = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js'];
-    bpc.scriptsLoaded = 0;
-
-    bpc.loadScriptsAsync = function loadScriptsAsync() {
-        for (let i = 0; i < bpc.scriptsToLoad.length; i++) {
-            $.ajax({
-                url: bpc.scriptsToLoad[i],
-                dataType: 'script',
-                cache: true,
-                async: true,
-                success: bpc.fileLoaded,
-            });
-        }
-
-        if (bpc.scriptsToLoad.length === 0) {
-            bpc.loadComplete();
-        }
-    };
-
-    bpc.fileLoaded = function fileLoaded() {
-        bpc.scriptsLoaded++;
-        if (bpc.scriptsLoaded === bpc.scriptsToLoad.length) {
-            bpc.loadComplete();
-        }
-    };
-
-    bpc.loadComplete = function loadComplete() {
+    bpc.init = function init() {
+        const embedded = bpc.embedMode();
         $.getJSON('examples/manifest.json', (data) => {
             const sections = Object.keys(data);
             for (let i = 0; i < sections.length; i++) {
@@ -109,7 +81,10 @@ jQuery(document).ready(($) => {
 
             bpc.initNav();
         });
-
+        // Ignore branch/versions request from GitHub
+        if (embedded) {
+            return;
+        }
         $.getJSON('https://api.github.com/repos/pixijs/pixi.js/git/refs/tags', (dataTag) => {
             // Filters the tags to only include versions we care about.
             // Only use the last 5 tags per major version
@@ -144,48 +119,48 @@ jQuery(document).ready(($) => {
         });
     };
 
-    bpc.initNav = function initNav() {
-        if (typeof URLSearchParams !== 'undefined') {
-            const search = window.location.search;
-            const params = new URLSearchParams(search);
-            // @deprecate lite, use embed instead
-            if (params.get('lite') || params.get('embed')) {
-                const $body = $('body');
-                const $reload = $('.reload');
-                $body.addClass('embed');
-                $('#redirect').attr('href', window.location.href.replace(search, ''));
-                bpc.autoPlay = !!params.get('autoplay');
-                if (bpc.autoPlay) {
-                    $body.addClass('autoplay');
-                } else {
-                    $reload.on(bpc.clickType, function onClick() {
-                        $(this).addClass('hidden');
-                    });
-                }
-                if (params.get('noredirect')) {
-                    $body.addClass('noredirect');
-                }
-                const showcode = params.get('showcode');
-                if (!showcode) {
-                    $body.addClass('nocode');
-                } else {
-                    // Add tab handlers
-                    const $tabs = $('.main-tab');
-                    $body.addClass($tabs.filter('.selected').data('view'));
-                    $tabs.on(bpc.clickType, function onClick() {
-                        $tabs.removeClass('selected');
-                        $(this).addClass('selected');
-                        $tabs.each(function onEach() {
-                            $body.removeClass(this.dataset.view);
-                        });
-                        $body.addClass(this.dataset.view);
-                        $reload.addClass('hidden');
-                        reload();
-                    });
-                }
-            }
+    bpc.embedMode = function embedMode() {
+        // @deprecate lite, use embed instead
+        if (!getParameterByName('lite') && !getParameterByName('embed')) {
+            return false;
         }
+        const $body = $('body');
+        const $reload = $('.reload');
+        $body.addClass('embed').removeClass('normal');
+        $('#redirect').attr('href', window.location.href.replace(window.location.search, ''));
+        bpc.autoPlay = !!getParameterByName('autoplay');
+        if (bpc.autoPlay) {
+            $body.addClass('autoplay');
+        } else {
+            $reload.on(bpc.clickType, function onClick() {
+                $(this).addClass('hidden');
+            });
+        }
+        if (getParameterByName('noredirect')) {
+            $body.addClass('noredirect');
+        }
+        const showcode = getParameterByName('showcode');
+        if (!showcode) {
+            $body.addClass('nocode');
+        } else {
+            // Add tab handlers
+            const $tabs = $('.main-tab');
+            $body.addClass($tabs.filter('.selected').data('view'));
+            $tabs.on(bpc.clickType, function onClick() {
+                $tabs.removeClass('selected');
+                $(this).addClass('selected');
+                $tabs.each(function onEach() {
+                    $body.removeClass(this.dataset.view);
+                });
+                $body.addClass(this.dataset.view);
+                $reload.addClass('hidden');
+                reload();
+            });
+        }
+        return true;
+    };
 
+    bpc.initNav = function initNav() {
         $('.main-menu .section').on(bpc.clickType, function onClick() {
             $(this).next('ul').slideToggle(250);
             $(this).toggleClass('open');
@@ -421,14 +396,14 @@ jQuery(document).ready(($) => {
 
         // Download
         $('.footer .download').on(bpc.clickType, () => {
-            bpc.SaveToDisk(bpc.exampleUrl, bpc.exampleFilename);
+            bpc.saveToDisk(bpc.exampleUrl, bpc.exampleFilename);
         });
 
         // Refresh Button
         $('.reload').on(bpc.clickType, reload);
     };
 
-    bpc.SaveToDisk = function SaveToDisk(fileURL, fileName) {
+    bpc.saveToDisk = function saveToDisk(fileURL, fileName) {
         if (!window.ActiveXObject) { // for non-IE
             const save = document.createElement('a');
             save.href = fileURL;
@@ -449,12 +424,6 @@ jQuery(document).ready(($) => {
             newWindow.document.execCommand('SaveAs', true, fileName || fileURL);
             newWindow.close();
         }
-    };
-
-    bpc.init = function init() {
-        $(window).resize(bpc.resize);
-
-        bpc.loadScriptsAsync();
     };
 
     bpc.init();

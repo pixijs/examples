@@ -11,7 +11,6 @@ body {
 a {
 	.transition(color, @anim);
 	text-decoration: none;
-
 	&:hover {
 		.transition(color, @anim);
 	}
@@ -213,9 +212,10 @@ a {
 	overflow: auto;
 	padding: 0 10px;
 	z-index: 1;
-	.transition(left, @anim);
+	body.normal & {
+        .transition(left, @anim);
+    }
 	-webkit-overflow-scrolling: touch;
-
     .main-tabs,
     .redirect {
         display: none;
@@ -583,6 +583,7 @@ body.embed  {
         left: 0;
         bottom: 0;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         .code {
             max-width: none;
             margin-top: 0;

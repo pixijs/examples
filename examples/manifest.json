@@ -585,6 +585,29 @@
             ]
         }
     ],
+    "plugin-graphics-smooth": [
+        {
+            "title": "Simple",
+            "entry": "simple.js",
+            "plugins": [
+                "pixi-graphics-smooth"
+            ]
+        },
+        {
+            "title": "Joins and caps",
+            "entry": "join-cap.js",
+            "plugins": [
+                "pixi-graphics-smooth"
+            ]
+        },
+        {
+            "title": "Very thin line",
+            "entry": "thin-square.js",
+            "plugins": [
+                "pixi-graphics-smooth"
+            ]
+        }
+    ],
     "plugin-compressed-textures": [
         {
             "title": "Extension chooser",

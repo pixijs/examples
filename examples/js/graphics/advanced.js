@@ -45,7 +45,7 @@ app.stage.addChild(realPath2);
 
 const bezier2 = new PIXI.Graphics();
 
-bezier2.lineTextureStyle(10, sprite.texture);
+bezier2.lineTextureStyle({ width: 10, texture: sprite.texture });
 bezier2.bezierCurveTo(0, -100, 150, 150, 240, 100);
 
 bezier2.position.x = 320;
@@ -72,7 +72,7 @@ app.stage.addChild(arc2);
 // // ARC 3 ////
 const arc3 = new PIXI.Graphics();
 
-arc3.lineTextureStyle(20, sprite.texture);
+arc3.lineTextureStyle({ width: 20, texture: sprite.texture });
 arc3.arc(650, 420, 60, 2 * Math.PI, 2.5 * Math.PI / 2);
 
 app.stage.addChild(arc3);
@@ -94,7 +94,7 @@ app.stage.addChild(rectAndHole);
 // // Line Texture Style ////
 const beatifulRect = new PIXI.Graphics();
 
-beatifulRect.lineTextureStyle(20, sprite.texture);
+beatifulRect.lineTextureStyle({ width: 20, texture: sprite.texture });
 beatifulRect.beginFill(0xFF0000);
 beatifulRect.drawRect(80, 350, 150, 150);
 beatifulRect.endFill();

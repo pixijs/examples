@@ -10,7 +10,7 @@ for (let i = 0; i < totalDudes; i++) {
     // create a new Sprite that uses the image name that we just generated as its source
     const dude = PIXI.Sprite.from('examples/assets/eggHead.png');
 
-    // set the anchor point so the texture is centerd on the sprite
+    // set the anchor point so the texture is centered on the sprite
     dude.anchor.set(0.5);
 
     // set a random scale for the dude - no point them all being the same size!

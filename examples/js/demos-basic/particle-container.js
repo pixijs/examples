@@ -19,8 +19,6 @@ for (let i = 0; i < totalSprites; i++) {
     // create a new Sprite
     const dude = PIXI.Sprite.from('examples/assets/maggot_tiny.png');
 
-    dude.tint = Math.random() * 0xE8D4CD;
-
     // set the anchor point so the texture is centerd on the sprite
     dude.anchor.set(0.5);
 

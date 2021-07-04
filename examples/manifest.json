@@ -549,9 +549,6 @@
             "entry": "trail.js",
             "plugins": [
                 "pixi-layers"
-            ],
-            "validVersions": [
-                4
             ]
         }
     ],

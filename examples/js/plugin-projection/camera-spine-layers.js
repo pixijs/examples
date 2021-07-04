@@ -7,6 +7,9 @@ const app = new PIXI.Application({ autoStart: false });
 document.body.appendChild(app.view);
 app.stage = new PIXI.display.Stage();
 
+// apply mixin to spine class, otherwise objects might not be projected
+PIXI.projection.applySpine3dMixin(PIXI.spine.Spine.prototype);
+
 const { loader } = app;
 
 // create a new loader
@@ -46,7 +49,7 @@ function spawnAlien(d) {
         sprite1.anchor.set(0.5, 1.0);
         sprite1.scale3d.set(0.5);
     } else {
-        sprite1 = new PIXI.projection.Spine3d(loader.resources.pixie.spineData);
+        sprite1 = new PIXI.spine.Spine(loader.resources.pixie.spineData);
         sprite1.scale3d.set(0.1);
         sprite1.state.setAnimation(0, 'running', true);
     }

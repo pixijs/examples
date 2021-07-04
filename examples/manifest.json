@@ -473,7 +473,7 @@
             "plugins": [
                 "pixi-spine",
                 "pixi-layers",
-                "pixi-projection-spine"
+                "pixi-projection"
             ]
         },
         {

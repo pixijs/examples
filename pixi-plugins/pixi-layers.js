@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * @pixi/layers - v1.0.2
- * Compiled Sun, 04 Jul 2021 21:35:08 UTC
+ * @pixi/layers - v1.0.5
+ * Compiled Mon, 05 Jul 2021 14:07:01 UTC
  *
  * @pixi/layers is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -365,6 +365,7 @@ this.PIXI.display = this.PIXI.display || {};
             this.currentBufferIndex = 0;
             this._tempRenderTarget = null;
             this._tempRenderTargetSource = new math.Rectangle();
+            this._tempRenderTargetDestination = new math.Rectangle();
         }
         init(renderer) {
             const width = renderer ? renderer.screen.width : 100;
@@ -410,6 +411,7 @@ this.PIXI.display = this.PIXI.display || {};
             }
             this._tempRenderTarget = renderer.renderTexture.current;
             this._tempRenderTargetSource.copyFrom(renderer.renderTexture.sourceFrame);
+            this._tempRenderTargetDestination.copyFrom(renderer.renderTexture.destinationFrame);
             renderer.batch.flush();
             if (group.useDoubleBuffer) {
                 let buffer = db[this.currentBufferIndex];
@@ -444,7 +446,7 @@ this.PIXI.display = this.PIXI.display || {};
             if (filterStack.length > 1) {
                 filterStack[filterStack.length - 1].renderTexture = this._tempRenderTarget;
             }
-            renderer.renderTexture.bind(this._tempRenderTarget, this._tempRenderTargetSource, undefined);
+            renderer.renderTexture.bind(this._tempRenderTarget, this._tempRenderTargetSource, this._tempRenderTargetDestination);
             this._tempRenderTarget = null;
             const rt = this.renderTexture;
             const group = this.layer.group;
@@ -678,6 +680,7 @@ this.PIXI.display = this.PIXI.display || {};
                 stage.updateAsChildStage(this);
                 return;
             }
+            displayObject._activeParentLayer = null;
             let group = displayObject.parentGroup;
             if (group) {
                 group._resolveChildDisplayObject(this, displayObject);

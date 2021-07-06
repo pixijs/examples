@@ -5,7 +5,7 @@ const WIDTH = W / resolution;
 const HEIGHT = H / resolution;
 
 // LAYERS plugin is here: https://github.com/pixijs/pixi-layers/tree/master
-// LIGHTS plugin is here: https://github.com/pixijs/pixi-lights/tree/v4.x
+// LIGHTS plugin is here: https://github.com/pixijs/pixi-lights/tree/master
 
 const app = new PIXI.Application({ width: WIDTH, height: HEIGHT, resolution });
 document.body.appendChild(app.view);
@@ -27,10 +27,16 @@ stage.addChild(diffuseBlackSprite);
 stage.addChild(new PIXI.display.Layer(PIXI.lights.normalGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.lightGroup));
 
+/**
+ * IMPROVEMENT - you can use vanilla pixi `stage.sortChildren = true`
+ * and `block.zIndex` and remove that sortGroup completely
+ * DragGroup will still need its sortPriority
+ */
+
 const sortGroup = new PIXI.display.Group(0, true);
 sortGroup.on('sort', (sprite) => {
     // green bunnies go down
-    sprite.zOrder = -sprite.y;
+    sprite.zOrder = sprite.y;
 });
 // the group will process all of its members children after the sort
 sortGroup.sortPriority = 1;
@@ -42,7 +48,7 @@ dragGroup.sortPriority = 1;
 stage.addChild(new PIXI.display.Layer(dragGroup));
 
 // LIGHT and its movement
-stage.addChild(new PIXI.lights.AmbientLight(null, 0.6));
+stage.addChild(new PIXI.lights.AmbientLight(0x4d4d59, 0.6));
 const light = new PIXI.lights.PointLight(0xffffff, 1);
 light.position.set(525, 160);
 stage.addChild(light);
@@ -50,11 +56,11 @@ app.ticker.add(() => {
     light.position.copyFrom(app.renderer.plugins.interaction.mouse.global);
 });
 
-const lightLoader = new app.loaders.Loader();
-lightLoader.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
+const lightLoader = new PIXI.Loader();
+lightLoader.baseUrl = 'examples/assets/lights/';
 lightLoader
-    .add('block_diffuse', 'test/block.png')
-    .add('block_normal', 'test/blockNormalMap.png')
+    .add('block_diffuse', 'block.png')
+    .add('block_normal', 'blockNormalMap.png')
     .load(onAssetsLoaded);
 
 function onAssetsLoaded(loader, res) {

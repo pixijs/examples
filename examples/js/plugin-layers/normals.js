@@ -12,13 +12,14 @@ stage.addChild(new PIXI.display.Layer(PIXI.lights.diffuseGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.normalGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.lightGroup));
 
-app.loader.baseUrl = 'https://cdn.rawgit.com/pixijs/pixi-lights/b7fd7924fdf4e6a6b913ff29161402e7b36f0c0f/';
 
-app.loader
-    .add('bg_diffuse', 'test/BGTextureTest.jpg')
-    .add('bg_normal', 'test/BGTextureNORM.jpg')
-    .add('block_diffuse', 'test/block.png')
-    .add('block_normal', 'test/blockNormalMap.png')
+const lightLoader = new PIXI.Loader();
+lightLoader.baseUrl = 'examples/assets/lights/';
+lightLoader
+    .add('bg_diffuse', 'BGTextureTest.jpg')
+    .add('bg_normal', 'BGTextureNORM.jpg')
+    .add('block_diffuse', 'block.png')
+    .add('block_normal', 'blockNormalMap.png')
     .load(onAssetsLoaded);
 
 function createPair(diffuseTex, normalTex) {
@@ -48,8 +49,8 @@ function onAssetsLoaded(loader, res) {
     stage.addChild(block1);
     stage.addChild(block2);
 
-    stage.addChild(new PIXI.lights.AmbientLight(null, 0.4));
-    stage.addChild(new PIXI.lights.DirectionalLight(null, 1, block1));
+    stage.addChild(new PIXI.lights.AmbientLight(0x4d4d59, 0.4));
+    stage.addChild(new PIXI.lights.DirectionalLight(0x4d4d59, 1, block1));
     stage.addChild(light);
 
     bg.interactive = true;

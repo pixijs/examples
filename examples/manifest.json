@@ -507,9 +507,6 @@
             "plugins": [
                 "pixi-layers",
                 "pixi-lights"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {
@@ -539,9 +536,6 @@
             "plugins": [
                 "pixi-layers",
                 "pixi-lights"
-            ],
-            "validVersions": [
-                4
             ]
         },
         {

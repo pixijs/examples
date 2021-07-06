@@ -2,7 +2,7 @@
  
 /*!
  * pixi-lights - v3.0.0
- * Compiled Tue, 06 Jul 2021 14:16:02 UTC
+ * Compiled Tue, 06 Jul 2021 14:46:41 UTC
  *
  * pixi-lights is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -571,7 +571,7 @@ ${combine}
         constructor()
         {
             super({
-                program: PointLightShader._program,
+                program: DirectionalLightShader._program,
                 uniforms: {
                     uLightRadius: 1.0,
                     uLightDirection: new math.Point()

@@ -10,7 +10,7 @@ function onComplete(loader, resources) {
     const bunnyTex = resources.bunny.texture;
     bunnyTex.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
-    const bunny = new PIXI.heaven.Sprite(bunnyTex);
+    const bunny = new PIXI.heaven.SpriteH(bunnyTex);
     bunny.position.set(100, 100);
     bunny.scale.set(10);
 
@@ -22,7 +22,7 @@ function onComplete(loader, resources) {
     blackGraphics.beginFill(0);
     blackGraphics.drawRect(0, 0, W, H);
 
-    const whiteBunny = new PIXI.heaven.Sprite(bunnyTex);
+    const whiteBunny = new PIXI.heaven.SpriteH(bunnyTex);
     whiteBunny.scale.set(10);
     whiteBunny.color.setDark(1.0, 1.0, 1.0);
     app.renderer.render(blackGraphics, maskRT, false);
@@ -31,7 +31,7 @@ function onComplete(loader, resources) {
     const decalRT = PIXI.RenderTexture.create({ width: W, height: H, scaleMode: PIXI.SCALE_MODES.NEAREST });
     const decals = new PIXI.Container();
     for (let i = 0; i < 100; i++) {
-        const randomBunny = new PIXI.heaven.Sprite(bunnyTex);
+        const randomBunny = new PIXI.heaven.SpriteH(bunnyTex);
         randomBunny.position.set(Math.random() * W | 0, Math.random() * H | 0);
         randomBunny.color.setLight(Math.random(), Math.random(), Math.random());
         randomBunny.color.setDark(Math.random(), Math.random(), Math.random());
@@ -39,8 +39,8 @@ function onComplete(loader, resources) {
     }
     app.renderer.render(decals, decalRT);
 
-    const maskSprite = new PIXI.heaven.Sprite(maskRT);
-    const decalSprite = new PIXI.heaven.Sprite(decalRT);
+    const maskSprite = new PIXI.heaven.SpriteH(maskRT);
+    const decalSprite = new PIXI.heaven.SpriteH(decalRT);
 
     maskSprite.position = bunny.position;
     decalSprite.position = bunny.position;

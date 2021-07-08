@@ -34,7 +34,7 @@ app.stage.addChild(dudeContainer);
 
 for (let i = 0; i < totaldudes; i++) {
     // create a new Sprite that uses the image name that we just generated as its source
-    const dude = new PIXI.heaven.Sprite(PIXI.Texture.from('examples/assets/flowerTop.png'));
+    const dude = new PIXI.heaven.SpriteH(PIXI.Texture.from('examples/assets/flowerTop.png'));
 
     dude.anchor.set(0.5);
 

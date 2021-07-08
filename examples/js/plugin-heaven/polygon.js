@@ -13,7 +13,7 @@ app.loader.load((loader, resources) => {
 
     // Create a 5x5 grid of bunnies
     for (let i = 0; i < 25; i++) {
-        const bunny = new PIXI.heaven.Sprite(textures[i % textures.length]);
+        const bunny = new PIXI.heaven.SpriteH(textures[i % textures.length]);
 
         const graphics = new PIXI.Graphics();
         genWireframe(bunny, graphics);

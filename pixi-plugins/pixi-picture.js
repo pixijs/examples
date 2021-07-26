@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * @pixi/picture - v3.0.1
- * Compiled Tue, 01 Jun 2021 13:47:52 UTC
+ * @pixi/picture - v3.0.2
+ * Compiled Mon, 26 Jul 2021 15:22:14 UTC
  *
  * @pixi/picture is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -162,13 +162,15 @@ void main(void)
    MaskFilter._flipYFilter = null;
 
    const NPM_BLEND = `if (b_src.a == 0.0) {
-gl_FragColor = vec4(0, 0, 0, 0);
-return;
+  gl_FragColor = vec4(0, 0, 0, 0);
+  return;
 }
-vec3 Cb = b_src.rgb / b_src.a, Cs;
-if (b_dest.a > 0.0) {
-Cs = b_dest.rgb / b_dest.a;
+if (b_dest.a == 0.0) {
+  gl_FragColor = b_src;
+  return;
 }
+vec3 Cb = b_src.rgb / b_src.a;
+vec3 Cs = b_dest.rgb / b_dest.a;
 %NPM_BLEND%
 b_res.a = b_src.a + b_dest.a * (1.0-b_src.a);
 b_res.rgb = (1.0 - b_src.a) * Cs + b_src.a * B;
@@ -179,19 +181,19 @@ vec3 Cb2 = Cb * 2.0 - 1.0;
 vec3 screen = Cb2 + Cs - Cb2 * Cs;
 vec3 B;
 if (Cs.r <= 0.5) {
-B.r = multiply.r;
+  B.r = multiply.r;
 } else {
-B.r = screen.r;
+  B.r = screen.r;
 }
 if (Cs.g <= 0.5) {
-B.g = multiply.g;
+  B.g = multiply.g;
 } else {
-B.g = screen.g;
+  B.g = screen.g;
 }
 if (Cs.b <= 0.5) {
-B.b = multiply.b;
+  B.b = multiply.b;
 } else {
-B.b = screen.b;
+  B.b = screen.b;
 }
 `;
    const HARDLIGHT_PART = `vec3 multiply = Cb * Cs * 2.0;
@@ -199,19 +201,19 @@ vec3 Cs2 = Cs * 2.0 - 1.0;
 vec3 screen = Cb + Cs2 - Cb * Cs2;
 vec3 B;
 if (Cb.r <= 0.5) {
-B.r = multiply.r;
+  B.r = multiply.r;
 } else {
-B.r = screen.r;
+  B.r = screen.r;
 }
 if (Cb.g <= 0.5) {
-B.g = multiply.g;
+  B.g = multiply.g;
 } else {
-B.g = screen.g;
+  B.g = screen.g;
 }
 if (Cb.b <= 0.5) {
-B.b = multiply.b;
+  B.b = multiply.b;
 } else {
-B.b = screen.b;
+  B.b = screen.b;
 }
 `;
    const SOFTLIGHT_PART = `vec3 first = Cb - (1.0 - 2.0 * Cs) * Cb * (1.0 - Cb);
@@ -219,58 +221,60 @@ vec3 B;
 vec3 D;
 if (Cs.r <= 0.5)
 {
-B.r = first.r;
+  B.r = first.r;
 }
 else
 {
-if (Cb.r <= 0.25)
-{
-D.r = ((16.0 * Cb.r - 12.0) * Cb.r + 4.0) * Cb.r;    
-}
-else
-{
-D.r = sqrt(Cb.r);
-}
-B.r = Cb.r + (2.0 * Cs.r - 1.0) * (D.r - Cb.r);
+  if (Cb.r <= 0.25)
+  {
+    D.r = ((16.0 * Cb.r - 12.0) * Cb.r + 4.0) * Cb.r;    
+  }
+  else
+  {
+    D.r = sqrt(Cb.r);
+  }
+  B.r = Cb.r + (2.0 * Cs.r - 1.0) * (D.r - Cb.r);
 }
 if (Cs.g <= 0.5)
 {
-B.g = first.g;
+  B.g = first.g;
 }
 else
 {
-if (Cb.g <= 0.25)
-{
-D.g = ((16.0 * Cb.g - 12.0) * Cb.g + 4.0) * Cb.g;    
-}
-else
-{
-D.g = sqrt(Cb.g);
-}
-B.g = Cb.g + (2.0 * Cs.g - 1.0) * (D.g - Cb.g);
+  if (Cb.g <= 0.25)
+  {
+    D.g = ((16.0 * Cb.g - 12.0) * Cb.g + 4.0) * Cb.g;    
+  }
+  else
+  {
+    D.g = sqrt(Cb.g);
+  }
+  B.g = Cb.g + (2.0 * Cs.g - 1.0) * (D.g - Cb.g);
 }
 if (Cs.b <= 0.5)
 {
-B.b = first.b;
+  B.b = first.b;
 }
 else
 {
-if (Cb.b <= 0.25)
-{
-D.b = ((16.0 * Cb.b - 12.0) * Cb.b + 4.0) * Cb.b;    
-}
-else
-{
-D.b = sqrt(Cb.b);
-}
-B.b = Cb.b + (2.0 * Cs.b - 1.0) * (D.b - Cb.b);
+  if (Cb.b <= 0.25)
+  {
+    D.b = ((16.0 * Cb.b - 12.0) * Cb.b + 4.0) * Cb.b;    
+  }
+  else
+  {
+    D.b = sqrt(Cb.b);
+  }
+  B.b = Cb.b + (2.0 * Cs.b - 1.0) * (D.b - Cb.b);
 }
 `;
-   const MULTIPLY_FULL = `if (dest.a > 0.0) {
-b_res.rgb = (dest.rgb / dest.a) * ((1.0 - src.a) + src.rgb);
-b_res.a = min(src.a + dest.a - src.a * dest.a, 1.0);
-b_res.rgb *= mult.a;
+   const MULTIPLY_FULL = `if (b_dest.a == 0.0) {
+  gl_FragColor = b_src;
+  return;
 }
+b_res.rgb = (b_dest.rgb / b_dest.a) * ((1.0 - b_src.a) + b_src.rgb);
+b_res.a = min(b_src.a + b_dest.a - b_src.a * b_dest.a, 1.0);
+b_res.rgb *= b_res.a;
 `;
    const OVERLAY_FULL = NPM_BLEND.replace(`%NPM_BLEND%`, OVERLAY_PART);
    const HARDLIGHT_FULL = NPM_BLEND.replace(`%NPM_BLEND%`, HARDLIGHT_PART);
@@ -308,11 +312,13 @@ b_res.rgb *= mult.a;
                return;
            }
            const blendFilterArray = getBlendFilterArray(this.blendMode);
+           const cacheBlend = this.blendMode;
            if (blendFilterArray) {
                renderer.batch.flush();
                if (!renderer.filter.pushWithCheck(this, blendFilterArray)) {
                    return;
                }
+               this.blendMode = constants.BLEND_MODES.NORMAL;
            }
            this.calculateVertices();
            renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]);
@@ -320,6 +326,7 @@ b_res.rgb *= mult.a;
            if (blendFilterArray) {
                renderer.batch.flush();
                renderer.filter.pop();
+               this.blendMode = cacheBlend;
            }
        }
    }

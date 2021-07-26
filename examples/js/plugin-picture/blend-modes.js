@@ -1,17 +1,18 @@
-const renderer = new PIXI.Renderer({
+const app = new PIXI.Application({
     autoDensity: true,
     backgroundColor: 0,
     resolution: devicePixelRatio,
+    transparent: true,
+    //forceCanvas: true, // uncomment and check that canvas2d works the same
 });
-const stage = new PIXI.Container();
-const snapshot = new PIXI.Sprite();
+const { stage, renderer } = app;
 
 document.body.appendChild(renderer.view);
 
 const SUPPORTED_BLEND_MODES = [
     'NORMAL',
     'ADD',
-    // 'MULTIPLY',
+    'MULTIPLY',
     'SCREEN',
     'OVERLAY',
     'SOFT_LIGHT',
@@ -24,11 +25,8 @@ const COLOR_DESTINATION = 0xe91e63;
 const TEXTURE_DESTINATION = PIXI.RenderTexture.create({ width: 2 * R, height: 2 * R, resolution: renderer.resolution });
 const COLOR_SOURCE = 0x2196f3;
 const TEXTURE_SOURCE = PIXI.RenderTexture.create({ width: 2 * R, height: 2 * R, resolution: renderer.resolution });
-const TEXTURE_FRAMEBUFFER = PIXI.RenderTexture.create({ width: renderer.screen.width, height: renderer.screen.height, resolution: renderer.resolution });
 
 TEXTURE_DESTINATION.baseTexture.framebuffer.multisample = PIXI.MSAA_QUALITY.HIGH;
-
-snapshot.texture = TEXTURE_FRAMEBUFFER;
 
 renderer.render(
     new PIXI.Graphics()
@@ -39,7 +37,9 @@ renderer.render(
         renderTexture: TEXTURE_DESTINATION,
     },
 );
-renderer.framebuffer.blit();
+if (renderer.framebuffer) {
+    renderer.framebuffer.blit();
+}
 
 renderer.render(
     new PIXI.Graphics()
@@ -71,18 +71,8 @@ for (let i = 0, blendModeIndex = 0; i < BLEND_MODES.length; i++) {
     const xIndex = Math.floor(index / 3);
     const yIndex = (index % 3);
 
-    item.x = (3 + 10 * xIndex) * R;
+    item.x = (3 + 5 * xIndex) * R;
     item.y = (1.5 + yIndex * 4) * R;
 
     stage.addChild(item);
 }
-
-PIXI.Ticker.shared.addOnce(() => {
-    renderer.renderTexture.bind(TEXTURE_FRAMEBUFFER);
-    renderer.renderTexture.clear([0, 0, 0, 0]);
-
-    renderer.render(stage, { renderTexture: TEXTURE_FRAMEBUFFER, clear: false });
-
-    renderer.renderTexture.bind(null);
-    renderer.render(snapshot);
-});

@@ -17,5 +17,8 @@
     "pixi-filters": {
         "script": "/pixi-filters.js",
         "vendor": "https://filters.pixijs.download/main"
+    },
+    "@pixi/picture": {
+        "script": "dist/pixi-picture.umd.js"
     }
 }

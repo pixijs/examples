@@ -548,6 +548,13 @@
     ],
     "plugin-picture": [
         {
+            "title": "Blend Modes",
+            "entry": "blend-modes.js",
+            "plugins": [
+                "@pixi/picture"
+            ]
+        },
+        {
             "title": "More blend modes",
             "entry": "overlay.js",
             "plugins": [

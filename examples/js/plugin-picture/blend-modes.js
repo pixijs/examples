@@ -12,15 +12,24 @@ document.body.appendChild(renderer.view);
 const SUPPORTED_BLEND_MODES = [
     'NORMAL',
     'ADD',
+    'SUBTRACT',
     'MULTIPLY',
+    'XOR',
+    'SRC_IN',
+    'SRC_OUT',
+    'SRC_ATOP',
+    'DST_OVER',
+    'DST_IN',
+    'DST_OUT',
+    'DST_ATOP',
     'SCREEN',
     'OVERLAY',
     'SOFT_LIGHT',
     'HARD_LIGHT',
 ];
 
-const BLEND_MODES = Object.entries(PIXI.BLEND_MODES).filter(([key]) => SUPPORTED_BLEND_MODES.includes(key));
-const R = 48;
+const BLEND_MODES = SUPPORTED_BLEND_MODES.map((modeName) => [modeName, PIXI.BLEND_MODES[modeName]]);
+const R = 36;
 const COLOR_DESTINATION = 0xe91e63;
 const TEXTURE_DESTINATION = PIXI.RenderTexture.create({ width: 2 * R, height: 2 * R, resolution: renderer.resolution });
 const COLOR_SOURCE = 0x2196f3;
@@ -62,17 +71,17 @@ for (let i = 0, blendModeIndex = 0; i < BLEND_MODES.length; i++) {
 
     destination.position.set(-R, -R);
     source.position.set(-2 * R, 0);
-    label.position.set(R + 12, -label.height / 2);
+    label.position.set(-2 * R, -1.5 * R);
 
     // Set blend-mode!
     source.blendMode = blendMode;
 
     const index = blendModeIndex++;
-    const xIndex = Math.floor(index / 3);
-    const yIndex = (index % 3);
+    const xIndex = Math.floor(index / 4);
+    const yIndex = (index % 4);
 
-    item.x = (3 + 5 * xIndex) * R;
-    item.y = (1.5 + yIndex * 4) * R;
+    item.x = (3 + 6 * xIndex) * R;
+    item.y = (2 + yIndex * 4) * R;
 
     stage.addChild(item);
 }

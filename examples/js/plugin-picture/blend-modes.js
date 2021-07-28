@@ -1,5 +1,6 @@
 const app = new PIXI.Application({
     autoDensity: true,
+    autoStart: false,
     backgroundColor: 0,
     resolution: devicePixelRatio,
     transparent: true,
@@ -85,3 +86,5 @@ for (let i = 0, blendModeIndex = 0; i < BLEND_MODES.length; i++) {
 
     stage.addChild(item);
 }
+
+app.render();

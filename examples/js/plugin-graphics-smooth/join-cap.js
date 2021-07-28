@@ -1,9 +1,11 @@
 // Top - smoothed graphics
 // Bottom - usual pixi graphics
 
-const app = new PIXI.Application({ antialias: false,
-    width: 800, height: 600,
-    backgroundColor: 0x0
+const app = new PIXI.Application({
+    antialias: false,
+    width: 800,
+    height: 600,
+    backgroundColor: 0x0,
 });
 document.body.appendChild(app.view);
 
@@ -16,28 +18,34 @@ app.stage.addChild(graphics2);
 
 let phase = 0;
 
-function addLine(graphics, y, len, rad, cap) {
-    graphics.lineStyle({ width: 30, color: 0xffffff, alpha: 1, join: PIXI.LINE_JOIN.MITER, cap});
-    graphics.moveTo(150 - len, y);
-    graphics.lineTo(150, y);
-    graphics.lineTo(150 + Math.cos(phase) * rad, y + Math.sin(phase) * rad);
+function addLine(gfx, y, len, rad, cap) {
+    gfx.lineStyle({
+        width: 30, color: 0xffffff, alpha: 1, join: PIXI.LINE_JOIN.MITER, cap,
+    });
+    gfx.moveTo(150 - len, y);
+    gfx.lineTo(150, y);
+    gfx.lineTo(150 + Math.cos(phase) * rad, y + Math.sin(phase) * rad);
 
-    graphics.lineStyle({ width: 30, color: 0xffffff, alpha: 1, join: PIXI.LINE_JOIN.BEVEL, cap});
-    graphics.moveTo(350 + Math.cos(phase) * rad, y + Math.sin(phase) * rad);
-    graphics.lineTo(350, y);
-    graphics.lineTo(350 - len, y);
+    gfx.lineStyle({
+        width: 30, color: 0xffffff, alpha: 1, join: PIXI.LINE_JOIN.BEVEL, cap,
+    });
+    gfx.moveTo(350 + Math.cos(phase) * rad, y + Math.sin(phase) * rad);
+    gfx.lineTo(350, y);
+    gfx.lineTo(350 - len, y);
 
-    graphics.lineStyle({ width: 30, color: 0xffffff, alpha: 1, join: PIXI.LINE_JOIN.ROUND, cap});
-    graphics.moveTo(550 - len, y);
-    graphics.lineTo(550, y);
-    graphics.lineTo(550 + Math.cos(phase) * rad, y + Math.sin(phase) * rad);
+    gfx.lineStyle({
+        width: 30, color: 0xffffff, alpha: 1, join: PIXI.LINE_JOIN.ROUND, cap,
+    });
+    gfx.moveTo(550 - len, y);
+    gfx.lineTo(550, y);
+    gfx.lineTo(550 + Math.cos(phase) * rad, y + Math.sin(phase) * rad);
 }
 
-function makeFigures(graphics) {
-    graphics.clear();
+function makeFigures(gfx) {
+    gfx.clear();
 
-    addLine(graphics, 100, 50, 60, PIXI.LINE_CAP.BUTT);
-    addLine(graphics, 200, 50, 60, PIXI.LINE_CAP.ROUND);
+    addLine(gfx, 100, 50, 60, PIXI.LINE_CAP.BUTT);
+    addLine(gfx, 200, 50, 60, PIXI.LINE_CAP.ROUND);
 }
 
 // graphics.rotation = Math.PI * 3 / 2 - 0.0001;

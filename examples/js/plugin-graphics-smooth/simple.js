@@ -88,7 +88,7 @@ graphics.endFill();
 const path = [600, 370, 700, 460, 780, 420, 730, 570, 590, 520];
 
 graphics.lineStyle(0);
-graphics.beginFill(0x3500FA, 1, true); //third param - smoothing for fills
+graphics.beginFill(0x3500FA, 1, true); // third param - smoothing for fills
 graphics.drawPolygon(path);
 graphics.endFill();
 

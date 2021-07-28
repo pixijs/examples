@@ -3,7 +3,7 @@ const app = new PIXI.Application({
     backgroundColor: 0,
     resolution: devicePixelRatio,
     transparent: true,
-    //forceCanvas: true, // uncomment and check that canvas2d works the same
+    // forceCanvas: true, // uncomment and check that canvas2d works the same
 });
 const { stage, renderer } = app;
 

@@ -27,8 +27,8 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 // Load assets
-PIXI.Loader.shared
-    .add('bg_plane', '/examples/assets/bg_plane.jpg')
+app.loader
+    .add('bg_plane', 'examples/assets/bg_plane.jpg')
     .load(main);
 
 // Setup scene and then render once

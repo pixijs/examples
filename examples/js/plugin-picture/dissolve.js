@@ -20,14 +20,16 @@ const app = new PIXI.Application({
     autoDensity: true,
     autoStart: false,
     backgroundColor: 0,
-    // devicePixelRatio when PixiJS Picture is fixed cc @ivanpopelyshev
-    resolution: 1,
+    resolution: devicePixelRatio,
     transparent: true,
 });
 
 document.body.appendChild(app.view);
 
-main();
+// Load assets
+PIXI.Loader.shared
+    .add('bg_plane', '/examples/assets/bg_plane.jpg')
+    .load(main);
 
 // Setup scene and then render once
 function main() {
@@ -46,15 +48,14 @@ function main() {
 
 function makeBlendSubscene() {
     // Black background
-    const bg = new PIXI.Sprite(PIXI.Texture.WHITE);
-    bg.tint = 0;
+    const bg = new PIXI.Sprite(PIXI.Texture.from('bg_plane'));
 
     // Translucent white layer on top
     const fg = new PIXI.Sprite(PIXI.Texture.WHITE);
 
     bg.width = fg.width = app.renderer.screen.width / 2;
     bg.height = fg.height = app.renderer.screen.height;
-    fg.alpha = 0.5;
+    fg.alpha = 0.3;
 
     const container = new PIXI.Container();
 

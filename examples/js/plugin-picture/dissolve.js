@@ -5,7 +5,7 @@ const DISSOLVE_FULL = `
         vTextureCoord.xy ,vec2(12.9898,78.233))) * 43758.5453);
 
     if (rand < b_src.a) {
-        b_res = b_src / b_src.a;
+        b_res = b_src;
     }
 `;
 

@@ -555,6 +555,13 @@
             ]
         },
         {
+            "title": "Dissolve",
+            "entry": "dissolve.js",
+            "plugins": [
+                "@pixi/picture"
+            ]
+        },
+        {
             "title": "More blend modes",
             "entry": "overlay.js",
             "plugins": [

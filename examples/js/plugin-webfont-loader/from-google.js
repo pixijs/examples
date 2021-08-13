@@ -3,6 +3,7 @@ document.body.appendChild(app.view);
 
 PIXI.Loader.registerPlugin(PIXI.WebfontLoaderPlugin);
 
+// Load directly from google CSS!
 PIXI.Loader.shared.add({ name: 'From Google 1', url: 'https://fonts.googleapis.com/css2?family=Montserrat' });
 PIXI.Loader.shared.add({ name: 'From Google 2', url: 'https://fonts.googleapis.com/css2?family=WindSong' });
 

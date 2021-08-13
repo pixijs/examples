@@ -640,6 +640,29 @@
             ]
         }
     ],
+    "plugin-webfont-loader": [
+        {
+            "title": "From font files",
+            "entry": "from-font.js",
+            "plugins": [
+                "pixi-webfont-loader"
+            ]
+        },
+        {
+            "title": "From local CSS",
+            "entry": "from-css.js",
+            "plugins": [
+                "pixi-webfont-loader"
+            ]
+        },
+        {
+            "title": "From Google CSS",
+            "entry": "from-google.js",
+            "plugins": [
+                "pixi-webfont-loader"
+            ]
+        }
+    ],
     "gsap2-interaction": [
         {
             "title": "GSAP 2 Tick Director",
@@ -737,15 +760,6 @@
             "entry": "basic.js",
             "plugins": [
                 "@pixi/tilemap"
-            ]
-        }
-    ],
-    "webfont": [
-        {
-            "title": "From Google CSS",
-            "entry": "from-google.js",
-            "plugins": [
-                "pixi-webfont-loader"
             ]
         }
     ]

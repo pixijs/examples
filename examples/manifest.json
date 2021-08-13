@@ -190,10 +190,10 @@
                 "pixi-spine"
             ]
         },
-		{
-			"title": "Shadertoy filter",
-			"entry": "shadertoy-filter-rendertexture.js"
-		}
+        {
+            "title": "Shadertoy filter",
+            "entry": "shadertoy-filter-rendertexture.js"
+        }
     ],
     "mesh-and-shaders": [
         {
@@ -240,14 +240,14 @@
             "title": "Instanced Geometry",
             "entry": "instanced-geometry.js"
         },
-		{
-			"title": "Shadertoy",
-			"entry": "shadertoy-mesh.js"
-		},
-		{
-			"title": "Multipass shader generated mesh",
-			"entry": "multipass-shader-generated-mesh.js"
-		}
+        {
+            "title": "Shadertoy",
+            "entry": "shadertoy-mesh.js"
+        },
+        {
+            "title": "Multipass shader generated mesh",
+            "entry": "multipass-shader-generated-mesh.js"
+        }
     ],
     "textures": [
         {
@@ -362,7 +362,7 @@
                 "pixi-spine"
             ]
         },
-		{
+        {
             "title": "Spineboy Pro",
             "entry": "spineboy-pro.js",
             "plugins": [
@@ -370,7 +370,7 @@
             ]
         }
     ],
-	"plugin-dragonbones": [
+    "plugin-dragonbones": [
         {
             "title": "Robot",
             "entry": "robot.js",
@@ -386,7 +386,7 @@
             ]
         }
     ],
-	"plugin-heaven": [
+    "plugin-heaven": [
         {
             "title": "Invert",
             "entry": "invert.js",
@@ -394,14 +394,14 @@
                 "pixi-heaven"
             ]
         },
-		{
+        {
             "title": "Polygon Packing",
             "entry": "polygon.js",
             "plugins": [
                 "pixi-heaven"
             ]
         },
-		{
+        {
             "title": "Decals",
             "entry": "decals.js",
             "plugins": [
@@ -415,15 +415,15 @@
                 "pixi-heaven"
             ]
         },
-		{
+        {
             "title": "Spine support",
             "entry": "spineboy-pro.js",
             "plugins": [
-				"pixi-spine",
+                "pixi-spine",
                 "pixi-heaven"
             ]
         }
-	],
+    ],
     "plugin-projection": [
         {
             "title": "2D Basics",
@@ -635,7 +635,7 @@
                 "pixi-compressed-textures",
                 "basis_transcoder"
             ],
-            "validVersions":[
+            "validVersions": [
                 5
             ]
         }
@@ -737,6 +737,15 @@
             "entry": "basic.js",
             "plugins": [
                 "@pixi/tilemap"
+            ]
+        }
+    ],
+    "webfont": [
+        {
+            "title": "From Google CSS",
+            "entry": "from-google.js",
+            "plugins": [
+                "pixi-webfont-loader"
             ]
         }
     ]

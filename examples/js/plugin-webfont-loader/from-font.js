@@ -9,7 +9,7 @@ app.loader.add({ name: 'name for Lineal', url: 'examples/assets/webfont-loader/L
 app.loader.add({ name: 'name for Dotrice', url: 'examples/assets/webfont-loader/Dotrice-Regular.woff' });
 app.loader.add({ name: 'name for Crosterian', url: 'examples/assets/webfont-loader/Crosterian.woff2' });
 
-app.loader.onComplete.once(() => {
+app.loader.load(() => {
     const text1 = new PIXI.Text('ChaChicle.ttf', new PIXI.TextStyle({ fontFamily: 'name for ChaChicle', fontSize: 50 }));
     const text2 = new PIXI.Text('Lineal.otf', new PIXI.TextStyle({ fontFamily: 'name for Lineal', fontSize: 50 }));
     const text3 = new PIXI.Text('Dotrice.woff', new PIXI.TextStyle({ fontFamily: 'name for Dotrice', fontSize: 50 }));
@@ -24,5 +24,3 @@ app.loader.onComplete.once(() => {
     app.stage.addChild(text3);
     app.stage.addChild(text4);
 });
-
-app.loader.load();

@@ -6,7 +6,7 @@ document.body.appendChild(app.view);
 // Bundle of fonts created with Transfonter
 app.loader.add({ name: 'Bundle of fonts', url: 'examples/assets/webfont-loader/stylesheet.css' });
 
-app.loader.onComplete.once(() => {
+app.loader.load(() => {
     const text1 = new PIXI.Text('ChaChicle', new PIXI.TextStyle({ fontFamily: 'ChaChicle', fontSize: 65 }));
     const text2 = new PIXI.Text('Lineal', new PIXI.TextStyle({ fontFamily: 'Lineal', fontSize: 65 }));
     const text3 = new PIXI.Text('Dotrice', new PIXI.TextStyle({ fontFamily: 'Dotrice', fontSize: 65 }));
@@ -21,5 +21,3 @@ app.loader.onComplete.once(() => {
     app.stage.addChild(text3);
     app.stage.addChild(text4);
 });
-
-app.loader.load();

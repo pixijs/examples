@@ -1,14 +1,14 @@
+PIXI.Loader.registerPlugin(PIXI.WebfontLoaderPlugin);
+
 const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
-PIXI.Loader.registerPlugin(PIXI.WebfontLoaderPlugin);
-
 // Load directly from google CSS!
-PIXI.Loader.shared.add({ name: 'From Google 1', url: 'https://fonts.googleapis.com/css2?family=Montserrat' });
-PIXI.Loader.shared.add({ name: 'From Google 2', url: 'https://fonts.googleapis.com/css2?family=WindSong' });
+app.loader.add({ name: 'From Google 1', url: 'https://fonts.googleapis.com/css2?family=Montserrat' });
+app.loader.add({ name: 'From Google 2', url: 'https://fonts.googleapis.com/css2?family=WindSong' });
 
 
-PIXI.Loader.shared.onComplete.once(() => {
+app.loader.onComplete.once(() => {
     const text1 = new PIXI.Text('This text uses the\nMonserrat font from Google', new PIXI.TextStyle({ fontFamily: 'Montserrat', fontSize: 55 }));
     const text2 = new PIXI.Text('This text uses the\nWindSong font from Google', new PIXI.TextStyle({ fontFamily: 'WindSong', fontSize: 55 }));
 
@@ -18,4 +18,4 @@ PIXI.Loader.shared.onComplete.once(() => {
     app.stage.addChild(text2);
 });
 
-PIXI.Loader.shared.load();
+app.loader.load();

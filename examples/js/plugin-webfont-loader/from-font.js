@@ -1,15 +1,15 @@
+PIXI.Loader.registerPlugin(PIXI.WebfontLoaderPlugin);
+
 const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
-PIXI.Loader.registerPlugin(PIXI.WebfontLoaderPlugin);
-
 // Load from any font file!
-PIXI.Loader.shared.add({ name: 'name for ChaChicle', url: 'examples/assets/webfont-loader/ChaChicle.ttf' });
-PIXI.Loader.shared.add({ name: 'name for Lineal', url: 'examples/assets/webfont-loader/Lineal.otf' });
-PIXI.Loader.shared.add({ name: 'name for Dotrice', url: 'examples/assets/webfont-loader/Dotrice-Regular.woff' });
-PIXI.Loader.shared.add({ name: 'name for Crosterian', url: 'examples/assets/webfont-loader/Crosterian.woff2' });
+app.loader.add({ name: 'name for ChaChicle', url: 'examples/assets/webfont-loader/ChaChicle.ttf' });
+app.loader.add({ name: 'name for Lineal', url: 'examples/assets/webfont-loader/Lineal.otf' });
+app.loader.add({ name: 'name for Dotrice', url: 'examples/assets/webfont-loader/Dotrice-Regular.woff' });
+app.loader.add({ name: 'name for Crosterian', url: 'examples/assets/webfont-loader/Crosterian.woff2' });
 
-PIXI.Loader.shared.onComplete.once(() => {
+app.loader.onComplete.once(() => {
     const text1 = new PIXI.Text('ChaChicle.ttf', new PIXI.TextStyle({ fontFamily: 'name for ChaChicle', fontSize: 50 }));
     const text2 = new PIXI.Text('Lineal.otf', new PIXI.TextStyle({ fontFamily: 'name for Lineal', fontSize: 50 }));
     const text3 = new PIXI.Text('Dotrice.woff', new PIXI.TextStyle({ fontFamily: 'name for Dotrice', fontSize: 50 }));
@@ -25,4 +25,4 @@ PIXI.Loader.shared.onComplete.once(() => {
     app.stage.addChild(text4);
 });
 
-PIXI.Loader.shared.load();
+app.loader.load();

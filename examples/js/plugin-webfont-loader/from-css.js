@@ -1,12 +1,12 @@
+PIXI.Loader.registerPlugin(PIXI.WebfontLoaderPlugin);
+
 const app = new PIXI.Application({ backgroundColor: 0x1099bb });
 document.body.appendChild(app.view);
 
-PIXI.Loader.registerPlugin(PIXI.WebfontLoaderPlugin);
-
 // Bundle of fonts created with Transfonter
-PIXI.Loader.shared.add({ name: 'Bundle of fonts', url: 'examples/assets/webfont-loader/stylesheet.css' });
+app.loader.add({ name: 'Bundle of fonts', url: 'examples/assets/webfont-loader/stylesheet.css' });
 
-PIXI.Loader.shared.onComplete.once(() => {
+app.loader.onComplete.once(() => {
     const text1 = new PIXI.Text('ChaChicle', new PIXI.TextStyle({ fontFamily: 'ChaChicle', fontSize: 65 }));
     const text2 = new PIXI.Text('Lineal', new PIXI.TextStyle({ fontFamily: 'Lineal', fontSize: 65 }));
     const text3 = new PIXI.Text('Dotrice', new PIXI.TextStyle({ fontFamily: 'Dotrice', fontSize: 65 }));
@@ -22,4 +22,4 @@ PIXI.Loader.shared.onComplete.once(() => {
     app.stage.addChild(text4);
 });
 
-PIXI.Loader.shared.load();
+app.loader.load();

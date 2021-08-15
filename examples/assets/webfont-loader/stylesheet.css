@@ -1,0 +1,40 @@
+@font-face {
+    font-family: 'Dotrice';
+    src: url('Dotrice-Regular.woff2') format('woff2'),
+        url('Dotrice-Regular.woff') format('woff'),
+        url('Dotrice-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lineal';
+    src: url('Lineal.woff2') format('woff2'),
+        url('Lineal.woff') format('woff'),
+        url('Lineal.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Crosterian';
+    src: url('Crosterian.woff2') format('woff2'),
+        url('Crosterian.woff') format('woff'),
+        url('Crosterian.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ChaChicle';
+    src: url('ChaChicle.woff2') format('woff2'),
+        url('ChaChicle.woff') format('woff'),
+        url('ChaChicle.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

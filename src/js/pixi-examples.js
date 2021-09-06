@@ -423,8 +423,10 @@ jQuery(document).ready(($) => {
                 jsExternal.push(it);
             });
             const data = {
-                title: bpc.exampleTitle,
+                title: `PixiJS - ${bpc.exampleTitle}`,
                 description: `A pen generated from PixiJS.io website.\n${document.location}`,
+                html: `<h1>PixiJS - ${bpc.exampleTitle}</h1>`,
+                css: 'body {\n   font-family: Roboto,sans-serif;\n}',
                 editors: '001',
                 js,
                 tags,

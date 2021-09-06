@@ -172,10 +172,13 @@ jQuery(document).ready(($) => {
                 $(this).addClass('selected');
                 // load data
                 bpc.closeMobileNav();
+                const section = $(this).parent().attr('data-section');
+                const page = `/${section}/${$(this).attr('data-src')}`;
+                const readableSection = section
+                    .replace(/-/g, ' ')
+                    .replace(/^\w/g, (m) => m.toUpperCase());
 
-                const page = `/${$(this).parent().attr('data-section')}/${$(this).attr('data-src')}`;
-                bpc.exampleTitle = $(this).text();
-
+                bpc.exampleTitle = `${readableSection} - ${$(this).text()}`;
                 window.location.hash = page;
                 document.title = `${bpc.exampleTitle} - PixiJS Examples`;
 
@@ -398,6 +401,40 @@ jQuery(document).ready(($) => {
         $('.footer .download').on(bpc.clickType, () => {
             bpc.saveToDisk(bpc.exampleUrl, bpc.exampleFilename);
         });
+
+        function beforeSubmit(event) {
+            const input = document.getElementById('codepen-input');
+            const js = document.getElementById('code').value
+                .replace(/(['"])(\.\/)?examples\//gm, '$1https://pixijs.io/examples/examples/');
+            const jsExternal = [
+                `https://d157l7jdn8e5sf.cloudfront.net/${bpc.pixiVersionString}/pixi-legacy.js`,
+            ];
+            const tags = ['PixiJS'];
+            bpc.exampleRequiredPlugins.forEach((it) => {
+                tags.push(it);
+                switch (it) {
+                    case '@pixi/tilemap':
+                        it = 'https://cdn.jsdelivr.net/npm/@pixi/tilemap@latest//dist/pixi-tilemap.umd.js';
+                        break;
+                    default:
+                        it = `https://pixijs.io/examples/pixi-plugins/${it}.js`;
+                        break;
+                }
+                jsExternal.push(it);
+            });
+            const data = {
+                title: bpc.exampleTitle,
+                description: `A pen generated from PixiJS.io website.\n${document.location}`,
+                editors: '001',
+                js,
+                tags,
+                js_external: jsExternal.join(';'),
+            };
+            input.value = JSON.stringify(data);
+        }
+
+        const form = document.getElementById('codepen-form');
+        form.addEventListener('submit', beforeSubmit);
 
         // Refresh Button
         $('.reload').on(bpc.clickType, reload);

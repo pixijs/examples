@@ -85,7 +85,14 @@
                             </ul>
                         </div>
                     </div>
-                    <button class="button download">Download Code</button>
+                    <button class="button download">Download</button>
+                    <form id="codepen-form" action="https://codepen.io/pen/define" method="POST" target="_blank"
+                        style="display: inline-block; margin-left:12px;">
+                        <input id="codepen-input" type="hidden" name="data" value=''>
+                        <button class="button codepen" type="submit">
+                            Edit in codepen
+                        </button>
+                    </form>
                 </div>
             </div>
             <p class="submit">Would you like to create a new example? Head over to the examples repo on <a

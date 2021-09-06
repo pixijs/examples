@@ -20,7 +20,8 @@
     "build": "npm run lint && npm run less && npm run js",
     "watch": "watch \"npm run less-dev && npm run js-dev\" src --wait 0.1 --interval 0.1",
     "lint": "eslint {examples,src}/**/*.js --max-warnings 0",
-    "lintfix": "npm run lint -- --fix"
+    "lintfix": "npm run lint -- --fix",
+    "dev-server": "reload -b"
   },
   "pre-commit": [
     "lint"
@@ -32,6 +33,7 @@
     "less": "^3.11.1",
     "less-plugin-clean-css": "^1.5.1",
     "pre-commit": "^1.2.2",
+    "reload": "^3.2.0",
     "terser": "^4.6.3",
     "watch": "^1.0.2"
   }

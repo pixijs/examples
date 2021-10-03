@@ -24,6 +24,10 @@
             <i id="line2"></i>
             <i id="line3"></i>
         </div>
+        <span class="searchbar-wrap">
+            <input type="text" placeholder="search github" id="searchbar-input"/>
+            <a href="" target="_blank" id="searchbar-a">🔎</a>
+        </span>
     </header>
     <nav class="main-nav">
         <div class="select-major-version">
@@ -137,5 +141,21 @@
         }
     </script>
 </body>
+<script>
+    const input = document.getElementById("searchbar-input")
+    const a = document.getElementById("searchbar-a")
+    const base="https://github.com/pixijs/examples/search?q="
+    a.href=base
+    input.addEventListener('change', e => {
+        const text = e.target.value
+        const encodedText = encodeURI(text)
+        a.href=`${base}${encodedText}`
+    })
+    input.addEventListener('keyup', e => {
+        if (e.key === 'Enter') {
+            a.click()
+        }
+    })
+</script>
 
 </html>

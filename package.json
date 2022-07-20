@@ -32,7 +32,7 @@
     "less": "^3.11.1",
     "less-plugin-clean-css": "^1.5.1",
     "pre-commit": "^1.2.2",
-    "terser": "^4.6.3",
+    "terser": "^4.8.1",
     "watch": "^1.0.2"
   }
 }

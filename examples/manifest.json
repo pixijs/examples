@@ -370,7 +370,7 @@
             ]
         },
         {
-            "title": "Spineboy Debug",
+            "title": "Spine Debug",
             "entry": "spine-debug.js",
             "plugins": [
                 "pixi-spine"

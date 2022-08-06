@@ -368,6 +368,13 @@
             "plugins": [
                 "pixi-spine"
             ]
+        },
+        {
+            "title": "Spineboy Debug",
+            "entry": "spine-debug.js",
+            "plugins": [
+                "pixi-spine"
+            ]
         }
     ],
     "plugin-dragonbones": [

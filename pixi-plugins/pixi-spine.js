@@ -2,7 +2,7 @@
  
 /*!
  * pixi-spine - v3.1.0
- * Compiled Sat, 06 Aug 2022 21:37:50 UTC
+ * Compiled Sun, 07 Aug 2022 23:00:37 UTC
  *
  * pixi-spine is licensed under SPINE-LICENSE
  * http://esotericsoftware.com/spine-runtimes-license
@@ -1480,14 +1480,6 @@ this.PIXI.spine = this.PIXI.spine || {};
         __extends$4(SpineBase, _super);
         function SpineBase(spineData) {
             var _this = _super.call(this) || this;
-            _this._drawDebug = false;
-            _this.drawMeshHull = true;
-            _this.drawMeshTriangles = true;
-            _this.drawBones = true;
-            _this.drawPaths = true;
-            _this.drawBoundingBoxes = true;
-            _this.drawClipping = true;
-            _this.drawRegionAttachments = true;
             if (!spineData) {
                 throw new Error('The spineData param is required.');
             }
@@ -1552,40 +1544,20 @@ this.PIXI.spine = this.PIXI.spine || {};
             _this.tintRgb = new Float32Array([1, 1, 1]);
             _this.autoUpdate = true;
             _this.visible = true;
-            _this.debugOptions = {
-                lineWidth: 1,
-                regionAttachmentsColor: 0x0078ff,
-                meshHullColor: 0x0078ff,
-                meshTrianglesColor: 0xffcc00,
-                clippingPolygonColor: 0xff00ff,
-                boundingBoxesRectColor: 0x00ff00,
-                boundingBoxesPolygonColor: 0x00ff00,
-                boundingBoxesCircleColor: 0x00ff00,
-                pathsCurveColor: 0xff0000,
-                pathsLineColor: 0xff00ff,
-                skeletonXYColor: 0xff0000,
-                bonesColor: 0x00eecc
-            };
             return _this;
         }
-        Object.defineProperty(SpineBase.prototype, "drawDebug", {
+        Object.defineProperty(SpineBase.prototype, "debug", {
             get: function () {
-                return this._drawDebug;
+                return this._debug;
             },
             set: function (value) {
-                if (value === this._drawDebug) {
+                var _a;
+                if (value == this._debug) { // soft equality allows null == undefined
                     return;
                 }
-                if (value) {
-                    if (this.debugContainer === undefined || this.debugObjects === undefined) {
-                        this.createDebug();
-                    }
-                    this.addChild(this.debugContainer);
-                }
-                else {
-                    this.removeChild(this.debugContainer);
-                }
-                this._drawDebug = value;
+                (_a = this._debug) === null || _a === void 0 ? void 0 : _a.unregisterSpine(this);
+                value === null || value === void 0 ? void 0 : value.registerSpine(this);
+                this._debug = value;
             },
             enumerable: false,
             configurable: true
@@ -1652,6 +1624,7 @@ this.PIXI.spine = this.PIXI.spine || {};
          * @param dt {number} Delta time. Time by which the animation should be updated
          */
         SpineBase.prototype.update = function (dt) {
+            var _a;
             // Limit delta value to avoid animation jumps
             var delayLimit = this.delayLimit;
             if (dt > delayLimit)
@@ -1875,10 +1848,8 @@ this.PIXI.spine = this.PIXI.spine || {};
                     }
                 }
             }
-            // Easy debug, read the private variable just to save the extra getter call.
-            if (this._drawDebug) {
-                this.updateDebug();
-            }
+            // if you can debug, then debug!
+            (_a = this._debug) === null || _a === void 0 ? void 0 : _a.renderDebug(this);
         };
         SpineBase.prototype.setSpriteRegion = function (attachment, sprite, region) {
             // prevent setters calling when attachment and region is same
@@ -2145,320 +2116,8 @@ this.PIXI.spine = this.PIXI.spine || {};
             }
             return [list_d, list_n];
         };
-        /**
-         * The debug objects don't exist until you turn debug to true for the first time.
-         * Just to be extra paranoid on the memory footprint.
-         */
-        SpineBase.prototype.createDebug = function () {
-            if (this.debugContainer === undefined) {
-                this.debugContainer = new display.Container();
-            }
-            if (this.debugObjects === undefined) {
-                this.debugObjects = {
-                    bones: new display.Container(),
-                    skeletonXY: new graphics.Graphics(),
-                    regionAttachmentsShape: new graphics.Graphics(),
-                    meshTrianglesLine: new graphics.Graphics(),
-                    meshHullLine: new graphics.Graphics(),
-                    clippingPolygon: new graphics.Graphics(),
-                    boundingBoxesRect: new graphics.Graphics(),
-                    boundingBoxesCircle: new graphics.Graphics(),
-                    boundingBoxesPolygon: new graphics.Graphics(),
-                    pathsCurve: new graphics.Graphics(),
-                    pathsLine: new graphics.Graphics(),
-                };
-                var key = void 0;
-                for (key in this.debugObjects) {
-                    this.debugContainer.addChild(this.debugObjects[key]);
-                }
-            }
-        };
-        SpineBase.prototype.updateDebug = function () {
-            // clear all the debug objects
-            var key;
-            for (key in this.debugObjects) {
-                var elem = this.debugObjects[key];
-                if (elem instanceof graphics.Graphics) {
-                    elem.clear();
-                }
-                else if (elem instanceof display.Container) {
-                    for (var len = elem.children.length; len > 0; len--) {
-                        elem.children[len - 1].destroy({ children: true, texture: true, baseTexture: true });
-                    }
-                }
-            }
-            var scale = this.scale.x || this.scale.y || 1;
-            var lineWidth = this.debugOptions.lineWidth / scale;
-            if (this.drawBones) {
-                this.drawBonesFunc(lineWidth, scale);
-            }
-            if (this.drawPaths) {
-                this.drawPathsFunc(lineWidth);
-            }
-            if (this.drawBoundingBoxes) {
-                this.drawBoundingBoxesFunc(lineWidth);
-            }
-            if (this.drawClipping) {
-                this.drawClippingFunc(lineWidth);
-            }
-            if (this.drawMeshHull || this.drawMeshTriangles) {
-                this.drawMeshHullAndMeshTriangles(lineWidth);
-            }
-            if (this.drawRegionAttachments) {
-                this.drawRegionAttachmentsFunc(lineWidth);
-            }
-        };
-        SpineBase.prototype.drawBonesFunc = function (lineWidth, scale) {
-            var skeleton = this.skeleton;
-            var skeletonX = skeleton.x;
-            var skeletonY = skeleton.y;
-            var bones = skeleton.bones;
-            this.debugObjects.skeletonXY.lineStyle(lineWidth, 0xff0000, 1);
-            for (var i = 0, len = bones.length; i < len; i++) {
-                var bone = bones[i], boneLen = bone.data.length, starX = skeletonX + bone.matrix.tx, starY = skeletonY + bone.matrix.ty, endX = skeletonX + boneLen * bone.matrix.a + bone.matrix.tx, endY = skeletonY + boneLen * bone.matrix.b + bone.matrix.ty;
-                if (bone.data.name === "root" || bone.data.parent === null) {
-                    continue;
-                }
-                // 三角形计算公式
-                // 面积 A=sqrt((a+b+c)*(-a+b+c)*(a-b+c)*(a+b-c))/4
-                // 阿尔法 alpha=acos((pow(b, 2)+pow(c, 2)-pow(a, 2))/(2*b*c))
-                // 贝塔 beta=acos((pow(a, 2)+pow(c, 2)-pow(b, 2))/(2*a*c))
-                // 伽马 gamma=acos((pow(a, 2)+pow(b, 2)-pow(c, 2))/(2*a*b))
-                var w = Math.abs(starX - endX), h = Math.abs(starY - endY), 
-                // a = w,                                              // 边长a
-                a2 = Math.pow(w, 2), // 边长a平方根
-                b = h, // 边长b
-                b2 = Math.pow(h, 2), // 边长b平方根
-                c = Math.sqrt(a2 + b2), // 边长c
-                c2 = Math.pow(c, 2), // 边长c平方根
-                rad = Math.PI / 180, 
-                // A = Math.acos([a2 + c2 - b2] / [2 * a * c]) || 0,   // A角角度
-                // C = Math.acos([a2 + b2 - c2] / [2 * a * b]) || 0,   // C角角度
-                B = Math.acos((c2 + b2 - a2) / (2 * b * c)) || 0; // B角角度
-                if (c === 0) {
-                    continue;
-                }
-                var gp = new graphics.Graphics();
-                this.debugObjects.bones.addChild(gp);
-                // 绘制骨骼线条
-                var refRation = c / 50 / scale;
-                gp.beginFill(0x00eecc, 1);
-                gp.drawPolygon(0, 0, 0 - refRation, c - refRation * 3, 0, c - refRation, 0 + refRation, c - refRation * 3);
-                gp.endFill();
-                gp.x = starX;
-                gp.y = starY;
-                gp.pivot.y = c;
-                // 计算骨骼旋转角度
-                var rotation = 0;
-                if (starX < endX && starY < endY) {
-                    // 右下
-                    rotation = -B + 180 * rad;
-                }
-                else if (starX > endX && starY < endY) {
-                    // 左下
-                    rotation = 180 * rad + B;
-                }
-                else if (starX > endX && starY > endY) {
-                    // 左上
-                    rotation = -B;
-                }
-                else if (starX < endX && starY > endY) {
-                    // 左下
-                    rotation = B;
-                }
-                else if (starY === endY && starX < endX) {
-                    // 向右
-                    rotation = 90 * rad;
-                }
-                else if (starY === endY && starX > endX) {
-                    // 向左
-                    rotation = -90 * rad;
-                }
-                else if (starX === endX && starY < endY) {
-                    // 向下
-                    rotation = 180 * rad;
-                }
-                else if (starX === endX && starY > endY) {
-                    // 向上
-                    rotation = 0;
-                }
-                gp.rotation = rotation;
-                // 绘制骨骼起始旋转点
-                gp.lineStyle(lineWidth + refRation / 2.4, 0x00eecc, 1);
-                gp.beginFill(0x000000, 0.6);
-                gp.drawCircle(0, c, refRation * 1.2);
-                gp.endFill();
-            }
-            // 绘制骨架起点『X』形式
-            var startDotSize = lineWidth * 3;
-            this.debugObjects.skeletonXY.moveTo(skeletonX - startDotSize, skeletonY - startDotSize);
-            this.debugObjects.skeletonXY.lineTo(skeletonX + startDotSize, skeletonY + startDotSize);
-            this.debugObjects.skeletonXY.moveTo(skeletonX + startDotSize, skeletonY - startDotSize);
-            this.debugObjects.skeletonXY.lineTo(skeletonX - startDotSize, skeletonY + startDotSize);
-        };
-        SpineBase.prototype.drawRegionAttachmentsFunc = function (lineWidth) {
-            var skeleton = this.skeleton;
-            var slots = skeleton.slots;
-            this.debugObjects.regionAttachmentsShape.lineStyle(lineWidth, 0x0078ff, 1);
-            for (var i = 0, len = slots.length; i < len; i++) {
-                var slot = slots[i], attachment = slot.getAttachment();
-                if (attachment == null || attachment.type !== exports.AttachmentType.Region) {
-                    continue;
-                }
-                var regionAttachment = attachment;
-                var vertices = new Float32Array(8);
-                regionAttachment === null || regionAttachment === void 0 ? void 0 : regionAttachment.updateOffset(); // We don't need this on all versions
-                regionAttachment.computeWorldVertices(slot, vertices, 0, 2);
-                this.debugObjects.regionAttachmentsShape.drawPolygon(Array.from(vertices.slice(0, 8)));
-            }
-        };
-        // 绘制蒙皮
-        SpineBase.prototype.drawMeshHullAndMeshTriangles = function (lineWidth) {
-            var skeleton = this.skeleton;
-            var slots = skeleton.slots;
-            this.debugObjects.meshHullLine.lineStyle(lineWidth, 0x0078ff, 1);
-            this.debugObjects.meshTrianglesLine.lineStyle(lineWidth, 0xffcc00, 1);
-            for (var i = 0, len = slots.length; i < len; i++) {
-                var slot = slots[i];
-                if (!slot.bone.active) {
-                    continue;
-                }
-                var attachment = slot.getAttachment();
-                if (attachment == null || attachment.type !== exports.AttachmentType.Mesh) {
-                    continue;
-                }
-                var meshAttachment = attachment;
-                var vertices = new Float32Array(meshAttachment.worldVerticesLength), triangles = meshAttachment.triangles;
-                var hullLength = meshAttachment.hullLength;
-                meshAttachment.computeWorldVertices(slot, 0, meshAttachment.worldVerticesLength, vertices, 0, 2);
-                // 画蒙皮网格（三角形）
-                if (this.drawMeshTriangles) {
-                    for (var i_1 = 0, len_1 = triangles.length; i_1 < len_1; i_1 += 3) {
-                        var v1 = triangles[i_1] * 2, v2 = triangles[i_1 + 1] * 2, v3 = triangles[i_1 + 2] * 2;
-                        this.debugObjects.meshTrianglesLine.moveTo(vertices[v1], vertices[v1 + 1]);
-                        this.debugObjects.meshTrianglesLine.lineTo(vertices[v2], vertices[v2 + 1]);
-                        this.debugObjects.meshTrianglesLine.lineTo(vertices[v3], vertices[v3 + 1]);
-                    }
-                }
-                // 画蒙皮边框
-                if (this.drawMeshHull && hullLength > 0) {
-                    hullLength = (hullLength >> 1) * 2;
-                    var lastX = vertices[hullLength - 2], lastY = vertices[hullLength - 1];
-                    for (var i_2 = 0, len_2 = hullLength; i_2 < len_2; i_2 += 2) {
-                        var x = vertices[i_2], y = vertices[i_2 + 1];
-                        this.debugObjects.meshHullLine.moveTo(x, y);
-                        this.debugObjects.meshHullLine.lineTo(lastX, lastY);
-                        lastX = x;
-                        lastY = y;
-                    }
-                }
-            }
-        };
-        // 蒙版区域
-        SpineBase.prototype.drawClippingFunc = function (lineWidth) {
-            var skeleton = this.skeleton;
-            var slots = skeleton.slots;
-            this.debugObjects.clippingPolygon.lineStyle(lineWidth, 0xff00ff, 1);
-            for (var i = 0, len = slots.length; i < len; i++) {
-                var slot = slots[i];
-                if (!slot.bone.active) {
-                    continue;
-                }
-                var attachment = slot.getAttachment();
-                if (attachment == null || attachment.type !== exports.AttachmentType.Clipping) {
-                    continue;
-                }
-                var clippingAttachment = attachment;
-                var nn = clippingAttachment.worldVerticesLength, world = new Float32Array(nn);
-                clippingAttachment.computeWorldVertices(slot, 0, nn, world, 0, 2);
-                this.debugObjects.clippingPolygon.drawPolygon(Array.from(world));
-            }
-        };
-        // 绘制边界框
-        SpineBase.prototype.drawBoundingBoxesFunc = function (lineWidth) {
-            var _this = this;
-            // 绘制边界框的总外框
-            this.debugObjects.boundingBoxesRect.lineStyle(lineWidth, 0x00ff00, 5);
-            var bounds = new SkeletonBoundsBase();
-            bounds.update(this.skeleton, true);
-            this.debugObjects.boundingBoxesRect.drawRect(bounds.minX, bounds.minY, bounds.getWidth(), bounds.getHeight());
-            var polygons = bounds.polygons, drawPolygon = function (polygonVertices, _offset, count) {
-                _this.debugObjects.boundingBoxesPolygon.lineStyle(lineWidth, 0x00ff00, 1);
-                _this.debugObjects.boundingBoxesPolygon.beginFill(0x00ff00, 0.1);
-                if (count < 3) {
-                    throw new Error("Polygon must contain at least 3 vertices");
-                }
-                var paths = [], dotSize = lineWidth * 2;
-                for (var i = 0, len = polygonVertices.length; i < len; i += 2) {
-                    var x1 = polygonVertices[i], y1 = polygonVertices[i + 1];
-                    // 绘制边界框节点
-                    _this.debugObjects.boundingBoxesCircle.lineStyle(0);
-                    _this.debugObjects.boundingBoxesCircle.beginFill(0x00dd00);
-                    _this.debugObjects.boundingBoxesCircle.drawCircle(x1, y1, dotSize);
-                    _this.debugObjects.boundingBoxesCircle.endFill();
-                    paths.push(x1, y1);
-                }
-                // 绘制边界框区域
-                _this.debugObjects.boundingBoxesPolygon.drawPolygon(paths);
-                _this.debugObjects.boundingBoxesPolygon.endFill();
-            };
-            for (var i = 0, len = polygons.length; i < len; i++) {
-                var polygon = polygons[i];
-                drawPolygon(polygon, 0, polygon.length);
-            }
-        };
-        // 绘制路径
-        SpineBase.prototype.drawPathsFunc = function (lineWidth) {
-            var skeleton = this.skeleton;
-            var slots = skeleton.slots;
-            this.debugObjects.pathsCurve.lineStyle(lineWidth, 0xff0000, 1);
-            this.debugObjects.pathsLine.lineStyle(lineWidth, 0xff00ff, 1);
-            for (var i = 0, len = slots.length; i < len; i++) {
-                var slot = slots[i];
-                if (!slot.bone.active) {
-                    continue;
-                }
-                var attachment = slot.getAttachment();
-                if (attachment == null || attachment.type !== exports.AttachmentType.Path) {
-                    continue;
-                }
-                var pathAttachment = attachment;
-                var nn = pathAttachment.worldVerticesLength;
-                var world = new Float32Array(nn);
-                pathAttachment.computeWorldVertices(slot, 0, nn, world, 0, 2);
-                var x1 = world[2], y1 = world[3], x2 = 0, y2 = 0;
-                if (pathAttachment.closed) {
-                    var cx1 = world[0], cy1 = world[1], cx2 = world[nn - 2], cy2 = world[nn - 1];
-                    x2 = world[nn - 4];
-                    y2 = world[nn - 3];
-                    // 曲线
-                    this.debugObjects.pathsCurve.moveTo(x1, y1);
-                    this.debugObjects.pathsCurve.bezierCurveTo(cx1, cy1, cx2, cy2, x2, y2);
-                    // 句柄
-                    this.debugObjects.pathsLine.moveTo(x1, y1);
-                    this.debugObjects.pathsLine.lineTo(cx1, cy1);
-                    this.debugObjects.pathsLine.moveTo(x2, y2);
-                    this.debugObjects.pathsLine.lineTo(cx2, cy2);
-                }
-                nn -= 4;
-                for (var ii = 4; ii < nn; ii += 6) {
-                    var cx1 = world[ii], cy1 = world[ii + 1], cx2 = world[ii + 2], cy2 = world[ii + 3];
-                    x2 = world[ii + 4];
-                    y2 = world[ii + 5];
-                    // 曲线
-                    this.debugObjects.pathsCurve.moveTo(x1, y1);
-                    this.debugObjects.pathsCurve.bezierCurveTo(cx1, cy1, cx2, cy2, x2, y2);
-                    // 句柄
-                    this.debugObjects.pathsLine.moveTo(x1, y1);
-                    this.debugObjects.pathsLine.lineTo(cx1, cy1);
-                    this.debugObjects.pathsLine.moveTo(x2, y2);
-                    this.debugObjects.pathsLine.lineTo(cx2, cy2);
-                    x1 = x2;
-                    y1 = y2;
-                }
-            }
-        };
         SpineBase.prototype.destroy = function (options) {
+            this.debug = null; // setter will do the cleanup
             for (var i = 0, n = this.skeleton.slots.length; i < n; i++) {
                 var slot = this.skeleton.slots[i];
                 for (var name_2 in slot.meshes) {
@@ -2479,17 +2138,6 @@ this.PIXI.spine = this.PIXI.spine || {};
             this.stateData = null;
             this.state = null;
             this.tempClipContainers = null;
-            if (this.debugObjects) {
-                var key = void 0;
-                for (key in this.debugObjects) {
-                    this.debugContainer.destroy({ baseTexture: options === null || options === void 0 ? void 0 : options.baseTexture, children: true, texture: options === null || options === void 0 ? void 0 : options.texture });
-                }
-                this.debugObjects = null;
-            }
-            if (this.debugContainer) {
-                this.debugContainer.destroy({ baseTexture: options === null || options === void 0 ? void 0 : options.baseTexture, children: true, texture: options === null || options === void 0 ? void 0 : options.texture });
-                this.debugContainer = null;
-            }
             _super.prototype.destroy.call(this, options);
         };
         SpineBase.clippingPolygon = [];
@@ -2516,6 +2164,366 @@ this.PIXI.spine = this.PIXI.spine || {};
             }
         }
     });
+
+    /**
+     * This is a debug renderer that uses PixiJS Graphics under the hood.
+     * @public
+     */
+    var SpineDebugRenderer = /** @class */ (function () {
+        function SpineDebugRenderer() {
+            this.registeredSpines = new Map();
+            this.drawDebug = true;
+            this.drawMeshHull = true;
+            this.drawMeshTriangles = true;
+            this.drawBones = true;
+            this.drawPaths = true;
+            this.drawBoundingBoxes = true;
+            this.drawClipping = true;
+            this.drawRegionAttachments = true;
+            this.lineWidth = 1;
+            this.regionAttachmentsColor = 0x0078ff;
+            this.meshHullColor = 0x0078ff;
+            this.meshTrianglesColor = 0xffcc00;
+            this.clippingPolygonColor = 0xff00ff;
+            this.boundingBoxesRectColor = 0x00ff00;
+            this.boundingBoxesPolygonColor = 0x00ff00;
+            this.boundingBoxesCircleColor = 0x00ff00;
+            this.pathsCurveColor = 0xff0000;
+            this.pathsLineColor = 0xff00ff;
+            this.skeletonXYColor = 0xff0000;
+            this.bonesColor = 0x00eecc;
+        }
+        /**
+         * The debug is attached by force to each spine object. So we need to create it inside the spine when we get the first update
+         */
+        SpineDebugRenderer.prototype.registerSpine = function (spine) {
+            if (this.registeredSpines.has(spine)) {
+                console.warn("SpineDebugRenderer.registerSpine() - this spine is already registered!", spine);
+            }
+            var debugDisplayObjects = {
+                parentDebugContainer: new display.Container(),
+                bones: new display.Container(),
+                skeletonXY: new graphics.Graphics(),
+                regionAttachmentsShape: new graphics.Graphics(),
+                meshTrianglesLine: new graphics.Graphics(),
+                meshHullLine: new graphics.Graphics(),
+                clippingPolygon: new graphics.Graphics(),
+                boundingBoxesRect: new graphics.Graphics(),
+                boundingBoxesCircle: new graphics.Graphics(),
+                boundingBoxesPolygon: new graphics.Graphics(),
+                pathsCurve: new graphics.Graphics(),
+                pathsLine: new graphics.Graphics(),
+            };
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.bones);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.skeletonXY);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.regionAttachmentsShape);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.meshTrianglesLine);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.meshHullLine);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.clippingPolygon);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.boundingBoxesRect);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.boundingBoxesCircle);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.boundingBoxesPolygon);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.pathsCurve);
+            debugDisplayObjects.parentDebugContainer.addChild(debugDisplayObjects.pathsLine);
+            spine.addChild(debugDisplayObjects.parentDebugContainer);
+            this.registeredSpines.set(spine, debugDisplayObjects);
+        };
+        SpineDebugRenderer.prototype.renderDebug = function (spine) {
+            if (!this.registeredSpines.has(spine)) {
+                // This should never happen. Spines are registered when you assign spine.debug
+                this.registerSpine(spine);
+            }
+            var debugDisplayObjects = this.registeredSpines.get(spine);
+            debugDisplayObjects.skeletonXY.clear();
+            debugDisplayObjects.regionAttachmentsShape.clear();
+            debugDisplayObjects.meshTrianglesLine.clear();
+            debugDisplayObjects.meshHullLine.clear();
+            debugDisplayObjects.clippingPolygon.clear();
+            debugDisplayObjects.boundingBoxesRect.clear();
+            debugDisplayObjects.boundingBoxesCircle.clear();
+            debugDisplayObjects.boundingBoxesPolygon.clear();
+            debugDisplayObjects.pathsCurve.clear();
+            debugDisplayObjects.pathsLine.clear();
+            for (var len = debugDisplayObjects.bones.children.length; len > 0; len--) {
+                debugDisplayObjects.bones.children[len - 1].destroy({ children: true, texture: true, baseTexture: true });
+            }
+            var scale = spine.scale.x || spine.scale.y || 1;
+            var lineWidth = this.lineWidth / scale;
+            if (this.drawBones) {
+                this.drawBonesFunc(spine, debugDisplayObjects, lineWidth, scale);
+            }
+            if (this.drawPaths) {
+                this.drawPathsFunc(spine, debugDisplayObjects, lineWidth);
+            }
+            if (this.drawBoundingBoxes) {
+                this.drawBoundingBoxesFunc(spine, debugDisplayObjects, lineWidth);
+            }
+            if (this.drawClipping) {
+                this.drawClippingFunc(spine, debugDisplayObjects, lineWidth);
+            }
+            if (this.drawMeshHull || this.drawMeshTriangles) {
+                this.drawMeshHullAndMeshTriangles(spine, debugDisplayObjects, lineWidth);
+            }
+            if (this.drawRegionAttachments) {
+                this.drawRegionAttachmentsFunc(spine, debugDisplayObjects, lineWidth);
+            }
+        };
+        SpineDebugRenderer.prototype.drawBonesFunc = function (spine, debugDisplayObjects, lineWidth, scale) {
+            var skeleton = spine.skeleton;
+            var skeletonX = skeleton.x;
+            var skeletonY = skeleton.y;
+            var bones = skeleton.bones;
+            debugDisplayObjects.skeletonXY.lineStyle(lineWidth, this.skeletonXYColor, 1);
+            for (var i = 0, len = bones.length; i < len; i++) {
+                var bone = bones[i], boneLen = bone.data.length, starX = skeletonX + bone.matrix.tx, starY = skeletonY + bone.matrix.ty, endX = skeletonX + boneLen * bone.matrix.a + bone.matrix.tx, endY = skeletonY + boneLen * bone.matrix.b + bone.matrix.ty;
+                if (bone.data.name === "root" || bone.data.parent === null) {
+                    continue;
+                }
+                // Triangle calculation formula
+                // area: A=sqrt((a+b+c)*(-a+b+c)*(a-b+c)*(a+b-c))/4
+                // alpha: alpha=acos((pow(b, 2)+pow(c, 2)-pow(a, 2))/(2*b*c))
+                // beta: beta=acos((pow(a, 2)+pow(c, 2)-pow(b, 2))/(2*a*c))
+                // gamma: gamma=acos((pow(a, 2)+pow(b, 2)-pow(c, 2))/(2*a*b))
+                var w = Math.abs(starX - endX), h = Math.abs(starY - endY), 
+                // a = w, // side length a
+                a2 = Math.pow(w, 2), // square root of side length a
+                b = h, // side length b
+                b2 = Math.pow(h, 2), // square root of side length b
+                c = Math.sqrt(a2 + b2), // side length c
+                c2 = Math.pow(c, 2), // square root of side length c
+                rad = Math.PI / 180, 
+                // A = Math.acos([a2 + c2 - b2] / [2 * a * c]) || 0, // Angle A
+                // C = Math.acos([a2 + b2 - c2] / [2 * a * b]) || 0, // C angle
+                B = Math.acos((c2 + b2 - a2) / (2 * b * c)) || 0; // angle of corner B
+                if (c === 0) {
+                    continue;
+                }
+                var gp = new graphics.Graphics();
+                debugDisplayObjects.bones.addChild(gp);
+                // draw bone
+                var refRation = c / 50 / scale;
+                gp.beginFill(this.bonesColor, 1);
+                gp.drawPolygon(0, 0, 0 - refRation, c - refRation * 3, 0, c - refRation, 0 + refRation, c - refRation * 3);
+                gp.endFill();
+                gp.x = starX;
+                gp.y = starY;
+                gp.pivot.y = c;
+                // Calculate bone rotation angle
+                var rotation = 0;
+                if (starX < endX && starY < endY) {
+                    // bottom right
+                    rotation = -B + 180 * rad;
+                }
+                else if (starX > endX && starY < endY) {
+                    // bottom left
+                    rotation = 180 * rad + B;
+                }
+                else if (starX > endX && starY > endY) {
+                    // top left
+                    rotation = -B;
+                }
+                else if (starX < endX && starY > endY) {
+                    // bottom left
+                    rotation = B;
+                }
+                else if (starY === endY && starX < endX) {
+                    // To the right
+                    rotation = 90 * rad;
+                }
+                else if (starY === endY && starX > endX) {
+                    // go left
+                    rotation = -90 * rad;
+                }
+                else if (starX === endX && starY < endY) {
+                    // down
+                    rotation = 180 * rad;
+                }
+                else if (starX === endX && starY > endY) {
+                    // up
+                    rotation = 0;
+                }
+                gp.rotation = rotation;
+                // Draw the starting rotation point of the bone
+                gp.lineStyle(lineWidth + refRation / 2.4, this.bonesColor, 1);
+                gp.beginFill(0x000000, 0.6);
+                gp.drawCircle(0, c, refRation * 1.2);
+                gp.endFill();
+            }
+            // Draw the skeleton starting point "X" form
+            var startDotSize = lineWidth * 3;
+            debugDisplayObjects.skeletonXY.moveTo(skeletonX - startDotSize, skeletonY - startDotSize);
+            debugDisplayObjects.skeletonXY.lineTo(skeletonX + startDotSize, skeletonY + startDotSize);
+            debugDisplayObjects.skeletonXY.moveTo(skeletonX + startDotSize, skeletonY - startDotSize);
+            debugDisplayObjects.skeletonXY.lineTo(skeletonX - startDotSize, skeletonY + startDotSize);
+        };
+        SpineDebugRenderer.prototype.drawRegionAttachmentsFunc = function (spine, debugDisplayObjects, lineWidth) {
+            var skeleton = spine.skeleton;
+            var slots = skeleton.slots;
+            debugDisplayObjects.regionAttachmentsShape.lineStyle(lineWidth, this.regionAttachmentsColor, 1);
+            for (var i = 0, len = slots.length; i < len; i++) {
+                var slot = slots[i], attachment = slot.getAttachment();
+                if (attachment == null || attachment.type !== exports.AttachmentType.Region) {
+                    continue;
+                }
+                var regionAttachment = attachment;
+                var vertices = new Float32Array(8);
+                regionAttachment === null || regionAttachment === void 0 ? void 0 : regionAttachment.updateOffset(); // We don't need this on all versions
+                regionAttachment.computeWorldVertices(slot, vertices, 0, 2);
+                debugDisplayObjects.regionAttachmentsShape.drawPolygon(Array.from(vertices.slice(0, 8)));
+            }
+        };
+        SpineDebugRenderer.prototype.drawMeshHullAndMeshTriangles = function (spine, debugDisplayObjects, lineWidth) {
+            var skeleton = spine.skeleton;
+            var slots = skeleton.slots;
+            debugDisplayObjects.meshHullLine.lineStyle(lineWidth, this.meshHullColor, 1);
+            debugDisplayObjects.meshTrianglesLine.lineStyle(lineWidth, this.meshTrianglesColor, 1);
+            for (var i = 0, len = slots.length; i < len; i++) {
+                var slot = slots[i];
+                if (!slot.bone.active) {
+                    continue;
+                }
+                var attachment = slot.getAttachment();
+                if (attachment == null || attachment.type !== exports.AttachmentType.Mesh) {
+                    continue;
+                }
+                var meshAttachment = attachment;
+                var vertices = new Float32Array(meshAttachment.worldVerticesLength), triangles = meshAttachment.triangles;
+                var hullLength = meshAttachment.hullLength;
+                meshAttachment.computeWorldVertices(slot, 0, meshAttachment.worldVerticesLength, vertices, 0, 2);
+                // draw the skinned mesh (triangle)
+                if (this.drawMeshTriangles) {
+                    for (var i_1 = 0, len_1 = triangles.length; i_1 < len_1; i_1 += 3) {
+                        var v1 = triangles[i_1] * 2, v2 = triangles[i_1 + 1] * 2, v3 = triangles[i_1 + 2] * 2;
+                        debugDisplayObjects.meshTrianglesLine.moveTo(vertices[v1], vertices[v1 + 1]);
+                        debugDisplayObjects.meshTrianglesLine.lineTo(vertices[v2], vertices[v2 + 1]);
+                        debugDisplayObjects.meshTrianglesLine.lineTo(vertices[v3], vertices[v3 + 1]);
+                    }
+                }
+                // draw skin border
+                if (this.drawMeshHull && hullLength > 0) {
+                    hullLength = (hullLength >> 1) * 2;
+                    var lastX = vertices[hullLength - 2], lastY = vertices[hullLength - 1];
+                    for (var i_2 = 0, len_2 = hullLength; i_2 < len_2; i_2 += 2) {
+                        var x = vertices[i_2], y = vertices[i_2 + 1];
+                        debugDisplayObjects.meshHullLine.moveTo(x, y);
+                        debugDisplayObjects.meshHullLine.lineTo(lastX, lastY);
+                        lastX = x;
+                        lastY = y;
+                    }
+                }
+            }
+        };
+        SpineDebugRenderer.prototype.drawClippingFunc = function (spine, debugDisplayObjects, lineWidth) {
+            var skeleton = spine.skeleton;
+            var slots = skeleton.slots;
+            debugDisplayObjects.clippingPolygon.lineStyle(lineWidth, this.clippingPolygonColor, 1);
+            for (var i = 0, len = slots.length; i < len; i++) {
+                var slot = slots[i];
+                if (!slot.bone.active) {
+                    continue;
+                }
+                var attachment = slot.getAttachment();
+                if (attachment == null || attachment.type !== exports.AttachmentType.Clipping) {
+                    continue;
+                }
+                var clippingAttachment = attachment;
+                var nn = clippingAttachment.worldVerticesLength, world = new Float32Array(nn);
+                clippingAttachment.computeWorldVertices(slot, 0, nn, world, 0, 2);
+                debugDisplayObjects.clippingPolygon.drawPolygon(Array.from(world));
+            }
+        };
+        SpineDebugRenderer.prototype.drawBoundingBoxesFunc = function (spine, debugDisplayObjects, lineWidth) {
+            var _this = this;
+            // draw the total outline of the bounding box
+            debugDisplayObjects.boundingBoxesRect.lineStyle(lineWidth, this.boundingBoxesRectColor, 5);
+            var bounds = new SkeletonBoundsBase();
+            bounds.update(spine.skeleton, true);
+            debugDisplayObjects.boundingBoxesRect.drawRect(bounds.minX, bounds.minY, bounds.getWidth(), bounds.getHeight());
+            var polygons = bounds.polygons, drawPolygon = function (polygonVertices, _offset, count) {
+                debugDisplayObjects.boundingBoxesPolygon.lineStyle(lineWidth, _this.boundingBoxesPolygonColor, 1);
+                debugDisplayObjects.boundingBoxesPolygon.beginFill(_this.boundingBoxesPolygonColor, 0.1);
+                if (count < 3) {
+                    throw new Error("Polygon must contain at least 3 vertices");
+                }
+                var paths = [], dotSize = lineWidth * 2;
+                for (var i = 0, len = polygonVertices.length; i < len; i += 2) {
+                    var x1 = polygonVertices[i], y1 = polygonVertices[i + 1];
+                    // draw the bounding box node
+                    debugDisplayObjects.boundingBoxesCircle.lineStyle(0);
+                    debugDisplayObjects.boundingBoxesCircle.beginFill(_this.boundingBoxesCircleColor);
+                    debugDisplayObjects.boundingBoxesCircle.drawCircle(x1, y1, dotSize);
+                    debugDisplayObjects.boundingBoxesCircle.endFill();
+                    paths.push(x1, y1);
+                }
+                // draw the bounding box area
+                debugDisplayObjects.boundingBoxesPolygon.drawPolygon(paths);
+                debugDisplayObjects.boundingBoxesPolygon.endFill();
+            };
+            for (var i = 0, len = polygons.length; i < len; i++) {
+                var polygon = polygons[i];
+                drawPolygon(polygon, 0, polygon.length);
+            }
+        };
+        SpineDebugRenderer.prototype.drawPathsFunc = function (spine, debugDisplayObjects, lineWidth) {
+            var skeleton = spine.skeleton;
+            var slots = skeleton.slots;
+            debugDisplayObjects.pathsCurve.lineStyle(lineWidth, this.pathsCurveColor, 1);
+            debugDisplayObjects.pathsLine.lineStyle(lineWidth, this.pathsLineColor, 1);
+            for (var i = 0, len = slots.length; i < len; i++) {
+                var slot = slots[i];
+                if (!slot.bone.active) {
+                    continue;
+                }
+                var attachment = slot.getAttachment();
+                if (attachment == null || attachment.type !== exports.AttachmentType.Path) {
+                    continue;
+                }
+                var pathAttachment = attachment;
+                var nn = pathAttachment.worldVerticesLength;
+                var world = new Float32Array(nn);
+                pathAttachment.computeWorldVertices(slot, 0, nn, world, 0, 2);
+                var x1 = world[2], y1 = world[3], x2 = 0, y2 = 0;
+                if (pathAttachment.closed) {
+                    var cx1 = world[0], cy1 = world[1], cx2 = world[nn - 2], cy2 = world[nn - 1];
+                    x2 = world[nn - 4];
+                    y2 = world[nn - 3];
+                    // curve
+                    debugDisplayObjects.pathsCurve.moveTo(x1, y1);
+                    debugDisplayObjects.pathsCurve.bezierCurveTo(cx1, cy1, cx2, cy2, x2, y2);
+                    // handle
+                    debugDisplayObjects.pathsLine.moveTo(x1, y1);
+                    debugDisplayObjects.pathsLine.lineTo(cx1, cy1);
+                    debugDisplayObjects.pathsLine.moveTo(x2, y2);
+                    debugDisplayObjects.pathsLine.lineTo(cx2, cy2);
+                }
+                nn -= 4;
+                for (var ii = 4; ii < nn; ii += 6) {
+                    var cx1 = world[ii], cy1 = world[ii + 1], cx2 = world[ii + 2], cy2 = world[ii + 3];
+                    x2 = world[ii + 4];
+                    y2 = world[ii + 5];
+                    // curve
+                    debugDisplayObjects.pathsCurve.moveTo(x1, y1);
+                    debugDisplayObjects.pathsCurve.bezierCurveTo(cx1, cy1, cx2, cy2, x2, y2);
+                    // handle
+                    debugDisplayObjects.pathsLine.moveTo(x1, y1);
+                    debugDisplayObjects.pathsLine.lineTo(cx1, cy1);
+                    debugDisplayObjects.pathsLine.moveTo(x2, y2);
+                    debugDisplayObjects.pathsLine.lineTo(cx2, cy2);
+                    x1 = x2;
+                    y1 = y2;
+                }
+            }
+        };
+        SpineDebugRenderer.prototype.unregisterSpine = function (spine) {
+            if (!this.registeredSpines.has(spine)) {
+                console.warn("SpineDebugRenderer.unregisterSpine() - spine is not registered, can't unregister!", spine);
+            }
+            var debugDisplayObjects = this.registeredSpines.get(spine);
+            debugDisplayObjects.parentDebugContainer.destroy({ baseTexture: true, children: true, texture: true });
+            this.registeredSpines.delete(spine);
+        };
+        return SpineDebugRenderer;
+    }());
 
     /* eslint-disable */
 
@@ -24167,6 +24175,7 @@ this.PIXI.spine = this.PIXI.spine || {};
     exports.SkeletonBoundsBase = SkeletonBoundsBase;
     exports.Spine = Spine;
     exports.SpineBase = SpineBase;
+    exports.SpineDebugRenderer = SpineDebugRenderer;
     exports.SpineMesh = SpineMesh;
     exports.SpineParser = SpineParser;
     exports.SpineSprite = SpineSprite;

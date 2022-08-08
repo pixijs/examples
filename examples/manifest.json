@@ -324,6 +324,43 @@
             ]
         }
     ],
+    "assets": [
+        {
+            "title": "Promise",
+            "entry": "promise.js",
+            "plugins": [
+                "@pixi/assets"
+            ]
+        },
+        {
+            "title": "Async/Await",
+            "entry": "async.js",
+            "plugins": [
+                "@pixi/assets"
+            ]
+        },
+        {
+            "title": "Load Multiple",
+            "entry": "multiple.js",
+            "plugins": [
+                "@pixi/assets"
+            ]
+        },
+        {
+            "title": "Background Load",
+            "entry": "background.js",
+            "plugins": [
+                "@pixi/assets"
+            ]
+        },
+        {
+            "title": "Bundles",
+            "entry": "bundle.js",
+            "plugins": [
+                "@pixi/assets"
+            ]
+        }
+    ],
     "plugin-filters": [
         {
             "title": "Outline",

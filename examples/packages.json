@@ -3,6 +3,10 @@
         "script": "/events.js",
         "vendor": "https://pixijs.download/{version}/packages"
     },
+    "@pixi/assets": {
+        "script": "/assets.js",
+        "vendor": "https://pixijs.download/{version}/packages"
+    },
     "@pixi/graphics-extras": {
         "script": "/graphics-extras.js",
         "vendor": "https://pixijs.download/{version}/packages"

@@ -88,24 +88,24 @@ const bounds = new PIXI.Rectangle(
     app.screen.width + padding * 2,
     app.screen.height + padding * 2,
 );
-const maggots = [];
+const doges = [];
 
 for (let i = 0; i < 20; i++) {
-    const maggot = PIXI.Sprite.from('https://pixijs.io/examples/examples/assets/maggot.png');
-    maggot.anchor.set(0.5);
-    container.addChild(maggot);
+    const doge = PIXI.Sprite.from('examples/assets/pixi_doge.png');
+    doge.anchor.set(0.5);
+    container.addChild(doge);
 
-    maggot.direction = Math.random() * Math.PI * 2;
-    maggot.speed = 1;
-    maggot.turnSpeed = Math.random() - 0.8;
+    doge.direction = Math.random() * Math.PI * 2;
+    doge.speed = 1;
+    doge.turnSpeed = Math.random() - 0.8;
 
-    maggot.x = Math.random() * bounds.width;
-    maggot.y = Math.random() * bounds.height;
+    doge.x = Math.random() * bounds.width;
+    doge.y = Math.random() * bounds.height;
 
-    maggot.scale.set(1 + Math.random() * 0.3);
-    maggot.original = new PIXI.Point();
-    maggot.original.copyFrom(maggot.scale);
-    maggots.push(maggot);
+    doge.scale.set(1 + Math.random() * 0.3);
+    doge.original = new PIXI.Point();
+    doge.original.copyFrom(doge.scale);
+    doges.push(doge);
 }
 const displacementContainer = new PIXI.Container();
 const displacementTexture = PIXI.Texture.from('https://pixijs.io/examples/examples/assets/pixi-filters/displace.png');
@@ -160,27 +160,27 @@ let count = 0;
 app.ticker.add(() => {
     count += 0.05;
 
-    for (let i = 0; i < maggots.length; i++) {
-        const maggot = maggots[i];
+    for (let i = 0; i < doges.length; i++) {
+        const doge = doges[i];
 
-        maggot.direction += maggot.turnSpeed * 0.01;
-        maggot.x += Math.sin(maggot.direction) * maggot.speed;
-        maggot.y += Math.cos(maggot.direction) * maggot.speed;
+        doge.direction += doge.turnSpeed * 0.01;
+        doge.x += Math.sin(doge.direction) * doge.speed;
+        doge.y += Math.cos(doge.direction) * doge.speed;
 
-        maggot.rotation = -maggot.direction - Math.PI / 2;
-        maggot.scale.x = maggot.original.x + Math.sin(count) * 0.2;
+        doge.rotation = -doge.direction - Math.PI / 2;
+        doge.scale.x = doge.original.x + Math.sin(count) * 0.2;
 
-        // wrap the maggots around as the crawl
-        if (maggot.x < bounds.x) {
-            maggot.x += bounds.width;
-        } else if (maggot.x > bounds.x + bounds.width) {
-            maggot.x -= bounds.width;
+        // wrap the doges around as the crawl
+        if (doge.x < bounds.x) {
+            doge.x += bounds.width;
+        } else if (doge.x > bounds.x + bounds.width) {
+            doge.x -= bounds.width;
         }
 
-        if (maggot.y < bounds.y) {
-            maggot.y += bounds.height;
-        } else if (maggot.y > bounds.y + bounds.height) {
-            maggot.y -= bounds.height;
+        if (doge.y < bounds.y) {
+            doge.y += bounds.height;
+        } else if (doge.y > bounds.y + bounds.height) {
+            doge.y -= bounds.height;
         }
     }
 });

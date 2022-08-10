@@ -11,25 +11,25 @@ const sprites = new PIXI.ParticleContainer(10000, {
 app.stage.addChild(sprites);
 
 // create an array to store all the sprites
-const maggots = [];
+const doges = [];
 
 const totalSprites = app.renderer instanceof PIXI.Renderer ? 10000 : 100;
 
 for (let i = 0; i < totalSprites; i++) {
     // create a new Sprite
-    const dude = PIXI.Sprite.from('examples/assets/maggot_tiny.png');
+    const dude = PIXI.Sprite.from('examples/assets/pixi_doge.png');
 
     // set the anchor point so the texture is centerd on the sprite
     dude.anchor.set(0.5);
 
-    // different maggots, different sizes
+    // different doges, different sizes
     dude.scale.set(0.8 + Math.random() * 0.3);
 
     // scatter them all
     dude.x = Math.random() * app.screen.width;
     dude.y = Math.random() * app.screen.height;
 
-    dude.tint = Math.random() * 0x808080;
+    // dude.tint = Math.random() * 0x808080;
 
     // create a random direction in radians
     dude.direction = Math.random() * Math.PI * 2;
@@ -37,18 +37,18 @@ for (let i = 0; i < totalSprites; i++) {
     // this number will be used to modify the direction of the sprite over time
     dude.turningSpeed = Math.random() - 0.8;
 
-    // create a random speed between 0 - 2, and these maggots are slooww
+    // create a random speed between 0 - 2, and these doges are slooww
     dude.speed = (2 + Math.random() * 2) * 0.2;
 
     dude.offset = Math.random() * 100;
 
-    // finally we push the dude into the maggots array so it it can be easily accessed later
-    maggots.push(dude);
+    // finally we push the dude into the doges array so it it can be easily accessed later
+    doges.push(dude);
 
     sprites.addChild(dude);
 }
 
-// create a bounding box box for the little maggots
+// create a bounding box box for the little doges
 const dudeBoundsPadding = 100;
 const dudeBounds = new PIXI.Rectangle(
     -dudeBoundsPadding,
@@ -61,15 +61,15 @@ let tick = 0;
 
 app.ticker.add(() => {
     // iterate through the sprites and update their position
-    for (let i = 0; i < maggots.length; i++) {
-        const dude = maggots[i];
+    for (let i = 0; i < doges.length; i++) {
+        const dude = doges[i];
         dude.scale.y = 0.95 + Math.sin(tick + dude.offset) * 0.05;
         dude.direction += dude.turningSpeed * 0.01;
         dude.x += Math.sin(dude.direction) * (dude.speed * dude.scale.y);
         dude.y += Math.cos(dude.direction) * (dude.speed * dude.scale.y);
         dude.rotation = -dude.direction + Math.PI;
 
-        // wrap the maggots
+        // wrap the doges
         if (dude.x < dudeBounds.x) {
             dude.x += dudeBounds.width;
         } else if (dude.x > dudeBounds.x + dudeBounds.width) {

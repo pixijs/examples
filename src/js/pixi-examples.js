@@ -24,7 +24,7 @@ function reload() {
 
 jQuery(document).ready(($) => {
     window.onpopstate = function onpopstate(event) {
-        bpc.pixiVersionString = getParameterByName('v') || 'dev';
+        bpc.pixiVersionString = getParameterByName('v') || 'v6.x';
         bpc.generateIFrameContent();
 
         $('.select-group .select li.selected').removeClass('selected');
@@ -36,7 +36,7 @@ jQuery(document).ready(($) => {
     };
 
     bpc.allowedVersions = [6, 5];
-    bpc.pixiVersionString = getParameterByName('v') || 'dev';
+    bpc.pixiVersionString = getParameterByName('v') || 'v6.x';
     bpc.majorPixiVersion = getMajorPixiVersion(bpc.pixiVersionString);
 
     bpc.exampleUrl = '';

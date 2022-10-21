@@ -25,7 +25,9 @@ function setup(loader, resources) {
     imageToReveal.width = app.screen.width;
     imageToReveal.height = app.screen.height;
 
-    const renderTexture = PIXI.RenderTexture.create(app.screen.width, app.screen.height);
+    const renderTexture = PIXI.RenderTexture.create({
+        width: app.screen.width, height: app.screen.height
+    });
 
     const renderTextureSprite = new PIXI.Sprite(renderTexture);
     stage.addChild(renderTextureSprite);
@@ -41,7 +43,12 @@ function setup(loader, resources) {
     function pointerMove(event) {
         if (dragging) {
             brush.position.copyFrom(event.data.global);
-            app.renderer.render(brush, renderTexture, false, null, false);
+            app.renderer.render(brush, {
+                renderTexture,
+                clear: false,
+                transform: null,
+                skipUpdateTransform: false
+            });
         }
     }
 

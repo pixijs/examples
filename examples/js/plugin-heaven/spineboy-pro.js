@@ -42,7 +42,6 @@ function onAssetsLoaded(loader, res) {
         lastAnimation = animation;
     });
 
-
     let phase = 0;
     app.ticker.add(() => {
         phase += 0.1;

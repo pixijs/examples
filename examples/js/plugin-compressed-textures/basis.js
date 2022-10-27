@@ -1,4 +1,3 @@
-
 // please look in README file of pixi-compressed-textures plugin by the link
 // https://github.com/pixijs/pixi-compressed-textures/blob/master/README.md
 
@@ -68,7 +67,6 @@ function show() {
     // basis use async loading, we need capture when textures was updated
     t.baseTexture.on('update', onLoad);
     tt.baseTexture.on('update', onLoad);
-
 
     app.stage.addChild(tree, test);
 }

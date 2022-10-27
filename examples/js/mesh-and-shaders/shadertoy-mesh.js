@@ -36,7 +36,6 @@ const vertexSrc = `
 
     }`;
 
-
 const fragmentSrc = `
 //Based on this: https://www.shadertoy.com/view/wtlSWX
 precision mediump float;

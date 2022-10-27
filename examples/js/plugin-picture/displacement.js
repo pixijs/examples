@@ -72,7 +72,6 @@ class DisplacementFilter extends PIXI.Filter {
     }
 }
 
-
 const app = new PIXI.Application(800, 600);
 document.body.appendChild(app.view);
 
@@ -122,7 +121,6 @@ displacementContainer.filters = [displacementFilter];
 displacementFilter.scale.x = 110;
 displacementFilter.scale.y = 110;
 // displacementFilter.padding = 0;
-
 
 const ringTexture = PIXI.Texture.from('https://pixijs.io/examples/examples/assets/pixi-filters/ring.png');
 const rings = new PIXI.Container();

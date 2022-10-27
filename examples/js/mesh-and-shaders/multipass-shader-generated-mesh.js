@@ -40,7 +40,6 @@ const vertexSrc = `
 // Load a perlinnoise texture for one of the shaders.
 const perlinTexture = PIXI.Texture.from('examples/assets/perlin.jpg');
 
-
 // First pass, generates a grid.
 const fragmentGridSrc = `
 precision mediump float;

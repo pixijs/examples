@@ -26,7 +26,7 @@ function setup(loader, resources) {
     imageToReveal.height = app.screen.height;
 
     const renderTexture = PIXI.RenderTexture.create({
-        width: app.screen.width, height: app.screen.height
+        width: app.screen.width, height: app.screen.height,
     });
 
     const renderTextureSprite = new PIXI.Sprite(renderTexture);
@@ -47,7 +47,7 @@ function setup(loader, resources) {
                 renderTexture,
                 clear: false,
                 transform: null,
-                skipUpdateTransform: false
+                skipUpdateTransform: false,
             });
         }
     }

@@ -48,7 +48,6 @@ graphics.lineStyle(20, 0x33FF00);
 graphics.moveTo(30, 30);
 graphics.lineTo(600, 300);
 
-
 app.stage.addChild(graphics);
 
 // let's create a moving shape

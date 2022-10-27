@@ -81,7 +81,6 @@ function updateTrail(param) {
     }
 }
 
-
 /**
  * Cubic interpolation based on https://github.com/osuushi/Smooth.js
  */

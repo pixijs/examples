@@ -8,7 +8,6 @@ PIXI.Assets.add('eggHead', 'examples/assets/eggHead.png');
 // Allow the assets to load in the background
 PIXI.Assets.backgroundLoad(['flowerTop', 'eggHead']);
 
-
 // If the background load hasn't loaded this asset yet, calling load forces this asset to load now.
 PIXI.Assets.load('eggHead').then((texture) => {
     // auxiliar flag for toggling the texture

@@ -84,9 +84,7 @@ const shader2 = PIXI.Shader.from(`
     uSampler2: PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg'),
 });
 
-
 const triangle = new PIXI.Mesh(geometry, shader);
-
 
 const triangle2 = new PIXI.Mesh(geometry, shader2);
 

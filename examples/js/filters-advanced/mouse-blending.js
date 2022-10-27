@@ -11,7 +11,6 @@ background.width = app.screen.width;
 background.height = app.screen.height;
 app.stage.addChild(background);
 
-
 // NOTE: this shader wont work on old devices where mediump precision is forced in fragment shader
 // because v5 default vertex shader uses `inputSize` in it. Same uniform in fragment and vertex shader
 // cant have different precision :(

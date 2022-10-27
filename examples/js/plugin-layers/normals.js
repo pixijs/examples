@@ -12,7 +12,6 @@ stage.addChild(new PIXI.display.Layer(PIXI.lights.diffuseGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.normalGroup));
 stage.addChild(new PIXI.display.Layer(PIXI.lights.lightGroup));
 
-
 const lightLoader = new PIXI.Loader();
 lightLoader.baseUrl = 'examples/assets/lights/';
 lightLoader

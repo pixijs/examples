@@ -8,7 +8,6 @@ PIXI.Assets.add('eggHead', 'examples/assets/eggHead.png');
 // Load the assets and get a resolved promise once both are loaded
 const texturesPromise = PIXI.Assets.load(['flowerTop', 'eggHead']); // => Promise<{flowerTop: Texture, eggHead: Texture}>
 
-
 // When the promise resolves, we have the texture!
 texturesPromise.then((textures) => {
     // create a new Sprite from the resolved loaded Textures

@@ -13,7 +13,6 @@ let warpSpeed = 0;
 const starStretch = 5;
 const starBaseSize = 0.05;
 
-
 // Create the stars
 const stars = [];
 for (let i = 0; i < starAmount; i++) {

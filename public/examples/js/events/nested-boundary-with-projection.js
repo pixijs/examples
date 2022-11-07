@@ -2,10 +2,8 @@
 // into a disjoint scene graph. Here, a camera is used to project an different
 // world onto the canvas.
 
-// Create app
 const app = new PIXI.Application({
     antialias: true,
-    autoDensity: true,
     background: '#1099bb',
 });
 document.body.appendChild(app.view);

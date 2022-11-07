@@ -17,11 +17,8 @@ const dissolveFilter = new PIXI.picture.BlendFilter({
 // Setup app - autoStart false since we will render only once
 // to save battery life
 const app = new PIXI.Application({
-    autoDensity: true,
     autoStart: false,
-    backgroundColor: 0,
-    resolution: devicePixelRatio,
-    transparent: true,
+    backgroundAlpha: 0,
 });
 
 document.body.appendChild(app.view);

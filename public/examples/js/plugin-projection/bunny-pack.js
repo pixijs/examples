@@ -205,12 +205,7 @@ class Bag extends PROJ.Container3d {
     }
 }
 
-// Create our application instance
-const app = new PIXI.Application({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    backgroundColor: 0x2c3e50,
-});
+const app = new PIXI.Application({ background: '#2c3e50' });
 document.body.appendChild(app.view);
 
 // Load the bunny texture

@@ -1,10 +1,6 @@
 const app = new PIXI.Application({
-    autoDensity: true,
     autoStart: false,
-    backgroundColor: 0,
-    resolution: devicePixelRatio,
-    transparent: true,
-    // forceCanvas: true, // uncomment and check that canvas2d works the same
+    backgroundAlpha: 0,
 });
 const { stage, renderer } = app;
 

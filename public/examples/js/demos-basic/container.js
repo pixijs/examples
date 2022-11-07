@@ -1,6 +1,4 @@
-const app = new PIXI.Application({
-    background: '#1099bb',
-});
+const app = new PIXI.Application({ background: '#1099bb' });
 document.body.appendChild(app.view);
 
 const container = new PIXI.Container();

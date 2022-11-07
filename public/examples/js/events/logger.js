@@ -1,8 +1,6 @@
 // This example logs the order of events hover-related events in the scene.
-// Create app
 const app = new PIXI.Application({
     antialias: true,
-    autoDensity: true,
     background: '#1099bb',
 });
 document.body.appendChild(app.view);

@@ -66,9 +66,9 @@ jQuery(document).ready(($) => {
     bpc.init = function init() {
         const embedded = bpc.embedMode();
 
-        Object.keys(examplesData).filter((i) => examplesData[i].visible !== false).forEach((i) => {
-            let html = `<span class="section" data-section="${i}">${i}</span><ul data-section="${i}">`;
-            examplesData[i].items.filter((item) => item.visible !== false).forEach((item) => {
+        examplesData.filter((section) => section.visible !== false).forEach(({ id, title, items }) => {
+            let html = `<span class="section" data-section="${id}">${title}</span><ul data-section="${id}">`;
+            items.filter((item) => item.visible !== false).forEach((item) => {
                 const plugins = typeof item.plugins !== 'undefined' ? item.plugins.join(',') : '';
                 const validVersions = typeof item.validVersions !== 'undefined' ? item.validVersions.join(',') : '';
                 html += `<li data-src="${item.entry}" data-plugins="${plugins}" data-validVersions="${validVersions}">${item.title}</li>`;

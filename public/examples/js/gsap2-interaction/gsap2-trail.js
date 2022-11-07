@@ -1,9 +1,4 @@
-const app = new PIXI.Application({
-    width: 800,
-    height: 600,
-    background: '#1099bb',
-});
-
+const app = new PIXI.Application({ background: '#1099bb' });
 document.body.appendChild(app.view);
 
 // We stop Pixi ticker using stop() function because autoStart = false does NOT stop the shared ticker:

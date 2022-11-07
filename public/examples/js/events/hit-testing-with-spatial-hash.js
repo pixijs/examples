@@ -134,7 +134,6 @@ function main() {
     // something changes - this prevents redundant spatial-hash updates.
     const app = new PIXI.Application({
         antialias: true,
-        autoDensity: true,
         autoStart: false,
         background: '#1099bb',
     });

@@ -1,5 +1,7 @@
-{
-	"demos-basic": {
+[
+    {
+        "id": "demos-basic",
+        "title": "Basic",
 		"items": [{
 				"title": "Container",
 				"entry": "container.js"
@@ -30,7 +32,9 @@
 			}
 		]
 	},
-	"demos-advanced": {
+	{
+        "id": "demos-advanced",
+        "title": "Advanced Demos",
 		"items": [{
 				"title": "Slots",
 				"entry": "slots.js"
@@ -61,7 +65,9 @@
 			}
 		]
 	},
-	"sprite": {
+	{
+        "id": "sprite",
+        "title": "Sprite",
 		"items": [{
 				"title": "Basic",
 				"entry": "basic.js"
@@ -92,7 +98,9 @@
 			}
 		]
 	},
-	"text": {
+	{
+        "id": "text",
+        "title": "Text",
 		"items": [{
 				"title": "Text",
 				"entry": "text.js"
@@ -111,7 +119,9 @@
 			}
 		]
 	},
-	"graphics": {
+	{
+        "id": "graphics",
+        "title": "Graphics",
 		"items": [{
 				"title": "Simple",
 				"entry": "simple.js",
@@ -129,7 +139,9 @@
 			}
 		]
 	},
-	"interaction": {
+	{
+        "id": "interaction",
+        "title": "Interaction",
 		"items": [{
 				"title": "Click",
 				"entry": "click.js"
@@ -152,7 +164,9 @@
 			}
 		]
 	},
-	"masks": {
+	{
+        "id": "masks",
+        "title": "Masks",
 		"items": [{
 				"title": "Graphics",
 				"entry": "graphics.js"
@@ -167,7 +181,9 @@
 			}
 		]
 	},
-	"filters-basic": {
+	{
+        "id": "filters-basic",
+        "title": "Filters - Basic",
 		"items": [{
 				"title": "Blur",
 				"entry": "blur.js"
@@ -186,7 +202,9 @@
 			}
 		]
 	},
-	"filters-advanced": {
+	{
+        "id": "filters-advanced",
+        "title": "Filters - Advanced",
 		"items": [{
 				"title": "Mouse Blending",
 				"entry": "mouse-blending.js"
@@ -209,7 +227,9 @@
 			}
 		]
 	},
-	"mesh-and-shaders": {
+	{
+        "id": "mesh-and-shaders",
+        "title": "Mesh and Shaders",
 		"items": [{
 				"title": "Textured Mesh - Basic",
 				"entry": "textured-mesh-basic.js"
@@ -264,7 +284,9 @@
 			}
 		]
 	},
-	"textures": {
+	{
+        "id": "textures",
+        "title": "Textures",
 		"items": [{
 				"title": "Texture Rotate",
 				"entry": "texture-rotate.js"
@@ -287,7 +309,9 @@
 			}
 		]
 	},
-	"events": {
+	{
+        "id": "events",
+        "title": "Events",
 		"items": [{
 				"title": "Click",
 				"entry": "click.js"
@@ -324,7 +348,9 @@
 			}
 		]
 	},
-	"assets": {
+	{
+        "id": "assets",
+        "title": "Assets",
 		"items": [{
 				"title": "Promise",
 				"entry": "promise.js"
@@ -347,7 +373,9 @@
 			}
 		]
 	},
-	"plugin-filters": {
+	{
+        "id": "plugin-filters",
+        "title": "Plugin Filters",
 		"items": [{
 			"title": "Outline",
 			"entry": "outline.js",
@@ -356,7 +384,9 @@
 			]
 		}]
 	},
-	"plugin-spine": {
+	{
+        "id": "plugin-spine",
+        "title": "Plugin Spine",
         "visible": false,
 		"items": [{
 				"title": "Dragon",
@@ -395,7 +425,9 @@
 			}
 		]
 	},
-	"plugin-dragonbones": {
+	{
+        "id": "plugin-dragonbones",
+        "title": "Plugin Dragonbones",
         "visible": false,
 		"items": [{
 				"title": "Robot",
@@ -413,7 +445,9 @@
 			}
 		]
 	},
-	"plugin-heaven": {
+	{
+        "id": "plugin-heaven",
+        "title": "Plugin Heaven",
         "visible": false,
 		"items": [{
 				"title": "Invert",
@@ -453,7 +487,9 @@
 			}
 		]
 	},
-	"plugin-projection": {
+	{
+        "id": "plugin-projection",
+        "title": "Plugin Projection",
         "visible": false,
 		"items": [{
 				"title": "2D Basics",
@@ -531,7 +567,9 @@
 			}
 		]
 	},
-	"plugin-layers": {
+	{
+        "id": "plugin-layers",
+        "title": "Plugin Layers",
 		"items": [{
                 "visible": false,
 				"title": "Normals",
@@ -580,7 +618,9 @@
 			}
 		]
 	},
-	"plugin-picture": {
+	{
+        "id": "plugin-picture",
+        "title": "Plugin Picture",
         "visible": false,
 		"items": [{
 				"title": "Blend Modes",
@@ -626,7 +666,9 @@
 			}
 		]
 	},
-	"plugin-graphics-smooth": {
+	{
+        "id": "plugin-graphics-smooth",
+        "title": "Plugin Graphics Smooth",
         "visible": false,
 		"items": [{
 				"title": "Simple",
@@ -651,7 +693,9 @@
 			}
 		]
 	},
-	"gsap2-interaction": {
+	{
+        "id": "gsap2-interaction",
+        "title": "GSAP2 Interaction",
 		"items": [{
 				"title": "GSAP 2 Tick Director",
 				"entry": "gsap2-tick.js",
@@ -698,7 +742,9 @@
 			}
 		]
 	},
-	"gsap3-interaction": {
+	{
+        "id": "gsap3-interaction",
+        "title": "GSAP3 Interaction",
 		"items": [{
 				"title": "GSAP 3 Tick Director",
 				"entry": "gsap3-tick.js",
@@ -744,7 +790,9 @@
 			}
 		]
 	},
-	"tilemaps": {
+	{
+        "id": "tilemaps",
+        "title": "Tilemaps",
         "visible": false,
 		"items": [{
 			"title": "Basic",
@@ -754,4 +802,4 @@
 			]
 		}]
 	}
-}
+]

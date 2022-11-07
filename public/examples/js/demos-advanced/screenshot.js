@@ -1,34 +1,24 @@
-const app = new PIXI.Application({ backgroundColor: 0x111111 });
+const app = new PIXI.Application({ backgroundColor: '#111' });
 document.body.appendChild(app.view);
 
-let wait = false;
-let waiting = false;
+const texture = PIXI.Texture.from('examples/assets/bunny.png');
+const bunnyContainer = new PIXI.Container();
 
-// Generates a texture object from a container, then give that texture to our
-// sprite object and create a download link containing an image of the snapshot
-// we just took
-
-// Note that we can do this with any container. Instead of 'app.stage', which
-// contains everything, try the 'bunnyContainer' instead.
-function takeScreenshot() {
-    wait = true;
-    app.renderer.extract.canvas(app.stage).toBlob((b) => {
-        const a = document.createElement('a');
-        document.body.append(a);
-        a.download = 'screenshot';
-        a.href = URL.createObjectURL(b);
-        a.click();
-        a.remove();
-    }, 'image/png');
+async function takeScreenshot() {
+    app.stop();
+    const url = await app.renderer.extract.base64(bunnyContainer);
+    const a = document.createElement('a');
+    document.body.append(a);
+    a.download = 'screenshot';
+    a.href = url;
+    a.click();
+    a.remove();
+    app.start();
 }
 
 app.stage.interactive = true;
 app.stage.hitArea = app.screen;
 app.stage.on('pointerdown', takeScreenshot);
-
-const texture = PIXI.Texture.from('examples/assets/bunny.png');
-const bunnyContainer = new PIXI.Container();
-bunnyContainer.pivot.set(0.5, 0.5);
 
 for (let i = 0; i < 25; i++) {
     const bunny = new PIXI.Sprite(texture);
@@ -44,21 +34,12 @@ bunnyContainer.pivot.x = bunnyContainer.width / 2;
 bunnyContainer.pivot.y = bunnyContainer.height / 2;
 
 app.ticker.add((delta) => {
-    if (wait) {
-        waiting = true;
-        wait = false;
-        setTimeout(() => {
-            waiting = false;
-        }, 500);
-    }
-    if (!waiting) {
-        bunnyContainer.rotation += 0.05 * delta;
-    }
+    bunnyContainer.rotation += 0.01 * delta;
 });
 
 const style = new PIXI.TextStyle({
-    fontSize: 36,
-    fill: '#FFFFFF',
+    fontFamily: 'Roboto',
+    fill: '#999',
 });
 
 const screenshotText = new PIXI.Text('Click To Take Screenshot', style);

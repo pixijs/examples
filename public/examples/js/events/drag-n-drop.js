@@ -28,7 +28,7 @@ for (let i = 0; i < 10; i++) {
 
     // This button mode will mean the hand cursor appears when you roll over
     // the bunny with your mouse
-    bunny.buttonMode = true;
+    bunny.cursor = 'pointer';
 
     // Center the bunny's anchor point.
     bunny.anchor.set(0.5);

@@ -22,7 +22,7 @@ function createBunny(x, y) {
     bunny.interactive = true;
 
     // this button mode will mean the hand cursor appears when you roll over the bunny with your mouse
-    bunny.buttonMode = true;
+    bunny.cursor = 'pointer';
 
     // center the bunny's anchor point
     bunny.anchor.set(0.5);

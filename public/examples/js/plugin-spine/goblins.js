@@ -7,7 +7,7 @@ app.loader
     .load(onAssetsLoaded);
 
 app.stage.interactive = true;
-app.stage.buttonMode = true;
+app.stage.cursor = 'pointer';
 
 function onAssetsLoaded(loader, res) {
     const goblin = new PIXI.spine.Spine(res.goblins.spineData);

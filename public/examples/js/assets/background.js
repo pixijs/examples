@@ -21,7 +21,7 @@ PIXI.Assets.load('eggHead').then((texture) => {
     app.stage.addChild(dude);
 
     dude.interactive = true;
-    dude.buttonMode = true;
+    dude.cursor = 'pointer';
 
     dude.on('pointertap', async () => {
         bol = !bol;

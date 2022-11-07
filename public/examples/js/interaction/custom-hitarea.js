@@ -7,7 +7,7 @@ const yellowStar = PIXI.Texture.from('examples/assets/yellowstar.png');
 const starButton1 = new PIXI.Sprite(yellowStar);
 
 starButton1.position.set(50, 200);
-starButton1.buttonMode = true;
+starButton1.cursor = 'pointer';
 starButton1.interactive = true;
 
 starButton1
@@ -33,7 +33,7 @@ starButton2.hitArea = new PIXI.Polygon([
     0, 55,
     60, 50,
 ]);
-starButton2.buttonMode = true;
+starButton2.cursor = 'pointer';
 starButton2.interactive = true;
 
 starButton2
@@ -45,7 +45,7 @@ starButton2
 const starButton3 = new PIXI.Sprite(yellowStar);
 
 starButton3.position.set(450, 200);
-starButton3.buttonMode = true;
+starButton3.cursor = 'pointer';
 starButton3.interactive = true;
 
 const squareMask = new PIXI.Graphics()
@@ -86,7 +86,7 @@ starButton4.hitArea = new PIXI.Polygon([
     0, 55,
     60, 50,
 ]);
-starButton4.buttonMode = true;
+starButton4.cursor = 'pointer';
 starButton4.interactive = true;
 
 starButton4

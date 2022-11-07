@@ -33,7 +33,7 @@ for (let i = 0; i < 5; i++) {
 
     // make the button interactive...
     button.interactive = true;
-    button.buttonMode = true;
+    button.cursor = 'pointer';
 
     button
     // Mouse & touch events are normalized into

@@ -17,7 +17,7 @@ button.y = (app.screen.height - button.height) / 2;
 
 // Enable interactivity on the button
 button.interactive = true;
-button.buttonMode = true;
+button.cursor = 'pointer';
 
 // Add to the stage
 app.stage.addChild(button);

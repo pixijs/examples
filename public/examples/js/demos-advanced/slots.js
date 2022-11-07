@@ -99,7 +99,7 @@ function onAssetsLoaded() {
 
     // Set the interactivity.
     bottom.interactive = true;
-    bottom.buttonMode = true;
+    bottom.cursor = 'pointer';
     bottom.addListener('pointerdown', () => {
         startPlay();
     });

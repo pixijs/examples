@@ -15,7 +15,7 @@ sprite.y = app.screen.height / 2;
 sprite.interactive = true;
 
 // Shows hand cursor
-sprite.buttonMode = true;
+sprite.cursor = 'pointer';
 
 // Pointers normalize touch and mouse
 sprite.on('pointerdown', onClick);

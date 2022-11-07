@@ -23,7 +23,7 @@ app.stage.addChild(dude);
 
 // make the sprite interactive
 dude.interactive = true;
-dude.buttonMode = true;
+dude.cursor = 'pointer';
 
 dude.on('pointertap', () => {
     bol = !bol;

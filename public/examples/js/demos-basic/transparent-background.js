@@ -1,4 +1,4 @@
-const app = new PIXI.Application({ transparent: true });
+const app = new PIXI.Application({ backgroundAlpha: 0 });
 document.body.appendChild(app.view);
 
 // create a new Sprite from an image path.

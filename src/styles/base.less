@@ -27,21 +27,52 @@ a {
 	left: 0px;
 	top: 0px;
 	width: 100%;
-	height: 60px;
+	height: 50px;
 	background: #fff;
-	padding: 10px 0 0 33px;
+	padding: 0 33px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	
 	.searchbar-wrap {
-		float: right;
-		padding: 6px;
 		border: none;
-		margin-top: auto;
-		margin-bottom: auto;
-		margin-right: 16px;
-		font-size: 17px;	  
-	}
-	.searchbar-input {
-		font: monospace;
+		display: none;  
+		.searchbar-content {
+			display: flex;
+			flex-direction: row;
+			input {
+				display: block;
+				flex: 1;
+				background-color: white;
+				border: 0;
+				padding: 8px 14px;
+				font-size: 14px;
+				border: 2px solid @blue100;
+				margin-right: 10px;
+				.transition(background-color, @anim);
+				&:focus {
+					background-color: @blue100;
+					border-color: @blue200;
+					outline: none;
+				}
+			}
+			.button {
+				display: block;
+				flex: 1;
+				background-color: @pink500;
+				color: white;
+				border: 0;
+				padding: 8px 14px;
+				text-transform: uppercase;
+				letter-spacing: .05em;
+				font-size: 12px;
+				.transition(background-color, @anim);
+				&:hover, &:active, &:focus {
+					background-color: @pink700;
+					outline: none;
+				}
+			}
+		}
 	}
 
 	.pixijs-logo {

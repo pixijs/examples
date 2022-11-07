@@ -2,10 +2,7 @@ const app = new PIXI.Application({ background: '#1099bb' });
 document.body.appendChild(app.view);
 
 PIXI.Assets.load('examples/assets/bg_grass.jpg').then((texture) => {
-    // Create the simple plane
-    const verticesX = 10;
-    const verticesY = 10;
-    const plane = new PIXI.SimplePlane(texture, verticesX, verticesY);
+    const plane = new PIXI.SimplePlane(texture, 10, 10);
 
     plane.x = 100;
     plane.y = 100;
@@ -16,11 +13,13 @@ PIXI.Assets.load('examples/assets/bg_grass.jpg').then((texture) => {
     const buffer = plane.geometry.getBuffer('aVertexPosition');
 
     // Listen for animate update
-    app.ticker.add((delta) => {
+    let timer = 0;
+    app.ticker.add(() => {
         // Randomize the vertice positions a bit to create movement.
         for (let i = 0; i < buffer.data.length; i++) {
-            buffer.data[i] += (Math.random() - 0.5);
+            buffer.data[i] += Math.sin((timer / 10) + i) * 0.5;
         }
         buffer.update();
+        timer++;
     });
 });

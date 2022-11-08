@@ -229,11 +229,13 @@
         "title": "Offscreen Canvas",
 		"items": [{
 				"title": "Basic",
-				"entry": "basic.js"
+				"entry": "basic.js",
+				"features": ["OffscreenCanvas"]
 			},
 			{
 				"title": "Web Worker",
-				"entry": "web-worker.js"
+				"entry": "web-worker.js",
+				"features": ["OffscreenCanvas"]
 			}
 		]
 	},

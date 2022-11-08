@@ -1,16 +1,7 @@
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-// create a texture from an image path
-let texture;
-
-app.loader.add('flowerTop', 'examples/assets/flowerTop.png');
-app.loader.load((loader, resources) => {
-    texture = resources.flowerTop.texture;
-    init();
-});
-
-function init() {
+PIXI.Assets.load('examples/assets/flowerTop.png').then((texture) => {
     // create rotated textures
     const textures = [texture];
     const D8 = PIXI.groupD8;
@@ -55,4 +46,4 @@ function init() {
         text.y = dude.y - 20;
         app.stage.addChild(text);
     }
-}
+});

@@ -225,50 +225,6 @@
 		]
 	},
 	{
-        "id": "plugin-filters",
-        "title": "Plugin Filters",
-		"items": [{
-			"title": "Outline",
-			"entry": "outline.js",
-			"plugins": [
-				"pixi-filters"
-			]
-		}]
-	},
-	{
-        "id": "demos-advanced",
-        "title": "Advanced Demos",
-		"items": [{
-				"title": "Slots",
-				"entry": "slots.js"
-			},
-			{
-				"title": "Scratchcard",
-				"entry": "scratchcard.js"
-			},
-			{
-				"title": "Mouse Trail",
-				"entry": "mouse-trail.js"
-			},
-			{
-				"title": "Star Warp",
-				"entry": "star-warp.js"
-			},
-			{
-				"title": "Screenshot",
-				"entry": "screenshot.js"
-			},
-			{
-				"title": "Collision",
-				"entry": "collision-detection.js"
-			},
-			{
-				"title": "Spinners",
-				"entry": "spinners.js"
-			}
-		]
-	},
-	{
         "id": "filters-basic",
         "title": "Filters - Basic",
 		"items": [{
@@ -311,6 +267,50 @@
 			{
 				"title": "Shadertoy filter",
 				"entry": "shadertoy-filter-rendertexture.js"
+			}
+		]
+	},
+	{
+        "id": "plugin-filters",
+        "title": "Plugin Filters",
+		"items": [{
+			"title": "Outline",
+			"entry": "outline.js",
+			"plugins": [
+				"pixi-filters"
+			]
+		}]
+	},
+	{
+        "id": "demos-advanced",
+        "title": "Advanced Demos",
+		"items": [{
+				"title": "Slots",
+				"entry": "slots.js"
+			},
+			{
+				"title": "Scratchcard",
+				"entry": "scratchcard.js"
+			},
+			{
+				"title": "Mouse Trail",
+				"entry": "mouse-trail.js"
+			},
+			{
+				"title": "Star Warp",
+				"entry": "star-warp.js"
+			},
+			{
+				"title": "Screenshot",
+				"entry": "screenshot.js"
+			},
+			{
+				"title": "Collision",
+				"entry": "collision-detection.js"
+			},
+			{
+				"title": "Spinners",
+				"entry": "spinners.js"
 			}
 		]
 	},

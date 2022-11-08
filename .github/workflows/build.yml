@@ -17,7 +17,12 @@ jobs:
         cache: 'npm'
     - name: Install npm
       run: npm install -g npm@8
-    - name: Install dependencies
-      run: npm ci
-    - name: Build
-      run: npm run build
+    - name: Install and Build
+      run: |
+        npm ci
+        npm run build
+    - name: Deploy
+      if: github.ref == 'refs/heads/main'
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: dist

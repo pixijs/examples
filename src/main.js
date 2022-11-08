@@ -223,11 +223,14 @@ jQuery(document).ready(($) => {
 
             // Generate HTML and insert into iFrame
             let pixiUrl = '';
+            let pixiWebWorkerUrl = '';
 
             if (bpc.pixiVersionString === 'local') {
                 pixiUrl = 'dist/pixi.js';
+                pixiWebWorkerUrl = 'dist/webworker.js';
             } else { // other versions come from S3
                 pixiUrl = `https://d157l7jdn8e5sf.cloudfront.net/${bpc.pixiVersionString}/pixi-legacy.js`;
+                pixiWebWorkerUrl = `https://d157l7jdn8e5sf.cloudfront.net/${bpc.pixiVersionString}/webworker.js`;
             }
 
             let html = '<!DOCTYPE html><html><head><style>';
@@ -269,7 +272,7 @@ jQuery(document).ready(($) => {
 
             if (!bpc.exampleValidVersions.length || bpc.exampleValidVersions.indexOf(bpc.majorPixiVersion) > -1) {
                 $('#example-title').html(bpc.exampleTitle);
-                html += `<script>window.onload = function(){${bpc.exampleSourceCode}}</script></body></html>`;
+                html += `<script>window.PIXI_WEBWORKER_URL = "${pixiWebWorkerUrl}"; window.onload = function(){${bpc.exampleSourceCode}}</script></body></html>`;
 
                 $('.example-frame').show();
             } else {

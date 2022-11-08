@@ -225,6 +225,19 @@
 		]
 	},
 	{
+        "id": "offscreen-canvas",
+        "title": "Offscreen Canvas",
+		"items": [{
+				"title": "Basic",
+				"entry": "basic.js"
+			},
+			{
+				"title": "Web Worker",
+				"entry": "web-worker.js"
+			}
+		]
+	},
+	{
         "id": "filters-basic",
         "title": "Filters - Basic",
 		"items": [{

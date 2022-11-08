@@ -63,6 +63,10 @@ jQuery(document).ready(($) => {
     bpc.autoPlay = true;
     bpc.packagesManifest = {};
 
+    bpc.browserFeatures = {
+        OffscreenCanvas: typeof OffscreenCanvas === 'function',
+    };
+
     bpc.init = function init() {
         const embedded = bpc.embedMode();
 
@@ -71,7 +75,8 @@ jQuery(document).ready(($) => {
             items.filter((item) => item.visible !== false).forEach((item) => {
                 const plugins = typeof item.plugins !== 'undefined' ? item.plugins.join(',') : '';
                 const validVersions = typeof item.validVersions !== 'undefined' ? item.validVersions.join(',') : '';
-                html += `<li data-src="${item.entry}" data-plugins="${plugins}" data-validVersions="${validVersions}">${item.title}</li>`;
+                const features = typeof item.features !== 'undefined' ? item.features.join(',') : '';
+                html += `<li data-src="${item.entry}" data-plugins="${plugins}" data-validVersions="${validVersions}" data-features="${features}">${item.title}</li>`;
             });
             html += '</ul>';
             $('.main-menu').append(html);
@@ -190,6 +195,9 @@ jQuery(document).ready(($) => {
                 const validVersions = $(this).attr('data-validVersions');
                 bpc.exampleValidVersions = validVersions === '' ? [7] : validVersions.split(',').map((v) => parseInt(v, 10));
 
+                const features = $(this).attr('data-features');
+                bpc.exampleFeatures = features === '' ? [] : features.split(',');
+
                 $.ajax({
                     url: `examples/js/${$(this).parent().attr('data-section')}/${$(this).attr('data-src')}`,
                     dataType: 'text',
@@ -223,11 +231,14 @@ jQuery(document).ready(($) => {
 
             // Generate HTML and insert into iFrame
             let pixiUrl = '';
+            let pixiWebWorkerUrl = '';
 
             if (bpc.pixiVersionString === 'local') {
                 pixiUrl = 'dist/pixi.js';
+                pixiWebWorkerUrl = 'dist/webworker.js';
             } else { // other versions come from S3
                 pixiUrl = `https://d157l7jdn8e5sf.cloudfront.net/${bpc.pixiVersionString}/pixi-legacy.js`;
+                pixiWebWorkerUrl = `https://d157l7jdn8e5sf.cloudfront.net/${bpc.pixiVersionString}/webworker.js`;
             }
 
             let html = '<!DOCTYPE html><html><head><style>';
@@ -259,6 +270,8 @@ jQuery(document).ready(($) => {
                 }
             }
 
+            bpc.missingFeatures = bpc.exampleFeatures.filter((x) => !bpc.browserFeatures[x]);
+
             bpc.editor = CodeMirror.fromTextArea(document.getElementById('code'), bpc.editorOptions);
 
             if (bpc.exampleRequiredPlugins.length) {
@@ -267,24 +280,35 @@ jQuery(document).ready(($) => {
                 $('#code-header').text('Example Code');
             }
 
-            if (!bpc.exampleValidVersions.length || bpc.exampleValidVersions.indexOf(bpc.majorPixiVersion) > -1) {
-                $('#example-title').html(bpc.exampleTitle);
-                html += `<script>window.onload = function(){${bpc.exampleSourceCode}}</script></body></html>`;
-
-                $('.example-frame').show();
-            } else {
+            if (bpc.exampleValidVersions.length && bpc.exampleValidVersions.indexOf(bpc.majorPixiVersion) === -1) {
                 $('#example-title').html(
-                    `${bpc.exampleTitle
-                    }<br><br><br><br><br><br><br>`
+                    `${bpc.exampleTitle}`
+                    + '<br><br><br><br><br><br><br>'
                     + 'The selected version of PixiJS does not work with this example.'
                     + '<br><br>'
-                    + `Selected version: v${bpc.majorPixiVersion
-                    }<br><br>`
-                    + `Required version: v${bpc.exampleValidVersions.toString()
-                    }<br><br><br><br><br>`,
+                    + `Selected version: v${bpc.majorPixiVersion}`
+                    + '<br><br>'
+                    + `Required version: v${bpc.exampleValidVersions.toString()}`
+                    + '<br><br><br><br><br>',
                 );
 
                 $('.example-frame').hide();
+            } else if (bpc.missingFeatures.length) {
+                $('#example-title').html(
+                    `${bpc.exampleTitle}`
+                    + '<br><br><br><br><br><br><br>'
+                    + 'This example requires some features that your browser doesn\'t support.'
+                    + '<br><br>'
+                    + `Missing features: ${bpc.missingFeatures.join(', ')}`
+                    + '<br><br><br><br><br>',
+                );
+
+                $('.example-frame').hide();
+            } else {
+                $('#example-title').html(bpc.exampleTitle);
+                html += `<script>window.PIXI_WEBWORKER_URL = "${pixiWebWorkerUrl}"; window.onload = function(){${bpc.exampleSourceCode}}</script></body></html>`;
+
+                $('.example-frame').show();
             }
 
             const iframe = document.getElementById('preview');

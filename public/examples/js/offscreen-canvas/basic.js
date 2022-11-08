@@ -1,17 +1,10 @@
 // This example is the based on demos-basic/container, but using OffscreenCanvas.
 
-const width = 800;
-const height = 600;
-const resolution = window.devicePixelRatio;
 const canvas = document.createElement('canvas');
-canvas.style.width = `${width}px`;
-canvas.style.height = `${height}px`;
 document.body.appendChild(canvas);
 const view = canvas.transferControlToOffscreen();
 
-const app = new PIXI.Application({
-    width, height, resolution, view, backgroundColor: 0x1099bb,
-});
+const app = new PIXI.Application({ view, background: 0x1099bb });
 
 const container = new PIXI.Container();
 

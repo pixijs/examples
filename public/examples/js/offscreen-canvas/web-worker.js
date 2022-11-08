@@ -61,6 +61,6 @@ worker.postMessage({
     baseUrl,
     pixiWebWorkerUrl,
     options: {
-        width, height, resolution, view, backgroundColor: 0x1099bb,
+        width, height, resolution, view, background: 0x1099bb,
     },
 }, [view]);

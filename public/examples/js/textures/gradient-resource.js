@@ -2,7 +2,7 @@
 // Look here for advanced upload function:
 // https://github.com/pixijs/pixi.js/blob/dev/packages/core/src/textures/resources/BaseImageResource.js#L54
 
-class GradientResource extends PIXI.resources.Resource {
+class GradientResource extends PIXI.Resource {
     constructor() {
     // pass width and height. (0,0) if we dont know yet
     // gradient needs only 1 pixel height

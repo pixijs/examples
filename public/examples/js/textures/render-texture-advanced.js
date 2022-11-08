@@ -1,15 +1,14 @@
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
+const stageSize = {
+    width: app.screen.width,
+    height: app.screen.height,
+};
+
 // create two render textures... these dynamic textures will be used to draw the scene into itself
-let renderTexture = PIXI.RenderTexture.create(
-    app.screen.width,
-    app.screen.height,
-);
-let renderTexture2 = PIXI.RenderTexture.create(
-    app.screen.width,
-    app.screen.height,
-);
+let renderTexture = PIXI.RenderTexture.create(stageSize);
+let renderTexture2 = PIXI.RenderTexture.create(stageSize);
 const currentTexture = renderTexture;
 
 // create a new sprite that uses the render texture we created above
@@ -81,5 +80,8 @@ app.ticker.add(() => {
 
     // render the stage to the texture
     // the 'true' clears the texture before the content is rendered
-    app.renderer.render(app.stage, renderTexture2, false);
+    app.renderer.render(app.stage, {
+        renderTexture: renderTexture2,
+        clear: false,
+    });
 });

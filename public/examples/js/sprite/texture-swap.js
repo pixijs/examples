@@ -1,40 +1,33 @@
-const app = new PIXI.Application();
+const app = new PIXI.Application({ background: '#1099bb' });
 document.body.appendChild(app.view);
 
-let bol = false;
+let isFlower = true;
 
-// create a texture from an image path
 const texture = PIXI.Texture.from('examples/assets/flowerTop.png');
-
-// create a second texture
 const secondTexture = PIXI.Texture.from('examples/assets/eggHead.png');
 
 // create a new Sprite using the texture
-const dude = new PIXI.Sprite(texture);
+const character = new PIXI.Sprite(texture);
 
 // center the sprites anchor point
-dude.anchor.set(0.5);
+character.anchor.set(0.5);
 
 // move the sprite to the center of the screen
-dude.x = app.screen.width / 2;
-dude.y = app.screen.height / 2;
+character.x = app.screen.width / 2;
+character.y = app.screen.height / 2;
 
-app.stage.addChild(dude);
+app.stage.addChild(character);
 
 // make the sprite interactive
-dude.interactive = true;
-dude.cursor = 'pointer';
+character.interactive = true;
+character.cursor = 'pointer';
 
-dude.on('pointertap', () => {
-    bol = !bol;
-    if (bol) {
-        dude.texture = secondTexture;
-    } else {
-        dude.texture = texture;
-    }
+character.on('pointertap', () => {
+    isFlower = !isFlower;
+    // Dynamically swap the texture
+    character.texture = isFlower ? texture : secondTexture;
 });
 
 app.ticker.add(() => {
-    // just for fun, let's rotate mr rabbit a little
-    dude.rotation += 0.1;
+    character.rotation += 0.02;
 });

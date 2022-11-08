@@ -122,7 +122,7 @@ const projector = app.stage.addChild(new Projector());
 // Add coordinate axes!
 projector.content.addChild(
     new PIXI.Graphics()
-        .lineStyle({ color: 0, width: 2 })
+        .lineStyle({ color: 0, alpha: 0.2, width: 2 })
         .moveTo(0, -300)
         .lineTo(0, 600)
         .moveTo(-100, 0)
@@ -131,14 +131,13 @@ projector.content.addChild(
 
 // Construct the star Graphics
 const stars = [1, 2, 3].map((i) => new PIXI.Graphics()
-    .beginFill(0x919bac)
-    .lineStyle({ width: 2 * i, color: 0xec407a, alpha: 0.67 })
+    .beginFill(0xffffff, 0.75)
     .drawStar(0, 0, 18 / i, 100 * i / 2));
 
 // Place the stars
-stars[0].position.set(0, 0);
-stars[1].position.set(200, 0);
-stars[2].position.set(500, 0);
+stars[0].x = 0;
+stars[1].x = 200;
+stars[2].x = 500;
 
 // Add stars to the projector
 projector.content.addChild(...stars);
@@ -179,30 +178,36 @@ stars.forEach((star) => {
     });
 });
 
-const coordinates = app.stage.addChild(new PIXI.Text('Global: (0, 0)\nScreen: (0, 0)', {
-    fontSize: 12,
-}));
+PIXI.BitmapFont.from('coordinates', {
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    fill: '#272d37',
+}, { chars: ['Global:() Screen-.,', ['0', '9']] });
 
-coordinates.position.set(690, 12);
+const coordinates = new PIXI.BitmapText('Global: (0, 0)\nScreen: (0, 0)', {
+    fontName: 'coordinates',
+});
+coordinates.x = 110;
+coordinates.y = 550;
+
+app.stage.addChild(coordinates);
 
 projector.content.addEventListener('pointermove', (e) => {
-    const global = `(${e.global.x}, ${e.global.y})`;
-    const screen = `(${e.screen.x}, ${e.screen.y})`;
-
+    const global = `(${e.global.x | 0}, ${e.global.y | 0})`;
+    const screen = `(${e.screen.x | 0}, ${e.screen.y | 0})`;
     coordinates.text = `Global: ${global}\nScreen: ${screen}`;
 });
 
-const title = new PIXI.Text('@pixi/events', { fontSize: 12 });
 const description = new PIXI.Text(
-    `The (0, 0) world coordinates for the content is located at the center of the first star!
-    You can
-      i) scroll over stars to rotate them
-      ii) click to zoom in or out
-      iii) hover and move your pointer to see the global vs screen coordinates of the events
-    `, { fontSize: 14 },
+    'The (0, 0) world coordinates for the content is located at the center of the first star!'
+    + '\n  * Mouse wheel over stars to rotate them'
+    + '\n  * Click to zoom in or out', {
+        fontSize: 16,
+        fontFamily: 'Roboto',
+        fill: '#272d37',
+    },
 );
 
-title.position.set(10, 12);
 description.position.set(110, 12);
 
-app.stage.addChild(title, description);
+app.stage.addChild(description);

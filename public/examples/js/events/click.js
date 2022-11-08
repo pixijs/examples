@@ -1,50 +1,32 @@
-const app = new PIXI.Application({
-    antialias: true,
-    background: '#1099bb',
-});
+const app = new PIXI.Application({ background: '#1099bb' });
 document.body.appendChild(app.view);
 
-const title = app.stage.addChild(new PIXI.Text(
-    'Click on the bunny as fast as you can!\nClick outside to reset!', {
-        fontSize: 12,
-    },
-));
+// Scale mode for all textures, will retain pixelation
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-title.x = 12;
-title.y = 12;
+const sprite = PIXI.Sprite.from('examples/assets/bunny.png');
 
-// Create bunny
-const bunny = app.stage.addChild(PIXI.Sprite.from('examples/assets/bunny.png'));
+// Set the initial position
+sprite.anchor.set(0.5);
+sprite.x = app.screen.width / 2;
+sprite.y = app.screen.height / 2;
 
-// Prevent blurry bunny
-bunny.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+// Opt-in to interactivity
+sprite.interactive = true;
 
-// Position the bunny
-bunny.anchor.set(0.5, 0.5);
-bunny.scale.set(3);
-bunny.position.set(
-    app.screen.width / 2,
-    app.screen.height / 2,
-);
+// Shows hand cursor
+sprite.cursor = 'pointer';
 
-// Make this bunny interactive
-bunny.interactive = true;
+// Pointers normalize touch and mouse
+sprite.on('pointerdown', onClick);
 
-// Make stage interactive so you can click on it too
-app.stage.interactive = true;
-app.stage.hitArea = app.screen;
+// Alternatively, use the mouse & touch events:
+// sprite.on('click', onClick); // mouse-only
+// sprite.on('tap', onClick); // touch-only
 
-// Listen for clicks
-app.stage.addEventListener('click', (e) => {
-    if (e.target === bunny) {
-        // For click events, the detail specifies the number of clicks
-        // done in a 200ms interval
-        const clicks = e.detail;
+app.stage.addChild(sprite);
 
-        // Make the bunny larger as the user clicks faster!
-        bunny.scale.set(3 * (clicks ** 0.34));
-    } else {
-        // Reset when you click outside of the bunny
-        bunny.scale.set(3);
-    }
-});
+function onClick() {
+    sprite.scale.x *= 1.25;
+    sprite.scale.y *= 1.25;
+}

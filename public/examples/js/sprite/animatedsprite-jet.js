@@ -1,4 +1,4 @@
-const app = new PIXI.Application();
+const app = new PIXI.Application({ background: '#1099bb' });
 document.body.appendChild(app.view);
 
 PIXI.Assets.load('examples/assets/spritesheet/fighter.json').then(() => {

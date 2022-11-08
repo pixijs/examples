@@ -33,39 +33,6 @@
 		]
 	},
 	{
-        "id": "demos-advanced",
-        "title": "Advanced Demos",
-		"items": [{
-				"title": "Slots",
-				"entry": "slots.js"
-			},
-			{
-				"title": "Scratchcard",
-				"entry": "scratchcard.js"
-			},
-			{
-				"title": "Mouse Trail",
-				"entry": "mouse-trail.js"
-			},
-			{
-				"title": "Star Warp",
-				"entry": "star-warp.js"
-			},
-			{
-				"title": "Screenshot",
-				"entry": "screenshot.js"
-			},
-			{
-				"title": "Collision",
-				"entry": "collision-detection.js"
-			},
-			{
-				"title": "Spinners",
-				"entry": "spinners.js"
-			}
-		]
-	},
-	{
         "id": "sprite",
         "title": "Sprite",
 		"items": [{
@@ -109,13 +76,13 @@
 				"title": "Bitmap Text",
 				"entry": "bitmap-text.js"
 			},
-			{
-				"title": "Webfont",
-				"entry": "webfont.js"
-			},
             {
-				"title": "From font files",
+				"title": "Loading Fonts",
 				"entry": "from-font.js"
+			},
+			{
+				"title": "Google Webfont",
+				"entry": "webfont.js"
 			}
 		]
 	},
@@ -140,8 +107,8 @@
 		]
 	},
 	{
-        "id": "interaction",
-        "title": "Interaction",
+        "id": "events",
+        "title": "Events",
 		"items": [{
 				"title": "Click",
 				"entry": "click.js"
@@ -155,12 +122,38 @@
 				"entry": "dragging.js"
 			},
 			{
-				"title": "Custom mouse icon",
+				"title": "Custom Mouse Cursor",
 				"entry": "custom-mouse-icon.js"
 			},
 			{
 				"title": "Custom Hitarea",
 				"entry": "custom-hitarea.js"
+			},
+			{
+				"title": "Pointer Tracker",
+				"entry": "pointer-tracker.js"
+			},
+			{
+				"title": "Slider",
+				"entry": "slider.js"
+			},
+			{
+				"title": "Hit-Testing (spatial hash)",
+				"entry": "hit-testing-with-spatial-hash.js",
+				"plugins": [
+					"@pixi/spatial-hash"
+				]
+			},
+			{
+				"title": "Nested Boundary",
+				"entry": "nested-boundary-with-projection.js",
+				"plugins": [
+					"@pixi/graphics-extras"
+				]
+			},
+			{
+				"title": "Logger",
+				"entry": "logger.js"
 			}
 		]
 	},
@@ -178,6 +171,100 @@
 			{
 				"title": "Filter",
 				"entry": "filter.js"
+			}
+		]
+	},
+	{
+        "id": "textures",
+        "title": "Textures",
+		"items": [{
+				"title": "Texture Rotate",
+				"entry": "texture-rotate.js"
+			},
+			{
+				"title": "Render Texture Basic",
+				"entry": "render-texture-basic.js"
+			},
+			{
+				"title": "Render Texture Advanced",
+				"entry": "render-texture-advanced.js"
+			},
+			{
+				"title": "Gradient Basic",
+				"entry": "gradient-basic.js"
+			},
+			{
+				"title": "Gradient Resource",
+				"entry": "gradient-resource.js"
+			}
+		]
+	},
+	{
+        "id": "assets",
+        "title": "Assets",
+		"items": [{
+				"title": "Promise",
+				"entry": "promise.js"
+			},
+			{
+				"title": "Async/Await",
+				"entry": "async.js"
+			},
+			{
+				"title": "Load Multiple",
+				"entry": "multiple.js"
+			},
+			{
+				"title": "Background Load",
+				"entry": "background.js"
+			},
+			{
+				"title": "Bundles",
+				"entry": "bundle.js"
+			}
+		]
+	},
+	{
+        "id": "plugin-filters",
+        "title": "Plugin Filters",
+		"items": [{
+			"title": "Outline",
+			"entry": "outline.js",
+			"plugins": [
+				"pixi-filters"
+			]
+		}]
+	},
+	{
+        "id": "demos-advanced",
+        "title": "Advanced Demos",
+		"items": [{
+				"title": "Slots",
+				"entry": "slots.js"
+			},
+			{
+				"title": "Scratchcard",
+				"entry": "scratchcard.js"
+			},
+			{
+				"title": "Mouse Trail",
+				"entry": "mouse-trail.js"
+			},
+			{
+				"title": "Star Warp",
+				"entry": "star-warp.js"
+			},
+			{
+				"title": "Screenshot",
+				"entry": "screenshot.js"
+			},
+			{
+				"title": "Collision",
+				"entry": "collision-detection.js"
+			},
+			{
+				"title": "Spinners",
+				"entry": "spinners.js"
 			}
 		]
 	},
@@ -279,110 +366,10 @@
 				"entry": "shadertoy-mesh.js"
 			},
 			{
-				"title": "Multipass shader generated mesh",
+				"title": "Multipass Shader Mesh",
 				"entry": "multipass-shader-generated-mesh.js"
 			}
 		]
-	},
-	{
-        "id": "textures",
-        "title": "Textures",
-		"items": [{
-				"title": "Texture Rotate",
-				"entry": "texture-rotate.js"
-			},
-			{
-				"title": "Render Texture Basic",
-				"entry": "render-texture-basic.js"
-			},
-			{
-				"title": "Render Texture Advanced",
-				"entry": "render-texture-advanced.js"
-			},
-			{
-				"title": "Gradient Basic",
-				"entry": "gradient-basic.js"
-			},
-			{
-				"title": "Gradient Resource",
-				"entry": "gradient-resource.js"
-			}
-		]
-	},
-	{
-        "id": "events",
-        "title": "Events",
-		"items": [{
-				"title": "Click",
-				"entry": "click.js"
-			},
-			{
-				"title": "Drag n' Drop",
-				"entry": "drag-n-drop.js"
-			},
-			{
-				"title": "Hit-testing (spatial hash)",
-				"entry": "hit-testing-with-spatial-hash.js",
-				"plugins": [
-					"@pixi/spatial-hash"
-				]
-			},
-			{
-				"title": "Logger",
-				"entry": "logger.js"
-			},
-			{
-				"title": "Nested boundary (projection)",
-				"entry": "nested-boundary-with-projection.js",
-				"plugins": [
-					"@pixi/graphics-extras"
-				]
-			},
-			{
-				"title": "Pointer tracker",
-				"entry": "pointer-tracker.js"
-			},
-			{
-				"title": "Slider",
-				"entry": "slider.js"
-			}
-		]
-	},
-	{
-        "id": "assets",
-        "title": "Assets",
-		"items": [{
-				"title": "Promise",
-				"entry": "promise.js"
-			},
-			{
-				"title": "Async/Await",
-				"entry": "async.js"
-			},
-			{
-				"title": "Load Multiple",
-				"entry": "multiple.js"
-			},
-			{
-				"title": "Background Load",
-				"entry": "background.js"
-			},
-			{
-				"title": "Bundles",
-				"entry": "bundle.js"
-			}
-		]
-	},
-	{
-        "id": "plugin-filters",
-        "title": "Plugin Filters",
-		"items": [{
-			"title": "Outline",
-			"entry": "outline.js",
-			"plugins": [
-				"pixi-filters"
-			]
-		}]
 	},
 	{
         "id": "plugin-spine",
@@ -695,7 +682,7 @@
 	},
 	{
         "id": "gsap2-interaction",
-        "title": "GSAP2 Interaction",
+        "title": "GSAP2",
 		"items": [{
 				"title": "GSAP 2 Tick Director",
 				"entry": "gsap2-tick.js",
@@ -744,7 +731,7 @@
 	},
 	{
         "id": "gsap3-interaction",
-        "title": "GSAP3 Interaction",
+        "title": "GSAP3",
 		"items": [{
 				"title": "GSAP 3 Tick Director",
 				"entry": "gsap3-tick.js",

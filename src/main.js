@@ -95,7 +95,6 @@ jQuery(document).ready(($) => {
                 }
                 taggedVersions = taggedVersions.concat(filtered);
             });
-            console.log(bpc);
 
             taggedVersions = taggedVersions.map((tag) => tag.ref.replace('refs/tags/', ''));
 

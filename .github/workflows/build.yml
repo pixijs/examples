@@ -1,0 +1,28 @@
+name: Build
+on:
+  push:
+    branches: [ '**' ]
+    tags: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'npm'
+    - name: Install npm
+      run: npm install -g npm@8
+    - name: Install and Build
+      run: |
+        npm ci
+        npm run build
+    - name: Deploy
+      if: github.ref == 'refs/heads/main'
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: dist

@@ -1,0 +1,184 @@
+@anim:          0.2s;
+
+@blue50:		#ecedf1;
+@blue100:		#cfd4db;
+@blue200:		#b1b8c4;
+@blue300:		#919bac;
+@blue400:		#7a869a;
+@blue500:		#627189;
+@blue600:		#566378;
+@blue700:		#465162;
+@blue800:		#38404e;
+@blue900:		#272d37;
+
+@pink50:		#fce4ec;
+@pink100:		#f8bbd0;
+@pink200:		#f48fb1;
+@pink300:		#f06292;
+@pink400:		#ec407a;
+@pink500:		#e91e63;
+@pink600:		#d81b60;
+@pink700:		#c2185b;
+@pink800:		#ad1457;
+@pink900:		#880e4f;
+
+@twitter: 		#60b5f0;
+@facebook: 		#5974ac;
+
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing:	border-box;
+	box-sizing:			border-box;
+}
+
+.antialiased {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.nolist {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+.noselect {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.transition(@what: all, @time: 0.2s, @transition: cubic-bezier(0.215, 0.610, 0.355, 1.000)) {
+	-webkit-transition:	@what @time @transition;
+	-moz-transition:	@what @time @transition;
+	-ms-transition:		@what @time @transition;
+	-o-transition:		@what @time @transition;
+	transition:			@what @time @transition;
+}
+
+.rounded(@radius: 4px) {
+	behavior: url(css/border-radius.htc);
+	-webkit-border-radius:	@radius;
+	-moz-border-radius:		@radius;
+	border-radius:			@radius;
+}
+
+.border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+	-webkit-border-top-right-radius:	@topright;
+	-webkit-border-bottom-right-radius:	@bottomright;
+	-webkit-border-bottom-left-radius:	@bottomleft;
+	-webkit-border-top-left-radius:		@topleft;
+	-moz-border-radius-topright:		@topright;
+	-moz-border-radius-bottomright:		@bottomright;
+	-moz-border-radius-bottomleft:		@bottomleft;
+	-moz-border-radius-topleft:			@topleft;
+	border-top-right-radius:			@topright;
+	border-bottom-right-radius:			@bottomright;
+	border-bottom-left-radius:			@bottomleft;
+	border-top-left-radius:				@topleft;
+	-webkit-background-clip:			padding-box;
+	-moz-background-clip:				padding;
+	background-clip:					padding-box;
+}
+
+.origin(@x, @y) {
+	-webkit-transform-origin: @x @y;
+	-moz-transform-origin: @x @y;
+	-o-transform-origin: @x @y;
+	transform-origin: @x @y;
+}
+
+.rotate(@deg) {
+	-webkit-transform: rotate(@deg);
+	-moz-transform: rotate(@deg);
+	-ms-transform: rotate(@deg);
+	-o-transform: rotate(@deg);
+	transform: rotate(@deg);
+}
+
+.translate(@x, @y) {
+	-webkit-transform: translateX(@x) translateY(@y);
+	-moz-transform: translateX(@x) translateY(@y);
+	-ms-transform: translateX(@x) translateY(@y);
+	-o-transform: translateX(@x) translateY(@y);
+	transform: translateX(@x) translateY(@y);
+}
+
+.translateX(@x) {
+	-webkit-transform: translateX(@x);
+	-moz-transform: translateX(@x);
+	-ms-transform: translateX(@x);
+	-o-transform: translateX(@x);
+	transform: translateX(@x);
+}
+
+.translateY(@y) {
+	-webkit-transform: translateY(@y);
+	-moz-transform: translateY(@y);
+	-ms-transform: translateY(@y);
+	-o-transform: translateY(@y);
+	transform: translateY(@y);
+}
+
+.transform(@properties) {
+	-webkit-transform: @properties;
+	-moz-transform: @properties;
+	-ms-transform: @properties;
+	-o-transform: @properties;
+	transform: @properties;
+}
+
+.css-gradient(@from: #dfdfdf, @to: #f8f8f8) {
+	background-color: @to;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(@from), to(@to));
+	background-image: -webkit-linear-gradient(top, @from, @to);
+	background-image: -moz-linear-gradient(top, @from, @to);
+	background-image: -o-linear-gradient(top, @from, @to);
+	background-image: linear-gradient(to bottom, @from, @to);
+}
+
+.boxShadow(@x: 0, @y: 0, @radius: 4px, @spread: 0, @color: rgba(0,0,0,0.5)) {
+	-webkit-box-shadow:	@x @y @radius @spread @color;
+	-moz-box-shadow:	@x @y @radius @spread @color;
+	box-shadow:			@x @y @radius @spread @color;
+}
+
+.boxShadow(@x: none) when (iskeyword(@x)) {
+	-webkit-box-shadow: @x;
+	   -moz-box-shadow: @x;
+			box-shadow: @x;
+}
+
+.innerShadow(@x: 0, @y: 0, @radius: 4px, @spread: 0, @color: rgba(0,0,0,0.5)) {
+	-webkit-box-shadow:	inset @x @y @radius @spread @color;
+	-moz-box-shadow:	inset @x @y @radius @spread @color;
+	box-shadow:			inset @x @y @radius @spread @color;
+}
+
+.innerShadow(@x: none) when (iskeyword(@x)) {
+	-webkit-box-shadow: @x;
+	   -moz-box-shadow: @x;
+			box-shadow: @x;
+}
+
+
+.opacity(@opacity: 0.5) {
+	-moz-opacity: @opacity;
+	-khtml-opacity: @opacity;
+	-webkit-opacity: @opacity;
+	opacity: @opacity;
+	@opperc: @opacity * 100;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=@{opperc})";
+	filter: "alpha(opacity=@{opperc})";
+}
+
+.clearfix {
+	&:after {
+		display: table;
+		content: "";
+		clear: both;
+	}
+}

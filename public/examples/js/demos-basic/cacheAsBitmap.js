@@ -36,12 +36,6 @@ function onAssetsLoaded() {
         const alien = PIXI.Sprite.from(frameName);
         alien.tint = Math.random() * 0xFFFFFF;
 
-        /*
-         * fun fact for the day :)
-         * another way of doing the above would be
-         * var texture = PIXI.Texture.from(frameName);
-         * var alien = new PIXI.Sprite(texture);
-         */
         alien.x = Math.random() * 800 - 400;
         alien.y = Math.random() * 600 - 300;
         alien.anchor.x = 0.5;
@@ -57,12 +51,6 @@ app.stage.on('pointertap', onClick);
 
 function onClick() {
     alienContainer.cacheAsBitmap = !alienContainer.cacheAsBitmap;
-
-    // feel free to play with what's below
-    // var sprite = new PIXI.Sprite(alienContainer.generateTexture());
-    // app.stage.addChild(sprite);
-    // sprite.x = Math.random() * 800;
-    // sprite.y = Math.random() * 600;
 }
 
 app.ticker.add(() => {

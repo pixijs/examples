@@ -3,7 +3,7 @@ document.body.appendChild(app.view);
 
 app.stage.position.set(400, 300);
 
-const outlineFilterBlue = new PIXI.filters.OutlineFilter(2, 0x99ff99);
+const outlineFilterBlue = new PIXI.filters.OutlineFilter(2, 0x9999ff);
 const outlineFilterRed = new PIXI.filters.GlowFilter(15, 2, 1, 0xff9999, 0.5);
 
 function filterOn() {

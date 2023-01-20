@@ -703,6 +703,41 @@
 		]
 	},
 	{
+        "id": "tweedle",
+        "title": "Tweedle.js",
+        "visible": true,
+		"items": [
+			{
+				"title": "Basic Examples",
+				"entry": "simple.js",
+				"plugins": [
+					"tweedle"
+				]
+			},
+			{
+				"title": "Easings",
+				"entry": "easings.js",
+				"plugins": [
+					"tweedle"
+				]
+			},
+			{
+				"title": "Path",
+				"entry": "path.js",
+				"plugins": [
+					"tweedle"
+				]
+			},
+			{
+				"title": "Smart Interpolation",
+				"entry": "smart.js",
+				"plugins": [
+					"tweedle"
+				]
+			}
+		]
+	},
+	{
         "id": "gsap2-interaction",
         "title": "GSAP2",
 		"items": [{

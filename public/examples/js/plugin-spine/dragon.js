@@ -1,18 +1,11 @@
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-app.stop();
+PIXI.Assets.load('examples/assets/pixi-spine/dragon.json').then(onAssetsLoaded);
 
-// load spine data
-app.loader
-    .add('dragon', 'examples/assets/pixi-spine/dragon.json')
-    .load(onAssetsLoaded);
-
-let dragon = null;
-
-function onAssetsLoaded(loader, res) {
+function onAssetsLoaded(dragonAsset) {
     // instantiate the spine animation
-    dragon = new PIXI.spine.Spine(res.dragon.spineData);
+    const dragon = new PIXI.spine.Spine(dragonAsset.spineData);
     dragon.skeleton.setToSetupPose();
     dragon.update(0);
     dragon.autoUpdate = false;
@@ -42,10 +35,9 @@ function onAssetsLoaded(loader, res) {
     // once position and scaled, set the animation to play
     dragon.state.setAnimation(0, 'flying', true);
 
-    app.start();
-}
 
-app.ticker.add(() => {
-    // update the spine animation, only needed if dragon.autoupdate is set to false
-    dragon.update(0.01666666666667); // HARDCODED FRAMERATE!
-});
+    app.ticker.add(() => {
+        // update the spine animation, only needed if dragon.autoupdate is set to false
+        dragon.update(app.ticker.deltaMS / 1000); // IN SECONDS!
+    });
+}

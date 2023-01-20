@@ -389,7 +389,7 @@
 	{
         "id": "plugin-spine",
         "title": "Plugin Spine",
-        "visible": false,
+        "visible": true,
 		"items": [{
 				"title": "Dragon",
 				"entry": "dragon.js",
@@ -421,6 +421,13 @@
 			{
 				"title": "Spineboy Pro",
 				"entry": "spineboy-pro.js",
+				"plugins": [
+					"pixi-spine"
+				]
+			},
+			{
+				"title": "Spineboy Debugger",
+				"entry": "spineboy-debug.js",
 				"plugins": [
 					"pixi-spine"
 				]

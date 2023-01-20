@@ -2,15 +2,13 @@ const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // load spine data
-app.loader
-    .add('spineboy', 'examples/assets/pixi-spine/spineboy.json')
-    .load(onAssetsLoaded);
+PIXI.Assets.load('examples/assets/pixi-spine/spineboy.json').then(onAssetsLoaded);
 
-app.stage.interactive = true;
+function onAssetsLoaded(spineboyAsset) {
+    app.stage.interactive = true;
 
-function onAssetsLoaded(loader, res) {
     // create a spine boy
-    const spineBoy = new PIXI.spine.Spine(res.spineboy.spineData);
+    const spineBoy = new PIXI.spine.Spine(spineboyAsset.spineData);
 
     // set the position
     spineBoy.x = app.screen.width / 2;

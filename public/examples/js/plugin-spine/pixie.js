@@ -1,27 +1,19 @@
 const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
-app.stop();
-
 // load spine data
-app.loader
-    .add('pixie', 'examples/assets/pixi-spine/pixie.json')
-    .load(onAssetsLoaded);
+PIXI.Assets.load('examples/assets/pixi-spine/pixie.json').then(onAssetsLoaded);
 
-let postition = 0;
-let background;
-let background2;
-let foreground;
-let foreground2;
 
-app.stage.interactive = true;
+function onAssetsLoaded(pixieAsset) {
+    app.stage.interactive = true;
+    let postition = 0;
 
-function onAssetsLoaded(loader, res) {
-    background = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_BGtile.jpg');
-    background2 = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_BGtile.jpg');
+    const background = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_BGtile.jpg');
+    const background2 = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_BGtile.jpg');
 
-    foreground = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_ground.png');
-    foreground2 = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_ground.png');
+    const foreground = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_ground.png');
+    const foreground2 = PIXI.Sprite.from('examples/assets/pixi-spine/iP4_ground.png');
     foreground.anchor.set(0, 0.7);
     foreground.position.y = app.screen.height;
     foreground2.anchor.set(0, 0.7);
@@ -29,7 +21,7 @@ function onAssetsLoaded(loader, res) {
 
     app.stage.addChild(background, background2, foreground, foreground2);
 
-    const pixie = new PIXI.spine.Spine(res.pixie.spineData);
+    const pixie = new PIXI.spine.Spine(pixieAsset.spineData);
 
     const scale = 0.3;
 
@@ -52,37 +44,35 @@ function onAssetsLoaded(loader, res) {
         pixie.state.addAnimation(0, 'running', true, 0);
     }
 
-    app.start();
+    app.ticker.add(() => {
+        postition += 10;
+
+        background.x = -(postition * 0.6);
+        background.x %= 1286 * 2;
+        if (background.x < 0) {
+            background.x += 1286 * 2;
+        }
+        background.x -= 1286;
+
+        background2.x = -(postition * 0.6) + 1286;
+        background2.x %= 1286 * 2;
+        if (background2.x < 0) {
+            background2.x += 1286 * 2;
+        }
+        background2.x -= 1286;
+
+        foreground.x = -postition;
+        foreground.x %= 1286 * 2;
+        if (foreground.x < 0) {
+            foreground.x += 1286 * 2;
+        }
+        foreground.x -= 1286;
+
+        foreground2.x = -postition + 1286;
+        foreground2.x %= 1286 * 2;
+        if (foreground2.x < 0) {
+            foreground2.x += 1286 * 2;
+        }
+        foreground2.x -= 1286;
+    });
 }
-
-app.ticker.add(() => {
-    postition += 10;
-
-    background.x = -(postition * 0.6);
-    background.x %= 1286 * 2;
-    if (background.x < 0) {
-        background.x += 1286 * 2;
-    }
-    background.x -= 1286;
-
-    background2.x = -(postition * 0.6) + 1286;
-    background2.x %= 1286 * 2;
-    if (background2.x < 0) {
-        background2.x += 1286 * 2;
-    }
-    background2.x -= 1286;
-
-    foreground.x = -postition;
-    foreground.x %= 1286 * 2;
-    if (foreground.x < 0) {
-        foreground.x += 1286 * 2;
-    }
-    foreground.x -= 1286;
-
-    foreground2.x = -postition + 1286;
-    foreground2.x %= 1286 * 2;
-    if (foreground2.x < 0) {
-        foreground2.x += 1286 * 2;
-    }
-    foreground2.x -= 1286;
-});

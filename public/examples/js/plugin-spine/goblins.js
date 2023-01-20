@@ -2,15 +2,14 @@ const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 // load spine data
-app.loader
-    .add('goblins', 'examples/assets/pixi-spine/goblins.json')
-    .load(onAssetsLoaded);
+PIXI.Assets.load('examples/assets/pixi-spine/goblins.json').then(onAssetsLoaded);
 
-app.stage.interactive = true;
-app.stage.cursor = 'pointer';
 
-function onAssetsLoaded(loader, res) {
-    const goblin = new PIXI.spine.Spine(res.goblins.spineData);
+function onAssetsLoaded(goblinAsset) {
+    app.stage.interactive = true;
+    app.stage.cursor = 'pointer';
+
+    const goblin = new PIXI.spine.Spine(goblinAsset.spineData);
 
     // set current skin
     goblin.skeleton.setSkinByName('goblin');

@@ -57,6 +57,7 @@
       "CodeMirror": "readonly",
       "Linear": "readonly",
       "PIXI": "readonly",
+      "TWEEDLE": "readonly",
       "Quart": "readonly",
       "SharedArrayBuffer": "readonly",
       "TweenMax": "readonly"

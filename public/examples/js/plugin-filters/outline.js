@@ -11,7 +11,7 @@ function filterOn() {
 }
 
 function filterOff() {
-    this.filters = [outlineFilterBlue];
+    this.filters = [outlineFilterGreen];
 }
 
 for (let i = 0; i < 20; i++) {

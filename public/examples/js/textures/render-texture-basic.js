@@ -14,7 +14,12 @@ for (let i = 0; i < 25; i++) {
     container.addChild(bunny);
 }
 
-const brt = new PIXI.BaseRenderTexture(300, 300, PIXI.SCALE_MODES.LINEAR, 1);
+const brt = new PIXI.BaseRenderTexture({
+  width: 300,
+  height: 300,
+  scaleMode: PIXI.SCALE_MODES.LINEAR,
+  resolution: 1,
+});
 const rt = new PIXI.RenderTexture(brt);
 
 const sprite = new PIXI.Sprite(rt);
@@ -33,5 +38,5 @@ container.x = 100;
 container.y = 60;
 
 app.ticker.add(() => {
-    app.renderer.render(container, rt);
+    app.renderer.render(container, { renderTexture: rt });
 });

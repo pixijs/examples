@@ -5,9 +5,7 @@
 
 const app = new PIXI.Application({ autoStart: false, antialias: true });
 document.body.appendChild(app.view);
-app.stage = new PIXI.display.Stage();
-
-const { loader } = app;
+app.stage = new PIXI.layers.Stage();
 
 const camera = new PIXI.projection.Camera3d();
 camera.position.set(app.screen.width / 2, app.screen.height / 2);
@@ -21,31 +19,33 @@ cards.position3d.y = -50;
 cards.scale3d.set(1.5);
 camera.addChild(cards);
 
-const shadowGroup = new PIXI.display.Group(1);
-const cardsGroup = new PIXI.display.Group(2, ((item) => {
+const shadowGroup = new PIXI.layers.Group(1);
+const cardsGroup = new PIXI.layers.Group(2, ((item) => {
     item.zOrder = -item.getDepth();
     item.parent.checkFace();
 }));
 
 // Layers are 2d elements but we use them only to show stuff, not to transform items, so its fine :)
-camera.addChild(new PIXI.display.Layer(shadowGroup));
-camera.addChild(new PIXI.display.Layer(cardsGroup));
+camera.addChild(new PIXI.layers.Layer(shadowGroup));
+camera.addChild(new PIXI.layers.Layer(cardsGroup));
 // we could also add layers in the stage, but then we'll need extra layer for the text
 
-// load assets
-loader.add('cards', 'examples/assets/pixi-projection/cards.json');
-loader.add('table', 'examples/assets/pixi-projection/table.png');
-loader.load(onAssetsLoaded);
+PIXI.Assets.addBundle('cards', {
+    cards: 'examples/assets/pixi-projection/cards.json',
+    table: 'examples/assets/pixi-projection/table.png',
+});
 
 // blur for shadow. Do not use it in production, bake shadow into the texture!
 const blurFilter = new PIXI.filters.BlurFilter();
 blurFilter.blur = 0.2;
 
+let bundle = null;
+
 class CardSprite extends PIXI.projection.Container3d {
     constructor() {
         super();
 
-        const tex = loader.resources.cards.textures;
+        const tex = bundle.cards.textures;
 
         // shadow will be under card
         this.shadow = new PIXI.projection.Sprite3d(tex['black.png']);
@@ -82,7 +82,7 @@ class CardSprite extends PIXI.projection.Container3d {
     createFace() {
         const { face } = this;
         face.removeChildren();
-        const tex = loader.resources.cards.textures;
+        const tex = bundle.cards.textures;
         const sprite = new PIXI.projection.Sprite3d(tex['white1.png']);
         const sprite2 = new PIXI.projection.Sprite3d(PIXI.Texture.EMPTY);
         const sprite3 = new PIXI.projection.Sprite3d(PIXI.Texture.EMPTY);
@@ -106,7 +106,7 @@ class CardSprite extends PIXI.projection.Container3d {
     }
 
     updateFace() {
-        const tex = loader.resources.cards.textures;
+        const tex = bundle.cards.textures;
         const code = this.showCode === -1 ? 0 : this.showCode;
         const num = code & 0xf;
         const suit = code >> 4;
@@ -209,9 +209,10 @@ function addText(txt) {
     camera.addChild(basicText);
 }
 
-function onAssetsLoaded() {
+async function init() {
+    bundle = await PIXI.Assets.loadBundle('cards');
     // background must be UNDER camera, it doesnt have z-index or any other bullshit for camera
-    app.stage.addChildAt(new PIXI.Sprite(loader.resources.table.texture), 0);
+    app.stage.addChildAt(new PIXI.Sprite(bundle.table), 0);
     dealHand();
     addText('Tap on cards');
     // start animating
@@ -228,3 +229,5 @@ app.ticker.add((deltaTime) => {
     // otherwise this part will be tardy by one frame
     camera.updateTransform();
 });
+
+init();

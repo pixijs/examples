@@ -499,7 +499,7 @@
 	{
         "id": "plugin-projection",
         "title": "Plugin Projection",
-        "visible": false,
+        "visible": true,
 		"items": [{
 				"title": "2D Basics",
 				"entry": "basic.js",

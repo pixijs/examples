@@ -6,17 +6,14 @@ document.body.appendChild(app.view);
 
 app.stop();
 
-const { loader } = app;
+PIXI.Assets.addBundle('runner', {
+    pixie: 'examples/assets/pixi-spine/pixie.json',
+    bg: 'examples/assets/pixi-spine/iP4_BGtile.jpg',
+    fg: 'examples/assets/pixi-spine/iP4_ground.png',
+});
 
-// load spine data
-loader
-    .add('pixie', 'examples/assets/pixi-spine/pixie.json')
-    .add('bg', 'examples/assets/pixi-spine/iP4_BGtile.jpg')
-    .add('fg', 'examples/assets/pixi-spine/iP4_ground.png')
-    .load(onAssetsLoaded);
-
-const objs = []; let
-    pixie;
+const objs = [];
+let pixie;
 
 app.stage.interactive = true;
 
@@ -46,28 +43,30 @@ camera.addChild(mainLayer);
 
 const repeats = 3;
 
-function onAssetsLoaded(loaderInstance, res) {
+async function init() {
+    const bundle = await PIXI.Assets.loadBundle('runner');
+    console.log(bundle);
     for (let i = 0; i < repeats; i++) {
-    // simple 2d sprite on back
-        const bg = new PIXI.Sprite(res.bg.texture);
+        // simple 2d sprite on back
+        const bg = new PIXI.Sprite(bundle.bg);
         bgLayer.addChild(bg);
-        bg.position.x = bg.texture.width * i;
+        bg.position.x = bg.width * i;
         bg.anchor.y = 1;
         objs.push(bg);
     }
 
     for (let i = 0; i < repeats; i++) {
-    // 3d sprite on floor
-        const fg = new PIXI.projection.Sprite3d(res.fg.texture);
+        // 3d sprite on floor
+        const fg = new PIXI.projection.Sprite3d(bundle.fg);
         groundLayer.addChild(fg);
         fg.anchor.set(0, 0.5);
         // use position or position3d here, its not important,
         // unless you need Z - then you need position3d
-        fg.position.x = fg.texture.width * i;
+        fg.position.x = fg.width * i;
         objs.push(fg);
     }
 
-    pixie = new PIXI.spine.Spine(res.pixie.spineData);
+    pixie = new PIXI.spine.Spine(bundle.pixie.spineData);
     pixie.position.set(300, 0);
     pixie.scale.set(0.3);
 
@@ -100,3 +99,5 @@ app.ticker.add((delta) => {
         }
     });
 });
+
+init();

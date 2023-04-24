@@ -15,10 +15,10 @@ for (let i = 0; i < 25; i++) {
 }
 
 const brt = new PIXI.BaseRenderTexture({
-  width: 300,
-  height: 300,
-  scaleMode: PIXI.SCALE_MODES.LINEAR,
-  resolution: 1,
+    width: 300,
+    height: 300,
+    scaleMode: PIXI.SCALE_MODES.LINEAR,
+    resolution: 1,
 });
 const rt = new PIXI.RenderTexture(brt);
 

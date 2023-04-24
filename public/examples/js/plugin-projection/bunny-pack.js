@@ -209,16 +209,14 @@ const app = new PIXI.Application({ background: '#2c3e50' });
 document.body.appendChild(app.view);
 
 // Load the bunny texture
-app.loader.add('bunny', 'https://pixijs.io/examples/examples/assets/bunny.png')
-    .load(startup);
+PIXI.Assets.load('examples/assets/bunny.png').then(startup);
 
-function startup() {
+function startup(t) {
     const camera = new PIXI.projection.Camera3d();
     camera.position.set(app.screen.width / 2, app.screen.height / 2);
     camera.setPlanes(100, 45, 1000);
     app.stage.addChild(camera);
 
-    const t = app.loader.resources.bunny.texture;
     const pack = new Bag();
 
     const a = new BagPart(t, t);
@@ -246,7 +244,7 @@ function startup() {
     // Listen for animate update
     app.ticker.add((delta) => {
         // Rotate mr rabbit clockwise
-        pack.update(1000 / 60);
+        pack.update(delta * 1000 / 60 * 0.3);
         camera.updateTransform();
     });
 }

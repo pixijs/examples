@@ -82,7 +82,7 @@ function addInteraction(obj) {
         .on('pointerdown', onDragStart)
         .on('pointerup', onDragEnd)
         .on('pointerupoutside', onDragEnd)
-        .on('pointermove', onDragMove);
+        .on('globalpointermove', onDragMove);
 }
 
 function onDragStart(event) {

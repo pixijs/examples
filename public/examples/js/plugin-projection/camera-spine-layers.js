@@ -5,19 +5,19 @@
 
 const app = new PIXI.Application({ autoStart: false });
 document.body.appendChild(app.view);
-app.stage = new PIXI.display.Stage();
+app.stage = new PIXI.layers.Stage();
 
 // apply mixin to spine class, otherwise objects might not be projected
 PIXI.projection.applySpine3dMixin(PIXI.spine.Spine.prototype);
 
-const { loader } = app;
+let bundle = null;
+PIXI.Assets.addBundle('dudes', {
+    spritesheet: 'examples/assets/pixi-projection/dudes.json',
+    back: 'examples/assets/pixi-projection/back.png',
+    pixie: 'examples/assets/pixi-spine/pixie.json',
+});
 
-// create a new loader
-loader.add('spritesheet', 'examples/assets/pixi-projection/dudes.json');
-loader.add('back', 'examples/assets/pixi-projection/back.png');
-loader.add('pixie', 'examples/assets/pixi-spine/pixie.json');
-// begin load
-loader.load(onAssetsLoaded);
+PIXI.Assets.loadBundle('dudes').then(onAssetsLoaded);
 
 // holder to store aliens
 const alienFrames = ['eggHead.png', 'flowerTop.png', 'helmlok.png', 'skully.png'];
@@ -33,10 +33,10 @@ const earthContainer = new PIXI.projection.Container3d();
 camera.addChild(earthContainer);
 camera.addChild(alienContainer);
 
-const sortGroup = new PIXI.display.Group(1, ((plane) => {
+const sortGroup = new PIXI.layers.Group(1, ((plane) => {
     plane.zOrder = -plane.getDepth();
 }));
-app.stage.addChild(new PIXI.display.Layer(sortGroup));
+app.stage.addChild(new PIXI.layers.Layer(sortGroup));
 const debugGraphics = new PIXI.Graphics();
 app.stage.addChild(debugGraphics);
 
@@ -49,7 +49,7 @@ function spawnAlien(d) {
         sprite1.anchor.set(0.5, 1.0);
         sprite1.scale3d.set(0.5);
     } else {
-        sprite1 = new PIXI.spine.Spine(loader.resources.pixie.spineData);
+        sprite1 = new PIXI.spine.Spine(bundle.pixie.spineData);
         sprite1.scale3d.set(0.1);
         sprite1.state.setAnimation(0, 'running', true);
     }
@@ -67,8 +67,9 @@ function spawnAlien(d) {
 const filter = new PIXI.filters.BlurFilter();
 filter.blur = 2;
 
-function onAssetsLoaded() {
-    const earth = new PIXI.projection.Sprite3d(loader.resources.back.texture);
+function onAssetsLoaded(bund) {
+    bundle = bund;
+    const earth = new PIXI.projection.Sprite3d(bundle.back);
     // because earth is Sprite3d, we can access its euler angles
     earth.euler.x = Math.PI / 2;
     earth.anchor.x = earth.anchor.y = 0.5;
@@ -104,10 +105,12 @@ let ang = 0;
 app.ticker.add(() => {
     debugGraphics.clear();
     debugGraphics.lineStyle(2, 0xffffff, 1.0);
+
+    const trackingData = app.renderer.events.rootBoundary.trackingData(1);
     alienContainer.children.forEach((alien) => {
         const rect = alien.getBounds();
         if (rect !== PIXI.Rectangle.EMPTY) debugGraphics.drawShape(rect);
-        if (alien.trackedPointers[1] && alien.trackedPointers[1].over) {
+        if (trackingData.overTargets && trackingData.overTargets.indexOf(alien) > 0) {
             if (!alien.filters) {
                 alien.filters = [filter];
             }

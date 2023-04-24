@@ -1,6 +1,6 @@
 const app = new PIXI.Application({
     autoStart: false,
-    backgroundAlpha: 0,
+    backgroundAlpha: 0, // REQUIRED by picture
 });
 const { stage, renderer } = app;
 

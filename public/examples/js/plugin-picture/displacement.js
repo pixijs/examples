@@ -72,7 +72,11 @@ class DisplacementFilter extends PIXI.Filter {
     }
 }
 
-const app = new PIXI.Application(800, 600);
+const app = new PIXI.Application({
+    width: 800,
+    height: 600,
+    backgroundAlpha: 0, // REQUIRED by picture
+});
 document.body.appendChild(app.view);
 
 app.stage.interactive = true;

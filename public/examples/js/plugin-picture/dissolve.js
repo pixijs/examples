@@ -18,20 +18,18 @@ const dissolveFilter = new PIXI.picture.BlendFilter({
 // to save battery life
 const app = new PIXI.Application({
     autoStart: false,
-    backgroundAlpha: 0,
+    backgroundAlpha: 0, // REQUIRED by picture
 });
 
 document.body.appendChild(app.view);
 
 // Load assets
-app.loader
-    .add('bg_plane', 'examples/assets/bg_plane.jpg')
-    .load(main);
+PIXI.Assets.load('examples/assets/bg_plane.jpg').then(main);
 
 // Setup scene and then render once
-function main() {
-    const left = makeBlendSubscene();
-    const right = makeBlendSubscene();
+function main(tex) {
+    const left = makeBlendSubscene(tex);
+    const right = makeBlendSubscene(tex);
 
     // Add dissolve filter
     left.fg.filters = [dissolveFilter];
@@ -43,9 +41,9 @@ function main() {
     app.render();
 }
 
-function makeBlendSubscene() {
+function makeBlendSubscene(tex) {
     // Black background
-    const bg = new PIXI.Sprite(PIXI.Texture.from('bg_plane'));
+    const bg = new PIXI.Sprite(tex);
 
     // Translucent white layer on top
     const fg = new PIXI.Sprite(PIXI.Texture.WHITE);

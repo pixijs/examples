@@ -1,10 +1,11 @@
 // Easy way to apply ANY filter on backdrop with a mask
 
-const app = new PIXI.Application();
+const app = new PIXI.Application({
+    backgroundAlpha: 0, // REQUIRED by picture
+});
 document.body.appendChild(app.view);
 
-app.loader.baseUrl = 'https://pixijs.io/examples/examples/assets';
-app.loader.add('bg_rotate.jpg').add('flowerTop.png').load(complete);
+PIXI.Assets.load('examples/assets/bg_rotate.jpg').then(complete);
 
 const blur = new PIXI.filters.BlurFilter();
 
@@ -55,9 +56,9 @@ function makeHardWindow() {
     return container;
 }
 
-function complete() {
+function complete(bg) {
     // Create a new background sprite
-    const background = new PIXI.Sprite(app.loader.resources['bg_rotate.jpg'].texture);
+    const background = new PIXI.Sprite(bg);
     background.width = 800;
     background.height = 600;
     app.stage.addChild(background);

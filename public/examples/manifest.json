@@ -630,7 +630,7 @@
 	{
         "id": "plugin-picture",
         "title": "Plugin Picture",
-        "visible": false,
+        "visible": true,
 		"items": [{
 				"title": "Blend Modes",
 				"entry": "blend-modes.js",

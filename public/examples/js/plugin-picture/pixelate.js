@@ -14,7 +14,9 @@
  5. put a fullscreen filter on stage. pixi-picture requires that background is rendered inside a framebuffer, i mean Filter or RenderTexture, otherwise "copySubTexImage2D" wont work.
  */
 
-const app = new PIXI.Application();
+const app = new PIXI.Application({
+    backgroundAlpha: 0, // REQUIRED by picture
+});
 document.body.appendChild(app.view);
 
 const fragment = `
@@ -78,18 +80,20 @@ class PixelateFilter extends PIXI.Filter {
     }
 }
 
-app.loader.baseUrl = 'https://pixijs.io/examples/examples/assets';
+PIXI.Assets.addBundle('bundle', {
+    flowerTop: 'examples/assets/flowerTop.png',
+    bg_rotate: 'examples/assets/bg_rotate.jpg',
+});
+PIXI.Assets.loadBundle('bundle').then(complete);
 
-app.loader.add('bg_rotate.jpg').add('flowerTop.png').load(complete);
-
-function complete() {
+function complete(bundle) {
 // create a new background sprite
-    const background = new PIXI.Sprite(app.loader.resources['bg_rotate.jpg'].texture);
+    const background = new PIXI.Sprite(bundle.bg_rotate);
     background.width = 800;
     background.height = 600;
     app.stage.addChild(background);
 
-    const dude = new PIXI.Sprite(app.loader.resources['flowerTop.png'].texture);
+    const dude = new PIXI.Sprite(bundle.flowerTop);
     dude.position.set(100);
     dude.filters = [new PixelateFilter()];
     app.stage.addChild(dude);

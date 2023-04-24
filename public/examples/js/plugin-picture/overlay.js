@@ -1,7 +1,9 @@
 // This is demo of pixi-picture.js, https://github.com/pixijs/pixi-picture
 // Plugin automatically assigns a filter for every sprite that has special blendModes
 
-const app = new PIXI.Application();
+const app = new PIXI.Application({
+    backgroundAlpha: 0, // REQUIRED by picture
+});
 document.body.appendChild(app.view);
 
 // create a new background sprite

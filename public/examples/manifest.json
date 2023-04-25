@@ -457,7 +457,7 @@
 	{
         "id": "plugin-heaven",
         "title": "Plugin Heaven",
-        "visible": false,
+        "visible": true,
 		"items": [{
 				"title": "Invert",
 				"entry": "invert.js",

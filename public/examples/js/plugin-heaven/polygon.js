@@ -6,10 +6,9 @@ document.body.appendChild(app.view);
 const container = new PIXI.Container();
 app.stage.addChild(container);
 
-app.loader.add('dudes', 'examples/assets/polygon/dudes.json');
-app.loader.load((loader, resources) => {
-    const keys = Object.keys(resources.dudes.textures);
-    const textures = keys.map((x) => resources.dudes.textures[x]);
+PIXI.Assets.load('examples/assets/polygon/dudes.json').then(onComplete);
+function onComplete(spritesheet) {
+    const textures = Object.values(spritesheet.textures);
 
     // Create a 5x5 grid of bunnies
     for (let i = 0; i < 25; i++) {
@@ -35,7 +34,7 @@ app.loader.load((loader, resources) => {
     container.pivot.y = container.height / 2;
 
     app.start();
-});
+}
 
 function genWireframe(sprite, graphics) {
     sprite.calculateVertices();

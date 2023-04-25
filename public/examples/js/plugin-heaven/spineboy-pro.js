@@ -6,15 +6,12 @@ document.body.appendChild(app.view);
 PIXI.heaven.applySpineMixin(PIXI.spine.Spine.prototype);
 
 // load spine data
-app.loader
-    .add('spineboypro', 'examples/assets/pixi-spine/spineboy-pro.json')
-    .load(onAssetsLoaded);
-
+PIXI.Assets.load('examples/assets/pixi-spine/spineboy-pro.json').then(onAssetsLoaded);
 app.stage.interactive = true;
 
-function onAssetsLoaded(loader, res) {
+function onAssetsLoaded(spineboypro) {
     // create a spine boy
-    const spineBoyPro = new PIXI.spine.Spine(res.spineboypro.spineData);
+    const spineBoyPro = new PIXI.spine.Spine(spineboypro.spineData);
 
     // set the position
     spineBoyPro.x = app.screen.width / 2;

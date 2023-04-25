@@ -3,11 +3,9 @@
 const app = new PIXI.Application({ background: '#1099bb' });
 document.body.appendChild(app.view);
 
-app.loader.add('bunny', 'examples/assets/bunny.png');
-app.loader.load(onComplete);
+PIXI.Assets.load('examples/assets/bunny.png').then(onComplete);
 
-function onComplete(loader, resources) {
-    const bunnyTex = resources.bunny.texture;
+function onComplete(bunnyTex) {
     bunnyTex.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
     const bunny = new PIXI.heaven.SpriteH(bunnyTex);
@@ -17,7 +15,7 @@ function onComplete(loader, resources) {
     const W = bunny.width;
     const H = bunny.height;
 
-    const maskRT = PIXI.RenderTexture.create(W, H, 1);
+    const maskRT = PIXI.RenderTexture.create({ width: W, height: H, scaleMode: PIXI.SCALE_MODES.NEAREST });
     const blackGraphics = new PIXI.Graphics();
     blackGraphics.beginFill(0);
     blackGraphics.drawRect(0, 0, W, H);
@@ -25,9 +23,14 @@ function onComplete(loader, resources) {
     const whiteBunny = new PIXI.heaven.SpriteH(bunnyTex);
     whiteBunny.scale.set(10);
     whiteBunny.color.setDark(1.0, 1.0, 1.0);
-    app.renderer.render(blackGraphics, maskRT, false);
-    app.renderer.render(whiteBunny, maskRT, false);
-
+    app.renderer.render(blackGraphics, {
+        renderTexture: maskRT,
+        clear: false,
+    });
+    app.renderer.render(whiteBunny, {
+        renderTexture: maskRT,
+        clear: false,
+    });
     const decalRT = PIXI.RenderTexture.create({ width: W, height: H, scaleMode: PIXI.SCALE_MODES.NEAREST });
     const decals = new PIXI.Container();
     for (let i = 0; i < 100; i++) {
@@ -37,7 +40,10 @@ function onComplete(loader, resources) {
         randomBunny.color.setDark(Math.random(), Math.random(), Math.random());
         decals.addChild(randomBunny);
     }
-    app.renderer.render(decals, decalRT);
+    app.renderer.render(decals, {
+        renderTexture: decalRT,
+        clear: false,
+    });
 
     const maskSprite = new PIXI.heaven.SpriteH(maskRT);
     const decalSprite = new PIXI.heaven.SpriteH(decalRT);

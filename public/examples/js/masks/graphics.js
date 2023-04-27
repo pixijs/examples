@@ -1,7 +1,9 @@
 const app = new PIXI.Application({ antialias: true });
 document.body.appendChild(app.view);
 
-app.stage.interactive = true;
+// Setting interactive is deprecated, use eventMode = 'none'/'passive'/'auto'/'static'/'dynamic' instead.
+// app.stage.interactive = true;
+app.stage.eventMode = "passive";
 
 const bg = PIXI.Sprite.from('examples/assets/bg_rotate.jpg');
 

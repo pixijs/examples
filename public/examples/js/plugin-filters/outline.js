@@ -10,7 +10,7 @@ const outlineFilterRed = new PIXI.filters.GlowFilter({
   innerStrength: 1,
   color: 0xff9999,
   quality: 0.5,
-})
+});
 
 
 function filterOn() {

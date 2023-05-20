@@ -40,10 +40,12 @@ for (let i = 0; i < totalDudes; i++) {
 
 // create a bounding box for the little dudes
 const dudeBoundsPadding = 100;
-const dudeBounds = new PIXI.Rectangle(-dudeBoundsPadding,
+const dudeBounds = new PIXI.Rectangle(
+    -dudeBoundsPadding,
     -dudeBoundsPadding,
     app.screen.width + dudeBoundsPadding * 2,
-    app.screen.height + dudeBoundsPadding * 2);
+    app.screen.height + dudeBoundsPadding * 2,
+);
 
 app.ticker.add(() => {
     // iterate through the dudes and update their position

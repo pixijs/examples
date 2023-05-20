@@ -38,7 +38,6 @@ new TWEEDLE.Tween(bunny3).to({ x: 500 }, time)
     .easing(TWEEDLE.Easing.Bounce.Out)
     .start();
 
-
 const bunny4 = new PIXI.Sprite(texture);
 bunny4.y = 300;
 app.stage.addChild(bunny4);

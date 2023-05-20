@@ -198,15 +198,13 @@ projector.content.addEventListener('pointermove', (e) => {
     coordinates.text = `Global: ${global}\nScreen: ${screen}`;
 });
 
-const description = new PIXI.Text(
-    'The (0, 0) world coordinates for the content is located at the center of the first star!'
+const description = new PIXI.Text('The (0, 0) world coordinates for the content is located at the center of the first star!'
     + '\n  * Mouse wheel over stars to rotate them'
     + '\n  * Click to zoom in or out', {
-        fontSize: 16,
-        fontFamily: 'Roboto',
-        fill: '#272d37',
-    },
-);
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    fill: '#272d37',
+});
 
 description.position.set(110, 12);
 

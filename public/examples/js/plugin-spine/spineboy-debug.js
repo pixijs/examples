@@ -4,7 +4,6 @@ document.body.appendChild(app.view);
 // load spine data
 PIXI.Assets.load(['examples/assets/pixi-spine/spineboy-pro.json', 'examples/assets/pixi-spine/spineboy.json']).then(onAssetsLoaded);
 
-
 function onAssetsLoaded(spineAssets) {
     app.stage.interactive = true;
 
@@ -28,7 +27,6 @@ function onAssetsLoaded(spineAssets) {
 
     let lastAnimation = '';
 
-
     // create a spine boy
     const spineBoy = new PIXI.spine.Spine(spineboyAsset.spineData);
 
@@ -51,7 +49,6 @@ function onAssetsLoaded(spineAssets) {
 
     });
 
-
     // Press the screen to play a random animation
     app.stage.on('pointerdown', () => {
         let animation = '';
@@ -66,7 +63,6 @@ function onAssetsLoaded(spineAssets) {
         spineBoy.state.setAnimation(0, 'jump', false);
         spineBoy.state.addAnimation(0, 'walk', true, 0);
     });
-
 
     // ENABLE THE DEBUG!
     spineBoy.debug = new PIXI.spine.SpineDebugRenderer();

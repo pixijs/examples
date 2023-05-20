@@ -5,13 +5,11 @@ const app = new PIXI.Application({
 });
 document.body.appendChild(app.view);
 
-const title = app.stage.addChild(new PIXI.Text(
-    `Move your mouse slowly over the boxes to
+const title = app.stage.addChild(new PIXI.Text(`Move your mouse slowly over the boxes to
     see the order of pointerenter, pointerleave,
     pointerover, pointerout events on each target!`, {
-        fontSize: 16,
-    },
-));
+    fontSize: 16,
+}));
 
 title.x = 2;
 

@@ -4,7 +4,6 @@ document.body.appendChild(app.view);
 // load spine data
 PIXI.Assets.load('examples/assets/pixi-spine/goblins.json').then(onAssetsLoaded);
 
-
 function onAssetsLoaded(goblinAsset) {
     app.stage.interactive = true;
     app.stage.cursor = 'pointer';

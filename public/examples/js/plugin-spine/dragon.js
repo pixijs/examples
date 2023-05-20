@@ -35,7 +35,6 @@ function onAssetsLoaded(dragonAsset) {
     // once position and scaled, set the animation to play
     dragon.state.setAnimation(0, 'flying', true);
 
-
     app.ticker.add(() => {
         // update the spine animation, only needed if dragon.autoupdate is set to false
         dragon.update(app.ticker.deltaMS / 1000); // IN SECONDS!

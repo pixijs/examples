@@ -3,18 +3,22 @@ document.body.appendChild(app.view);
 
 // Build geometry.
 const geometry = new PIXI.Geometry()
-    .addAttribute('aVertexPosition', // the attribute name
+    .addAttribute(
+        'aVertexPosition', // the attribute name
         [0, 0, // x, y
             200, 0, // x, y
             200, 200,
             0, 200], // x, y
-        2) // the size of the attribute
-    .addAttribute('aUvs', // the attribute name
+        2, // the size of the attribute
+    )
+    .addAttribute(
+        'aUvs', // the attribute name
         [0, 0, // u, v
             1, 0, // u, v
             1, 1,
             0, 1], // u, v
-        2) // the size of the attribute
+        2, // the size of the attribute
+    )
     .addIndex([0, 1, 2, 0, 2, 3]);
 
 // Vertex shader. Use same shader for all passes.

@@ -34,7 +34,6 @@ new TWEEDLE.Tween(bunny2).to({ x: xTargets, y: yTargets }, time)
     .interpolation(TWEEDLE.Interpolation.Geom.CatmullRom)
     .start();
 
-
 const auxGraphics = new PIXI.Graphics();
 auxGraphics.lineStyle(2, 0xFFFFFF, 1);
 for (let i = 0; i < xTargets.length; i++) {

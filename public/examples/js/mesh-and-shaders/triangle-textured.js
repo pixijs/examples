@@ -2,23 +2,29 @@ const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 const geometry = new PIXI.Geometry()
-    .addAttribute('aVertexPosition', // the attribute name
+    .addAttribute(
+        'aVertexPosition', // the attribute name
         [-100, -100, // x, y
             100, -100, // x, y
             100, 100], // x, y
-        2) // the size of the attribute
+        2, // the size of the attribute
+    )
 
-    .addAttribute('aColor', // the attribute name
+    .addAttribute(
+        'aColor', // the attribute name
         [1, 0, 0, // r, g, b
             0, 1, 0, // r, g, b
             0, 0, 1], // r, g, b
-        3) // the size of the attribute
+        3, // the size of the attribute
+    )
 
-    .addAttribute('aUvs', // the attribute name
+    .addAttribute(
+        'aUvs', // the attribute name
         [0, 0, // u, v
             1, 0, // u, v
             1, 1], // u, v
-        2); // the size of the attribute
+        2, // the size of the attribute
+    );
 
 const vertexSrc = `
 

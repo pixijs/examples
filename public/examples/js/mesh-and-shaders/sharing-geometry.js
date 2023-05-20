@@ -2,19 +2,24 @@ const app = new PIXI.Application();
 document.body.appendChild(app.view);
 
 const geometry = new PIXI.Geometry()
-    .addAttribute('aVertexPosition', // the attribute name
+    .addAttribute(
+        'aVertexPosition', // the attribute name
         [-100, -100, // x, y
             100, -100, // x, y
             100, 100], // x, y
-        2) // the size of the attribute
+        2, // the size of the attribute
+    )
 
-    .addAttribute('aUvs', // the attribute name
+    .addAttribute(
+        'aUvs', // the attribute name
         [0, 0, // u, v
             1, 0, // u, v
             1, 1], // u, v
-        2); // the size of the attribute
+        2, // the size of the attribute
+    );
 
-const program = PIXI.Program.from(`
+const program = PIXI.Program.from(
+    `
 
     precision mediump float;
 
@@ -33,7 +38,7 @@ const program = PIXI.Program.from(`
 
     }`,
 
-`precision mediump float;
+    `precision mediump float;
 
     varying vec2 vUvs;
 
@@ -44,7 +49,8 @@ const program = PIXI.Program.from(`
         gl_FragColor = texture2D(uSamplerTexture, vUvs);
     }
 
-`);
+`,
+);
 
 const triangle = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
     uSamplerTexture: PIXI.Texture.from('examples/assets/bg_scene_rotate.jpg'),

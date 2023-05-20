@@ -46,7 +46,6 @@ rgbTint.scale.set(3);
 rgbTint.position.set(300, 300);
 app.stage.addChild(rgbTint);
 
-
 app.stage.interactive = true;
 app.stage.on('pointerdown', () => {
     const randomRadians = Math.random() * Math.PI * 2 * (Math.random() > 0.5 ? 1 : -1);

@@ -4,7 +4,6 @@ document.body.appendChild(app.view);
 // load spine data
 PIXI.Assets.load('examples/assets/pixi-spine/pixie.json').then(onAssetsLoaded);
 
-
 function onAssetsLoaded(pixieAsset) {
     app.stage.interactive = true;
     let postition = 0;

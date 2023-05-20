@@ -24,7 +24,8 @@ for (let i = 0; i < geometry.instanceCount; i++) {
     buffer.data[instanceOffset + 4] = Math.random();
 }
 
-const shader = PIXI.Shader.from(`
+const shader = PIXI.Shader.from(
+    `
     precision mediump float;
     attribute vec2 aVPos;
     attribute vec2 aIPos;
@@ -41,7 +42,7 @@ const shader = PIXI.Shader.from(`
         gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVPos + aIPos, 1.0)).xy, 0.0, 1.0);
     }`,
 
-`precision mediump float;
+    `precision mediump float;
 
     varying vec3 vCol;
 
@@ -49,7 +50,8 @@ const shader = PIXI.Shader.from(`
         gl_FragColor = vec4(vCol, 1.0);
     }
 
-`);
+`,
+);
 
 const triangles = new PIXI.Mesh(geometry, shader);
 

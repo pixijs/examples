@@ -65,9 +65,12 @@ app.stage.on('pointerdown', () => {
     graphics.lineStyle(Math.random() * 30, Math.random() * 0xFFFFFF, 1);
     graphics.moveTo(Math.random() * 800, Math.random() * 600);
     graphics.bezierCurveTo(
-        Math.random() * 800, Math.random() * 600,
-        Math.random() * 800, Math.random() * 600,
-        Math.random() * 800, Math.random() * 600,
+        Math.random() * 800,
+        Math.random() * 600,
+        Math.random() * 800,
+        Math.random() * 600,
+        Math.random() * 800,
+        Math.random() * 600,
     );
 });
 

@@ -39,6 +39,11 @@
 				"title": "Basic",
 				"entry": "basic.js"
 			},
+            {
+                "title": "Z-Index",
+                "entry": "z-index.js"
+            },
+
 			{
 				"title": "Texture Swap",
 				"entry": "texture-swap.js"

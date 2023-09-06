@@ -1,3 +1,6 @@
+> **Warning**
+> This repository is no longer maintained. Examples have been moved into the [main website's repository](https://github.com/pixijs/pixijs.com/tree/main/src/data/examples) and is deployed to [pixijs.com/examples](https://pixijs.com/examples).
+
 # PixiJS Examples Guidelines
 
 This is the repository for examples using latest version of PixiJS.

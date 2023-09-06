@@ -1,0 +1,21 @@
+{"frames": {
+
+"wind_extractor_10.png":
+{
+	"frame": {"x":1,"y":1,"w":133,"h":158},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":133,"h":158},
+	"sourceSize": {"w":133,"h":158},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "building2.png",
+	"format": "RGBA8888",
+	"size": {"w":135,"h":160},
+	"scale": "0.5",
+	"smartupdate": "$TexturePacker:SmartUpdate:b22567780b3b9e0b7cc214732ebfb02a:d0df5aca37db6537da5712ae69141c63:9e7dc0cc289bd6442851877727213c69$"
+}
+}
